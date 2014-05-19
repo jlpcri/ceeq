@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In {% endblock %}
+
+{% block extrahead %}{% endblock %}
+
+{% block body %}
+
+    <div class="col-xs-3"></div>
+    <div class="col-xs-6">
+        <div class="well" id="landing-well" style="margin-top: 25px;">
+            <h3 class="text-center text-muted">
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fa fa-sign-in fa-stack-1x fa-inverse"></i>
+                </span>
+                <br><br>
+                Sign in to <span class="text-primary">Quality of Solution</span>
+            </h3>
+            <hr>
+            <div>
+                <form class="form" role="form" method=POST action="{% url 'sign_in' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="Username" tabindex="1">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" tabindex="2">
+                    </div>
+                    <p class="help-block text-center">Please use your Active Directory credentials.</p>
+                    <hr>
+                    <div class="form-group col-xs-6">
+
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <button type="submit" class="btn btn-primary btn-block" tabindex="4">Sign In</button>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+    <div class="col-xs-3"></div>
+
+
+
+{% endblock %}

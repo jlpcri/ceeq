@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %} Projects Information {% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <ul id="subnav-tabs" class="nav nav-tabs">
+            <li><a href="#projects" data-toggle="tab">Project Lists</a> </li>
+            <li><a href="#score_overall" data-toggle="tab">QoS Overall</a> </li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="tab-content">
+            <div class="tab-pane" id="projects">
+                {% include 'projects.html' %}
+            </div>
+
+            <div class="tab-pane" id="score_overall">
+                {% include 'score_overall.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    <script>
+        {% include 'quality.js' %}
+    </script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% block body %}
+
+    {% if projects %}
+        <div id="score_container" style="width: 80%; height: 400px;"></div>
+    {% else %}
+        <p>No project available</p>
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    <script>
+        {% include 'quality.js' %}
+
+    </script>
+{% endblock %}
