@@ -51,7 +51,18 @@ $(document).ready(function() {
             credits: false
         })
     });
+
+    $('#update_all').click(function () {
+        showThrobber();
+    });
+    $('#update_single').click(function () {
+        showThrobber();
+    });
 });
+
+function showThrobber() {
+    $('#throbber').show();
+}
 
 
 

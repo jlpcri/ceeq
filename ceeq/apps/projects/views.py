@@ -124,7 +124,7 @@ def project_update_scores(request, project_id):
         calculate_score(project, jira_data)
 
     context = RequestContext(request, {
-        'projects': projects
+        'projects': projects,
     })
     return render(request, 'projects_start.html', context)
 
