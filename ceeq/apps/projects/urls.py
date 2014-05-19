@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 
 
-urlpatterns = patterns('ceeq.apps.ceeq.views',
+urlpatterns = patterns('ceeq.apps.projects.views',
       url(r'^projects/$', 'projects', name='projects'),
       url(r'^project/new/$', 'project_new', name='project_new'),
       url(r'^project/(?P<project_id>\d+)/$', 'project_detail', name='project_detail'),

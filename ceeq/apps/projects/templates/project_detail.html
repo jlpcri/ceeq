@@ -101,7 +101,7 @@
                 {% for factor in project.projectcomponentsweight_set.all %}
                     <tr class="sum" id="{{ factor.id }}">
                         <td class="col-sm-3"><input type="text" class="form-control component" value="{{ factor.component }}" onkeypress="clickSave(event);"> </td>
-                        <td class="col-sm-3"><input type="text" class="form-control weight" value="{{ factor.weight }}" onkeypress="clickSave(event);"> </td>
+                        <td class="col-sm-3"><input type="text" class="form-control weight" value="{{ factor.weight|floatformat:2 }}" onkeypress="clickSave(event);"> </td>
                         <td class="col-sm-3"><span class="errors"></span> </td>
                         <td class="col-sm-2"><button class="btn btn-block btn-primary factor-save">Update</button> </td>
                         <td class="col-sm-1"><button class="btn btn-block btn-danger factor-delete"><i class="fa fa-trash-o"></i> </button> </td>
@@ -117,6 +117,10 @@
             </tbody>
         </table>
         {% else %}
+            <div class="row">
+            <legend>Components Weighted Factors (Scales: 0 -1, Sum Left: {{ weight_left }})</legend>
+            <p>Components Names: <strong>{{ component_names }}</strong></p>
+        </div>
             <table class="table" id="factor_table">
             <thead>
                 <tr>
@@ -129,7 +133,7 @@
                 {% for factor in project.projectcomponentsweight_set.all %}
                     <tr class="sum" id="{{ factor.id }}">
                         <td class="col-sm-3">{{ factor.component }}</td>
-                        <td class="col-sm-3">{{ factor.weight }} </td>
+                        <td class="col-sm-3">{{ factor.weight|floatformat:2 }} </td>
 
                     </tr>
                 {% endfor %}

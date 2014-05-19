@@ -4,7 +4,7 @@ from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 
-from ceeq.apps.ceeq.models import Project, ProjectComponentsWeight
+from ceeq.apps.projects.models import Project, ProjectComponentsWeight
 
 
 class ProjectResource(ModelResource):

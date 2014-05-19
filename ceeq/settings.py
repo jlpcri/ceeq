@@ -76,7 +76,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'tastypie',
     'ceeq.apps.core',
-    'ceeq.apps.ceeq',
+    'ceeq.apps.projects',
     'ceeq.apps.help',
     'ceeq.apps.users',
     'ceeq.apps.search',

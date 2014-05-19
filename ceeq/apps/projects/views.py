@@ -109,7 +109,7 @@ def project_delete(request, project_id):
     project.delete()
     messages.success(request, "Project \"{0}\" has been deleted.".format(project.name))
 
-    return redirect(reverse('ceeq.apps.ceeq.views.projects'))
+    return redirect(reverse('projects.apps.projects.views.projects'))
 
 @login_required
 def project_update_scores(request, project_id):
@@ -249,9 +249,9 @@ def calculate_score(project, jira_data):
     + project.maintainability + project.portability
 
     vaf = 0.01 * test_character + 0.65   # VAF value
-    score =10 - raw_score / Decimal(vaf) # ceeq score = 10 - defect score
+    score =10 - raw_score / Decimal(vaf) # projects score = 10 - defect score
 
-    if score > 10 or score < 0: # ceeq score out of range (0-10)
+    if score > 10 or score < 0: # projects score out of range (0-10)
         project.score = -1
     else:
         project.score = round(score, 2)
