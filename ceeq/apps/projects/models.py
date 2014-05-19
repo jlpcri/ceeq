@@ -41,14 +41,16 @@ class ProjectComponentsWeight(models.Model):
         ordering = ['component']
 
 
-class ProjectIssuesWeight(models.Model):
-    project = models.ForeignKey(Project)
+class FrameworkProperty(models.Model):
+    #Sume of weight factor of 5 jira priority
+    jira_priority_sum = models.DecimalField(max_digits=3, decimal_places=2, default=3)
 
-    blocker = models.DecimalField(max_digits=3, decimal_places=2)
-    critical = models.DecimalField(max_digits=3, decimal_places=2)
-    major = models.DecimalField(max_digits=3, decimal_places=2)
-    minor = models.DecimalField(max_digits=3, decimal_places=2)
-    trivial = models.DecimalField(max_digits=3, decimal_places=2)
+    #ratio value for Value Adjustment Value
+    vaf_ratio = models.DecimalField(max_digits=3, decimal_places=2, default=0.01)
+    #experience point for Value Adjustment Value
+    vaf_exp = models.DecimalField(max_digits=3, decimal_places=2, default=0.65)
+
+
 
 
 
