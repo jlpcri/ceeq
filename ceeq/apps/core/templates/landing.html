@@ -2,7 +2,9 @@
 
 {% block title %}Sign In {% endblock %}
 
-{% block extrahead %}{% endblock %}
+{% block extrahead %}
+
+{% endblock %}
 
 {% block body %}
 
@@ -46,4 +48,13 @@
 
 
 
+{% endblock %}
+
+{% block footer %}
+    <script type="text/javascript">
+        $(function () {
+            $('#username').focus();
+            $('#username').select();
+        });
+    </script>
 {% endblock %}
