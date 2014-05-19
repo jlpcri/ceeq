@@ -82,7 +82,7 @@ def project_edit(request, project_id):
     else:
         return redirect(projects)
 
-@login_required
+@user_passes_test(user_is_superuser)
 def project_new(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
