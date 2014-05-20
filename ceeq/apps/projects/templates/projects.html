@@ -1,8 +1,7 @@
 
 {% block body %}
     <div class="container">
-        <h3>
-            Projects List<br></h3>
+        <h3> Projects List</h3>
             {% if projects %}
             <div class="row" style="margin-bottom: 20px;">
                 <div class="col-md-8">
@@ -45,6 +44,7 @@
         {% else %}
         <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'project_new' %}"> New Project </a>
         </small>
+        <p>No projects available</p>
         {% endif %}
 
     </div>

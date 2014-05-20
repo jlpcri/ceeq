@@ -6,7 +6,10 @@
     <div class="container">
         <ul id="subnav-tabs" class="nav nav-tabs">
             <li><a href="#projects" data-toggle="tab">Project Lists</a> </li>
-            <li><a href="#score_overall" data-toggle="tab">QoS Overall</a> </li>
+            <li><a href="#score_overall" data-toggle="tab">CEEQ Score</a> </li>
+            {% if user.is_superuser %}
+                <li><a href="#framework-property" data-toggle="tab">Framework Property</a> </li>
+            {% endif %}
         </ul>
     </div>
 
@@ -18,6 +21,10 @@
 
             <div class="tab-pane" id="score_overall">
                 {% include 'score_overall.html' %}
+            </div>
+
+            <div class="tab-pane" id="framework-property">
+                {% include 'framework.html' %}
             </div>
         </div>
     </div>

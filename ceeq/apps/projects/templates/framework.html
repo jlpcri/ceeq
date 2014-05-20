@@ -1,0 +1,48 @@
+
+{% block body %}
+    <div class="container">
+        <h3>
+            Framework Property<br></h3>
+
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-md-8">
+                    <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'project_new' %}"> New Project </a></small>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+            {% if frameworks %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-condensed table-bordered" style="text-transform: capitalize;">
+                    <thead>
+                        <tr>
+                            <td class="col-md-2"><strong>JIRA Issus Sum</strong></td>
+                            <td class="col-md-6"><strong>Ratio</strong></td>
+                            <td class="col-md-4">Experience Point</td>
+                            <td class="col-md-2"></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for framework in frameworks %}
+                            <tr>
+                                <td>{{ framework.jira_priority_sum }}</td>
+                                <td>{{ framework.vaf_ratio }}</td>
+                                <td>{{ framework.vaf_exp }}</td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p>No Framework Property available.</p>
+            {% endif %}
+
+
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

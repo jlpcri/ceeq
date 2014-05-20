@@ -10,14 +10,16 @@ from collections import OrderedDict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, ProjectComponentsWeight
+from models import Project, ProjectComponentsWeight, FrameworkProperty
 from forms import ProjectForm
 
 
 def projects(request):
     projects = Project.objects.all().order_by('name')
+    frameworks = FrameworkProperty.objects.all()
     context = RequestContext(request, {
         'projects': projects,
+        'frameworks': frameworks
     })
     return render(request, 'projects_start.html', context)
 
@@ -109,7 +111,7 @@ def project_delete(request, project_id):
     project.delete()
     messages.success(request, "Project \"{0}\" has been deleted.".format(project.name))
 
-    return redirect(reverse('projects.apps.projects.views.projects'))
+    return redirect(reverse('ceeq.apps.projects.views.projects'))
 
 @login_required
 def project_update_scores(request, project_id):
