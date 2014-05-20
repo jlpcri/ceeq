@@ -20,7 +20,10 @@ def projects(request):
     framework_parameters = FrameworkParameter.objects.all()
     context = RequestContext(request, {
         'projects': projects,
-        'framework_parameters': framework_parameters
+        'framework_parameters': framework_parameters,
+        'framework_parameters_items': ['jira_issue_weight_sum',
+                                       'vaf_ratio',
+                                       'vaf_exp']
     })
     return render(request, 'projects_start.html', context)
 
@@ -195,18 +198,22 @@ def calculate_score(project, jira_data):
     for framework_parameter in framework_parameters:
         parameter[framework_parameter.parameter] = framework_parameter.value
 
+    print parameter
+
     try:
         jira_issue_weight_sum = parameter['jira_issue_weight_sum']
     except KeyError:
-        jira_issue_weight_sum = 3
+        jira_issue_weight_sum = Decimal(3.00)
     try:
         vaf_ratio = parameter['vaf_ratio']
     except KeyError:
-        vaf_ratio = 0.01
+        vaf_ratio = Decimal(0.01)
     try:
         vaf_exp = parameter['vaf_exp']
     except KeyError:
-        vaf_exp = 0.65
+        vaf_exp = Decimal(0.65)
+
+    print jira_issue_weight_sum * 3 /25
 
     # Weight: Blocker-1.08, Critical-0.84, Major-0.60, Minor-0.36, Trivial-0.12, Total-3.00
     for item in data:

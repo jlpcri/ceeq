@@ -43,7 +43,7 @@ class ProjectComponentsWeight(models.Model):
 
 class FrameworkParameter(models.Model):
     #Store framework parameters: jira_issue_weight_sum, vaf_ratio, vaf_exp
-    parameter = models.CharField(max_length=200)
+    parameter = models.CharField(max_length=200, unique=True)
     value = models.DecimalField(max_digits=3, decimal_places=2, default=0)
 
 

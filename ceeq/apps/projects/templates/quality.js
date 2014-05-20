@@ -1,3 +1,7 @@
+var framework_parameter_items = ['jira_issue_weight_sum',
+                                       'vaf_ratio',
+                                       'vaf_exp']
+
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
     active_tab = e.target.hash;
     loadActiveDataTab();
@@ -75,14 +79,12 @@ function loadActiveDataTab() {
     else if (active_tab == '#framework_parameter'){
 
         $("#new_parameter").autocomplete({
-            source: [
-                'jira_issue_weight_sum',
-                'vaf_ratio',
-                'vaf_exp'
-            ],
+            source: framework_parameter_items,
             autoFocus: true,
             minLength: 0
         });
+
+        $('#parameters_include').html('\'' + framework_parameter_items + '\'');
 
         $('#new_argument_submit').click(function() {
             var new_parameter = $('#new_parameter').val().trim();
@@ -134,7 +136,8 @@ function loadActiveDataTab() {
                                 }
                                 else {
                                     response = JSON.parse(response.responseText);
-                                    if (response.error_message == "columns project_id, parameter are not unique") {
+                                    console.log(response.error_message)
+                                    if (response.error_message == "column parameter is not unique") {
                                         $('#new_argument_errors').text("parameter \"" + new_parameter + "\" is not unique!");
                                         $('#new_parameter').focus().select();
                                         button.removeAttr('disabled', 'disabled');

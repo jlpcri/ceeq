@@ -5,8 +5,7 @@
         <div class="row">
             <legend>Following Parameters will affect our framework to evaluate CEEQ in JIRA</legend>
 
-            <p>Framework Parameters include: <strong>['jira_issue_weight_sum', 'vaf_ratio', 'vaf_exp'
-            ]</strong></p>
+            <p>Framework Parameters include: <div id="parameters_include" style="font-style: italic; font-size: 25px;"></div></p>
         </div>
         <table class="table" id="argument_table">
             <thead>
@@ -28,10 +27,10 @@
                         <td class="col-sm-1"><button class="btn btn-block btn-danger argument-delete"><i class="fa fa-trash-o"></i> </button> </td>
                     </tr>
                 {% endfor %}
-                <tr class="new-parameter">
+                <tr class="new-argument">
                     <td class="col-sm-3"><input type="text" class="form-control" id="new_parameter" placeholder="New parameter..."> </td>
                     <td class="col-sm-3"><input type="text" class="form-control" id="new_value" placeholder="New value..."> </td>
-                    <td class="col-sm-3"><span id="new_parameter_errors"></span> </td>
+                    <td class="col-sm-3"><span id="new_argument_errors"></span> </td>
                     <td class="col-sm-2"><button class="btn btn-block btn-primary" id="new_argument_submit">Create</button> </td>
                     <td class="col-sm-1"></td>
                 </tr>
