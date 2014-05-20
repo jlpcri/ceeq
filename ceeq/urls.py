@@ -5,12 +5,13 @@ from django.contrib import admin
 admin.autodiscover()
 
 from ceeq.api.api import ProjectResource, FactorResource,\
-    SearchAutoCompleteResource
+    SearchAutoCompleteResource, FrameworkParameterResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(ProjectResource())
 v1_api.register(FactorResource())
 v1_api.register(SearchAutoCompleteResource())
+v1_api.register(FrameworkParameterResource())
 
 urlpatterns = patterns('',
     # Examples:

@@ -41,15 +41,10 @@ class ProjectComponentsWeight(models.Model):
         ordering = ['component']
 
 
-class FrameworkProperty(models.Model):
-    #Sume of weight factor of 5 jira priority
-    jira_priority_sum = models.DecimalField(max_digits=3, decimal_places=2, default=3)
-
-    #ratio value for Value Adjustment Value
-    vaf_ratio = models.DecimalField(max_digits=3, decimal_places=2, default=0.01)
-    #experience point for Value Adjustment Value
-    vaf_exp = models.DecimalField(max_digits=3, decimal_places=2, default=0.65)
-
+class FrameworkParameter(models.Model):
+    #Store framework parameters: jira_issue_weight_sum, vaf_ratio, vaf_exp
+    parameter = models.CharField(max_length=200)
+    value = models.DecimalField(max_digits=3, decimal_places=2, default=0)
 
 
 

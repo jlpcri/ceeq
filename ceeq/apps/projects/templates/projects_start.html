@@ -8,7 +8,7 @@
             <li><a href="#projects" data-toggle="tab">Project Lists</a> </li>
             <li><a href="#score_overall" data-toggle="tab">CEEQ Score</a> </li>
             {% if user.is_superuser %}
-                <li><a href="#framework-property" data-toggle="tab">Framework Property</a> </li>
+                <li><a href="#framework_parameter" data-toggle="tab">Framework Parameters</a> </li>
             {% endif %}
         </ul>
     </div>
@@ -23,8 +23,8 @@
                 {% include 'score_overall.html' %}
             </div>
 
-            <div class="tab-pane" id="framework-property">
-                {% include 'framework.html' %}
+            <div class="tab-pane" id="framework_parameter">
+                {% include 'framework_parameter.html' %}
             </div>
         </div>
     </div>

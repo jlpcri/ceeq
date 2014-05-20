@@ -4,7 +4,7 @@ from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 
-from ceeq.apps.projects.models import Project, ProjectComponentsWeight
+from ceeq.apps.projects.models import Project, ProjectComponentsWeight, FrameworkParameter
 
 
 class ProjectResource(ModelResource):
@@ -39,6 +39,14 @@ class FactorResource(ModelResource):
             'weight': ALL,
             'project': ALL,
         }
+
+
+class FrameworkParameterResource(ModelResource):
+    class Meta:
+        queryset = FrameworkParameter.objects.all()
+        resource_name = 'argument'
+        authorization = Authorization()
+        allowed_methods = ['get', 'post', 'put', 'delete']
 
 
 class SearchAutoCompleteResource(Resource):

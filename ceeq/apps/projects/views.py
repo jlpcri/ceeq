@@ -10,16 +10,16 @@ from collections import OrderedDict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, ProjectComponentsWeight, FrameworkProperty
+from models import Project, ProjectComponentsWeight, FrameworkParameter
 from forms import ProjectForm
 
 
 def projects(request):
     projects = Project.objects.all().order_by('name')
-    frameworks = FrameworkProperty.objects.all()
+    framework_parameters = FrameworkParameter.objects.all()
     context = RequestContext(request, {
         'projects': projects,
-        'frameworks': frameworks
+        'framework_parameters': framework_parameters
     })
     return render(request, 'projects_start.html', context)
 
