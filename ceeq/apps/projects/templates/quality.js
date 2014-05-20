@@ -22,9 +22,7 @@ function loadActiveDataTab() {
         $('#update_all').click(function () {
             showThrobber();
         });
-        $('#update_single').click(function () {
-            showThrobber();
-        });
+
     }
     else if (active_tab == '#score_overall') {
         $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){

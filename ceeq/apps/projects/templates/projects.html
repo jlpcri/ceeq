@@ -35,7 +35,9 @@
                                             {{ project.score }}
                                     {% endif %}
                                 </td>
-                                <td><a href="{% url 'project_update_scores' project.id %}" id="update_single" style="color: green; padding-left: 25%; cursor: pointer; cursor: hand;"><i class="fa fa-refresh"></i></a> </td>
+                                <td><a href="{% url 'project_update_scores' project.id %}"
+                                       id="update_single_{{ project.id }}" onclick="$('#throbber').show();"
+                                       style="color: green; padding-left: 25%; cursor: pointer; cursor: hand;"><i class="fa fa-refresh"></i></a> </td>
                             </tr>
                         {% endfor %}
                     </tbody>
