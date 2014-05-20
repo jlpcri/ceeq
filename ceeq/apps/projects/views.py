@@ -1,6 +1,7 @@
 from decimal import Decimal
 import json
 from django.contrib import messages
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
@@ -188,13 +189,32 @@ def calculate_score(project, jira_data):
         except IndexError:
             continue
 
+    #get framework parameter
+    parameter = {}
+    framework_parameters = FrameworkParameter.objects.all()
+    for framework_parameter in framework_parameters:
+        parameter[framework_parameter.parameter] = framework_parameter.value
+
+    try:
+        jira_issue_weight_sum = parameter['jira_issue_weight_sum']
+    except KeyError:
+        jira_issue_weight_sum = 3
+    try:
+        vaf_ratio = parameter['vaf_ratio']
+    except KeyError:
+        vaf_ratio = 0.01
+    try:
+        vaf_exp = parameter['vaf_exp']
+    except KeyError:
+        vaf_exp = 0.65
+
     # Weight: Blocker-1.08, Critical-0.84, Major-0.60, Minor-0.36, Trivial-0.12, Total-3.00
     for item in data:
-        data[item]['blocker'] *= 1.08
-        data[item]['critical'] *= 0.84
-        data[item]['major'] *= 0.60
-        data[item]['minor'] *= 0.36
-        data[item]['trivial'] *= 0.12
+        data[item]['blocker'] *= jira_issue_weight_sum * 9 / 25
+        data[item]['critical'] *= jira_issue_weight_sum * 7 / 25
+        data[item]['major'] *= jira_issue_weight_sum * 5 / 25
+        data[item]['minor'] *= jira_issue_weight_sum * 3 / 25
+        data[item]['trivial'] *= jira_issue_weight_sum * 1 / 25
 
     for item in data:
         data[item]['total'] = data[item]['blocker']\
@@ -250,7 +270,7 @@ def calculate_score(project, jira_data):
     + project.technical_security + project.reliability + project.efficiency \
     + project.maintainability + project.portability
 
-    vaf = 0.01 * test_character + 0.65   # VAF value
+    vaf = vaf_ratio * test_character + vaf_exp   # VAF value
     score =10 - raw_score / Decimal(vaf) # projects score = 10 - defect score
 
     if score > 10 or score < 0: # projects score out of range (0-10)
