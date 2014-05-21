@@ -35,7 +35,7 @@
                         <h4 style="padding-top: 75px; margin-top: -75px;">Introduction&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
                         <ul>
                             <div id="introduction_about">
-                                <li><strong>About this user guide</strong></li>
+                                <li><strong>About this user guide</strong></li></p>
                                 <p>This document is an introduction to the CEEQ - Comprehensive End-to-End Quality evaluation tool.
                                 There are some previous web application experience are presumed, such as: web search, web explore etc.</p>
                                 <p>This user guide does not cover 100% of the features, however, it will explain all the main concepts
@@ -44,9 +44,11 @@
                             </div>
 
                             <div id="introduction_what">
-                                <li><strong>What is CEEQ?</strong></li>
+                                <li><strong>What is CEEQ?</strong></li></p>
                                 <p>Comprehensive End-to-End Quality is the novel framework to describe the measurement of
-                                IVR Applications based on tracked issues in JIRA system. CEEQ helps our testing procedure on assembled
+                                IVR Applications based on tracked issues in JIRA system.</p>
+                                <p>CEEQ ranges from <strong>0 -10</strong> to illustrate the quality of IVR Apps.
+                                    CEEQ helps our testing procedure on assembled
                                 IVR Apps become more quick, easy and accurate through software lifecycle.</p>
                                 <p>As somebody says: "You cannot control what you cannot measure."
                                     Measurement is the process by which numbers or symbols are assigned
@@ -64,7 +66,7 @@
                             </div>
 
                             <div id="introduction_ack">
-                                <li><strong>Acknowledgements</strong></li>
+                                <li><strong>Acknowledgements</strong></li></p>
                                 <p>Many people have contributed to Visilog. We would like to thank in particular (in
                                 alphabetical order): <br>Christian A Heyden, Gautham Pallapa, Songqing Liu,
                                 Richard Smith, Whitcomb Eric, and many more</p>
@@ -72,13 +74,21 @@
                             </div>
 
                             <div id="introduction_resource">
-                                <li><strong>Resources and Setup</strong></li>
+                                <li><strong>Resources and Setup</strong></li></p>
                                 <p>CEEQ IVR apps monitoring system can be accessed online at
                                     <a href="{% url 'landing' %}">{{ base_url }}{% url 'landing' %}</a> </p>
+                                <p>CEEQ Documentation can be accessed online at
+                                <a href="{% url 'help_guide' %}">{{ base_url }}{% url 'help_guide' %} </a> </p>
                             </div>
 
                             <div id="introduction_involved">
-                                <li><strong>Getting Involved</strong></li>
+                                <li><strong>Getting Involved</strong></li></p>
+                                <p>CEEQ is an novel solution of monitoring our IVR Apps.</p>
+                                <p>If you do not know where you are now you certainly won’t
+                                    know where you will be in the future. So hurry up and start CEEQ now.</p>
+                                <p>Measurement is the process by which numbers or symbols are assigned to attributes of
+                                    entities in the real world in such a way as to describe them according to
+                                    clearly defined unambiguous rules. So try it now from today.</p>
                             </div>
                         </ul>
                     </div>
@@ -145,6 +155,21 @@
 
                     <div id="jira_issue_weight">
                         <h4 style="padding-top: 75px; margin-top: -75px;">JIRA Issues Weight Factor&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>Our framework takes the data from JIRA to evaluate the quality of IVR applications.
+                        We are focus the issue type "Bug", and the following different priority of the issue
+                        are taken account into our framework:</p>
+                        <ul>
+                            <li>Blocker: </li></p>
+                                <p>Highest priority. Indicates that this issue takes precedence over all others.</p>
+                            <li>Critical: </li></p>
+                                <p>Indicates that this issue is causing a problem and requires urgent attention.</p>
+                            <li>Major: </li></p>
+                                <p>Indicates that this issue has a significant impact.</p>
+                            <li>Minor: </li></p>
+                                <p>Indicates that this issue has a relatively minor impact.</p>
+                            <li>Trivial: </li></p>
+                                <p>Lowest priority.</p>
+                        </ul>
 
                     </div>
 
@@ -158,17 +183,17 @@
                             <p>Functional testing is focused on "what" the product does</p>
                             <p>The following quality attributes are considered:</p>
                             <ul>
-                                <li>Accuracy</li>
+                                <li>Accuracy</li></p>
                                     <p>considers the application of those techniques in evaluating the principal attributes used to describe the quality of software applications or systems.</p>
-                                <li>Suitability</li>
+                                <li>Suitability</li></p>
                                     <p>Suitability testing involves evaluating and validating the appropriateness of a set of functions for its intended specified tasks. </p>
-                                <li>Interoperability</li>
+                                <li>Interoperability</li></p>
                                     <p>Interoperability testing tests whether a given application can function correctly in all intended target environments (hardware, software, middleware, operating system, etc.). </p>
-                                <li>Functional cecurity</li>
+                                <li>Functional cecurity</li></p>
                                     <p>Functional security testing (penetration testing) focuses on the ability of the software to prevent unauthorized access, whether accidental or deliberate, to functions and data. </p>
-                                <li>Usability</li>
+                                <li>Usability</li></p>
                                     <p>Usability testing measures the suitability of the software for its users, and is directed at measuring the following factors with which specified users can achieve specified goals in particular environments or contexts.</p>
-                                <li>Accessibility</li>
+                                <li>Accessibility</li></p>
                                     <p>It is important to consider the accessibility of software to those with particular requirements or restrictions in its use. This includes those with disabilities. </p>
                             </ul>
 
@@ -179,15 +204,15 @@
                             <p>Quality attributes for Technical Test Analysts focus on "how" the product works, rather than the functional aspects of "what" it does. These tests can take place at any test level, but have particular relevance for Component test</p>
                             <p>The following quality attributes are considered:</p>
                             <ul>
-                                <li>Technical Security</li>
+                                <li>Technical Security</li></p>
                                     <p>The principal concern regarding security is to prevent information from unintended use by unauthorized persons. Security testing attempts to compromise a system’s security policy by assessing a system’s vulnerability to threats.</p>
-                                <li>Reliability</li>
+                                <li>Reliability</li></p>
                                     <p>An objective of reliability testing is to monitor a statistical measure of software maturity over time and compare this to a desired reliability goal. </p>
-                                <li>Efficiency</li>
+                                <li>Efficiency</li></p>
                                     <p>The efficiency quality attribute is evaluated by conducting tests focused on time and resource behavior. Efficiency testing relating to time behavior is covered below under the aspects of performance, load, stress and scalability testing.</p>
-                                <li>Maintainability</li>
+                                <li>Maintainability</li></p>
                                     <p>Maintainability tests in general relate to the ease with which software can be analyzed, changed and tested. Appropriate techniques for maintainability testing include static analysis and checklists.</p>
-                                <li>Portability</li>
+                                <li>Portability</li></p>
                                     <p>Portability tests in general relate to the ease with which software can be transferred into its intended environment, either initially or from an existing environment. Portability tests include tests for installability, co-existence/compatibility, adaptability and replaceability.</p>
                             </ul>
 
