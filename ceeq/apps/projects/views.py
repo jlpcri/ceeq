@@ -37,6 +37,13 @@ def project_detail(request, project_id):
     weight_left = 1 - weight_sum
 
     # Get component names for autocomplete
+    component_names_standard = ['CDR Feeds',
+                                'CXP',
+                                'Outbound',
+                                'Platform',
+                                'Reports',
+                                'Voice Apps'
+                                ]
     component_names = []
     jira_data = fetch_jira_data(project.jira_name)
     for item in jira_data['issues']:
@@ -54,7 +61,8 @@ def project_detail(request, project_id):
         'form': form,
         'project': project,
         'weight_left': weight_left,
-        'component_names': component_names,
+        'component_names_standard': component_names_standard,
+        'component_names': [item for item in component_names_standard if item in component_names],
         'superuser': request.user.is_superuser,
     })
     return render(request, 'project_detail.html', context)
@@ -156,6 +164,7 @@ def calculate_score(project, jira_data):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
+    print component_names_without_slash
     # Construct # of different priority issues dict from jira_data
     data = {}
     issue_counts = {
@@ -198,7 +207,7 @@ def calculate_score(project, jira_data):
     for framework_parameter in framework_parameters:
         parameter[framework_parameter.parameter] = framework_parameter.value
 
-    print parameter
+    #print parameter
 
     try:
         jira_issue_weight_sum = parameter['jira_issue_weight_sum']
@@ -215,7 +224,7 @@ def calculate_score(project, jira_data):
 
     print jira_issue_weight_sum * 3 /25
 
-    # Weight: Blocker-1.08, Critical-0.84, Major-0.60, Minor-0.36, Trivial-0.12, Total-3.00
+    # Weight: Blocker-9/25, Critical-7/25, Major-5/25, Minor-3/25, Trivial-1/25, Total-25/25 * sum
     for item in data:
         data[item]['blocker'] *= jira_issue_weight_sum * 9 / 25
         data[item]['critical'] *= jira_issue_weight_sum * 7 / 25
