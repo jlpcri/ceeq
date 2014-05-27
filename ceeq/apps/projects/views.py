@@ -27,6 +27,15 @@ def projects(request):
     })
     return render(request, 'projects_start.html', context)
 
+# pre-define Standard Component Name and its comparison ratio
+component_names_standard = {'CDR Feeds': 2,
+                            'CXP': 2,
+                            'Outbound': 1,
+                            'Platform': 3,
+                            'Reports': 4,
+                            'Voice Apps': 8
+                            }
+
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
@@ -37,13 +46,7 @@ def project_detail(request, project_id):
     weight_left = 1 - weight_sum
 
     # Get component names for autocomplete
-    component_names_standard = ['CDR Feeds',
-                                'CXP',
-                                'Outbound',
-                                'Platform',
-                                'Reports',
-                                'Voice Apps'
-                                ]
+
     component_names = []
     jira_data = fetch_jira_data(project.jira_name)
     for item in jira_data['issues']:
@@ -61,8 +64,8 @@ def project_detail(request, project_id):
         'form': form,
         'project': project,
         'weight_left': weight_left,
-        'component_names_standard': component_names_standard,
-        'component_names': [item for item in component_names_standard if item in component_names],
+        'component_names_standard': sorted(component_names_standard.keys()),
+        'component_names': sorted([item for item in component_names_standard.keys() if item in component_names]),
         'superuser': request.user.is_superuser,
     })
     return render(request, 'project_detail.html', context)
@@ -130,12 +133,10 @@ def project_update_scores(request, project_id):
     projects = Project.objects.all().order_by('name')
     if project_id == '1000000':
         for project in projects:
-            jira_data = fetch_jira_data(project.jira_name)
-            calculate_score(project, jira_data)
+            calculate_score(project)
     else:
         project = get_object_or_404(Project, pk=project_id)
-        jira_data = fetch_jira_data(project.jira_name)
-        calculate_score(project, jira_data)
+        calculate_score(project)
 
     context = RequestContext(request, {
         'projects': projects,
@@ -149,7 +150,7 @@ def fetch_jira_data(jira_name):
     return data
 
 
-def calculate_score(project, jira_data):
+def calculate_score(project):
     # Get component names for autocomplete
     component_names = []
     component_names_without_slash = []
@@ -164,7 +165,7 @@ def calculate_score(project, jira_data):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    print component_names_without_slash
+    #print component_names_without_slash
     # Construct # of different priority issues dict from jira_data
     data = {}
     issue_counts = {
@@ -222,7 +223,7 @@ def calculate_score(project, jira_data):
     except KeyError:
         vaf_exp = Decimal(0.65)
 
-    print jira_issue_weight_sum * 3 /25
+    #print jira_issue_weight_sum * 3 /25
 
     # Weight: Blocker-9/25, Critical-7/25, Major-5/25, Minor-3/25, Trivial-1/25, Total-25/25 * sum
     for item in data:
@@ -258,20 +259,39 @@ def calculate_score(project, jira_data):
 
 
     weight_list = ProjectComponentsWeight.objects.filter(project=project)
+    #If no component weight input then return
     if weight_list.count() == 0:
         project.score = -1
         project.save()
         return
+
+
+
     weight_dict = {}
-    for item in weight_list:
-        weight_dict[item.component] = {
-            'weight': item.weight,
-            'count': item.count
+
+    #calculate total component weighted factor base
+    weight_factor_base = 0
+    for item in component_names_without_slash:
+        try:
+            weight_factor_base += component_names_standard[item]
+        except KeyError:
+            continue
+
+    #print component_names_without_slash
+
+    for item in component_names_without_slash:
+        weight_dict[item] = {
+            'weight': round(component_names_standard[item] / float(weight_factor_base), 2),
+            'count': 0
         }
+
+    for item in weight_dict:
+        print item, weight_dict[item]['weight']
+
 
     for key in weight_dict.keys():
         if key in data.keys():
-            weight_dict[key]['count'] = weight_dict[key]['weight'] * Decimal(data[key]['total'])
+            weight_dict[key]['count'] = Decimal(weight_dict[key]['weight']) * Decimal(data[key]['total'])
 
     # Calculate Raw Score of project
     raw_score = 0
@@ -288,6 +308,8 @@ def calculate_score(project, jira_data):
 
     vaf = vaf_ratio * test_character + vaf_exp   # VAF value
     score =10 - raw_score / Decimal(vaf) # projects score = 10 - defect score
+
+    print score
 
     if score > 10 or score < 0: # projects score out of range (0-10)
         project.score = -1

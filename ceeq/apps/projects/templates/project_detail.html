@@ -80,13 +80,37 @@
             </div>
         </form>
 
+
+        <div class="row">
+            <legend>Components Weighted Factors (Scales: 0 -1)</legend>
+            <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
+            <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
+        </div>
+
+        <table class="table" id="factor_table">
+            <thead>
+                <tr>
+                    <th>Component Name</th>
+                    <th>Weight</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+
+        <!-- Based on our framework , no need to edit component weigh manually
         {% if superuser %}
         <div class="row">
             <legend>Components Weighted Factors (Scales: 0 -1, Sum Left: {{ weight_left }})</legend>
             <p>All changes to Components Weighted Factors are made by the control on the right
             , re-save project not necessary.</p>
             <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
-            <p>Available Components Names: <strong>{{ component_names }}</strong></p>
+            <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
         </div>
         <table class="table" id="factor_table">
             <thead>
@@ -141,8 +165,7 @@
             </tbody>
             </table>
         {% endif %}
-
-
+        -->
 
         <!--Delete Project confirmatoin modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
