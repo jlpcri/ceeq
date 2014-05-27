@@ -39,11 +39,11 @@ component_names_standard = {'CDR Feeds': 2,
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    component_weight_list = ProjectComponentsWeight.objects.filter(project=project)
-    weight_sum = 0
-    for component_weight in component_weight_list:
-        weight_sum += component_weight.weight
-    weight_left = 1 - weight_sum
+    #component_weight_list = ProjectComponentsWeight.objects.filter(project=project)
+    #weight_sum = 0
+    #for component_weight in component_weight_list:
+    #    weight_sum += component_weight.weight
+    #weight_left = 1 - weight_sum
 
     # Get component names for autocomplete
 
@@ -56,14 +56,29 @@ def project_detail(request, project_id):
         except IndexError:
             continue
     component_names = list(OrderedDict.fromkeys(component_names))
-    component_names = sorted(component_names)
+    #component_names = sorted(component_names)
+
+    weight_factor = []
+    weight_factor_base = 0
+    for item in component_names:
+        try:
+            weight_factor_base += component_names_standard[item]
+        except KeyError:
+            continue
+
+    for item in component_names:
+        temp = []
+        temp.append(item)
+        temp.append(round(component_names_standard[item] / float(weight_factor_base), 2))
+        weight_factor.append(temp)
+    #print sorted(weight_factor)
 
     form = ProjectForm(instance=project)
 
     context = RequestContext(request, {
         'form': form,
         'project': project,
-        'weight_left': weight_left,
+        'weight_factor': sorted(weight_factor),
         'component_names_standard': sorted(component_names_standard.keys()),
         'component_names': sorted([item for item in component_names_standard.keys() if item in component_names]),
         'superuser': request.user.is_superuser,
@@ -208,8 +223,6 @@ def calculate_score(project):
     for framework_parameter in framework_parameters:
         parameter[framework_parameter.parameter] = framework_parameter.value
 
-    #print parameter
-
     try:
         jira_issue_weight_sum = parameter['jira_issue_weight_sum']
     except KeyError:
@@ -222,8 +235,6 @@ def calculate_score(project):
         vaf_exp = parameter['vaf_exp']
     except KeyError:
         vaf_exp = Decimal(0.65)
-
-    #print jira_issue_weight_sum * 3 /25
 
     # Weight: Blocker-9/25, Critical-7/25, Major-5/25, Minor-3/25, Trivial-1/25, Total-25/25 * sum
     for item in data:
@@ -257,15 +268,12 @@ def calculate_score(project):
         else:
             data[component]['total'] = subcomponent_total / subcomponent_length
 
-
-    weight_list = ProjectComponentsWeight.objects.filter(project=project)
+    #weight_list = ProjectComponentsWeight.objects.filter(project=project)
     #If no component weight input then return
-    if weight_list.count() == 0:
+    if len(component_names_without_slash) == 0:
         project.score = -1
         project.save()
         return
-
-
 
     weight_dict = {}
 
@@ -285,10 +293,6 @@ def calculate_score(project):
             'count': 0
         }
 
-    for item in weight_dict:
-        print item, weight_dict[item]['weight']
-
-
     for key in weight_dict.keys():
         if key in data.keys():
             weight_dict[key]['count'] = Decimal(weight_dict[key]['weight']) * Decimal(data[key]['total'])
@@ -307,11 +311,9 @@ def calculate_score(project):
     + project.maintainability + project.portability
 
     vaf = vaf_ratio * test_character + vaf_exp   # VAF value
-    score =10 - raw_score / Decimal(vaf) # projects score = 10 - defect score
+    score =10 - raw_score / Decimal(vaf)  # projects score = 10 - defect score
 
-    print score
-
-    if score > 10 or score < 0: # projects score out of range (0-10)
+    if score > 10 or score < 0:  # projects score out of range (0-10)
         project.score = -1
     else:
         project.score = round(score, 2)

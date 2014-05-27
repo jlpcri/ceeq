@@ -87,17 +87,20 @@
             <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
         </div>
 
-        <table class="table" id="factor_table">
+        <table class="table" id="factor_table" >
             <thead>
                 <tr>
                     <th>Component Name</th>
                     <th>Weight</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
+                {% for k,v in weight_factor %}
+                    <tr>
+                        <td class="col-sm-3">{{ k }}</td>
+                        <td class="col-sm-3">{{ v|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
 
             </tbody>
         </table>
