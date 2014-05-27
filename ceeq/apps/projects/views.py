@@ -59,7 +59,7 @@ def project_detail(request, project_id):
     #component_names = sorted(component_names)
 
     weight_factor = []
-    weight_factor_base = 0
+    weight_factor_base = weight_factor_sum = 0
     for item in component_names:
         try:
             weight_factor_base += component_names_standard[item]
@@ -71,7 +71,13 @@ def project_detail(request, project_id):
         temp.append(item)
         temp.append(round(component_names_standard[item] / float(weight_factor_base), 2))
         weight_factor.append(temp)
-    #print sorted(weight_factor)
+
+    #check if sum of weighted value > 1
+    for key, value in weight_factor:
+        weight_factor_sum += value
+
+    if weight_factor_sum > 1:
+        sorted(weight_factor)[-1][1] -= (weight_factor_sum - 1)
 
     form = ProjectForm(instance=project)
 
@@ -267,6 +273,7 @@ def calculate_score(project):
             continue
         else:
             data[component]['total'] = subcomponent_total / subcomponent_length
+
 
     #weight_list = ProjectComponentsWeight.objects.filter(project=project)
     #If no component weight input then return
