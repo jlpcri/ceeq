@@ -38,10 +38,24 @@ component_names_standard = {'CDR Feeds': 2,
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    form = ProjectForm(instance=project)
 
     component_names = []
     component_names_without_slash = []
+
     jira_data = fetch_jira_data(project.jira_name)
+
+    #check whether fetch the data from jira or not
+
+    if jira_data == 'No JIRA Data':
+        messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        context = RequestContext(request, {
+        'form': form,
+        'project': project,
+        'superuser': request.user.is_superuser,
+        })
+        return render(request, 'project_detail.html', context)
+
     for item in jira_data['issues']:
         try:
             name = str(item['fields']['components'][0]['name'])
@@ -121,7 +135,6 @@ def project_detail(request, project_id):
         weight_factor.append(temp)
 
 
-    form = ProjectForm(instance=project)
 
     context = RequestContext(request, {
         'form': form,
@@ -212,7 +225,11 @@ def project_update_scores(request, project_id):
 def fetch_jira_data(jira_name):
     url = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority&jql=project=' + jira_name
     data = requests.get(url, auth=('sliu', 'Sissy981129')).json()
-    return data
+    if len(data) == 2:
+        if data['errorMessages']:
+            return 'No JIRA Data'
+    else:
+        return data
 
 
 def calculate_score(project):
@@ -220,6 +237,12 @@ def calculate_score(project):
     component_names = []
     component_names_without_slash = []
     jira_data = fetch_jira_data(project.jira_name)
+
+    if jira_data == 'No JIRA Data':
+        project.score = -4
+        project.save()
+        return
+
     for item in jira_data['issues']:
         try:
             name = str(item['fields']['components'][0]['name'])

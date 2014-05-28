@@ -35,6 +35,8 @@
                                         Out of Range
                                     {% elif project.score == -3 %}
                                         No open issues
+                                    {% elif project.score == -4 %}
+                                        No JIRA Data
                                     {% else %}
                                             {{ project.score }}
                                     {% endif %}
