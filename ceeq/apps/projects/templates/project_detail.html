@@ -90,15 +90,32 @@
         <table class="table" id="factor_table" >
             <thead>
                 <tr>
+                    <th colspan="2" style="text-align: center; color: brown">Weighted Factor</th>
+                    <th colspan="6" style="text-align: center; color: brown">Number of Issues</th>
+                </tr>
+                <tr>
                     <th>Component Name</th>
                     <th>Weight</th>
+                    <th>Total</th>
+                    <th>Blocker</th>
+                    <th>Critical</th>
+                    <th>Major</th>
+                    <th>Minor</th>
+                    <th>Trivial</th>
                 </tr>
             </thead>
             <tbody>
-                {% for k,v in weight_factor %}
+                {% for component,weight,total, blocker, critical, major, minor, trivial in weight_factor %}
                     <tr>
-                        <td class="col-sm-3">{{ k }}</td>
-                        <td class="col-sm-3">{{ v|floatformat:3 }}</td>
+                        <td class="col-sm-3">{{ component }}</td>
+                        <td class="col-sm-3">{{ weight|floatformat:3 }}</td>
+                        <td class="col-sm-1">{{ total }}</td>
+                        <td class="col-sm-1">{{ blocker }}</td>
+                        <td class="col-sm-1">{{ critical }}</td>
+                        <td class="col-sm-1">{{ major }}</td>
+                        <td class="col-sm-1">{{ minor }}</td>
+                        <td class="col-sm-1">{{ trivial }}</td>
+
                     </tr>
                 {% endfor %}
 

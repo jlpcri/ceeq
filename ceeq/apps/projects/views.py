@@ -39,37 +39,58 @@ component_names_standard = {'CDR Feeds': 2,
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    #component_weight_list = ProjectComponentsWeight.objects.filter(project=project)
-    #weight_sum = 0
-    #for component_weight in component_weight_list:
-    #    weight_sum += component_weight.weight
-    #weight_left = 1 - weight_sum
-
-    # Get component names for autocomplete
 
     component_names = []
+    component_names_without_slash = []
     jira_data = fetch_jira_data(project.jira_name)
     for item in jira_data['issues']:
         try:
             name = str(item['fields']['components'][0]['name'])
-            component_names.append(truncate_after_slash(name))
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
         except IndexError:
             continue
     component_names = list(OrderedDict.fromkeys(component_names))
-    #component_names = sorted(component_names)
+    component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
+
+    #calculate number of issues of components
+    data = issue_counts_compute(component_names, component_names_without_slash, jira_data)
+    for component in component_names_without_slash:
+        subcomponent_length = 0
+        for item in data:
+            if item.startswith(component+'/'):
+                subcomponent_length += 1
+                data[component]['blocker'] += data[item]['blocker']
+                data[component]['critical'] += data[item]['critical']
+                data[component]['major'] += data[item]['major']
+                data[component]['minor'] += data[item]['minor']
+                data[component]['trivial'] += data[item]['trivial']
+
+    for item in component_names_without_slash:
+        data[item]['total'] = data[item]['blocker'] \
+                              + data[item]['critical'] \
+                              + data[item]['major'] \
+                              + data[item]['minor'] \
+                              + data[item]['trivial']
 
     weight_factor = []
-    weight_factor_base = weight_factor_sum = 0
-    for item in component_names:
+    weight_factor_base = 0
+    for item in component_names_without_slash:
         try:
             weight_factor_base += component_names_standard[item]
         except KeyError:
             continue
 
-    for item in component_names:
+    for item in component_names_without_slash:
         temp = []
         temp.append(item)
         temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
+        temp.append(data[item]['total'])
+        temp.append(data[item]['blocker'])
+        temp.append(data[item]['critical'])
+        temp.append(data[item]['major'])
+        temp.append(data[item]['minor'])
+        temp.append(data[item]['trivial'])
         weight_factor.append(temp)
 
 
@@ -80,7 +101,7 @@ def project_detail(request, project_id):
         'project': project,
         'weight_factor': sorted(weight_factor),
         'component_names_standard': sorted(component_names_standard.keys()),
-        'component_names': sorted([item for item in component_names_standard.keys() if item in component_names]),
+        'component_names': sorted([item for item in component_names_standard.keys() if item in component_names_without_slash]),
         'superuser': request.user.is_superuser,
     })
     return render(request, 'project_detail.html', context)
@@ -182,42 +203,8 @@ def calculate_score(project):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    #print component_names_without_slash
     # Construct # of different priority issues dict from jira_data
-    data = {}
-    issue_counts = {
-        'total': 0,
-        'blocker': 0,
-        'critical': 0,
-        'major': 0,
-        'minor': 0,
-        'trivial': 0
-    }
-    for item in component_names:
-        data[item] = issue_counts.copy()  # copy the dict object
-
-    for item in component_names_without_slash: # add component item to data
-        if item in data.keys():
-            continue
-        else:
-            data[item] = issue_counts.copy()
-
-    for item in jira_data['issues']:
-        try:
-            component = item['fields']['components'][0]['name']
-            if (item['fields']['status']['id'] in ['1', '4']):  # 1-open, 4-reopen
-                if item['fields']['priority']['id'] == '1':
-                    data[component]['blocker'] += 1
-                elif item['fields']['priority']['id'] == '2':
-                    data[component]['critical'] += 1
-                elif item['fields']['priority']['id'] == '3':
-                    data[component]['major'] += 1
-                elif item['fields']['priority']['id'] == '4':
-                    data[component]['minor'] += 1
-                elif item['fields']['priority']['id'] == '5':
-                    data[component]['trivial'] += 1
-        except IndexError:
-            continue
+    data = issue_counts_compute(component_names, component_names_without_slash, jira_data)
 
     #get framework parameter
     parameter = {}
@@ -321,6 +308,45 @@ def calculate_score(project):
     else:
         project.score = round(score, 2)
     project.save()
+
+
+def issue_counts_compute(component_names, component_names_without_slash, jira_data):
+    data = {}
+    issue_counts = {
+        'total': 0,
+        'blocker': 0,
+        'critical': 0,
+        'major': 0,
+        'minor': 0,
+        'trivial': 0
+    }
+    for item in component_names:
+        data[item] = issue_counts.copy()  # copy the dict object
+
+    for item in component_names_without_slash: # add component item to data
+        if item in data.keys():
+            continue
+        else:
+            data[item] = issue_counts.copy()
+
+    for item in jira_data['issues']:
+        try:
+            component = item['fields']['components'][0]['name']
+            if (item['fields']['status']['id'] in ['1', '4']):  # 1-open, 4-reopen
+                if item['fields']['priority']['id'] == '1':
+                    data[component]['blocker'] += 1
+                elif item['fields']['priority']['id'] == '2':
+                    data[component]['critical'] += 1
+                elif item['fields']['priority']['id'] == '3':
+                    data[component]['major'] += 1
+                elif item['fields']['priority']['id'] == '4':
+                    data[component]['minor'] += 1
+                elif item['fields']['priority']['id'] == '5':
+                    data[component]['trivial'] += 1
+        except IndexError:
+            continue
+
+    return data
 
 
 def fetch_projects_score(request):
