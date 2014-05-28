@@ -87,22 +87,23 @@
             <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
         </div>
 
-        <table class="table" id="factor_table" >
+        {% if weight_factor %}
+        <table class="table table-hover table-striped" id="factor_table" >
             <thead>
                 <tr>
                     <th colspan="3" style="text-align: center; color: brown">Weighted Factor</th>
                     <th colspan="6" style="text-align: center; color: brown">Number of Issues</th>
                 </tr>
                 <tr>
-                    <th>Component Name</th>
-                    <th>Weight</th>
-                    <th>Defect Density</th>
-                    <th>Total</th>
-                    <th>Blocker</th>
-                    <th>Critical</th>
-                    <th>Major</th>
-                    <th>Minor</th>
-                    <th>Trivial</th>
+                    <th style="background-color: lightcyan">Component Name</th>
+                    <th style="background-color: lightcyan">Weight</th>
+                    <th style="background-color: lightcyan">Defect Density</th>
+                    <th style="background-color: lavender">Total</th>
+                    <th style="background-color: lavender">Blocker</th>
+                    <th style="background-color: lavender">Critical</th>
+                    <th style="background-color: lavender">Major</th>
+                    <th style="background-color: lavender">Minor</th>
+                    <th style="background-color: lavender">Trivial</th>
                 </tr>
             </thead>
             <tbody>
@@ -123,6 +124,7 @@
 
             </tbody>
         </table>
+        {% endif %}
 
 
 

@@ -1,7 +1,6 @@
 from decimal import Decimal
 import json
 from django.contrib import messages
-from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
@@ -11,7 +10,7 @@ from collections import OrderedDict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, ProjectComponentsWeight, FrameworkParameter
+from models import Project, FrameworkParameter
 from forms import ProjectForm
 
 
@@ -66,11 +65,13 @@ def project_detail(request, project_id):
                 data[component]['minor'] += data[item]['minor']
                 data[component]['trivial'] += data[item]['trivial']
 
+    #get jira issue weight sum value
     try:
         jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
     except KeyError:
         jira_issue_weight_sum = Decimal(3.00)
 
+    #calculate total sum of each component
     for item in component_names_without_slash:
         data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
                               + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
@@ -78,6 +79,7 @@ def project_detail(request, project_id):
                               + data[item]['minor'] * jira_issue_weight_sum * 3 / 25 \
                               + data[item]['trivial'] * jira_issue_weight_sum * 1 / 25
 
+    #formalize total sum of each component by divided by number of sub-components
     for component in component_names_without_slash:
         subcomponent_length = 0
         for item in data:
