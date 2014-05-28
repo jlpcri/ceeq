@@ -84,7 +84,10 @@ def project_detail(request, project_id):
     for item in component_names_without_slash:
         temp = []
         temp.append(item)
-        temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
+        try:
+            temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
+        except KeyError:
+            continue
         temp.append(data[item]['total'])
         temp.append(data[item]['blocker'])
         temp.append(data[item]['critical'])
@@ -278,8 +281,12 @@ def calculate_score(project):
     #print component_names_without_slash
 
     for item in component_names_without_slash:
+        try:
+            weight = round(component_names_standard[item] / float(weight_factor_base), 3)
+        except KeyError:
+            continue
         weight_dict[item] = {
-            'weight': round(component_names_standard[item] / float(weight_factor_base), 3),
+            'weight': weight,
             'count': 0
         }
 
