@@ -31,7 +31,7 @@ function loadActiveDataTab() {
                     type: 'bar'
                 },
                 title: {
-                    text: 'Quality of Solution Score Overall'
+                    text: 'Comprehensive End to End Quality Overall'
                 },
                 xAxis: {
                     title: {
@@ -43,7 +43,7 @@ function loadActiveDataTab() {
                     min: 0,
                     max: 10,
                     title: {
-                        text: 'Score'
+                        text: 'CEEQ Score'
                     }
                 },
                 legend: {
