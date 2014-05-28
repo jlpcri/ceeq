@@ -22,7 +22,9 @@ def projects(request):
         'framework_parameters': framework_parameters,
         'framework_parameters_items': ['jira_issue_weight_sum',
                                        'vaf_ratio',
-                                       'vaf_exp']
+                                       'vaf_exp'],
+        'superuser': request.user.is_superuser
+
     })
     return render(request, 'projects_start.html', context)
 

@@ -99,13 +99,13 @@
                 <tr>
                     <th style="background-color: lightcyan">Component Name</th>
                     <th style="background-color: lightcyan">Weight</th>
-                    <th style="background-color: lightcyan">Defect Density</th>
-                    <th style="background-color: lavender">Total</th>
-                    <th style="background-color: lavender">Blocker</th>
-                    <th style="background-color: lavender">Critical</th>
-                    <th style="background-color: lavender">Major</th>
-                    <th style="background-color: lavender">Minor</th>
-                    <th style="background-color: lavender">Trivial</th>
+                    <th style="background-color: lightcyan">Defects Density</th>
+                    <th style="background-color: lavender; text-align: center">Total</th>
+                    <th style="background-color: lavender; text-align: center">Blocker</th>
+                    <th style="background-color: lavender; text-align: center">Critical</th>
+                    <th style="background-color: lavender; text-align: center">Major</th>
+                    <th style="background-color: lavender; text-align: center">Minor</th>
+                    <th style="background-color: lavender; text-align: center">Trivial</th>
                 </tr>
             </thead>
             <tbody>
@@ -114,12 +114,12 @@
                         <td class="col-sm-3">{{ component }}</td>
                         <td class="col-sm-2">{{ weight|floatformat:3 }}</td>
                         <td class="col-sm-2">{{ dd|floatformat:3 }}</td>
-                        <td class="col-sm-1">{{ total }}</td>
-                        <td class="col-sm-1">{{ blocker }}</td>
-                        <td class="col-sm-1">{{ critical }}</td>
-                        <td class="col-sm-1">{{ major }}</td>
-                        <td class="col-sm-1">{{ minor }}</td>
-                        <td class="col-sm-1">{{ trivial }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ total }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ blocker }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ critical }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ major }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ minor }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ trivial }}</td>
 
                     </tr>
                 {% endfor %}

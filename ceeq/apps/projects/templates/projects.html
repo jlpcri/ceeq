@@ -5,8 +5,11 @@
             {% if projects %}
             <div class="row" style="margin-bottom: 20px;">
                 <div class="col-md-8">
-                    <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'project_new' %}"> New Project </a>
-                        | <i class="fa fa-refresh"></i><a href="{% url 'project_update_scores' 1000000 %}" id="update_all"> Update All Scores</a></small>
+                    <small>
+                        {% if superuser %}
+                            <i class="fa fa-pencil"></i> Create a <a href="{% url 'project_new' %}"> New Project </a> &nbsp; | &nbsp;
+                        {% endif %}
+                        <i class="fa fa-refresh"></i><a href="{% url 'project_update_scores' 1000000 %}" id="update_all"> Update All Scores</a></small>
                 </div>
                 <div class="col-md-2">
                     <p id="throbber" hidden><i class="fa fa-spinner fa-2x fa-spin"></i> </p>
