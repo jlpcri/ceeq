@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 class Project(models.Model):
     name = models.CharField(max_length=200, unique=True)
     jira_name = models.CharField(max_length=200)  # name of the related project in JIRA
-    score = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    score = models.DecimalField(max_digits=5, decimal_places=2, default=-9)
     created = models.DateTimeField('date added', auto_now_add=True)
     modified = models.DateTimeField('date modified', auto_now=True)
 

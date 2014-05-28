@@ -40,6 +40,8 @@
                                         No open issues
                                     {% elif project.score == -4 %}
                                         No JIRA Data
+                                    {% elif project.score == -9 %}
+                                        No evaluate
                                     {% else %}
                                             {{ project.score }}
                                     {% endif %}
