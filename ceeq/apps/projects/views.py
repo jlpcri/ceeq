@@ -53,6 +53,7 @@ def project_detail(request, project_id):
         'form': form,
         'project': project,
         'superuser': request.user.is_superuser,
+        'no_jira_data': jira_data,
         })
         return render(request, 'project_detail.html', context)
 

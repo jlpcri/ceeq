@@ -80,14 +80,16 @@
             </div>
         </form>
 
+        {% if no_jira_data %}
+            <h4>No JIRA Data fetched.</h4>
+        {% else %}
+            <div class="row">
+                <legend>Components Weighted Factors (Scales: 0 -1)</legend>
+                <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
+                <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
+            </div>
 
-        <div class="row">
-            <legend>Components Weighted Factors (Scales: 0 -1)</legend>
-            <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
-            <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
-        </div>
-
-        {% if weight_factor %}
+            {% if weight_factor %}
         <table class="table table-hover table-striped" id="factor_table" >
             <thead>
                 <tr>
@@ -124,6 +126,7 @@
 
             </tbody>
         </table>
+        {% endif %}
         {% endif %}
 
 
