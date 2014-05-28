@@ -90,12 +90,13 @@
         <table class="table" id="factor_table" >
             <thead>
                 <tr>
-                    <th colspan="2" style="text-align: center; color: brown">Weighted Factor</th>
+                    <th colspan="3" style="text-align: center; color: brown">Weighted Factor</th>
                     <th colspan="6" style="text-align: center; color: brown">Number of Issues</th>
                 </tr>
                 <tr>
                     <th>Component Name</th>
                     <th>Weight</th>
+                    <th>Defect Density</th>
                     <th>Total</th>
                     <th>Blocker</th>
                     <th>Critical</th>
@@ -105,10 +106,11 @@
                 </tr>
             </thead>
             <tbody>
-                {% for component,weight,total, blocker, critical, major, minor, trivial in weight_factor %}
+                {% for component,weight,dd, total, blocker, critical, major, minor, trivial in weight_factor %}
                     <tr>
                         <td class="col-sm-3">{{ component }}</td>
-                        <td class="col-sm-3">{{ weight|floatformat:3 }}</td>
+                        <td class="col-sm-2">{{ weight|floatformat:3 }}</td>
+                        <td class="col-sm-2">{{ dd|floatformat:3 }}</td>
                         <td class="col-sm-1">{{ total }}</td>
                         <td class="col-sm-1">{{ blocker }}</td>
                         <td class="col-sm-1">{{ critical }}</td>

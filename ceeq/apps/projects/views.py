@@ -66,12 +66,29 @@ def project_detail(request, project_id):
                 data[component]['minor'] += data[item]['minor']
                 data[component]['trivial'] += data[item]['trivial']
 
+    try:
+        jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
+    except KeyError:
+        jira_issue_weight_sum = Decimal(3.00)
+
     for item in component_names_without_slash:
-        data[item]['total'] = data[item]['blocker'] \
-                              + data[item]['critical'] \
-                              + data[item]['major'] \
-                              + data[item]['minor'] \
-                              + data[item]['trivial']
+        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
+                              + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
+                              + data[item]['major'] * jira_issue_weight_sum * 5 / 25 \
+                              + data[item]['minor'] * jira_issue_weight_sum * 3 / 25 \
+                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 25
+
+    for component in component_names_without_slash:
+        subcomponent_length = 0
+        for item in data:
+            if item.startswith(component+'/'):
+                subcomponent_length += 1
+            else:
+                continue
+        if subcomponent_length == 0:
+            continue
+        else:
+            data[component]['total'] /= subcomponent_length
 
     weight_factor = []
     weight_factor_base = 0
@@ -89,6 +106,11 @@ def project_detail(request, project_id):
         except KeyError:
             continue
         temp.append(data[item]['total'])
+        temp.append(data[item]['blocker'] \
+                    + data[item]['critical'] \
+                    + data[item]['major'] \
+                    + data[item]['minor'] \
+                    + data[item]['trivial'])
         temp.append(data[item]['blocker'])
         temp.append(data[item]['critical'])
         temp.append(data[item]['major'])
