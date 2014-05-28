@@ -30,7 +30,11 @@
                                 <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
                                 <td>
                                     {% if project.score == -1 %}
-                                        Not Available
+                                        No created issues
+                                    {% elif project.score == -2 %}
+                                        Out of Range
+                                    {% elif project.score == -3 %}
+                                        No open issues
                                     {% else %}
                                             {{ project.score }}
                                     {% endif %}

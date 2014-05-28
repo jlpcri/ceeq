@@ -284,10 +284,9 @@ def calculate_score(project):
         else:
             data[component]['total'] = subcomponent_total / subcomponent_length
 
-
     #weight_list = ProjectComponentsWeight.objects.filter(project=project)
     #If no component weight input then return
-    if len(component_names_without_slash) == 0:
+    if len(component_names_without_slash) == 0:  # non issue created in JIRA
         project.score = -1
         project.save()
         return
@@ -334,8 +333,10 @@ def calculate_score(project):
     vaf = vaf_ratio * test_character + vaf_exp   # VAF value
     score =10 - raw_score / Decimal(vaf)  # projects score = 10 - defect score
 
-    if score > 10 or score < 0:  # projects score out of range (0-10)
-        project.score = -1
+    if score < 0:  # projects score out of range (0-10)
+        project.score = -2
+    elif score == 10: #no open issues in JIRA
+        project.score = -3
     else:
         project.score = round(score, 2)
     project.save()
