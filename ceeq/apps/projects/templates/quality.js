@@ -173,6 +173,7 @@ function loadActiveDataTab() {
             }).done(function(data) {
                 row.remove();
             });
+            location.reload();
         });
 
         $('#argument_table').on('click', '.argument-save', function(event) {
@@ -244,6 +245,7 @@ function loadActiveDataTab() {
                             }
                         });
                         setTimeout(function() {
+                            location.reload();
                         }, 3000);
                     }
                 }
@@ -274,6 +276,7 @@ function loadActiveDataTab() {
                     row.removeClass('added-argument');
                 }
             });
+            location.reload();
         }
 
         $("#new_parameter").keypress(function(event){

@@ -69,15 +69,9 @@ def project_detail(request, project_id):
     for item in component_names:
         temp = []
         temp.append(item)
-        temp.append(round(component_names_standard[item] / float(weight_factor_base), 2))
+        temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
         weight_factor.append(temp)
 
-    #check if sum of weighted value > 1
-    for key, value in weight_factor:
-        weight_factor_sum += value
-
-    if weight_factor_sum > 1:
-        sorted(weight_factor)[-1][1] -= (weight_factor_sum - 1)
 
     form = ProjectForm(instance=project)
 
@@ -152,6 +146,7 @@ def project_delete(request, project_id):
 @login_required
 def project_update_scores(request, project_id):
     projects = Project.objects.all().order_by('name')
+    framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects:
             calculate_score(project)
@@ -161,6 +156,7 @@ def project_update_scores(request, project_id):
 
     context = RequestContext(request, {
         'projects': projects,
+        'framework_parameters': framework_parameters,
     })
     return render(request, 'projects_start.html', context)
 
@@ -296,7 +292,7 @@ def calculate_score(project):
 
     for item in component_names_without_slash:
         weight_dict[item] = {
-            'weight': round(component_names_standard[item] / float(weight_factor_base), 2),
+            'weight': round(component_names_standard[item] / float(weight_factor_base), 3),
             'count': 0
         }
 
