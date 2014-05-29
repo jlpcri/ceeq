@@ -44,6 +44,7 @@ def project_detail(request, project_id):
 
     component_names = []
     component_names_without_slash = []
+    version_names = []
 
     jira_data = fetch_jira_data(project.jira_name)
 
@@ -153,6 +154,134 @@ def project_detail(request, project_id):
     return render(request, 'project_detail.html', context)
 
 
+def project_versions_detail(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    form = ProjectForm(instance=project)
+
+    component_names = []
+    component_names_without_slash = []
+    version_names = []
+
+    jira_data = fetch_jira_data(project.jira_name)
+
+    #check whether fetch the data from jira or not
+
+    if jira_data == 'No JIRA Data':
+        messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        context = RequestContext(request, {
+        'form': form,
+        'project': project,
+        'superuser': request.user.is_superuser,
+        'no_jira_data': jira_data,
+        })
+        return render(request, 'project_detail.html', context)
+
+    for item in jira_data['issues']:
+        try:
+            name = str(item['fields']['versions'][0]['name'])
+            version_names.append(name)
+        except IndexError:
+            continue
+    version_names = list(OrderedDict.fromkeys(version_names))
+
+    print jira_data
+
+    for version_name in version_names:
+        print version_name
+
+    for item in jira_data['issues']:
+        try:
+            name = str(item['fields']['components'][0]['name'])
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
+        except IndexError:
+            continue
+    component_names = list(OrderedDict.fromkeys(component_names))
+    component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
+
+    data = issue_counts_compute(component_names, component_names_without_slash, jira_data)
+
+    #calculate issues number of components and sub-components
+    for component in component_names_without_slash:
+        for item in data:
+            if item.startswith(component+'/'):
+                data[item]['total'] = data[item]['blocker'] \
+                                    + data[item]['critical'] \
+                                    + data[item]['major'] \
+                                    + data[item]['minor'] \
+                                    + data[item]['trivial']
+                data[component]['blocker'] += data[item]['blocker']
+                data[component]['critical'] += data[item]['critical']
+                data[component]['major'] += data[item]['major']
+                data[component]['minor'] += data[item]['minor']
+                data[component]['trivial'] += data[item]['trivial']
+
+    #get jira issue weight sum value
+    try:
+        jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
+    except KeyError:
+        jira_issue_weight_sum = Decimal(3.00)
+
+    #calculate defect density of each component
+    for item in component_names_without_slash:
+        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
+                              + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
+                              + data[item]['major'] * jira_issue_weight_sum * 5 / 25 \
+                              + data[item]['minor'] * jira_issue_weight_sum * 3 / 25 \
+                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 25
+
+    #formalize total sum of each component by divided by number of sub-components
+    for component in component_names_without_slash:
+        subcomponent_length = 0
+        for item in data:
+            #if sub component has zero issue then skip
+            if item.startswith(component+'/') and data[item]['total'] > 0:
+                subcomponent_length += 1
+            else:
+                continue
+        if subcomponent_length == 0:
+            continue
+        else:
+            data[component]['total'] /= subcomponent_length
+
+    weight_factor = []
+    weight_factor_base = 0
+    for item in component_names_without_slash:
+        try:
+            weight_factor_base += component_names_standard[item]
+        except KeyError:
+            continue
+
+    for item in component_names_without_slash:
+        temp = []
+        temp.append(item)
+        try:
+            temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
+        except KeyError:
+            continue
+        temp.append(data[item]['total'])
+        temp.append(data[item]['blocker'] \
+                    + data[item]['critical'] \
+                    + data[item]['major'] \
+                    + data[item]['minor'] \
+                    + data[item]['trivial'])
+        temp.append(data[item]['blocker'])
+        temp.append(data[item]['critical'])
+        temp.append(data[item]['major'])
+        temp.append(data[item]['minor'])
+        temp.append(data[item]['trivial'])
+        weight_factor.append(temp)
+
+    context = RequestContext(request, {
+        'form': form,
+        'project': project,
+        'weight_factor': sorted(weight_factor),
+        'component_names_standard': sorted(component_names_standard.keys()),
+        'component_names': sorted([item for item in component_names_standard.keys() if item in component_names_without_slash]),
+        'superuser': request.user.is_superuser,
+    })
+    return render(request, 'project_version_detail.html', context)
+
 def truncate_after_slash(string):
     if '/' in string:
         index = string.index('/')
@@ -229,7 +358,7 @@ def project_update_scores(request, project_id):
 
 
 def fetch_jira_data(jira_name):
-    url = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority&jql=project=' + jira_name
+    url = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions&jql=project=' + jira_name
     data = requests.get(url, auth=('sliu', 'Sissy981129')).json()
     if len(data) == 2:
         if data['errorMessages']:
@@ -310,7 +439,7 @@ def calculate_score(project):
         for item in data:
             #if sub-component has zero issue then skip
             if item.startswith(component+'/') and data[item]['total'] > 0:
-                subcomponent_length +=1
+                subcomponent_length += 1
             else:
                 continue
 
@@ -365,11 +494,11 @@ def calculate_score(project):
     + project.maintainability + project.portability
 
     vaf = vaf_ratio * test_character + vaf_exp   # VAF value
-    score =10 - raw_score / Decimal(vaf)  # projects score = 10 - defect score
+    score = 10 - raw_score / Decimal(vaf)  # projects score = 10 - defect score
 
     if score < 0:  # projects score out of range (0-10)
         project.score = -2
-    elif score == 10: #no open issues in JIRA
+    elif score == 10:  # no open issues in JIRA
         project.score = -3
     else:
         project.score = round(score, 2)
