@@ -197,7 +197,7 @@ def project_versions_detail(request, project_id):
                 continue
         version_data[version_name] = temp_data
 
-    weight_factor_versions = []
+    weight_factor_versions = {}
     for key in version_data.keys():
         component_names = []
         component_names_without_slash = []
@@ -285,7 +285,7 @@ def project_versions_detail(request, project_id):
             temp.append(data[item]['trivial'])
             weight_factor.append(temp)
 
-        weight_factor_versions.append([key, weight_factor])
+        weight_factor_versions[key] = weight_factor
 
     context = RequestContext(request, {
         'project': project,

@@ -20,16 +20,8 @@
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
             </div>
-            {% for item in weight_factor_versions %}
-                {% for version, weight_factor in item %}
-                    Affected Version: {{ version|floatformat:2 }}
-                    Factor: {{ weight_factor }}<br>
-
-                {% endfor %}
-                <br>
-            {% endfor %}
-
-            {% if weight_factor %}
+            {% for version, weight_factor in weight_factor_versions.items %}
+                Affected Version: {{ version }}
                 <table class="table table-hover table-striped" id="factor_table" >
                 <thead>
                     <tr>
@@ -64,7 +56,9 @@
                     {% endfor %}
                 </tbody>
                 </table>
-            {% endif %}
+            {% endfor %}
+
+
         {% endif %}
 
 
