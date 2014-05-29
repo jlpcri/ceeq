@@ -69,13 +69,17 @@ def project_detail(request, project_id):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    #calculate number of issues of components
     data = issue_counts_compute(component_names, component_names_without_slash, jira_data)
+
+    #calculate issues number of components and sub-components
     for component in component_names_without_slash:
-        subcomponent_length = 0
         for item in data:
             if item.startswith(component+'/'):
-                subcomponent_length += 1
+                data[item]['total'] = data[item]['blocker'] \
+                                    + data[item]['critical'] \
+                                    + data[item]['major'] \
+                                    + data[item]['minor'] \
+                                    + data[item]['trivial']
                 data[component]['blocker'] += data[item]['blocker']
                 data[component]['critical'] += data[item]['critical']
                 data[component]['major'] += data[item]['major']
@@ -88,7 +92,8 @@ def project_detail(request, project_id):
     except KeyError:
         jira_issue_weight_sum = Decimal(3.00)
 
-    #calculate total sum of each component
+
+    #calculate defect density of each component
     for item in component_names_without_slash:
         data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
                               + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
@@ -100,7 +105,8 @@ def project_detail(request, project_id):
     for component in component_names_without_slash:
         subcomponent_length = 0
         for item in data:
-            if item.startswith(component+'/'):
+            #if sub component has zero issue then skip
+            if item.startswith(component+'/') and data[item]['total'] > 0:
                 subcomponent_length += 1
             else:
                 continue
@@ -293,6 +299,8 @@ def calculate_score(project):
                               + data[item]['minor']\
                               + data[item]['trivial']
 
+    for item in data:
+        print item, data[item]
     # Formalize each component from its sub-component
     for component in component_names_without_slash:
         subcomponent_length = 0
