@@ -92,7 +92,6 @@ def project_detail(request, project_id):
     except KeyError:
         jira_issue_weight_sum = Decimal(3.00)
 
-
     #calculate defect density of each component
     for item in component_names_without_slash:
         data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
@@ -142,8 +141,6 @@ def project_detail(request, project_id):
         temp.append(data[item]['minor'])
         temp.append(data[item]['trivial'])
         weight_factor.append(temp)
-
-
 
     context = RequestContext(request, {
         'form': form,
@@ -284,41 +281,44 @@ def calculate_score(project):
     except KeyError:
         vaf_exp = Decimal(0.65)
 
-    # Weight: Blocker-9/25, Critical-7/25, Major-5/25, Minor-3/25, Trivial-1/25, Total-25/25 * sum
-    for item in data:
-        data[item]['blocker'] *= jira_issue_weight_sum * 9 / 25
-        data[item]['critical'] *= jira_issue_weight_sum * 7 / 25
-        data[item]['major'] *= jira_issue_weight_sum * 5 / 25
-        data[item]['minor'] *= jira_issue_weight_sum * 3 / 25
-        data[item]['trivial'] *= jira_issue_weight_sum * 1 / 25
+    #calculate issues number of components and sub-components
+    for component in component_names_without_slash:
+        for item in data:
+            if item.startswith(component+'/'):
+                data[item]['total'] = data[item]['blocker'] \
+                                    + data[item]['critical'] \
+                                    + data[item]['major'] \
+                                    + data[item]['minor'] \
+                                    + data[item]['trivial']
+                data[component]['blocker'] += data[item]['blocker']
+                data[component]['critical'] += data[item]['critical']
+                data[component]['major'] += data[item]['major']
+                data[component]['minor'] += data[item]['minor']
+                data[component]['trivial'] += data[item]['trivial']
 
-    for item in data:
-        data[item]['total'] = data[item]['blocker']\
-                              + data[item]['critical']\
-                              + data[item]['major']\
-                              + data[item]['minor']\
-                              + data[item]['trivial']
+    #calculate defect density of each component
+    for item in component_names_without_slash:
+        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
+                              + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
+                              + data[item]['major'] * jira_issue_weight_sum * 5 / 25 \
+                              + data[item]['minor'] * jira_issue_weight_sum * 3 / 25 \
+                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 25
 
-    for item in data:
-        print item, data[item]
     # Formalize each component from its sub-component
     for component in component_names_without_slash:
         subcomponent_length = 0
-        subcomponent_total = 0
         for item in data:
-            if item.startswith(component+'/'):
+            #if sub-component has zero issue then skip
+            if item.startswith(component+'/') and data[item]['total'] > 0:
                 subcomponent_length +=1
-                subcomponent_total += data[item]['total']
             else:
                 continue
 
-        #print subcomponent_length, subcomponent_total
         if subcomponent_length == 0:
             continue
         else:
-            data[component]['total'] = subcomponent_total / subcomponent_length
+            data[component]['total'] /= subcomponent_length
 
-    #weight_list = ProjectComponentsWeight.objects.filter(project=project)
     #If no component weight input then return
     if len(component_names_without_slash) == 0:  # non issue created in JIRA
         project.score = -1
