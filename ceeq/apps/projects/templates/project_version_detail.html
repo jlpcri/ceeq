@@ -5,10 +5,13 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <legend>Project CEEQ Score</legend>
-            <h4>{{ project.score }}</h4>
+            <legend>Project Information</legend>
+            <p><strong>Project Name: </strong>{{ project.name }}</p>
+            <p><strong>Project Score:</strong>{{ project.score }}</p>
             <br>
         </div>
+
+
 
         {% if no_jira_data %}
             <h4>No JIRA Data fetched.</h4>
@@ -16,8 +19,15 @@
             <div class="row">
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
-                <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
             </div>
+            {% for item in weight_factor_versions %}
+                {% for version, weight_factor in item %}
+                    Affected Version: {{ version|floatformat:2 }}
+                    Factor: {{ weight_factor }}<br>
+
+                {% endfor %}
+                <br>
+            {% endfor %}
 
             {% if weight_factor %}
                 <table class="table table-hover table-striped" id="factor_table" >
