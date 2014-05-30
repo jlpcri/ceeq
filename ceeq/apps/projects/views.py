@@ -291,7 +291,7 @@ def project_versions_detail(request, project_id):
         'project': project,
         'weight_factor_versions': weight_factor_versions,
         'component_names_standard': sorted(component_names_standard.keys()),
-        'superuser': request.user.is_superuser,
+        'superuser': request.user.is_superuser
     })
     return render(request, 'project_version_detail.html', context)
 
@@ -367,6 +367,7 @@ def project_update_scores(request, project_id):
     context = RequestContext(request, {
         'projects': projects,
         'framework_parameters': framework_parameters,
+        'superuser': request.user.is_superuser
     })
     return render(request, 'projects_start.html', context)
 
