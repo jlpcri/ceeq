@@ -10,7 +10,7 @@ from collections import OrderedDict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, FrameworkParameter
+from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm
 
 
@@ -90,7 +90,7 @@ def project_detail(request, project_id):
     #get jira issue weight sum value
     try:
         jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
-    except KeyError:
+    except FrameworkParameter.DoesNotExist or KeyError:
         jira_issue_weight_sum = Decimal(3.00)
 
     #calculate defect density of each component
@@ -153,10 +153,10 @@ def project_detail(request, project_id):
     })
     return render(request, 'project_detail.html', context)
 
-
+@login_required
 def project_defects_density(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project_id)
 
     version_names = []
 
@@ -205,7 +205,7 @@ def project_defects_density(request, project_id):
         #get jira issue weight sum value
         try:
             jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
-        except KeyError:
+        except FrameworkParameter.DoesNotExist or KeyError:
             jira_issue_weight_sum = Decimal(3.00)
 
         for item in version_data[key]:
@@ -289,6 +289,7 @@ def project_defects_density(request, project_id):
 
     context = RequestContext(request, {
         'project': project,
+        'project_dds': project_dds,
         'weight_factor_versions': weight_factor_versions,
         'component_names_standard': sorted(component_names_standard.keys()),
         'superuser': request.user.is_superuser
@@ -567,3 +568,7 @@ def fetch_projects_score(request):
     data['score'] = [str(project.score) for project in projects]
 
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+def defects_density_log(request, project_id):
+    return HttpResponse('Working.....')

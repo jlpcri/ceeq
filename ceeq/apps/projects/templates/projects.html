@@ -45,6 +45,7 @@
                                     {% else %}
                                         {% if superuser %}
                                             <a href="{% url 'project_defects_density' project.id %}"> {{ project.score }}</a>
+                                            <a href="{% url 'defects_density_log' project.id %}">DD Log</a>
                                         {% else %}
                                             {{ project.score }}
                                         {% endif %}
