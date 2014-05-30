@@ -9,7 +9,9 @@
                         {% if superuser %}
                             <i class="fa fa-pencil"></i> Create a <a href="{% url 'project_new' %}"> New Project </a> &nbsp; | &nbsp;
                         {% endif %}
-                        <i class="fa fa-refresh"></i><a href="{% url 'project_update_scores' 1000000 %}" id="update_all"> Update All Scores</a></small>
+                        <i class="fa fa-refresh"></i><a href="{% url 'project_update_scores' 1000000 %}" id="update_all"> Update All Scores</a> &nbsp; | &nbsp;
+                        <i class="fa fa-cloud-upload"></i><a href="{% url 'defects_density_log' 1000000 %}"> Log All DDs</a>
+                    </small>
                 </div>
                 <div class="col-md-2">
                     <p id="throbber" hidden><i class="fa fa-spinner fa-2x fa-spin"></i> </p>

@@ -171,7 +171,7 @@ def project_defects_density(request, project_id):
         'superuser': request.user.is_superuser,
         'no_jira_data': jira_data,
         })
-        return render(request, 'project_dd_detail.html', context)
+        return render(request, 'projects_dd_start.html', context)
 
     #print jira_data['issues']
 
@@ -571,4 +571,24 @@ def fetch_projects_score(request):
 
 
 def defects_density_log(request, project_id):
-    return HttpResponse('Working.....')
+    projects = Project.objects.all()
+    framework_parameters = FrameworkParameter.objects.all()
+    if project_id == '1000000':
+        for project in projects:
+            defects_density_single_log(project)
+    else:
+        project = Project.objects.get(pk=project_id)
+        defects_density_single_log(project)
+
+    context = RequestContext(request, {
+        'projects': projects,
+        'framework_parameters': framework_parameters,
+        'superuser': request.user.is_superuser
+    })
+
+    return render(request, 'projects_start.html', context)
+
+
+def defects_density_single_log(project):
+    print project.name
+    return
