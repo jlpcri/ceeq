@@ -157,13 +157,5 @@
 {% endblock %}
 
 {% block footer %}
-    <script>
-        function setAutoComplete() {
-            $("#new_component").autocomplete({
-                source: {{ component_names | safe }}, <!-- "ComponentListFromJIRA",-->
-                autoFocus: true,
-                minLength: 0
-            });
-        }
-    </script>
+
 {% endblock %}
