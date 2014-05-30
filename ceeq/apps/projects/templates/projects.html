@@ -44,7 +44,7 @@
                                         No evaluate
                                     {% else %}
                                         {% if superuser %}
-                                            <a href="{% url 'project_versions_detail' project.id %}"> {{ project.score }}</a>
+                                            <a href="{% url 'project_defects_density' project.id %}"> {{ project.score }}</a>
                                         {% else %}
                                             {{ project.score }}
                                         {% endif %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %} Projects Defects Density {% endblock %}
+
+{% block body %}
+    <br><br>
+    <div class="container">
+        <ul id="subnav-tabs" class="nav nav-tabs">
+            <li><a href="#dd_detail" data-toggle="tab">Current Defects Density</a> </li>
+            <li><a href="#dd_trend" data-toggle="tab">Trending Defects Density</a> </li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="tab-content">
+            <div class="tab-pane" id="dd_detail">
+                {% include 'project_dd_detail.html' %}
+            </div>
+
+            <div class="tab-pane" id="dd_trend">
+                {% include 'project_dd_trend.html' %}
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    <script>
+        $(document).ready(function() {
+            $('#subnav-tabs').find('a[href="#dd_detail"]').tab('show');
+        });
+    </script>
+{% endblock %}

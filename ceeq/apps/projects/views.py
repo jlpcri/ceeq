@@ -154,7 +154,7 @@ def project_detail(request, project_id):
     return render(request, 'project_detail.html', context)
 
 
-def project_versions_detail(request, project_id):
+def project_defects_density(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
 
@@ -171,7 +171,7 @@ def project_versions_detail(request, project_id):
         'superuser': request.user.is_superuser,
         'no_jira_data': jira_data,
         })
-        return render(request, 'project_version_detail.html', context)
+        return render(request, 'project_dd_detail.html', context)
 
     #print jira_data['issues']
 
@@ -293,7 +293,7 @@ def project_versions_detail(request, project_id):
         'component_names_standard': sorted(component_names_standard.keys()),
         'superuser': request.user.is_superuser
     })
-    return render(request, 'project_version_detail.html', context)
+    return render(request, 'projects_dd_start.html', context)
 
 
 def truncate_after_slash(string):
