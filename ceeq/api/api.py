@@ -4,12 +4,12 @@ from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 
-from ceeq.apps.projects.models import Project, ProjectComponentsWeight, FrameworkParameter
+from ceeq.apps.projects.models import Project, ProjectComponentsDefectsDensity, FrameworkParameter
 
 
 class ProjectResource(ModelResource):
     factors = fields.ToManyField('ceeq.api.api.FactorResource',
-                                 attribute=lambda bundle: ProjectComponentsWeight.objects.filter(project=bundle.obj),
+                                 attribute=lambda bundle: ProjectComponentsDefectsDensity.objects.filter(project=bundle.obj),
                                  full=False,
                                  null=True
     )
@@ -22,17 +22,17 @@ class ProjectResource(ModelResource):
         allowed_methods = ['get', 'post', 'put', 'delete']
 
 
-class FactorResource(ModelResource):
+class ComponentsDefectsDensityResource(ModelResource):
     project = fields.ToOneField('ceeq.api.api.ProjectResource',
                                 attribute='project',
-                                related_name='factor',
+                                related_name='defectsdensity',
                                 full=False,
                                 null=False
     )
 
     class Meta:
-        queryset = ProjectComponentsWeight.objects.all()
-        resource_name = 'factor'
+        queryset = ProjectComponentsDefectsDensity.objects.all()
+        resource_name = 'defectsdensity'
         authorization = Authorization()
         allowed_methods = ['get', 'post', 'put', 'delete']
         filtering = {

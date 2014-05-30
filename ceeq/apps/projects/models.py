@@ -29,16 +29,20 @@ class Project(models.Model):
         return unicode(self.name)
 
 
-class ProjectComponentsWeight(models.Model):
+class ProjectComponentsDefectsDensity(models.Model):
     project = models.ForeignKey(Project)
+    created = models.DateField('date added', auto_now_add=True)
 
-    component = models.CharField(max_length=200)
-    weight = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    count = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    cdrFeeds = models.DecimalField(max_digits=4, decimal_places=3, default=0)
+    cxp = models.DecimalField(max_digits=4, decimal_places=3, default=0)
+    outbound = models.DecimalField(max_digits=4, decimal_places=3, default=0)
+    platform = models.DecimalField(max_digits=4, decimal_places=3, default=0)
+    reports = models.DecimalField(max_digits=4, decimal_places=3, default=0)
+    voiceApps = models.DecimalField(max_digits=4, decimal_places=3, default=0)
 
     class Meta:
-        unique_together = (("project", "component"),)
-        ordering = ['component']
+        unique_together = (("project", "created"),)
+        ordering = ['created']
 
 
 class FrameworkParameter(models.Model):
