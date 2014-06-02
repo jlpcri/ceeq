@@ -1,3 +1,4 @@
+from datetime import date
 from decimal import Decimal
 import json
 from django.contrib import messages
@@ -156,10 +157,8 @@ def project_detail(request, project_id):
 @login_required
 def project_defects_density(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project_id)
-
-    version_names = []
-
+    project_dds = ProjectComponentsDefectsDensity.objects.all()
+    print project_dds
     jira_data = fetch_jira_data(project.jira_name)
 
     #check whether fetch the data from jira or not
@@ -172,11 +171,21 @@ def project_defects_density(request, project_id):
         'no_jira_data': jira_data,
         })
         return render(request, 'projects_dd_start.html', context)
+    else:
+        weight_factor_versions = get_component_defects_density(jira_data)
 
-    #print jira_data['issues']
+    context = RequestContext(request, {
+        'project': project,
+        'project_dds': project_dds,
+        'weight_factor_versions': weight_factor_versions,
+        'component_names_standard': sorted(component_names_standard.keys()),
+        'superuser': request.user.is_superuser
+    })
+    return render(request, 'projects_dd_start.html', context)
 
-    #print '------------------------------------'
 
+def get_component_defects_density(jira_data):
+    version_names = []
     for item in jira_data['issues']:
         try:
             name = str(item['fields']['versions'][0]['name'])
@@ -286,16 +295,7 @@ def project_defects_density(request, project_id):
             weight_factor.append(temp)
 
         weight_factor_versions[key] = weight_factor
-
-    context = RequestContext(request, {
-        'project': project,
-        'project_dds': project_dds,
-        'weight_factor_versions': weight_factor_versions,
-        'component_names_standard': sorted(component_names_standard.keys()),
-        'superuser': request.user.is_superuser
-    })
-    return render(request, 'projects_dd_start.html', context)
-
+    return weight_factor_versions
 
 def truncate_after_slash(string):
     if '/' in string:
@@ -575,10 +575,10 @@ def defects_density_log(request, project_id):
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects:
-            defects_density_single_log(project)
+            defects_density_single_log(request, project)
     else:
         project = Project.objects.get(pk=project_id)
-        defects_density_single_log(project)
+        defects_density_single_log(request, project)
 
     context = RequestContext(request, {
         'projects': projects,
@@ -589,6 +589,41 @@ def defects_density_log(request, project_id):
     return render(request, 'projects_start.html', context)
 
 
-def defects_density_single_log(project):
-    print project.name
+def defects_density_single_log(request, project):
+    jira_data = fetch_jira_data(project.jira_name)
+
+    #check whether fetch the data from jira or not
+
+    if jira_data == 'No JIRA Data':
+        messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        context = RequestContext(request, {
+        'project': project,
+        'superuser': request.user.is_superuser,
+        'no_jira_data': jira_data,
+        })
+        return render(request, 'projects_dd_start.html', context)
+    else:
+        weight_factor_versions = get_component_defects_density(jira_data)
+
+    for item in weight_factor_versions:
+        try:
+            component_defects_density = ProjectComponentsDefectsDensity.objects.get(project=project, version=item, created=date.today())
+        except ProjectComponentsDefectsDensity.DoesNotExist:
+            component_defects_density = ProjectComponentsDefectsDensity.created(project=project, version=item)
+        for component in weight_factor_versions[item]:
+            #print item, component[0], component[2]
+            if component[0] == 'CDR Feeds':
+                component_defects_density.cdrFeeds = component[2]
+            elif component[0] == 'CXP':
+                component_defects_density.cxp = component[2]
+            elif component[0] == 'Outbound':
+                component_defects_density.outbound = component[2]
+            elif component[0] == 'Platform':
+                component_defects_density.platform = component[2]
+            elif component[0] == 'Reports':
+                component_defects_density.reports = component[2]
+            elif component[0] == 'Voice Apps':
+                component_defects_density.voiceApps = component[2]
+        component_defects_density.save()
+
     return
