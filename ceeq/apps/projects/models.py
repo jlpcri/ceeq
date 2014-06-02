@@ -32,7 +32,7 @@ class Project(models.Model):
 class ProjectComponentsDefectsDensity(models.Model):
     project = models.ForeignKey(Project)
     version = models.CharField(max_length=200)
-    created = models.DateField('date added', auto_now_add=True)
+    created = models.DateField()
 
     cdrFeeds = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     cxp = models.DecimalField(max_digits=5, decimal_places=3, default=0)
@@ -42,7 +42,7 @@ class ProjectComponentsDefectsDensity(models.Model):
     voiceApps = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
     class Meta:
-        unique_together = (("project", "created", "version"),)
+        #unique_together = (("project", "created", "version"),)
         ordering = ['created', 'version']
 
 

@@ -605,11 +605,12 @@ def defects_density_single_log(request, project):
     else:
         weight_factor_versions = get_component_defects_density(jira_data)
 
+    today = date.today()
     for item in weight_factor_versions:
         try:
-            component_defects_density = ProjectComponentsDefectsDensity.objects.get(project=project, version=item, created=date.today())
+            component_defects_density = ProjectComponentsDefectsDensity.objects.get(project=project, version=item, created=today)
         except ProjectComponentsDefectsDensity.DoesNotExist:
-            component_defects_density = ProjectComponentsDefectsDensity.created(project=project, version=item)
+            component_defects_density = ProjectComponentsDefectsDensity(project=project, version=item, created=today)
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
             if component[0] == 'CDR Feeds':
