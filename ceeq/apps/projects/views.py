@@ -157,8 +157,8 @@ def project_detail(request, project_id):
 @login_required
 def project_defects_density(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    project_dds = ProjectComponentsDefectsDensity.objects.all()
-    print project_dds
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project)
+
     jira_data = fetch_jira_data(project.jira_name)
 
     #check whether fetch the data from jira or not
@@ -571,7 +571,7 @@ def fetch_projects_score(request):
 
 
 def defects_density_log(request, project_id):
-    projects = Project.objects.all()
+    projects = Project.objects.all().order_by('name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects:
