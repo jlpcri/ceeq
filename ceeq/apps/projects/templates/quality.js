@@ -22,6 +22,9 @@ function loadActiveDataTab() {
         $('#update_all').click(function () {
             showThrobber();
         });
+        $('#dd_log_all').click(function () {
+            showThrobber();
+        });
 
     }
     else if (active_tab == '#score_overall') {
