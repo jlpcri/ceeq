@@ -159,6 +159,46 @@ def project_defects_density(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project)
 
+    version_names = []
+    for project_dd in project_dds:
+        version_names.append(project_dd.version)
+    version_names = list(OrderedDict.fromkeys(version_names))
+
+    dd_trend_data = []
+    for version_name in version_names:
+        data = {}
+        data['version'] = version_name
+
+        tmp_categories = []
+
+        tmp_data_cdrFeeds = []
+        tmp_data_cxp = []
+        tmp_data_outbound = []
+        tmp_data_platform = []
+        tmp_data_reports = []
+        tmp_data_voiceApps = []
+
+        for item in project_dds:
+            if item.version == version_name:
+                tmp_categories.append(item.created)
+
+                tmp_data_cdrFeeds.append(item.cdrFeeds)
+                tmp_data_cxp.append(item.cxp)
+                tmp_data_outbound.append(item.outbound)
+                tmp_data_platform.append(item.platform)
+                tmp_data_reports.append(item.reports)
+                tmp_data_voiceApps.append(item.voiceApps)
+
+        data['categories'] = tmp_categories
+        data['cdrFeeds'] = tmp_data_cdrFeeds
+        data['cxp'] = tmp_data_cxp
+        data['outbound'] = tmp_data_outbound
+        data['platform'] = tmp_data_platform
+        data['reports'] = tmp_data_reports
+        data['voiceApps'] = tmp_data_voiceApps
+
+        dd_trend_data.append(data)
+
     jira_data = fetch_jira_data(project.jira_name)
 
     #check whether fetch the data from jira or not
@@ -177,6 +217,7 @@ def project_defects_density(request, project_id):
     context = RequestContext(request, {
         'project': project,
         'project_dds': project_dds,
+        'dd_trend_data': dd_trend_data,
         'weight_factor_versions': weight_factor_versions,
         'component_names_standard': sorted(component_names_standard.keys()),
         'superuser': request.user.is_superuser
@@ -303,7 +344,6 @@ def truncate_after_slash(string):
         return string[:index]
     else:
         return string
-
 
 @user_passes_test(user_is_superuser)
 def project_edit(request, project_id):
@@ -569,6 +609,9 @@ def fetch_projects_score(request):
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+
+def fetch_defects_density_score(project_id):
+    project = Project.objects.get(pk=project_id)
 
 def defects_density_log(request, project_id):
     projects = Project.objects.all().order_by('name')

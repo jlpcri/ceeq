@@ -8,20 +8,12 @@
             <br>
         </div>
 
-        {% for project_dd in project_dds %}
-            Name: {{ project_dd.project }}<br>
-            Date: {{ project_dd.created }}<br>
-            Version: {{ project_dd.version }}<br>
-            CDR Feeds: {{ project_dd.cdrFeeds }}<br>
-            CXP: {{ project_dd.cxp }}<br>
-            Outbound: {{ project_dd.outbound }}<br>
-            Platform: {{ project_dd.platform }}<br>
-            Reports: {{ project_dd.reports }}<br>
-            Voice Apps: {{ project_dd.voiceApps }}<br>
-            ----------------------------------<br>
+
+
+        {% for item in dd_trend_data %}
+            {{ item.version }}:{{ item.categories }}:{{ item.cxp }}
+            <br>
         {% endfor %}
-
-
 
     </div>
 {% endblock %}
