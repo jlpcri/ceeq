@@ -610,8 +610,52 @@ def fetch_projects_score(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
-def fetch_defects_density_score(project_id):
+def fetch_defects_density_score(request, project_id):
     project = Project.objects.get(pk=project_id)
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project)
+
+    version_names = []
+    for project_dd in project_dds:
+        version_names.append(project_dd.version)
+    version_names = list(OrderedDict.fromkeys(version_names))
+
+    dd_trend_data = {}
+    for version_name in version_names:
+        data = {}
+        #data['version'] = version_name
+
+        tmp_categories = []
+
+        tmp_data_cdrFeeds = []
+        tmp_data_cxp = []
+        tmp_data_outbound = []
+        tmp_data_platform = []
+        tmp_data_reports = []
+        tmp_data_voiceApps = []
+
+        for item in project_dds:
+            if item.version == version_name:
+                tmp_categories.append(str(item.created))
+
+                tmp_data_cdrFeeds.append(float(item.cdrFeeds))
+                tmp_data_cxp.append(float(item.cxp))
+                tmp_data_outbound.append(float(item.outbound))
+                tmp_data_platform.append(float(item.platform))
+                tmp_data_reports.append(float(item.reports))
+                tmp_data_voiceApps.append(float(item.voiceApps))
+
+        data['categories'] = tmp_categories
+        data['cdrFeeds'] = tmp_data_cdrFeeds
+        data['cxp'] = tmp_data_cxp
+        data['outbound'] = tmp_data_outbound
+        data['platform'] = tmp_data_platform
+        data['reports'] = tmp_data_reports
+        data['voiceApps'] = tmp_data_voiceApps
+
+        dd_trend_data[version_name] = data
+
+    return HttpResponse(json.dumps(dd_trend_data), content_type="application/json")
+
 
 def defects_density_log(request, project_id):
     projects = Project.objects.all().order_by('name')

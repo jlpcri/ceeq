@@ -11,9 +11,11 @@
 
 
         {% for item in dd_trend_data %}
-            {{ item.version }}:{{ item.categories }}:{{ item.cxp }}
-            <br>
+            <h3>Version: {{ item.version }}</h3>
+            <div id="dd_trend_graph_{{ item.version }}"></div>
         {% endfor %}
+
+        <div id="version_key"></div>
 
     </div>
 {% endblock %}

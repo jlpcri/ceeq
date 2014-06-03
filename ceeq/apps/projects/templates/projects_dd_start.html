@@ -29,6 +29,63 @@
     <script>
         $(document).ready(function() {
             $('#subnav-tabs').find('a[href="#dd_detail"]').tab('show');
+            $.getJSON("{% url 'fetch_defects_density_score' project.id %}").done(function(data) {
+                for (var key in data){
+                    var version_key = 'dd_trend_graph_' + key;
+                    alert(data);
+                    $("#dd_trend_graph_1.0").highcharts({
+                        title: {
+                            text: 'Defects Density Trending Graph',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: 'Affected Version:',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: data[key]['categories']
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'DD score'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: ''
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAligh: 'middle',
+                            borderWidth: 0
+                        },
+                        series: [{
+                            name: 'CDR Feeds',
+                            data: data[key]['cdrFeeds']
+                        },{
+                            name: 'CXP',
+                            data: data[key]['cxp']
+                        },{
+                            name: 'Outbound',
+                            data: data[key]['outbound']
+                        },{
+                            name: 'Platform',
+                            data: data[key]['platform']
+                        },{
+                            name: 'Reports',
+                            data: data[key]['reports']
+                        },{
+                            name: 'VoiceApps',
+                            data: data[key]['voiceApps']
+                        }]
+                    });
+                }
+            })
         });
     </script>
 {% endblock %}
