@@ -31,9 +31,7 @@
             $('#subnav-tabs').find('a[href="#dd_detail"]').tab('show');
             $.getJSON("{% url 'fetch_defects_density_score' project.id %}").done(function(data) {
                 for (var key in data){
-                    var version_key = 'dd_trend_graph_' + key;
-                    console.log(data);
-                    $("#"+version_key).highcharts({
+                    $("#dd_trend_graph_"+key).highcharts({
                         title: {
                             text: 'Defects Density Trending Graph',
                             x: -20 //center
