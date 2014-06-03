@@ -37,15 +37,18 @@
                             x: -20 //center
                         },
                         subtitle: {
-                            text: 'Affected Version:',
+                            text: 'Affected Version:'+key,
                             x: -20
                         },
                         xAxis: {
+                            title: {
+                                text: 'Timeline'
+                            },
                             categories: data[key]['categories']
                         },
                         yAxis: {
                             title: {
-                                text: 'DD score'
+                                text: 'Defects Density score'
                             },
                             plotLines: [{
                                 value: 0,
