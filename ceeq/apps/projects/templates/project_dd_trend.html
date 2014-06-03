@@ -10,9 +10,9 @@
 
 
 
-        {% for item in dd_trend_data %}
-            <h3>Version: {{ item.version }}</h3>
-            <div id="dd_trend_graph_{{ item.version }}"></div>
+        {% for version_name in version_names %}
+            <h3>Version: {{ version_name }}</h3>
+            <div id="dd_trend_graph_{{ version_name }}"></div>
         {% endfor %}
 
         <div id="version_key"></div>

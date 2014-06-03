@@ -164,43 +164,12 @@ def project_defects_density(request, project_id):
         version_names.append(project_dd.version)
     version_names = list(OrderedDict.fromkeys(version_names))
 
-    dd_trend_data = []
+    #change '.' and ' ' to '_' from version names
+    version_names_removed = []
     for version_name in version_names:
-        data = {}
-        data['version'] = version_name
-
-        tmp_categories = []
-
-        tmp_data_cdrFeeds = []
-        tmp_data_cxp = []
-        tmp_data_outbound = []
-        tmp_data_platform = []
-        tmp_data_reports = []
-        tmp_data_voiceApps = []
-
-        for item in project_dds:
-            if item.version == version_name:
-                tmp_categories.append(item.created)
-
-                tmp_data_cdrFeeds.append(item.cdrFeeds)
-                tmp_data_cxp.append(item.cxp)
-                tmp_data_outbound.append(item.outbound)
-                tmp_data_platform.append(item.platform)
-                tmp_data_reports.append(item.reports)
-                tmp_data_voiceApps.append(item.voiceApps)
-
-        data['categories'] = tmp_categories
-        data['cdrFeeds'] = tmp_data_cdrFeeds
-        data['cxp'] = tmp_data_cxp
-        data['outbound'] = tmp_data_outbound
-        data['platform'] = tmp_data_platform
-        data['reports'] = tmp_data_reports
-        data['voiceApps'] = tmp_data_voiceApps
-
-        dd_trend_data.append(data)
+        version_names_removed.append(remove_period_space(version_name))
 
     jira_data = fetch_jira_data(project.jira_name)
-
     #check whether fetch the data from jira or not
 
     if jira_data == 'No JIRA Data':
@@ -217,7 +186,7 @@ def project_defects_density(request, project_id):
     context = RequestContext(request, {
         'project': project,
         'project_dds': project_dds,
-        'dd_trend_data': dd_trend_data,
+        'version_names': version_names_removed,
         'weight_factor_versions': weight_factor_versions,
         'component_names_standard': sorted(component_names_standard.keys()),
         'superuser': request.user.is_superuser
@@ -652,7 +621,8 @@ def fetch_defects_density_score(request, project_id):
         data['reports'] = tmp_data_reports
         data['voiceApps'] = tmp_data_voiceApps
 
-        dd_trend_data[version_name] = data
+        #change '.' and ' ' to '_' from version names
+        dd_trend_data[remove_period_space(version_name)] = data
 
     return HttpResponse(json.dumps(dd_trend_data), content_type="application/json")
 
@@ -715,3 +685,9 @@ def defects_density_single_log(request, project):
         component_defects_density.save()
 
     return
+
+
+def remove_period_space(str):
+    tmp = str.replace('.', '_')
+    tmp = tmp.replace(' ', '_')
+    return tmp
