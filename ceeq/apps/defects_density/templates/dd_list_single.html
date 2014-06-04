@@ -1,11 +1,16 @@
 
 {% block body %}
-    <h4>Project Defects Density </h4>
+    <div class="row">
+            <legend>Project Information</legend>
+            <p><strong>Project Name: </strong>{{ project.name }}</p>
+            <p><strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score }}</p>
+            <br>
+        </div>
+
     <div class="container">
         <table class="table table-striped tabl-hover table-condensed table-bordered" style="">
             <thead>
                 <tr>
-                    <td class="col-md-3"><strong>Project</strong></td>
                     <td class="col-md-2"><strong>Version</strong></td>
                     <td class="col-md-2"><strong>Date</strong></td>
                     <td class="col-md-2"><strong>CDR Feeds</strong></td>
@@ -16,9 +21,8 @@
                 </tr>
             </thead>
             <tbody>
-                {% for dd in dds %}
+                {% for dd in project_dds %}
                     <tr>
-                        <td class="col-md-4">{{ dd.project.name }}</td>
                         <td class="col-md-2">{{ dd.version }}</td>
                         <td class="col-md-2">{{ dd.created }}</td>
                         <td class="col-md-2">{{ dd.cdrFeeds }}</td>

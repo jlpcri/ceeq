@@ -17,9 +17,11 @@ from forms import ProjectForm
 
 def projects(request):
     projects = Project.objects.all().order_by('name')
+    project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
     context = RequestContext(request, {
         'projects': projects,
+        'dds': project_dds,
         'framework_parameters': framework_parameters,
         'framework_parameters_items': ['jira_issue_weight_sum',
                                        'vaf_ratio',
@@ -157,7 +159,7 @@ def project_detail(request, project_id):
 @login_required
 def project_defects_density(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project)
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version')
 
     version_names = []
     for project_dd in project_dds:

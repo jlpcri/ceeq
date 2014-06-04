@@ -9,6 +9,7 @@
             <li><a href="#score_overall" data-toggle="tab">CEEQ Score</a> </li>
             {% if user.is_superuser %}
                 <li><a href="#framework_parameter" data-toggle="tab">Framework Parameters</a> </li>
+                <li><a href="#defects_density_admin" data-toggle="tab">Defects Density Admin</a> </li>
             {% endif %}
         </ul>
     </div>
@@ -25,6 +26,10 @@
 
             <div class="tab-pane" id="framework_parameter">
                 {% include 'framework_parameter.html' %}
+            </div>
+
+            <div class="tab-pane" id="defects_density_admin">
+                {% include 'dd_list.html' %}
             </div>
         </div>
     </div>
