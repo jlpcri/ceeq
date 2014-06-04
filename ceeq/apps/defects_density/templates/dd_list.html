@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container">
+        {% for dd in dds %}
+            {{ dd.project.name }}:{{ dd.version }}:{{ dd.cxp }}<br>
+        {% endfor %}
+    </div>
+{% endblock %}

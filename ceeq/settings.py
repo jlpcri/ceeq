@@ -77,6 +77,7 @@ INSTALLED_APPS = (
     'tastypie',
     'ceeq.apps.core',
     'ceeq.apps.projects',
+    'ceeq.apps.defects_density',
     'ceeq.apps.help',
     'ceeq.apps.users',
     'ceeq.apps.search',

@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^ceeq/', include('ceeq.apps.help.urls')),
     url(r'^ceeq/', include('ceeq.apps.users.urls')),
     url(r'^ceeq/', include('ceeq.apps.search.urls')),
+    url(r'^ceeq/', include('ceeq.apps.defects_density.urls')),
 
     url(r'^ceeq/api/', include(v1_api.urls)),
 )
