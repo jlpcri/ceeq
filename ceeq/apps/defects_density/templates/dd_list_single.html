@@ -8,7 +8,7 @@
         </div>
 
     <div class="container">
-        <table class="table table-striped tabl-hover table-condensed table-bordered" style="">
+        <table class="table table-striped table-hover table-condensed table-bordered" style="">
             <thead>
                 <tr>
                     <td class="col-md-2"><strong>Version</strong></td>
@@ -18,6 +18,9 @@
                     <td class="col-md-2"><strong>Outbound</strong></td>
                     <td class="col-md-2"><strong>Platform</strong></td>
                     <td class="col-md-2"><strong>Voice Apps</strong></td>
+                    {% if superuser %}
+                        <td class="col-md-2"><strong>Del</strong></td>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +33,9 @@
                         <td class="col-md-2">{{ dd.outbound }}</td>
                         <td class="col-md-2">{{ dd.platform }}</td>
                         <td class="col-md-2">{{ dd.voiceApps }}</td>
+                        {% if superuser %}
+                        <td class="col-md-2"><a href="{% url 'dd_delete' dd.id %}" style="color: red;"><i class="fa fa-trash-o"></i></a> </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
