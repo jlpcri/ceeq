@@ -302,5 +302,11 @@ function loadActiveDataTab() {
             }
         }
     }
+    else if (active_tab == '#defects_density_admin'){
+        $('#select_project').change(function(){
+            alert('aaa');
+        })
+
+    }
 }
 

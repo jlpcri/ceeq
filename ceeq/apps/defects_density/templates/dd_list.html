@@ -1,7 +1,18 @@
 
 {% block body %}
-    <h4>Project Defects Density </h4>
+
     <div class="container">
+        <div class="row">
+            <h4>Project Defects Density</h4>
+
+            <select name="select_project"  class="pull-right">
+                <option value="0" disabled="disabled" selected="selected">Please select a project</option>
+                {% for project in projects %}
+                    <option value="{{ project.id }}">{{ project.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br>
         <table class="table table-striped table-hover table-condensed table-bordered" style="">
             <thead>
                 <tr>
@@ -32,4 +43,10 @@
         </table>
 
     </div>
+{% endblock %}
+
+{% block footer %}
+    <script>
+
+    </script>
 {% endblock %}
