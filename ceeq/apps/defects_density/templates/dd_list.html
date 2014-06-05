@@ -5,7 +5,7 @@
         <div class="row">
             <h4>Project Defects Density</h4>
 
-            <select name="select_project"  class="pull-right">
+            <select id="select_project"  class="pull-right">
                 <option value="0" disabled="disabled" selected="selected">Please select a project</option>
                 {% for project in projects %}
                     <option value="{{ project.id }}">{{ project.name }}</option>

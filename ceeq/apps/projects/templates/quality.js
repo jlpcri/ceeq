@@ -304,9 +304,11 @@ function loadActiveDataTab() {
     }
     else if (active_tab == '#defects_density_admin'){
         $('#select_project').change(function(){
-            alert('aaa');
+            var optionSelected = $(this).find("option:selected");
+            var valueSelected = optionSelected.val();
+            var textSelected = optionSelected.text();
+            console.log(valueSelected, textSelected);
         })
-
     }
 }
 
