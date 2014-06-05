@@ -307,7 +307,7 @@ function loadActiveDataTab() {
             var optionSelected = $(this).find("option:selected");
             var valueSelected = optionSelected.val();
             var textSelected = optionSelected.text();
-            console.log(valueSelected, textSelected);
+            console.log(valueSelected);
         })
     }
 }
