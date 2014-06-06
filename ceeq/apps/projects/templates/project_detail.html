@@ -98,7 +98,8 @@
             </div>
 
             {% if weight_factor %}
-            <table class="table table-hover table-striped" id="factor_table" >
+                {% if superuser %}
+                    <table class="table table-hover table-striped" id="factor_table" >
             <thead>
                 <tr>
                     <th colspan="3" style="text-align: center; color: brown">Weighted Factor</th>
@@ -134,7 +135,35 @@
 
             </tbody>
         </table>
-        {% endif %}
+                {% else %}
+                    <table class="table table-hover table-striped" id="factor_table">
+                        <thead>
+                            <tr>
+                                <th style="background-color: lightcyan">Component Name</th>
+                                <th style="background-color: lightcyan">Blocker</th>
+                                <th style="background-color: lightcyan">Critical</th>
+                                <th style="background-color: lightcyan">Major</th>
+                                <th style="background-color: lightcyan">Minor</th>
+                                <th style="background-color: lightcyan">Trivial</th>
+                                <th style="background-color: lightcyan">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for component, weight, dd, total, blocker, critical, major, minor, trivial in weight_factor  %}
+                                <tr>
+                                    <td class="col-md-3">{{ component }}</td>
+                                    <td class="col-md-2">{{ blocker }}</td>
+                                    <td class="col-md-2">{{ critical }}</td>
+                                    <td class="col-md-2">{{ major }}</td>
+                                    <td class="col-md-2">{{ minor }}</td>
+                                    <td class="col-md-2">{{ trivial }}</td>
+                                    <td class="col-md-2">{{ total }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            {% endif %}
         {% endif %}
 
 
@@ -179,7 +208,7 @@
                         text: 'Components impact CEEQ score'
                     },
                     tooltip: {
-                        pointFormat: '{series.name}: <b>{point.percentage:.3f}%</b>'
+                        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
                     },
                     plotOptions: {
                         pie: {
@@ -187,7 +216,7 @@
                             cursor: 'pointer',
                             dataLabels: {
                                 enabled: true,
-                                format: '<b>{point.name}</b>: {point.percentage:.3f}%',
+                                format: '<b>{point.name}</b>: {point.percentage:.2f}%',
                                 style: {
                                     color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                                 }

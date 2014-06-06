@@ -678,7 +678,7 @@ def fetch_defects_density_score_pie(request, project_id):
         temp.append(float(item[2]))
         dd_pie_data.append(temp)
 
-    return HttpResponse(json.dumps(dd_pie_data), content_type="application/json")
+    return HttpResponse(json.dumps(sorted(dd_pie_data)), content_type="application/json")
 
 
 def defects_density_log(request, project_id):

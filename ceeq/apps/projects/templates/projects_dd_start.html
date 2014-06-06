@@ -70,9 +70,6 @@
                             borderWidth: 0
                         },
                         series: [{
-                            name: 'CDR Feeds',
-                            data: data[key]['cdrFeeds']
-                        },{
                             name: 'CXP',
                             data: data[key]['cxp']
                         },{
@@ -87,6 +84,9 @@
                         },{
                             name: 'VoiceApps',
                             data: data[key]['voiceApps']
+                        },{
+                            name: 'VoiceSlots',
+                            data: data[key]['voiceSlots']
                         }]
                     });
                 }
