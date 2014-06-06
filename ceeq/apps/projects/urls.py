@@ -13,5 +13,6 @@ urlpatterns = patterns('ceeq.apps.projects.views',
 
       url(r'^project/score/$', 'fetch_projects_score', name='fetch_projects_score'),
       url(r'^project/dd_score/(?P<project_id>\d+)/$', 'fetch_defects_density_score', name='fetch_defects_density_score'),
+      url(r'^project/dd_pie/(?P<project_id>\d+)/$', 'fetch_defects_density_score_pie', name='fetch_defects_density_score_pie'),
       #url(r'^characteristics/$', 'characteristics', name='characteristics'),
       )

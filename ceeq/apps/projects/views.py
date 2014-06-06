@@ -75,7 +75,71 @@ def project_detail(request, project_id):
 
     data = issue_counts_compute(component_names, component_names_without_slash, jira_data['issues'])
 
+
+
+    weight_factor = get_component_defects_density_all(data,
+                                                      component_names_without_slash)
+
+    context = RequestContext(request, {
+        'form': form,
+        'project': project,
+        'weight_factor': sorted(weight_factor),
+        'component_names_standard': sorted(component_names_standard.keys()),
+        'component_names': sorted([item for item in component_names_standard.keys() if item in component_names_without_slash]),
+        'superuser': request.user.is_superuser,
+    })
+    return render(request, 'project_detail.html', context)
+
+
+@login_required
+def project_defects_density(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version')
+
+    version_names = []
+    for project_dd in project_dds:
+        version_names.append(project_dd.version)
+    version_names = list(OrderedDict.fromkeys(version_names))
+
+    #change '.' and ' ' to '_' from version names
+    version_names_removed = []
+    for version_name in version_names:
+        version_names_removed.append(remove_period_space(version_name))
+
+    jira_data = fetch_jira_data(project.jira_name)
+    #check whether fetch the data from jira or not
+
+    if jira_data == 'No JIRA Data':
+        messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        context = RequestContext(request, {
+        'project': project,
+        'superuser': request.user.is_superuser,
+        'no_jira_data': jira_data,
+        })
+        return render(request, 'projects_dd_start.html', context)
+    else:
+        weight_factor_versions = get_component_defects_density(jira_data)
+
+    context = RequestContext(request, {
+        'project': project,
+        'project_dds': project_dds,
+        'version_names': version_names_removed,
+        'weight_factor_versions': weight_factor_versions,
+        'component_names_standard': sorted(component_names_standard.keys()),
+        'superuser': request.user.is_superuser
+    })
+    return render(request, 'projects_dd_start.html', context)
+
+
+def get_component_defects_density_all(data, component_names_without_slash):
+
     #calculate issues number of components and sub-components
+    """
+
+    :param data: jira_data
+    :param component_names_without_slash:
+    :return: weight_factor
+    """
     for component in component_names_without_slash:
         for item in data:
             if item.startswith(component+'/'):
@@ -147,54 +211,7 @@ def project_detail(request, project_id):
         temp.append(data[item]['trivial'])
         weight_factor.append(temp)
 
-    context = RequestContext(request, {
-        'form': form,
-        'project': project,
-        'weight_factor': sorted(weight_factor),
-        'component_names_standard': sorted(component_names_standard.keys()),
-        'component_names': sorted([item for item in component_names_standard.keys() if item in component_names_without_slash]),
-        'superuser': request.user.is_superuser,
-    })
-    return render(request, 'project_detail.html', context)
-
-@login_required
-def project_defects_density(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version')
-
-    version_names = []
-    for project_dd in project_dds:
-        version_names.append(project_dd.version)
-    version_names = list(OrderedDict.fromkeys(version_names))
-
-    #change '.' and ' ' to '_' from version names
-    version_names_removed = []
-    for version_name in version_names:
-        version_names_removed.append(remove_period_space(version_name))
-
-    jira_data = fetch_jira_data(project.jira_name)
-    #check whether fetch the data from jira or not
-
-    if jira_data == 'No JIRA Data':
-        messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
-        context = RequestContext(request, {
-        'project': project,
-        'superuser': request.user.is_superuser,
-        'no_jira_data': jira_data,
-        })
-        return render(request, 'projects_dd_start.html', context)
-    else:
-        weight_factor_versions = get_component_defects_density(jira_data)
-
-    context = RequestContext(request, {
-        'project': project,
-        'project_dds': project_dds,
-        'version_names': version_names_removed,
-        'weight_factor_versions': weight_factor_versions,
-        'component_names_standard': sorted(component_names_standard.keys()),
-        'superuser': request.user.is_superuser
-    })
-    return render(request, 'projects_dd_start.html', context)
+    return weight_factor
 
 
 def get_component_defects_density(jira_data):
@@ -583,7 +600,7 @@ def fetch_projects_score(request):
 
 
 def fetch_defects_density_score(request, project_id):
-    project = Project.objects.get(pk=project_id)
+    project = get_object_or_404(Project, pk=project_id)
     project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project)
 
     version_names = []
@@ -628,6 +645,40 @@ def fetch_defects_density_score(request, project_id):
         dd_trend_data[remove_period_space(version_name)] = data
 
     return HttpResponse(json.dumps(dd_trend_data), content_type="application/json")
+
+
+def fetch_defects_density_score_pie(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    jira_data = fetch_jira_data(project.jira_name)
+
+    component_names = []
+    component_names_without_slash = []
+
+    for item in jira_data['issues']:
+        try:
+            name = str(item['fields']['components'][0]['name'])
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
+        except IndexError:
+            continue
+
+    component_names = list(OrderedDict.fromkeys(component_names))
+    component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
+
+    data = issue_counts_compute(component_names, component_names_without_slash, jira_data['issues'])
+
+    weight_factor = get_component_defects_density_all(data,
+                                                      component_names_without_slash)
+    dd_pie_data = []
+
+    for item in weight_factor:
+        temp = []
+        temp.append(item[0])
+        temp.append(float(item[2]))
+        dd_pie_data.append(temp)
+
+    return HttpResponse(json.dumps(dd_pie_data), content_type="application/json")
 
 
 def defects_density_log(request, project_id):

@@ -86,13 +86,19 @@
             <h4>No JIRA Data fetched.</h4>
         {% else %}
             <div class="row">
+                <legend>Components Percentage to CEEQ Score</legend>
+                <p>Project CEEQ Score: <strong>{{ project.score }}</strong></p>
+            </div>
+            <div id="component_percentage_pie_chart"></div>
+
+            <div class="row">
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
                 <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
             </div>
 
             {% if weight_factor %}
-        <table class="table table-hover table-striped" id="factor_table" >
+            <table class="table table-hover table-striped" id="factor_table" >
             <thead>
                 <tr>
                     <th colspan="3" style="text-align: center; color: brown">Weighted Factor</th>
@@ -159,5 +165,44 @@
 {% endblock %}
 
 {% block footer %}
+    <script>
+        $(document).ready(function(){
+            if (Number({{ project.score }}) > 0 ) {
+            $.getJSON("{% url 'fetch_defects_density_score_pie' project.id %}").done(function(data){
+                $('#component_percentage_pie_chart').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false
+                    },
+                    title: {
+                        text: 'Components impact CEEQ score'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.3f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.3f}%',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Components Contribution',
+                        data: data
+                    }]
+                })
+            });
+            }
+        })
+    </script>
 
 {% endblock %}
