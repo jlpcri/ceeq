@@ -34,12 +34,12 @@ class ProjectComponentsDefectsDensity(models.Model):
     version = models.CharField(max_length=200)
     created = models.DateField()
 
-    cdrFeeds = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     cxp = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     outbound = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     platform = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     reports = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     voiceApps = models.DecimalField(max_digits=5, decimal_places=3, default=0)
+    voiceSlots = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
     class Meta:
         #unique_together = (("project", "created", "version"),)

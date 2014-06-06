@@ -673,9 +673,7 @@ def defects_density_single_log(request, project):
             component_defects_density = ProjectComponentsDefectsDensity(project=project, version=item, created=today)
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
-            if component[0] == 'CDR Feeds':
-                component_defects_density.cdrFeeds = component[2]
-            elif component[0] == 'CXP':
+            if component[0] == 'CXP':
                 component_defects_density.cxp = component[2]
             elif component[0] == 'Outbound':
                 component_defects_density.outbound = component[2]
@@ -685,6 +683,8 @@ def defects_density_single_log(request, project):
                 component_defects_density.reports = component[2]
             elif component[0] == 'Voice Apps':
                 component_defects_density.voiceApps = component[2]
+            elif component[0] == 'Voice Slots':
+                component_defects_density.voiceSlots = component[2]
         component_defects_density.save()
 
     return
