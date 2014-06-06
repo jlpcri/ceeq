@@ -32,12 +32,12 @@ def projects(request):
     return render(request, 'projects_start.html', context)
 
 # pre-define Standard Component Name and its comparison ratio
-component_names_standard = {'CDR Feeds': 2,
-                            'CXP': 2,
+component_names_standard = {'CXP': 2,
                             'Outbound': 1,
                             'Platform': 3,
-                            'Reports': 4,
-                            'Voice Apps': 8
+                            'Reports': 3,
+                            'Voice Apps': 8,
+                            'Voice Slots': 3,
                             }
 
 @login_required
@@ -94,15 +94,15 @@ def project_detail(request, project_id):
     try:
         jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
     except FrameworkParameter.DoesNotExist or KeyError:
-        jira_issue_weight_sum = Decimal(3.00)
+        jira_issue_weight_sum = Decimal(1.00)
 
     #calculate defect density of each component
     for item in component_names_without_slash:
-        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
-                              + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
-                              + data[item]['major'] * jira_issue_weight_sum * 5 / 25 \
-                              + data[item]['minor'] * jira_issue_weight_sum * 3 / 25 \
-                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 25
+        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 5 / 15 \
+                              + data[item]['critical'] * jira_issue_weight_sum * 4 / 15 \
+                              + data[item]['major'] * jira_issue_weight_sum * 3 / 15 \
+                              + data[item]['minor'] * jira_issue_weight_sum * 2 / 15 \
+                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 15
 
     #formalize total sum of each component by divided by number of sub-components
     for component in component_names_without_slash:
@@ -133,7 +133,8 @@ def project_detail(request, project_id):
             temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
         except KeyError:
             continue
-        temp.append(data[item]['total'])
+        temp.append(data[item]['total'])   # defect density
+        # Total number of issues
         temp.append(data[item]['blocker'] \
                     + data[item]['critical'] \
                     + data[item]['major'] \
@@ -227,7 +228,7 @@ def get_component_defects_density(jira_data):
         try:
             jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
         except FrameworkParameter.DoesNotExist or KeyError:
-            jira_issue_weight_sum = Decimal(3.00)
+            jira_issue_weight_sum = Decimal(1.00)
 
         for item in version_data[key]:
             try:
@@ -258,11 +259,11 @@ def get_component_defects_density(jira_data):
 
         #calculate defect density of each component
         for item in component_names_without_slash:
-            data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
-                                  + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
-                                  + data[item]['major'] * jira_issue_weight_sum * 5 / 25 \
-                                  + data[item]['minor'] * jira_issue_weight_sum * 3 / 25 \
-                                  + data[item]['trivial'] * jira_issue_weight_sum * 1 / 25
+            data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 5 / 15 \
+                                  + data[item]['critical'] * jira_issue_weight_sum * 4 / 15 \
+                                  + data[item]['major'] * jira_issue_weight_sum * 3 / 15 \
+                                  + data[item]['minor'] * jira_issue_weight_sum * 2 / 15 \
+                                  + data[item]['trivial'] * jira_issue_weight_sum * 1 / 15
 
         #formalize total sum of each component by divided by number of sub-components
         for component in component_names_without_slash:
@@ -427,15 +428,15 @@ def calculate_score(project):
     try:
         jira_issue_weight_sum = parameter['jira_issue_weight_sum']
     except KeyError:
-        jira_issue_weight_sum = Decimal(3.00)
-    try:
-        vaf_ratio = parameter['vaf_ratio']
-    except KeyError:
-        vaf_ratio = Decimal(0.01)
-    try:
-        vaf_exp = parameter['vaf_exp']
-    except KeyError:
-        vaf_exp = Decimal(0.65)
+        jira_issue_weight_sum = Decimal(1.00)
+    #try:
+    #    vaf_ratio = parameter['vaf_ratio']
+    #except KeyError:
+    #    vaf_ratio = Decimal(0.01)
+    #try:
+    #    vaf_exp = parameter['vaf_exp']
+    #except KeyError:
+    #    vaf_exp = Decimal(0.65)
 
     #calculate issues number of components and sub-components
     for component in component_names_without_slash:
@@ -454,11 +455,11 @@ def calculate_score(project):
 
     #calculate defect density of each component
     for item in component_names_without_slash:
-        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 9 / 25 \
-                              + data[item]['critical'] * jira_issue_weight_sum * 7 / 25 \
-                              + data[item]['major'] * jira_issue_weight_sum * 5 / 25 \
-                              + data[item]['minor'] * jira_issue_weight_sum * 3 / 25 \
-                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 25
+        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 5 / 15 \
+                              + data[item]['critical'] * jira_issue_weight_sum * 4 / 15 \
+                              + data[item]['major'] * jira_issue_weight_sum * 3 / 15 \
+                              + data[item]['minor'] * jira_issue_weight_sum * 2 / 15 \
+                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 15
 
     # Formalize each component from its sub-component
     for component in component_names_without_slash:
@@ -515,13 +516,13 @@ def calculate_score(project):
     #print round(raw_score, 2)
 
     #Calculate VAF(Value Adjustment Factor)
-    test_character = project.accuracy + project.suitability + project.interoperability \
-    + project.functional_security + project.usability + project.accessibility \
-    + project.technical_security + project.reliability + project.efficiency \
-    + project.maintainability + project.portability
+    #test_character = project.accuracy + project.suitability + project.interoperability \
+    #+ project.functional_security + project.usability + project.accessibility \
+    #+ project.technical_security + project.reliability + project.efficiency \
+    #+ project.maintainability + project.portability
 
-    vaf = vaf_ratio * test_character + vaf_exp   # VAF value
-    score = 10 - raw_score / Decimal(vaf)  # projects score = 10 - defect score
+    #vaf = vaf_ratio * test_character + vaf_exp   # VAF value
+    score = (1 - raw_score) * 10  # projects score = 10 - defect score
 
     if score < 0:  # projects score out of range (0-10)
         project.score = -2
