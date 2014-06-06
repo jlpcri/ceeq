@@ -598,7 +598,7 @@ def fetch_defects_density_score(request, project_id):
 
         tmp_categories = []
 
-        tmp_data_cdrFeeds = []
+        tmp_data_voiceSlots = []
         tmp_data_cxp = []
         tmp_data_outbound = []
         tmp_data_platform = []
@@ -609,7 +609,7 @@ def fetch_defects_density_score(request, project_id):
             if item.version == version_name:
                 tmp_categories.append(str(item.created))
 
-                tmp_data_cdrFeeds.append(float(item.cdrFeeds))
+                tmp_data_voiceSlots.append(float(item.voiceSlots))
                 tmp_data_cxp.append(float(item.cxp))
                 tmp_data_outbound.append(float(item.outbound))
                 tmp_data_platform.append(float(item.platform))
@@ -617,7 +617,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_data_voiceApps.append(float(item.voiceApps))
 
         data['categories'] = tmp_categories
-        data['cdrFeeds'] = tmp_data_cdrFeeds
+        data['voiceSlots'] = tmp_data_voiceSlots
         data['cxp'] = tmp_data_cxp
         data['outbound'] = tmp_data_outbound
         data['platform'] = tmp_data_platform
