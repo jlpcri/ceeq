@@ -208,7 +208,7 @@
                     tooltip: {
                         //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
                         formatter: function() {
-                            return this.point.name + ": " + this.y.toFixed(3);
+                            return this.point.name + ": <b>" + this.point.percentage.toFixed(2) + "%</b>";
                         }
                     },
                     plotOptions: {

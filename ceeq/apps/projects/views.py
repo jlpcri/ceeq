@@ -675,7 +675,7 @@ def fetch_defects_density_score_pie(request, project_id):
     for item in weight_factor:
         temp = []
         temp.append(item[0])
-        temp.append(float(item[2]))
+        temp.append(float(item[1]) * float(item[2]))
         dd_pie_data.append(temp)
 
     return HttpResponse(json.dumps(sorted(dd_pie_data)), content_type="application/json")
