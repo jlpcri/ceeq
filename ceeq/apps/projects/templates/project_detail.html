@@ -205,10 +205,13 @@
                         plotShadow: false
                     },
                     title: {
-                        text: 'Components impact CEEQ score'
+                        text: 'Components Impact CEEQ Score'
                     },
                     tooltip: {
-                        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                        //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                        formatter: function() {
+                            return this.point.name + ": " + this.y.toFixed(3);
+                        }
                     },
                     plotOptions: {
                         pie: {
@@ -225,9 +228,10 @@
                     },
                     series: [{
                         type: 'pie',
-                        name: 'Components Contribution',
+                        name: 'Component Contribution',
                         data: data
-                    }]
+                    }],
+                    credits: false
                 })
             });
             }
