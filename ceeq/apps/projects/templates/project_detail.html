@@ -87,7 +87,10 @@
         {% else %}
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
-                <p>Project CEEQ Score: <strong>{{ project.score }}</strong></p>
+                <p>
+
+                    Project CEEQ Score: <strong>{{ project.score }}</strong>
+                </p>
             </div>
             <div id="component_percentage_pie_chart"></div>
 
@@ -230,7 +233,7 @@
                         data: data
                     }],
                     credits: false
-                })
+                });
             });
             }
         })

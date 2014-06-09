@@ -53,7 +53,6 @@ function loadActiveDataTab() {
                     enabled: false
                 },
                 plotOptions: {
-
                     bar: {
                         colorByPoint: true,
                         dataLabels: {
