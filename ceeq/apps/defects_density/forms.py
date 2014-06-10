@@ -1,4 +1,3 @@
-from django import forms
 from django.forms import ModelForm
 from ceeq.apps.projects.models import ProjectComponentsDefectsDensity
 

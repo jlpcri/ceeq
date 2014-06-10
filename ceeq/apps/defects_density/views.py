@@ -37,7 +37,18 @@ def dd_edit(request, dd_id):
     if request.method == "POST":
         form = DefectDensityForm(request.POST, instance=dd)
         if form.is_valid():
-            dd = form.save()
+            form_data = form.cleaned_data
+            try:
+                dd_exist = ProjectComponentsDefectsDensity.objects.filter(project=form_data['project'],
+                                                                          version=form_data['version'],
+                                                                          created=form_data['created'])
+                if dd_exist.count() > 1:
+                    messages.warning(request, 'Record already exist')
+                    return redirect(dd_all)
+                else:
+                    dd = form.save()
+            except ProjectComponentsDefectsDensity.DoesNotExist:
+                dd = form.save()
             messages.success(request, "Project Component Defect Density is saved.")
             return redirect(dd_all)
         else:
