@@ -1,6 +1,8 @@
+import json
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 
@@ -73,3 +75,5 @@ def dd_delete(request, dd_id):
     messages.success(request, "Defects Density project: \"{0}\", version: \"{1}\", data: \"{2}\" has been deleted.".format(dd.project.name, dd.version, dd.created))
 
     return redirect(reverse('ceeq.apps.users.views.home'))
+
+

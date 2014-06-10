@@ -78,6 +78,7 @@ def project_detail(request, project_id):
     weight_factor = get_component_defects_density_all(data,
                                                       component_names_without_slash)
 
+    # calculate total number of issues based on priority
     priority_total = {
         'total': 0,
         'blocker': 0,
@@ -93,9 +94,6 @@ def project_detail(request, project_id):
         priority_total['major'] += item[6]
         priority_total['minor'] += item[7]
         priority_total['trivial'] += item[8]
-
-    for k in priority_total:
-        print k, priority_total[k]
 
     context = RequestContext(request, {
         'form': form,
