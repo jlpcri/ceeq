@@ -404,7 +404,7 @@ def project_update_scores(request, project_id):
 
 def fetch_jira_data(jira_name):
     url = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions&jql=project=' + jira_name
-    data = requests.get(url, auth=('sliu', 'Sissy981129')).json()
+    data = requests.get(url, auth=('readonly_sliu_api_user', 'qualityengineering')).json()
     if len(data) == 2:
         if data['errorMessages']:
             return 'No JIRA Data'
