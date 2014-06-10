@@ -302,11 +302,29 @@ function loadActiveDataTab() {
         }
     }
     else if (active_tab == '#defects_density_admin'){
-        $('#select_project').change(function(){
-            var optionSelected = $(this).find("option:selected");
-            var valueSelected = optionSelected.val();
-            var textSelected = optionSelected.text();
-        })
+        $.getJSON("{% url 'fetch_dds_json' %}").done(function(data) {
+            //console.log(data);
+            $('#dd_list').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>');
+            $('#example').dataTable({
+                "data":data,
+                "columns": [
+                    {"title": "Project"},
+                    {"title": "Version"},
+                    {"title": "Date"},
+                    {"title": "CXP"},
+                    {"title": "Outbound"},
+                    {"title": "Platform"},
+                    {"title": "Reports"},
+                    {"title": "Applications"},
+                    {"title": "Voice Slots"}
+                ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": "."
+                }
+            });
+        });
+
     }
 }
 
