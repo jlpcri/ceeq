@@ -88,8 +88,19 @@
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
                 <p>
-
-                    Project CEEQ Score: <strong>{{ project.score }}</strong>
+                    {% if project.score == -1 %}
+                        No created issues
+                    {% elif project.score == -2 %}
+                        Out of Range
+                    {% elif project.score == -3 %}
+                        No open issues
+                    {% elif project.score == -4 %}
+                        No JIRA Data
+                    {% elif project.score == -9 %}
+                        No evaluate
+                    {% else %}
+                        Project CEEQ Score: <strong>{{ project.score }}</strong>
+                    {% endif %}
                 </p>
             </div>
             <div id="component_percentage_pie_chart"></div>
@@ -111,7 +122,7 @@
                             <tr>
                                 <th style="background-color: lightcyan">Component Name</th>
                                 <th style="background-color: lightcyan">Weight</th>
-                                <th style="background-color: lightcyan">Defects Density</th>
+                                <th style="background-color: lightcyan">Defect Density</th>
                                 <th style="background-color: lavender; text-align: center">Total</th>
                                 <th style="background-color: lavender; text-align: center">Blocker</th>
                                 <th style="background-color: lavender; text-align: center">Critical</th>
@@ -123,8 +134,8 @@
                         <tbody>
                             {% for component,weight,dd, total, blocker, critical, major, minor, trivial in weight_factor %}
                                 <tr>
-                                    <td class="col-sm-3">{{ component }}</td>
-                                    <td class="col-sm-2">{{ weight|floatformat:3 }}</td>
+                                    <td class="col-sm-2">{{ component }}</td>
+                                    <td class="col-sm-1">{{ weight|floatformat:3 }}</td>
                                     <td class="col-sm-2">{{ dd|floatformat:3 }}</td>
                                     <td class="col-sm-1" style="text-align: center">{{ total }}</td>
                                     <td class="col-sm-1" style="text-align: center">{{ blocker }}</td>
@@ -152,13 +163,13 @@
                         <tbody>
                             {% for component, weight, dd, total, blocker, critical, major, minor, trivial in weight_factor  %}
                                 <tr>
-                                    <td class="col-sm-3" style="text-align: center">{{ component }}</td>
-                                    <td class="col-sm-2" style="text-align: center">{{ blocker }}</td>
-                                    <td class="col-sm-2" style="text-align: center">{{ critical }}</td>
-                                    <td class="col-sm-2" style="text-align: center">{{ major }}</td>
-                                    <td class="col-sm-2" style="text-align: center">{{ minor }}</td>
-                                    <td class="col-sm-2" style="text-align: center">{{ trivial }}</td>
-                                    <td class="col-sm-3" style="text-align: center">{{ total }}</td>
+                                    <td class="col-sm-2" style="text-align: center">{{ component }}</td>
+                                    <td class="col-sm-1" style="text-align: center">{{ blocker }}</td>
+                                    <td class="col-sm-1" style="text-align: center">{{ critical }}</td>
+                                    <td class="col-sm-1" style="text-align: center">{{ major }}</td>
+                                    <td class="col-sm-1" style="text-align: center">{{ minor }}</td>
+                                    <td class="col-sm-1" style="text-align: center">{{ trivial }}</td>
+                                    <td class="col-sm-1" style="text-align: center">{{ total }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

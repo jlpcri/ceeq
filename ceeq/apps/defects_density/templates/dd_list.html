@@ -16,29 +16,29 @@
         <table class="table table-striped table-hover table-condensed table-bordered" style="">
             <thead>
                 <tr>
-                    <td class="col-sm-3"><strong>Project</strong></td>
-                    <td class="col-sm-2"><strong>Version</strong></td>
-                    <td class="col-sm-2"><strong>Date</strong></td>
-                    <td class="col-sm-2"><strong>CXP</strong></td>
-                    <td class="col-sm-2"><strong>Outbound</strong></td>
-                    <td class="col-sm-2"><strong>Platform</strong></td>
-                    <td class="col-sm-2"><strong>Reports</strong></td>
-                    <td class="col-sm-2"><strong>Voice Apps</strong></td>
-                    <td class="col-sm-2"><strong>Voice Slots</strong></td>
+                    <td style="text-align: center"><strong>Project</strong></td>
+                    <td style="text-align: center"><strong>Version</strong></td>
+                    <td style="text-align: center"><strong>Date</strong></td>
+                    <td style="text-align: center"><strong>CXP</strong></td>
+                    <td style="text-align: center"><strong>Outbound</strong></td>
+                    <td style="text-align: center"><strong>Platform</strong></td>
+                    <td style="text-align: center"><strong>Reports</strong></td>
+                    <td style="text-align: center"><strong>Voice Apps</strong></td>
+                    <td style="text-align: center"><strong>Voice Slots</strong></td>
                 </tr>
             </thead>
             <tbody>
                 {% for dd in dds %}
                     <tr>
-                        <td class="col-sm-3">{{ dd.project.name }}</td>
+                        <td class="col-sm-2">{{ dd.project.name }}</td>
                         <td class="col-sm-2">{{ dd.version }}</td>
                         <td class="col-sm-2">{{ dd.created }}</td>
-                        <td class="col-sm-2">{{ dd.cxp|floatformat:3 }}</td>
-                        <td class="col-sm-2">{{ dd.outbound|floatformat:3 }}</td>
-                        <td class="col-sm-2">{{ dd.platform|floatformat:3 }}</td>
-                        <td class="col-sm-2">{{ dd.reports|floatformat:3 }}</td>
-                        <td class="col-sm-2">{{ dd.voiceApps|floatformat:3 }}</td>
-                        <td class="col-sm-2">{{ dd.voiceSlots|floatformat:3 }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ dd.cxp|floatformat:3 }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ dd.outbound|floatformat:3 }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ dd.platform|floatformat:3 }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ dd.reports|floatformat:3 }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ dd.voiceApps|floatformat:3 }}</td>
+                        <td class="col-sm-2" style="text-align: center">{{ dd.voiceSlots|floatformat:3 }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
