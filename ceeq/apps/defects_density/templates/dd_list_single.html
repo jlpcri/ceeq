@@ -17,7 +17,7 @@
                     <td style="text-align: center"><strong>Outbound</strong></td>
                     <td style="text-align: center"><strong>Platform</strong></td>
                     <td style="text-align: center"><strong>Reports</strong></td>
-                    <td style="text-align: center"><strong>Voice Apps</strong></td>
+                    <td style="text-align: center"><strong>Applications</strong></td>
                     <td style="text-align: center"><strong>Voice Slots</strong></td>
 
                     {% if superuser %}
@@ -34,7 +34,7 @@
                         <td class="col-sm-1" style="text-align: center">{{ dd.outbound|floatformat:3 }}</td>
                         <td class="col-sm-1" style="text-align: center">{{ dd.platform|floatformat:3 }}</td>
                         <td class="col-sm-1" style="text-align: center">{{ dd.reports|floatformat:3 }}</td>
-                        <td class="col-sm-1" style="text-align: center">{{ dd.voiceApps|floatformat:3 }}</td>
+                        <td class="col-sm-1" style="text-align: center">{{ dd.applications|floatformat:3 }}</td>
                         <td class="col-sm-1" style="text-align: center">{{ dd.voiceSlots|floatformat:3 }}</td>
 
                         {% if superuser %}

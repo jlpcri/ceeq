@@ -36,7 +36,7 @@ component_names_standard = {'CXP': 2,
                             'Outbound': 1,
                             'Platform': 3,
                             'Reports': 3,
-                            'Voice Apps': 8,
+                            'Applications': 8,
                             'Voice Slots': 3,
                             }
 
@@ -94,7 +94,7 @@ def project_detail(request, project_id):
 @login_required
 def project_defects_density(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version')
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version', 'created')
 
     version_names = []
     for project_dd in project_dds:
@@ -621,7 +621,7 @@ def fetch_defects_density_score(request, project_id):
         tmp_data_outbound = []
         tmp_data_platform = []
         tmp_data_reports = []
-        tmp_data_voiceApps = []
+        tmp_data_applications = []
 
         for item in project_dds:
             if item.version == version_name:
@@ -632,7 +632,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_data_outbound.append(float(item.outbound))
                 tmp_data_platform.append(float(item.platform))
                 tmp_data_reports.append(float(item.reports))
-                tmp_data_voiceApps.append(float(item.voiceApps))
+                tmp_data_applications.append(float(item.applications))
 
         data['categories'] = tmp_categories
         data['voiceSlots'] = tmp_data_voiceSlots
@@ -640,7 +640,7 @@ def fetch_defects_density_score(request, project_id):
         data['outbound'] = tmp_data_outbound
         data['platform'] = tmp_data_platform
         data['reports'] = tmp_data_reports
-        data['voiceApps'] = tmp_data_voiceApps
+        data['applications'] = tmp_data_applications
 
         #change '.' and ' ' to '_' from version names
         dd_trend_data[remove_period_space(version_name)] = data
@@ -733,8 +733,8 @@ def defects_density_single_log(request, project):
                 component_defects_density.platform = component[2]
             elif component[0] == 'Reports':
                 component_defects_density.reports = component[2]
-            elif component[0] == 'Voice Apps':
-                component_defects_density.voiceApps = component[2]
+            elif component[0] == 'Applications':
+                component_defects_density.applications = component[2]
             elif component[0] == 'Voice Slots':
                 component_defects_density.voiceSlots = component[2]
         component_defects_density.save()
