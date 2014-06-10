@@ -572,7 +572,8 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
     for item in jira_data:
         try:
             component = item['fields']['components'][0]['name']
-            if (item['fields']['status']['id'] in ['1', '4']):  # 1-open, 4-reopen
+            if item['fields']['status']['id'] in ['1', '3', '4', '5', '10001', '10003']:
+            # 1-open, 3-In progress, 4-reopen, 5-resolved, 10001-UAT testing, 10003-Discovery
                 if item['fields']['priority']['id'] == '1':
                     data[component]['blocker'] += 1
                 elif item['fields']['priority']['id'] == '2':
