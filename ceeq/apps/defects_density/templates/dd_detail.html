@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Defect Density Detail{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <form action="{% url 'dd_edit' dd.id %}" method="post">
+            <div class="row">
+                <legend>Record Information</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Project Name</div>
+                <div class="col-md-8">{{ form.project }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Version</div>
+                <div class="col-md-8">{{ form.version }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Created Date</div>
+                <div class="col-md-8">{{ form.created }}</div>
+            </div>
+
+            <br>
+            <div class="row">
+                <legend>Component Defect Density</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">CXP</div>
+                <div class="col-md-8">{{ form.cxp }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Outbound</div>
+                <div class="col-md-8">{{ form.outbound }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Platform</div>
+                <div class="col-md-8">{{ form.platform }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Reports</div>
+                <div class="col-md-8">{{ form.reports }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Voice Apps</div>
+                <div class="col-md-8">{{ form.voiceApps }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Voice Slots</div>
+                <div class="col-md-8">{{ form.voiceSlots }}</div>
+            </div>
+
+            {% csrf_token %}
+            <div class="row" style="margin-top: 30px; margin-bottom: 50px;">
+                <div class="col-md-4">
+
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary" type="submit" value="Save" style="width: 100%">
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary" type="submit" value="Cancel" onclick="return false;" style="width: 100%">
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

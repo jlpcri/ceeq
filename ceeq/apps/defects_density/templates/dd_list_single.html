@@ -40,7 +40,7 @@
                         {% if superuser %}
                         <td class="col-sm-1" style="text-align: center">
                             <a href="{% url 'dd_delete' dd.id %}" style="color: red;"><i class="fa fa-trash-o fa-lg"></i></a> |
-                            <a href="#"><i class="fa fa-edit fa-lg"></i> </a>
+                            <a href="{% url 'dd_detail' dd.id %}"><i class="fa fa-edit fa-lg"></i> </a>
                         </td>
                         {% endif %}
                     </tr>
