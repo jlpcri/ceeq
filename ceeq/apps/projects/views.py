@@ -75,15 +75,33 @@ def project_detail(request, project_id):
 
     data = issue_counts_compute(component_names, component_names_without_slash, jira_data['issues'])
 
-
-
     weight_factor = get_component_defects_density_all(data,
                                                       component_names_without_slash)
+
+    priority_total = {
+        'total': 0,
+        'blocker': 0,
+        'critical': 0,
+        'major': 0,
+        'minor': 0,
+        'trivial': 0
+    }
+    for item in weight_factor:
+        priority_total['total'] += item[3]
+        priority_total['blocker'] += item[4]
+        priority_total['critical'] += item[5]
+        priority_total['major'] += item[6]
+        priority_total['minor'] += item[7]
+        priority_total['trivial'] += item[8]
+
+    for k in priority_total:
+        print k, priority_total[k]
 
     context = RequestContext(request, {
         'form': form,
         'project': project,
         'weight_factor': sorted(weight_factor),
+        'priority_total': priority_total,
         'component_names_standard': sorted(component_names_standard.keys()),
         'component_names': sorted([item for item in component_names_standard.keys() if item in component_names_without_slash]),
         'superuser': request.user.is_superuser,
@@ -304,7 +322,7 @@ def get_component_defects_density(jira_data):
             except KeyError:
                 continue
 
-        for item in component_names_without_slash:
+        for item in sorted(component_names_without_slash):
             temp = []
             temp.append(item)
             try:
@@ -326,6 +344,7 @@ def get_component_defects_density(jira_data):
 
         weight_factor_versions[key] = weight_factor
     return weight_factor_versions
+
 
 def truncate_after_slash(string):
     if '/' in string:

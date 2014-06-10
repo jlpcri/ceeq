@@ -145,6 +145,18 @@
                                     <td class="col-sm-1" style="text-align: center">{{ trivial }}</td>
                                 </tr>
                             {% endfor %}
+                            <tr><td></td></tr>
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td></td>
+                                <td></td>
+                                <td style="text-align: center">{{ priority_total.total }}</td>
+                                <td style="text-align: center">{{ priority_total.blocker }}</td>
+                                <td style="text-align: center">{{ priority_total.critical }}</td>
+                                <td style="text-align: center">{{ priority_total.major }}</td>
+                                <td style="text-align: center">{{ priority_total.minor }}</td>
+                                <td style="text-align: center">{{ priority_total.trivial }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 {% else %}
@@ -172,6 +184,18 @@
                                     <td class="col-sm-1" style="text-align: center">{{ total }}</td>
                                 </tr>
                             {% endfor %}
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center"><strong>Total</strong></td>
+                                <td style="text-align: center">{{ priority_total.blocker }}</td>
+                                <td style="text-align: center">{{ priority_total.critical }}</td>
+                                <td style="text-align: center">{{ priority_total.major }}</td>
+                                <td style="text-align: center">{{ priority_total.minor }}</td>
+                                <td style="text-align: center">{{ priority_total.trivial }}</td>
+                                <td style="text-align: center">{{ priority_total.total }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 {% endif %}
