@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from ceeq.apps.projects.models import Project, ProjectComponentsDefectsDensity
 
-from ceeq.apps.projects.views import defects_density_single_log
+from ceeq.apps.projects.views import defects_density_single_log, calculate_score
 
 
 class Command(BaseCommand):
@@ -23,7 +23,8 @@ class Command(BaseCommand):
                 if project.score < 0:
                     continue
                 else:
+                    calculate_score(project)
                     defects_density_single_log(None, project)
 
-            self.stdout.write("All projects Defects Density saved")
+            self.stdout.write("All projects Score updated, and Defects Density saved")
 
