@@ -39,7 +39,8 @@
                                     {% elif project.score == -2 %}
                                         Out of Range
                                     {% elif project.score == -3 %}
-                                        No open issues
+                                        <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
+
                                     {% elif project.score == -4 %}
                                         No JIRA Data
                                     {% elif project.score == -9 %}

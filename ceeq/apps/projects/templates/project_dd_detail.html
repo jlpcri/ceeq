@@ -4,13 +4,25 @@
         <div class="row">
             <legend>Project Information</legend>
             <p><strong>Project Name: </strong>{{ project.name }}</p>
-            <p><strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score }}</p>
+            <p>
+                {% if project.score == -1 %}
+                    No created issues
+                {% elif project.score == -2 %}
+                    Out of Range
+                {% elif project.score == -3 %}
+                    No open issues
+                {% elif project.score == -4 %}
+                    No JIRA Data
+                {% elif project.score == -9 %}
+                    No evaluate
+                {% else %}
+                    <strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score }}
+                {% endif %}
+            </p>
             <br>
         </div>
 
-        {% if no_jira_data %}
-            <h4>No JIRA Data fetched.</h4>
-        {% else %}
+        {% if project.score > 0 %}
             <div class="row">
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
@@ -52,15 +64,6 @@
                 </tbody>
                 </table>
             {% endfor %}
-
-
         {% endif %}
-
-
-
     </div>
-{% endblock %}
-
-{% block footer %}
-
 {% endblock %}
