@@ -36,6 +36,11 @@ $(document).ready(function() {
                             verticalAligh: 'middle',
                             borderWidth: 0
                         },
+                        navigation: {
+                            buttonOptions: {
+                                enabled: false
+                            }
+                        },
                         series: [{
                             name: 'CXP',
                             data: data[key]['cxp']
@@ -54,14 +59,15 @@ $(document).ready(function() {
                         },{
                             name: 'VoiceSlots',
                             data: data[key]['voiceSlots']
-                        }]
+                        }],
+                        credits: false
                     });
                 }
             });
 
             $.getJSON("{% url 'fetch_dds_json' project.id %}").done(function(data) {
-                $('#dd_list_single').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dd_list_single_pie"></table>');
-                $('#dd_list_single_pie').dataTable({
+                $('#dd_list_single').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dd_list_single_table"></table>');
+                $('#dd_list_single_table').dataTable({
                     "data":data,
                     "columns": [
                         {"title": "Project"},

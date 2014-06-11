@@ -72,6 +72,11 @@ function loadActiveDataTab() {
                         return this.x + ': ' + this.y
                     }
                 },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                },
                 credits: false
             })
         });
@@ -303,8 +308,8 @@ function loadActiveDataTab() {
     }
     else if (active_tab == '#defects_density_admin'){
         $.getJSON("{% url 'fetch_dds_json' 1000000 %}").done(function(data) {
-            $('#dd_list').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dd_list_pie"></table>');
-            $('#dd_list_pie').dataTable({
+            $('#dd_list').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dd_list_table"></table>');
+            $('#dd_list_table').dataTable({
                 "data":data,
                 "columns": [
                     {"title": "Project"},

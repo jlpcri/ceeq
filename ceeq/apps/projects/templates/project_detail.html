@@ -71,14 +71,15 @@
             {% csrf_token %}
             <div class="row" style="margin-top: 30px; margin-bottom: 50px;">
                 <div class="col-md-4">
-
                 </div>
+                {% if superuser %}
                 <div class="col-md-2">
                     <input id="project_new" class="btn btn-primary" type="submit" value="Save" style="width: 100%">
                 </div>
                 <div class="col-md-2">
                     <a href="#deleteModal"  data-toggle="modal" role="button" class="btn btn-default" id="project_delete" style="width: 100%;">Delete</a>
                 </div>
+                {% endif %}
             </div>
         </form>
 
@@ -104,7 +105,18 @@
                 </p>
             </div>
             <div id="component_percentage_pie_chart"></div>
+            {% if project.score > 0 %}
+            <div class="row">
+                <p style="text-align: center">
+                    Export Pie Chart to:
+                    <button id="pdf">PDF</button>
+                    <button id="jpeg">JPEG</button>
+                    <button id="png">PNG</button>
+                </p>
+            </div>
+            {% endif %}
 
+            <br>
             <div class="row">
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
@@ -249,43 +261,71 @@
     <script>
         $(document).ready(function(){
             if (Number({{ project.score }}) > 0 ) {
-            $.getJSON("{% url 'fetch_defects_density_score_pie' project.id %}").done(function(data){
-                $('#component_percentage_pie_chart').highcharts({
-                    chart: {
-                        plotBackgroundColor: null,
-                        plotBorderWidth: null,
-                        plotShadow: false
-                    },
-                    title: {
-                        text: 'Components Impact CEEQ Score'
-                    },
-                    tooltip: {
-                        //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
-                        formatter: function() {
-                            return this.point.name + ": <b>" + this.point.percentage.toFixed(2) + "%</b>";
-                        }
-                    },
-                    plotOptions: {
-                        pie: {
-                            allowPointSelect: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: true,
-                                format: '<b>{point.name}</b>: {point.percentage:.2f}%',
-                                style: {
-                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                $.getJSON("{% url 'fetch_defects_density_score_pie' project.id %}").done(function(data){
+                    $('#component_percentage_pie_chart').highcharts({
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false
+                        },
+                        title: {
+                            text: 'Components Impact CEEQ Score'
+                        },
+                        tooltip: {
+                            //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                            formatter: function() {
+                                return this.point.name + ": <b>" + this.point.percentage.toFixed(2) + "%</b>";
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.percentage:.2f}%',
+                                    style: {
+                                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                    }
                                 }
                             }
-                        }
-                    },
-                    series: [{
-                        type: 'pie',
-                        name: 'Component Contribution',
-                        data: data
-                    }],
-                    credits: false
+                        },
+                        series: [{
+                            type: 'pie',
+                            name: 'Component Contribution',
+                            data: data
+                        }],
+                        navigation: {
+                            buttonOptions: {
+                                enabled: false
+                            }
+                        },
+                        credits: false
+                    });
                 });
-            });
+
+                //button handler
+                $('#pdf').click(function () {
+                    var chart = $('#component_percentage_pie_chart').highcharts();
+                    chart.exportChart({
+                        type: 'application/pdf',
+                        filename: 'my-pdf'
+                    });
+                });
+                $('#jpeg').click(function () {
+                    var chart = $('#component_percentage_pie_chart').highcharts();
+                    chart.exportChart({
+                        type: 'image/jpeg',
+                        filename: 'my-jpeg'
+                    });
+                });
+                $('#png').click(function () {
+                    var chart = $('#component_percentage_pie_chart').highcharts();
+                    chart.exportChart({
+                        type: 'image/png',
+                        filename: 'my-png'
+                    });
+                });
             }
         })
     </script>
