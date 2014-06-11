@@ -123,12 +123,12 @@
                                 <th style="background-color: lightcyan">Component Name</th>
                                 <th style="background-color: lightcyan">Weight</th>
                                 <th style="background-color: lightcyan">Defect Density</th>
-                                <th style="background-color: lavender; text-align: center">Total</th>
                                 <th style="background-color: lavender; text-align: center">Blocker</th>
                                 <th style="background-color: lavender; text-align: center">Critical</th>
                                 <th style="background-color: lavender; text-align: center">Major</th>
                                 <th style="background-color: lavender; text-align: center">Minor</th>
                                 <th style="background-color: lavender; text-align: center">Trivial</th>
+                                <th style="background-color: lavender; text-align: center">SubTotal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,25 +137,35 @@
                                     <td class="col-sm-2">{{ component }}</td>
                                     <td class="col-sm-1">{{ weight|floatformat:3 }}</td>
                                     <td class="col-sm-2">{{ dd|floatformat:3 }}</td>
-                                    <td class="col-sm-1" style="text-align: center">{{ total }}</td>
                                     <td class="col-sm-1" style="text-align: center">{{ blocker }}</td>
                                     <td class="col-sm-1" style="text-align: center">{{ critical }}</td>
                                     <td class="col-sm-1" style="text-align: center">{{ major }}</td>
                                     <td class="col-sm-1" style="text-align: center">{{ minor }}</td>
                                     <td class="col-sm-1" style="text-align: center">{{ trivial }}</td>
+                                    <td class="col-sm-1" style="text-align: center">{{ total }}</td>
                                 </tr>
                             {% endfor %}
-                            <tr><td></td></tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                             <tr>
                                 <td><strong>Total</strong></td>
                                 <td></td>
                                 <td></td>
-                                <td style="text-align: center">{{ priority_total.total }}</td>
                                 <td style="text-align: center">{{ priority_total.blocker }}</td>
                                 <td style="text-align: center">{{ priority_total.critical }}</td>
                                 <td style="text-align: center">{{ priority_total.major }}</td>
                                 <td style="text-align: center">{{ priority_total.minor }}</td>
                                 <td style="text-align: center">{{ priority_total.trivial }}</td>
+                                <td style="text-align: center">{{ priority_total.total }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -169,7 +179,7 @@
                                 <th style="background-color: lightcyan; text-align: center;">Major</th>
                                 <th style="background-color: lightcyan; text-align: center;">Minor</th>
                                 <th style="background-color: lightcyan; text-align: center;">Trivial</th>
-                                <th style="background-color: lightcyan; text-align: center;">Total</th>
+                                <th style="background-color: lightcyan; text-align: center;">SubTotal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -185,6 +195,12 @@
                                 </tr>
                             {% endfor %}
                             <tr>
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                             </tr>
                             <tr>

@@ -1,56 +1,6 @@
 
 {% block body %}
-
-    <div class="container" id="dd_list">
-    <!--
-        <div class="row">
-            <h4>Project Defects Density</h4>
-
-            <select id="select_project"  class="pull-right">
-                <option value="0" disabled="disabled" selected="selected">Please select a project</option>
-                {% for project in projects %}
-                    <option value="{{ project.id }}">{{ project.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <br>
-        <table class="table table-striped table-hover table-condensed table-bordered" style="">
-            <thead>
-                <tr>
-                    <td style="text-align: center"><strong>Project</strong></td>
-                    <td style="text-align: center"><strong>Version</strong></td>
-                    <td style="text-align: center"><strong>Date</strong></td>
-                    <td style="text-align: center"><strong>CXP</strong></td>
-                    <td style="text-align: center"><strong>Outbound</strong></td>
-                    <td style="text-align: center"><strong>Platform</strong></td>
-                    <td style="text-align: center"><strong>Reports</strong></td>
-                    <td style="text-align: center"><strong>Applications</strong></td>
-                    <td style="text-align: center"><strong>Voice Slots</strong></td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for dd in dds %}
-                    <tr>
-                        <td class="col-sm-2">{{ dd.project.name }}</td>
-                        <td class="col-sm-2">{{ dd.version }}</td>
-                        <td class="col-sm-2">{{ dd.created }}</td>
-                        <td class="col-sm-1" style="text-align: center">{{ dd.cxp|floatformat:3 }}</td>
-                        <td class="col-sm-1" style="text-align: center">{{ dd.outbound|floatformat:3 }}</td>
-                        <td class="col-sm-1" style="text-align: center">{{ dd.platform|floatformat:3 }}</td>
-                        <td class="col-sm-1" style="text-align: center">{{ dd.reports|floatformat:3 }}</td>
-                        <td class="col-sm-1" style="text-align: center">{{ dd.applications|floatformat:3 }}</td>
-                        <td class="col-sm-2" style="text-align: center">{{ dd.voiceSlots|floatformat:3 }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    -->
-
-    </div>
+    <div class="container" id="dd_list"></div>
 {% endblock %}
 
-{% block footer %}
-    <script>
-
-    </script>
-{% endblock %}
+{% block footer %}{% endblock %}

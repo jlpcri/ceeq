@@ -77,8 +77,12 @@ def dd_delete(request, dd_id):
     return redirect(reverse('ceeq.apps.users.views.home'))
 
 
-def fetch_dds_json(request):
-    dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
+def fetch_dds_json(request, project_id):
+    if project_id == '1000000':
+        dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
+    else:
+        dds = ProjectComponentsDefectsDensity.objects.filter(project=project_id)
+
     dds_json = []
     for dd in dds:
         temp = []
