@@ -79,9 +79,9 @@ def dd_delete(request, dd_id):
 
 def fetch_dds_json(request, project_id):
     if project_id == '1000000':
-        dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
+        dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version', 'created')
     else:
-        dds = ProjectComponentsDefectsDensity.objects.filter(project=project_id)
+        dds = ProjectComponentsDefectsDensity.objects.filter(project=project_id).order_by('version', 'created')
 
     dds_json = []
     for dd in dds:
