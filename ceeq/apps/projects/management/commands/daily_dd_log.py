@@ -15,8 +15,9 @@ class Command(BaseCommand):
                     project = Project.objects.get(pk=project_id)
                 except Project.DoesNotExist:
                     raise CommandError('Project "%s" does not exist' % project_id)
+                calculate_score(project)
                 defects_density_single_log(None, project)
-                self.stdout.write('Successfully saved Defects Density for project "%s"' % project_id)
+                self.stdout.write('Successfully updated score and saved Defects Density for project "%s"' % project_id)
         else:
             projects = Project.objects.all()
             for project in projects:
