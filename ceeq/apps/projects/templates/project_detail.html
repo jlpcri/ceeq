@@ -104,16 +104,17 @@
                     {% endif %}
                 </p>
             </div>
-            <div id="component_percentage_pie_chart"></div>
+            <div id="component_percentage_pie_chart" style="height: 500px;"></div>
             {% if project.score > 0 %}
-            <div class="row">
-                <p style="text-align: center">
-                    Export Pie Chart to:
-                    <button id="pdf">PDF</button>
-                    <button id="jpeg">JPEG</button>
-                    <button id="png">PNG</button>
-                </p>
-            </div>
+                <br>
+                <div class="row">
+                    <p style="text-align: center">
+                        Export Pie Chart to:
+                        <button id="png">PNG</button>
+                        <button id="jpeg">JPEG</button>
+                        <button id="pdf">PDF</button>
+                    </p>
+                </div>
             {% endif %}
 
             <br>
@@ -125,7 +126,7 @@
 
             {% if weight_factor %}
                 {% if superuser %}
-                    <table class="table table-hover table-striped" id="factor_table" >
+                    <table class="table table-hover table-striped" id="jira_table" >
                         <thead>
                             <tr>
                                 <th colspan="3" style="text-align: center; color: brown">Weighted Factor</th>
@@ -182,7 +183,7 @@
                         </tbody>
                     </table>
                 {% else %}
-                    <table class="table table-hover table-striped" style="width:60%" id="factor_table">
+                    <table class="table table-hover table-striped" style="width:60%" id="jira_table">
                         <thead>
                             <tr>
                                 <th style="background-color: lightcyan; text-align: center;">Component Name</th>
@@ -262,11 +263,87 @@
         $(document).ready(function(){
             if (Number({{ project.score }}) > 0 ) {
                 $.getJSON("{% url 'fetch_defects_density_score_pie' project.id %}").done(function(data){
+                    //Create the data table
+                    Highcharts.drawTable = function() {
+
+                        // user options
+                        var row_label = ['Blocker', 'Critical', 'Major', 'Minor', 'Trivial', 'Subtotal'];
+                        var tableTop = 310,
+                            colWidth = 80,
+                            tableLeft = 20,
+                            rowHeight = 20,
+                            cellPadding = 2.5,
+                            valueDecimals = 3;
+
+                        // internal variables
+                        var chart = this,
+                            renderer = chart.renderer,
+                            cellLeft = tableLeft;
+
+                        // draw components lables
+                        $.each(data[1], function(i, item) {
+                            renderer.text(
+                                item[0],
+                                cellLeft + cellPadding,
+                                tableTop + (i + 2) * rowHeight - cellPadding
+                            )
+                            .css({
+                                fontWeight: 'bold'
+                            })
+                            .add();
+                        });
+
+                        // draw jira priority lables
+                        $.each(row_label, function(i, item) {
+                            cellLeft += colWidth;
+
+                            renderer.text(
+                                item,
+                                cellLeft - cellPadding + colWidth,
+                                tableTop + rowHeight - cellPadding
+                            )
+                            .attr({
+                                align: 'right'
+                            })
+                            .css({
+                                fontWeight: 'bold'
+                            })
+                            .add();
+                        });
+
+                        $.each(data[1], function(row, item){
+                            cellLeft = tableLeft;
+                            //tableTop = tableTop
+
+                            // apply number of jiras
+                            $.each(item, function(i, priority){
+                                cellLeft += colWidth;
+                                if (i > 0){
+                                    renderer.text(
+                                        priority,
+                                        cellLeft - cellPadding,
+                                        tableTop+ (row + 2) * rowHeight -cellPadding
+                                    )
+                                    .attr({
+                                        align: 'left'
+                                    })
+                                    .add();
+                                }
+                            });
+
+                        });
+                    };
+
+
                     $('#component_percentage_pie_chart').highcharts({
                         chart: {
-                            plotBackgroundColor: null,
-                            plotBorderWidth: null,
-                            plotShadow: false
+                            //plotBackgroundColor: null,
+                            //plotBorderWidth: null,
+                            //plotShadow: false,
+                            events: {
+                                load: Highcharts.drawTable
+                            },
+                            borderWidth: 2
                         },
                         title: {
                             text: 'Components Impact CEEQ Score'
@@ -281,6 +358,7 @@
                             pie: {
                                 allowPointSelect: true,
                                 cursor: 'pointer',
+                                center: ['50%', 100],
                                 dataLabels: {
                                     enabled: true,
                                     format: '<b>{point.name}</b>: {point.percentage:.2f}%',
@@ -293,7 +371,7 @@
                         series: [{
                             type: 'pie',
                             name: 'Component Contribution',
-                            data: data
+                            data: data[0]
                         }],
                         navigation: {
                             buttonOptions: {

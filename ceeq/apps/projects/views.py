@@ -689,13 +689,31 @@ def fetch_defects_density_score_pie(request, project_id):
     weight_factor = get_component_defects_density_all(data,
                                                       component_names_without_slash)
     dd_pie_data = []
+    dd_pie_table = []
+    dd_pie_graph = []
 
-    for item in weight_factor:
-        temp = []
-        temp.append(item[0])
-        temp.append(float(item[1]) * float(item[2]))
-        dd_pie_data.append(temp)
+    for item in sorted(weight_factor):
+        temp_graph = []
+        temp_table = []
 
+        temp_graph.append(item[0])
+        temp_graph.append(float(item[1]) * float(item[2]))
+
+        temp_table.append(item[0])
+        temp_table.append(float(item[4]))
+        temp_table.append(float(item[5]))
+        temp_table.append(float(item[6]))
+        temp_table.append(float(item[7]))
+        temp_table.append(float(item[8]))
+        temp_table.append(float(item[3]))
+
+        dd_pie_graph.append(temp_graph)
+        dd_pie_table.append(temp_table)
+
+    dd_pie_data.append(dd_pie_graph)
+    dd_pie_data.append(dd_pie_table)
+
+    #print dd_pie_data[0]
     return HttpResponse(json.dumps(sorted(dd_pie_data)), content_type="application/json")
 
 
