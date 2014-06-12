@@ -93,7 +93,7 @@ def fetch_dds_json(request, project_id):
         temp.append(float(dd.outbound))
         temp.append(float(dd.platform))
         temp.append(float(dd.reports))
-        temp.append(float(dd.applications))
+        temp.append(float(dd.application))
         temp.append(float(dd.voiceSlots))
         dds_json.append(temp)
 

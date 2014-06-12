@@ -10,6 +10,13 @@
             <li>To evaluate the quality of solution</li>
         </div>
 
+        <div id="score_container" style="width: 80%; height: 400px;"></div>
+
+
 {% endblock %}
 
-{% block footer %}{% endblock %}
+{% block footer %}
+    <script>
+        {% include 'project.js' %}
+    </script>
+{% endblock %}

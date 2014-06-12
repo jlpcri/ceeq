@@ -36,7 +36,7 @@ component_names_standard = {'CXP': 2,
                             'Outbound': 1,
                             'Platform': 3,
                             'Reports': 3,
-                            'Applications': 8,
+                            'Application': 8,
                             'Voice Slots': 3,
                             }
 
@@ -638,7 +638,7 @@ def fetch_defects_density_score(request, project_id):
         tmp_data_outbound = []
         tmp_data_platform = []
         tmp_data_reports = []
-        tmp_data_applications = []
+        tmp_data_application = []
 
         for item in project_dds:
             if item.version == version_name:
@@ -649,7 +649,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_data_outbound.append(float(item.outbound))
                 tmp_data_platform.append(float(item.platform))
                 tmp_data_reports.append(float(item.reports))
-                tmp_data_applications.append(float(item.applications))
+                tmp_data_application.append(float(item.application))
 
         data['categories'] = tmp_categories
         data['voiceSlots'] = tmp_data_voiceSlots
@@ -657,7 +657,7 @@ def fetch_defects_density_score(request, project_id):
         data['outbound'] = tmp_data_outbound
         data['platform'] = tmp_data_platform
         data['reports'] = tmp_data_reports
-        data['applications'] = tmp_data_applications
+        data['application'] = tmp_data_application
 
         #change '.' and ' ' to '_' from version names
         dd_trend_data[remove_period_space(version_name)] = data
@@ -750,8 +750,8 @@ def defects_density_single_log(request, project):
                 component_defects_density.platform = component[2]
             elif component[0] == 'Reports':
                 component_defects_density.reports = component[2]
-            elif component[0] == 'Applications':
-                component_defects_density.applications = component[2]
+            elif component[0] == 'application':
+                component_defects_density.application = component[2]
             elif component[0] == 'Voice Slots':
                 component_defects_density.voiceSlots = component[2]
         component_defects_density.save()

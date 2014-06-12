@@ -38,7 +38,7 @@ class ProjectComponentsDefectsDensity(models.Model):
     outbound = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     platform = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     reports = models.DecimalField(max_digits=5, decimal_places=3, default=0)
-    applications = models.DecimalField(max_digits=5, decimal_places=3, default=0)
+    application = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     voiceSlots = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
     class Meta:

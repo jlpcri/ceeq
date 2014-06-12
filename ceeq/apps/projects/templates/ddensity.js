@@ -54,8 +54,8 @@ $(document).ready(function() {
                             name: 'Reports',
                             data: data[key]['reports']
                         },{
-                            name: 'Applications',
-                            data: data[key]['applications']
+                            name: 'Application',
+                            data: data[key]['application']
                         },{
                             name: 'VoiceSlots',
                             data: data[key]['voiceSlots']
@@ -77,7 +77,7 @@ $(document).ready(function() {
                         {"title": "Outbound"},
                         {"title": "Platform"},
                         {"title": "Reports"},
-                        {"title": "Applications"},
+                        {"title": "Application"},
                         {"title": "Voice Slots"}
                     ],
                     "language": {

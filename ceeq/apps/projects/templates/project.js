@@ -18,17 +18,8 @@ function showThrobber() {
 }
 
 function loadActiveDataTab() {
-    if (active_tab == '#projects'){
-        $('#update_all').click(function () {
-            showThrobber();
-        });
-        $('#dd_log_all').click(function () {
-            showThrobber();
-        });
 
-    }
-    else if (active_tab == '#score_overall') {
-        $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
+     $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
             $('#score_container').highcharts({
                 chart: {
                     type: 'bar'
@@ -80,6 +71,17 @@ function loadActiveDataTab() {
                 credits: false
             })
         });
+    if (active_tab == '#projects'){
+        $('#update_all').click(function () {
+            showThrobber();
+        });
+        $('#dd_log_all').click(function () {
+            showThrobber();
+        });
+
+    }
+    else if (active_tab == '#score_overall') {
+
     }
     else if (active_tab == '#framework_parameter'){
 
