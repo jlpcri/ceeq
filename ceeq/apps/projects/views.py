@@ -688,6 +688,24 @@ def fetch_defects_density_score_pie(request, project_id):
 
     weight_factor = get_component_defects_density_all(data,
                                                       component_names_without_slash)
+
+    # calculate total number of issues based on priority
+    priority_total = {
+        'total': 0,
+        'blocker': 0,
+        'critical': 0,
+        'major': 0,
+        'minor': 0,
+        'trivial': 0
+    }
+    for item in weight_factor:
+        priority_total['total'] += item[3]
+        priority_total['blocker'] += item[4]
+        priority_total['critical'] += item[5]
+        priority_total['major'] += item[6]
+        priority_total['minor'] += item[7]
+        priority_total['trivial'] += item[8]
+
     dd_pie_data = []
     dd_pie_table = []
     dd_pie_graph = []
@@ -709,6 +727,17 @@ def fetch_defects_density_score_pie(request, project_id):
 
         dd_pie_graph.append(temp_graph)
         dd_pie_table.append(temp_table)
+
+    temp_table = []
+    temp_table.append('Total')
+    temp_table.append(priority_total['blocker'])
+    temp_table.append(priority_total['critical'])
+    temp_table.append(priority_total['major'])
+    temp_table.append(priority_total['minor'])
+    temp_table.append(priority_total['trivial'])
+    temp_table.append(priority_total['total'])
+
+    dd_pie_table.append(temp_table)
 
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)

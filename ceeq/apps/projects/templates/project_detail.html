@@ -299,7 +299,7 @@
 
                             renderer.text(
                                 item,
-                                cellLeft - cellPadding + colWidth,
+                                cellLeft - cellPadding + colWidth + 30,
                                 tableTop + rowHeight - cellPadding
                             )
                             .attr({
@@ -343,7 +343,7 @@
                             events: {
                                 load: Highcharts.drawTable
                             },
-                            borderWidth: 2
+                            borderWidth: 0
                         },
                         title: {
                             text: 'Components Impact CEEQ Score'
