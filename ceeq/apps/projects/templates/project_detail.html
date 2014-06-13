@@ -333,7 +333,9 @@
                         });
                     };
 
-
+                    Highcharts.setOptions({
+                        colors: ['#CC6600', '#FF0000', '#CCCC00', '#404040', '#990099', '#000033','#663300']
+                    });
                     $('#component_percentage_pie_chart').highcharts({
                         chart: {
                             //plotBackgroundColor: null,
@@ -386,6 +388,8 @@
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'application/pdf',
+                        sourceWidth: 1000,
+                        sourceHeight: 400,
                         filename: 'my-pdf'
                     });
                 });
@@ -393,6 +397,8 @@
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'image/jpeg',
+                        sourceWidth: 1000,
+                        sourceHeight: 400,
                         filename: 'my-jpeg'
                     });
                 });
