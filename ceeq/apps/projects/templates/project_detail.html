@@ -104,7 +104,7 @@
                     {% endif %}
                 </p>
             </div>
-            <div id="component_percentage_pie_chart" ></div>
+            <div id="component_percentage_pie_chart" style="height: 300px;" ></div>
             {% if project.score > 0 %}
                 <div class="row">
                     <p style="text-align: center">
@@ -403,7 +403,7 @@
                     };
 
                     Highcharts.setOptions({
-                        colors: ['#CC6600', '#FF0000', '#CCCC00', '#404040', '#990099', '#000033','#663300']
+                        colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
                     });
                     $('#component_percentage_pie_chart').highcharts({
                         chart: {
@@ -416,7 +416,7 @@
                             borderWidth: 0
                         },
                         title: {
-                            text: 'Components Impact CEEQ Score: ' + {{ project.score}} + ' / 10'
+                            text: '<b>CEEQ Score: ' + {{ project.score}} + ' / 10</b>'
                         },
                         tooltip: {
                             //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
@@ -457,8 +457,8 @@
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'application/pdf',
-                        sourceWidth: 1000,
-                        sourceHeight: 400,
+                        sourceWidth: 900,
+                        sourceHeight: 300,
                         filename: 'my-pdf'
                     });
                 });
@@ -466,8 +466,8 @@
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'image/jpeg',
-                        sourceWidth: 1000,
-                        sourceHeight: 400,
+                        sourceWidth: 900,
+                        sourceHeight: 300,
                         filename: 'my-jpeg'
                     });
                 });
@@ -475,8 +475,8 @@
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'image/png',
-                        sourceWidth: 1000,
-                        sourceHeight: 400,
+                        sourceWidth: 900,
+                        sourceHeight: 300,
                         filename: 'my-png'
                     });
                 });
