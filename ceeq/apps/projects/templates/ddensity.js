@@ -2,7 +2,7 @@ $(document).ready(function() {
             $('#subnav-tabs').find('a[href="#dd_detail"]').tab('show');
 
             Highcharts.setOptions({
-                        colors: ['#CC6600', '#FF0000', '#CCCC00', '#404040', '#990099', '#000033','#663300']
+                        colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
                     });
             $.getJSON("{% url 'fetch_defects_density_score' project.id %}").done(function(data) {
                 for (var key in data){
