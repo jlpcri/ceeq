@@ -104,11 +104,11 @@
                     {% endif %}
                 </p>
             </div>
-            <div id="component_percentage_pie_chart" style="height: 300px;" ></div>
+            <div id="component_percentage_pie_chart" style="width: 1050px; height: 300px;" ></div>
             {% if project.score > 0 %}
                 <div class="row">
                     <p style="text-align: center">
-                        Export Pie Chart to:
+                        Export Graph to:
                         <button id="png">PNG</button>
                         <button id="jpeg">JPEG</button>
                         <button id="pdf">PDF</button>
@@ -268,9 +268,9 @@
                         // user options
                         var row_label = ['Blocker', 'Critical', 'Major', 'Minor', 'Trivial', 'Subtotal'];
                         var tableTop = 80,
-                            colWidth = 60,
-                            tableLeft = 20,
-                            rowHeight = 20,
+                            colWidth = 70,
+                            tableLeft = 0,
+                            rowHeight = 25,
                             cellPadding = 2.5,
                             valueDecimals = 3;
 
@@ -287,7 +287,8 @@
                                 tableTop + (i + 2) * rowHeight - cellPadding
                             )
                             .css({
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                fontSize: '12pt'
                             })
                             .add();
                         });
@@ -305,7 +306,8 @@
                                 align: 'center'
                             })
                             .css({
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                fontSize: '12pt'
                             })
                             .add();
                         });
@@ -324,6 +326,9 @@
                                     )
                                     .attr({
                                         align: 'center'
+                                    })
+                                    .css({
+                                        fontSize: '12pt'
                                     })
                                     .add();
                                 }
@@ -416,7 +421,11 @@
                             borderWidth: 0
                         },
                         title: {
-                            text: '<b>CEEQ Score: ' + {{ project.score}} + ' / 10</b>'
+                            text: '<b>CEEQ Score: ' + {{ project.score}} + ' / 10</b>',
+                            style: {
+                                fontSize: '18pt',
+                                color: '#000000'
+                            }
                         },
                         tooltip: {
                             //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
@@ -429,6 +438,7 @@
                                 allowPointSelect: true,
                                 cursor: 'pointer',
                                 center: ['80%', 100],
+                                size: '70%',
                                 dataLabels: {
                                     enabled: true,
                                     format: '<b>{point.name}</b>: {point.percentage:.2f}%',
@@ -475,8 +485,8 @@
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'image/png',
-                        sourceWidth: 900,
-                        sourceHeight: 300,
+                        //sourceWidth: 1000,
+                        //sourceHeight: 300,
                         filename: 'my-png'
                     });
                 });
