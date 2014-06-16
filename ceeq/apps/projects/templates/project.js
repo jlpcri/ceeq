@@ -18,61 +18,7 @@ function showThrobber() {
 }
 
 function loadActiveDataTab() {
-    Highcharts.setOptions({
-        colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
-    });
-    $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
-        $('#score_container').highcharts({
-            chart: {
-                type: 'bar'
-            },
-            title: {
-                text: 'Comprehensive End to End Quality Overall'
-            },
-            xAxis: {
-                title: {
-                    text: 'Projects'
-                },
-                categories: data['categories']
-            },
-            yAxis: {
-                min: 0,
-                max: 10,
-                title: {
-                    text: 'CEEQ Score'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                bar: {
-                    colorByPoint: true,
-                    dataLabels: {
-                        enabled:true,
-                        align:"right",
-                        color:"#FFFFFF",
-                        x:-10,
-                        y:-1
-                    }
-                }
-            },
-            series: [{
-                data: data['score'].map(Number)
-            }],
-            tooltip: {
-                formatter: function() {
-                    return this.x + ': ' + this.y
-                }
-            },
-            navigation: {
-                buttonOptions: {
-                    enabled: false
-                }
-            },
-            credits: false
-        })
-    });
+
     if (active_tab == '#projects'){
         $('#update_all').click(function () {
             showThrobber();
@@ -83,7 +29,61 @@ function loadActiveDataTab() {
 
     }
     else if (active_tab == '#score_overall') {
-
+        Highcharts.setOptions({
+        colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
+        });
+        $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
+            $('#score_container').highcharts({
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Comprehensive End to End Quality Overall'
+                },
+                xAxis: {
+                    title: {
+                        text: 'Projects'
+                    },
+                    categories: data['categories']
+                },
+                yAxis: {
+                    min: 0,
+                    max: 10,
+                    title: {
+                        text: 'CEEQ Score'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    bar: {
+                        colorByPoint: true,
+                        dataLabels: {
+                            enabled:true,
+                            align:"right",
+                            color:"#FFFFFF",
+                            x:-10,
+                            y:-1
+                        }
+                    }
+                },
+                series: [{
+                    data: data['score'].map(Number)
+                }],
+                tooltip: {
+                    formatter: function() {
+                        return this.x + ': ' + this.y
+                    }
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                },
+                credits: false
+            })
+        });
     }
     else if (active_tab == '#framework_parameter'){
 
@@ -323,7 +323,7 @@ function loadActiveDataTab() {
                     {"title": "Outbound"},
                     {"title": "Platform"},
                     {"title": "Reports"},
-                    {"title": "Applications"},
+                    {"title": "Application"},
                     {"title": "Voice Slots"}
                 ],
                 "language": {

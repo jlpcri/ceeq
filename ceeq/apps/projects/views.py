@@ -797,7 +797,7 @@ def defects_density_single_log(request, project):
                 component_defects_density.platform = component[2]
             elif component[0] == 'Reports':
                 component_defects_density.reports = component[2]
-            elif component[0] == 'application':
+            elif component[0] == 'Application':
                 component_defects_density.application = component[2]
             elif component[0] == 'Voice Slots':
                 component_defects_density.voiceSlots = component[2]
