@@ -463,31 +463,35 @@
                 });
 
                 //button handler
+                var today = new Date();
                 $('#pdf').click(function () {
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'application/pdf',
-                        sourceWidth: 900,
-                        sourceHeight: 300,
-                        filename: 'my-pdf'
+                        scale: 1,
+                        //sourceWidth: 900,
+                        //sourceHeight: 300,
+                        filename: '{{ project.name}}-' + today.toLocaleDateString()
                     });
                 });
                 $('#jpeg').click(function () {
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'image/jpeg',
-                        sourceWidth: 900,
-                        sourceHeight: 300,
-                        filename: 'my-jpeg'
+                        scale: 1,
+                        //sourceWidth: 900,
+                        //sourceHeight: 300,
+                        filename: '{{ project.name}}-' + today.toLocaleDateString()
                     });
                 });
                 $('#png').click(function () {
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'image/png',
+                        scale: 1,
                         //sourceWidth: 1000,
                         //sourceHeight: 300,
-                        filename: 'my-png'
+                        filename: '{{ project.name}}-' + today.toLocaleDateString()
                     });
                 });
             }

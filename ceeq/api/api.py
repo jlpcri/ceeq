@@ -8,7 +8,7 @@ from ceeq.apps.projects.models import Project, ProjectComponentsDefectsDensity, 
 
 
 class ProjectResource(ModelResource):
-    factors = fields.ToManyField('ceeq.api.api.FactorResource',
+    ddensity = fields.ToManyField('ceeq.api.api.ComponentsDefectsDensityResource',
                                  attribute=lambda bundle: ProjectComponentsDefectsDensity.objects.filter(project=bundle.obj),
                                  full=False,
                                  null=True
@@ -18,7 +18,7 @@ class ProjectResource(ModelResource):
         queryset = Project.objects.all()
         resource_name = 'project'
         authorization = Authorization()
-        fields = ['name', 'url', 'modified']
+        fields = ['name', 'url', 'score']
         allowed_methods = ['get', 'post', 'put', 'delete']
 
 
