@@ -83,14 +83,24 @@
             </div>
         </form>
 
-        {% if no_jira_data %}
+        {% if project.score < 0 %}
             <h4>No JIRA Data fetched.</h4>
+            {% if project.score == -1 %}
+                No created issues
+            {% elif project.score == -2 %}
+                Out of Range
+            {% elif project.score == -3 %}
+                No open issues
+            {% elif project.score == -4 %}
+                No JIRA Data
+            {% elif project.score == -9 %}
+                No evaluate
+            {% endif %}
         {% else %}
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
-
             </div>
-            <div id="component_percentage_pie_chart" style="width: 900px; height: 300px;" ></div>
+            <div id="component_percentage_pie_chart" style="width: 1000px; height: 300px;" ></div>
             {% if project.score > 0 %}
                 <div class="row">
                     <p style="text-align: center">
@@ -106,19 +116,7 @@
             <div class="row">
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>
-                    {% if project.score == -1 %}
-                        No created issues
-                    {% elif project.score == -2 %}
-                        Out of Range
-                    {% elif project.score == -3 %}
-                        No open issues
-                    {% elif project.score == -4 %}
-                        No JIRA Data
-                    {% elif project.score == -9 %}
-                        No evaluate
-                    {% else %}
-                        Project CEEQ Score: <strong>{{ project.score }}</strong>
-                    {% endif %}
+                    Project CEEQ Score: <strong>{{ project.score }}</strong>
                 </p>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
                 <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
@@ -392,8 +390,8 @@
                             pie: {
                                 allowPointSelect: true,
                                 cursor: 'pointer',
-                                center: ['76%', 100],
-                                size: '65%',
+                                center: ['77%', 100],
+                                size: '70%',
                                 dataLabels: {
                                     enabled: true,
                                     format: '<b>{point.name}</b>: {point.percentage:.2f}%',
