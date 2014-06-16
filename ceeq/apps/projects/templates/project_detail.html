@@ -464,14 +464,13 @@
 
                 //button handler
                 var today = new Date();
+                var export_filename = '{{ project.name}}' + '-' +today.toLocaleDateString();
                 $('#pdf').click(function () {
                     var chart = $('#component_percentage_pie_chart').highcharts();
                     chart.exportChart({
                         type: 'application/pdf',
                         scale: 1,
-                        //sourceWidth: 900,
-                        //sourceHeight: 300,
-                        filename: '{{ project.name}}-' + today.toLocaleDateString()
+                        filename: export_filename
                     });
                 });
                 $('#jpeg').click(function () {
@@ -479,9 +478,7 @@
                     chart.exportChart({
                         type: 'image/jpeg',
                         scale: 1,
-                        //sourceWidth: 900,
-                        //sourceHeight: 300,
-                        filename: '{{ project.name}}-' + today.toLocaleDateString()
+                        filename: export_filename
                     });
                 });
                 $('#png').click(function () {
@@ -491,7 +488,7 @@
                         scale: 1,
                         //sourceWidth: 1000,
                         //sourceHeight: 300,
-                        filename: '{{ project.name}}-' + today.toLocaleDateString()
+                        filename: export_filename
                     });
                 });
             }
