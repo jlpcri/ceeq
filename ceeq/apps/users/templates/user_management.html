@@ -76,7 +76,7 @@
     <script type="text/javascript">
         function deleteModal (username, user_id) {
             $('#deleteTitle').text('Delete user: \"' + username + '\" ?');
-            $('#deleteProfileButton').attr('href', '/quality/user_delete/' + user_id);
+            $('#deleteProfileButton').attr('href', '/ceeq/user_delete/' + user_id);
             if (user_id == {{ current_user_id }}) {
                 $('#deleteSelfWarning').show();
             } else {
