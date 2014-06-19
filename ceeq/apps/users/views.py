@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template import RequestContext
 
 from models import UserSettings
-from forms import UserSettingsForm
 
 
 def user_is_superuser(user):
@@ -100,29 +99,40 @@ def user_delete(request, user_id):
 def user_settings(request):
     UserSettings.objects.get_or_create(user=request.user)
     user_settings = request.user.usersettings
-    form = UserSettingsForm(initial={
-        'bug': user_settings.bug,
-        'new_feature': user_settings.new_feature,
-        'task': user_settings.task,
-        'improvement': user_settings.improvement
-    })
+
 
     context = RequestContext(request, {
-        'form': form
+        'user_settings': user_settings
     })
     return render(request, 'user_settings.html', context)
 
 
 def user_settings_update(request):
     if request.method == 'POST':
-        form = UserSettingsForm(request.POST)
         user = User.objects.get(pk=request.user.pk)
 
-        if form.is_valid():
-            user.usersettings.bug = form.cleaned_data['bug']
+        if request.POST.get('bug'):
+            if request.POST.get('improvement'):
+                user.usersettings.improvement = True
+            else:
+                user.usersettings.improvement = False
+
+            if request.POST.get('new_feature'):
+                user.usersettings.new_feature = True
+            else:
+                user.usersettings.new_feature = False
+
+            if request.POST.get('task'):
+                user.usersettings.task = True
+            else:
+                user.usersettings.task = False
+
             user.usersettings.save()
             messages.success(request, 'Your settings have been saved.')
-            return redirect('user_settings')
+            #return redirect('user_settings')
         else:
-            messages.error(request, 'Form data invalid.')
-            return redirect('user_settings')
+            messages.error(request, 'Issue type Bug should be selected.')
+        return redirect('user_settings')
+    else:
+        messages.error(request, 'Sorry, your seetings cannot be saved.')
+        return redirect('user_settings')
