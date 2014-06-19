@@ -9,4 +9,6 @@ urlpatterns = patterns('ceeq.apps.users.views',
     url(r'^user_update/(?P<user_id>\d+)/$', 'user_update', name='user_update'),
     url(r'^user_delete/(?P<user_id>\d+)/$', 'user_delete', name='user_delete'),
 
+    url(r'^user_settings/$', 'user_settings', name='user_settings'),
+    url(r'^user_settings_update/$', 'user_settings_update', name='user_settings_update'),
 )

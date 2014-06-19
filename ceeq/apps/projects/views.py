@@ -420,7 +420,7 @@ def project_update_scores(request, project_id):
 
 
 def fetch_jira_data(jira_name):
-    url = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions&jql=project=' + jira_name
+    url = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions,issuetype&jql=project=' + jira_name
     data = requests.get(url, auth=('readonly_sliu_api_user', 'qualityengineering')).json()
     if len(data) == 2:
         if data['errorMessages']:
@@ -589,7 +589,8 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
     for item in jira_data:
         try:
             component = item['fields']['components'][0]['name']
-            if item['fields']['status']['id'] in ['1', '3', '4', '5', '10001', '10003']:
+            if item['fields']['status']['id'] in ['1', '3', '4', '5', '10001', '10003'] and \
+                    item['fields']['issuetype']['id'] in ['1', '4']:
             # 1-open, 3-In progress, 4-reopen, 5-resolved, 10001-UAT testing, 10003-Discovery
                 if item['fields']['priority']['id'] == '1':
                     data[component]['blocker'] += 1
