@@ -100,7 +100,6 @@ def user_settings(request):
     UserSettings.objects.get_or_create(user=request.user)
     user_settings = request.user.usersettings
 
-
     context = RequestContext(request, {
         'user_settings': user_settings
     })
@@ -129,10 +128,9 @@ def user_settings_update(request):
 
             user.usersettings.save()
             messages.success(request, 'Your settings have been saved.')
-            #return redirect('user_settings')
         else:
             messages.error(request, 'Issue type Bug should be selected.')
         return redirect('user_settings')
     else:
-        messages.error(request, 'Sorry, your seetings cannot be saved.')
+        messages.error(request, 'Sorry, your settings cannot be saved.')
         return redirect('user_settings')

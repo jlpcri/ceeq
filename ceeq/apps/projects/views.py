@@ -45,6 +45,9 @@ def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     form = ProjectForm(instance=project)
 
+    # calculate latest CEEQ score
+    calculate_score(request, project)
+
     component_names = []
     component_names_without_slash = []
     version_names = []
@@ -565,6 +568,8 @@ def calculate_score(request, project):
     else:
         project.score = round(score, 2)
     project.save()
+
+    return round(score, 2)
 
 
 def issue_counts_compute(request, component_names, component_names_without_slash, jira_data):
