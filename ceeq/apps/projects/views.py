@@ -73,7 +73,7 @@ def project_detail(request, project_id):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    data = issue_counts_compute(component_names, component_names_without_slash, jira_data['issues'])
+    data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
 
     weight_factor = get_component_defects_density_all(data,
                                                       component_names_without_slash)
@@ -134,7 +134,7 @@ def project_defects_density(request, project_id):
         })
         return render(request, 'projects_dd_start.html', context)
     else:
-        weight_factor_versions = get_component_defects_density(jira_data)
+        weight_factor_versions = get_component_defects_density(request, jira_data)
 
     context = RequestContext(request, {
         'project': project,
@@ -230,7 +230,7 @@ def get_component_defects_density_all(data, component_names_without_slash):
     return weight_factor
 
 
-def get_component_defects_density(jira_data):
+def get_component_defects_density(request, jira_data):
     version_names = []
     for item in jira_data['issues']:
         try:
@@ -273,7 +273,7 @@ def get_component_defects_density(jira_data):
         component_names = list(OrderedDict.fromkeys(component_names))
         component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-        data = issue_counts_compute(component_names, component_names_without_slash, version_data[key])
+        data = issue_counts_compute(request, component_names, component_names_without_slash, version_data[key])
 
         #calculate issues number of components and sub-components
         for component in component_names_without_slash:
@@ -406,10 +406,10 @@ def project_update_scores(request, project_id):
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects:
-            calculate_score(project)
+            calculate_score(request, project)
     else:
         project = get_object_or_404(Project, pk=project_id)
-        calculate_score(project)
+        calculate_score(request, project)
 
     context = RequestContext(request, {
         'projects': projects,
@@ -429,7 +429,7 @@ def fetch_jira_data(jira_name):
         return data
 
 
-def calculate_score(project):
+def calculate_score(request, project):
     # Get component names for autocomplete
     component_names = []
     component_names_without_slash = []
@@ -451,7 +451,7 @@ def calculate_score(project):
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
     # Construct # of different priority issues dict from jira_data
-    data = issue_counts_compute(component_names, component_names_without_slash, jira_data['issues'])
+    data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
 
     #get framework parameter
     parameter = {}
@@ -567,7 +567,7 @@ def calculate_score(project):
     project.save()
 
 
-def issue_counts_compute(component_names, component_names_without_slash, jira_data):
+def issue_counts_compute(request, component_names, component_names_without_slash, jira_data):
     data = {}
     issue_counts = {
         'total': 0,
@@ -586,11 +586,21 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
         else:
             data[item] = issue_counts.copy()
 
+    #construct isstype filter
+    # 1-Bug, 2-New Feature, 3-Task, 4-Improvement
+    issue_types = ['1']
+    if request.user.usersettings.new_feature:
+        issue_types.append('2')
+    if request.user.usersettings.task:
+        issue_types.append('3')
+    if request.user.usersettings.improvement:
+        issue_types.append('4')
+
     for item in jira_data:
         try:
             component = item['fields']['components'][0]['name']
             if item['fields']['status']['id'] in ['1', '3', '4', '5', '10001', '10003'] and \
-                    item['fields']['issuetype']['id'] in ['1', '4']:
+                    item['fields']['issuetype']['id'] in issue_types:
             # 1-open, 3-In progress, 4-reopen, 5-resolved, 10001-UAT testing, 10003-Discovery
                 if item['fields']['priority']['id'] == '1':
                     data[component]['blocker'] += 1
@@ -685,7 +695,7 @@ def fetch_defects_density_score_pie(request, project_id):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    data = issue_counts_compute(component_names, component_names_without_slash, jira_data['issues'])
+    data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
 
     weight_factor = get_component_defects_density_all(data,
                                                       component_names_without_slash)
@@ -780,7 +790,7 @@ def defects_density_single_log(request, project):
         })
         return render(request, 'projects_dd_start.html', context)
     else:
-        weight_factor_versions = get_component_defects_density(jira_data)
+        weight_factor_versions = get_component_defects_density(request, jira_data)
 
     today = date.today()
     for item in weight_factor_versions:
