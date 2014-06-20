@@ -526,8 +526,6 @@ def calculate_score(request, project):
         except KeyError:
             continue
 
-    #print component_names_without_slash
-
     for item in component_names_without_slash:
         try:
             weight = round(component_names_standard[item] / float(weight_factor_base), 3)
@@ -755,8 +753,7 @@ def fetch_defects_density_score_pie(request, project_id):
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
 
-    #print dd_pie_data[0]
-    return HttpResponse(json.dumps(sorted(dd_pie_data)), content_type="application/json")
+    return HttpResponse(json.dumps(dd_pie_data), content_type="application/json")
 
 
 def defects_density_log(request, project_id):
