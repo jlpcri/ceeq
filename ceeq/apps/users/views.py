@@ -18,6 +18,10 @@ def sign_in(request):
         if user:
             if user.is_active:
                 login(request, user)
+                try:
+                    UserSettings.objects.get(user=user)
+                except UserSettings.DoesNotExist:
+                    UserSettings.objects.create(user=user)
                 if request.GET.get('next'):
                     return redirect(request.GET['next'])
                 else:
