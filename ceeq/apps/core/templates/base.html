@@ -129,7 +129,11 @@
                                 <i class="fa fa-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu navbar-dropdown-menu">
-                                <li><a href="{% url 'user_settings' %}"><i class="fa fa-gear"></i> User Settings</a> </li>
+                                <!-- open user setting to Steven D Pratt-->
+                                {% if user.is_superuser or user.username == 'sdpratt'%}
+                                    <li><a href="{% url 'user_settings' %}"><i class="fa fa-gear"></i> User Settings</a> </li>
+                                {% endif %}
+
                                 {% if user.is_superuser %}
                                     <li><a href="{% url 'user_management' %}"><i class="fa fa-wrench"></i> User Management</a> </li>
                                 {% endif %}

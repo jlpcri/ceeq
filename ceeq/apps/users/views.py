@@ -131,7 +131,7 @@ def user_settings_update(request):
                 user.usersettings.task = False
 
             user.usersettings.save()
-            messages.success(request, 'Your settings have been saved.')
+            messages.success(request, 'Your settings have been saved. Need update CEEQ score.')
         else:
             messages.error(request, 'Issue type Bug should be selected.')
         return redirect('user_settings')
