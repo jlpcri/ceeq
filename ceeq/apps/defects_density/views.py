@@ -52,7 +52,7 @@ def dd_edit(request, dd_id):
             except ProjectComponentsDefectsDensity.DoesNotExist:
                 dd = form.save()
             messages.success(request, "Project Component Defect Density is saved.")
-            return redirect(dd_all)
+            return redirect('project_defects_density', dd.project.id)
         else:
             messages.error(request, "Correct errors in the form.")
             context = RequestContext(request, {

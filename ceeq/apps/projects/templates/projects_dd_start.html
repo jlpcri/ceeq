@@ -7,6 +7,7 @@
         <ul id="subnav-tabs" class="nav nav-tabs">
             <li><a href="#dd_detail" data-toggle="tab">Current Defects Density</a> </li>
             <li><a href="#dd_trend" data-toggle="tab">Trending Defects Density</a> </li>
+            <li><a href="#ceeq_trend" data-toggle="tab">Trending CEEQ Score</a> </li>
             <li><a href="#dd_history" data-toggle="tab">History Defects Density</a> </li>
         </ul>
     </div>
@@ -19,6 +20,10 @@
 
             <div class="tab-pane" id="dd_trend">
                 {% include 'project_dd_trend.html' %}
+            </div>
+
+            <div class="tab-pane" id="ceeq_trend">
+                {% include 'project_ceeq_trend.html' %}
             </div>
 
             <div class="tab-pane" id="dd_history">

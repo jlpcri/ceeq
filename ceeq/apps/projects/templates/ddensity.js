@@ -63,6 +63,51 @@ $(document).ready(function() {
                         }],
                         credits: false
                     });
+                    $("#ceeq_trend_graph_"+key).highcharts({
+                        title: {
+                            text: 'Defects Density Trending Graph',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: 'Affected Version:'+key,
+                            x: -20
+                        },
+                        xAxis: {
+                            title: {
+                                text: 'Timeline'
+                            },
+                            categories: data[key]['categories']
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Defects Density score'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: ''
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAligh: 'middle',
+                            borderWidth: 0
+                        },
+                        navigation: {
+                            buttonOptions: {
+                                enabled: false
+                            }
+                        },
+                        series: [{
+                            name: 'CEEQ',
+                            data: data[key]['outbound']
+                        }],
+                        credits: false
+                    });
                 }
             });
 

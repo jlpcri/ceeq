@@ -1,0 +1,25 @@
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <legend>Project Information</legend>
+            <p><strong>Project Name: </strong>{{ project.name }}</p>
+
+            <br>
+        </div>
+
+
+
+        {% for version_name in version_names %}
+            <h3>Version: {{ version_name }}</h3>
+            <div id="ceeq_trend_graph_{{ version_name }}"></div>
+        {% endfor %}
+
+        <div id="version_key"></div>
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
