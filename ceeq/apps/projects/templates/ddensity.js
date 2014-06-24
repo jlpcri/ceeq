@@ -65,7 +65,7 @@ $(document).ready(function() {
                     });
                     $("#ceeq_trend_graph_"+key).highcharts({
                         title: {
-                            text: 'Defects Density Trending Graph',
+                            text: 'CEEQ Score Trending Graph',
                             x: -20 //center
                         },
                         subtitle: {
@@ -80,7 +80,7 @@ $(document).ready(function() {
                         },
                         yAxis: {
                             title: {
-                                text: 'Defects Density score'
+                                text: 'CEEQ Score'
                             },
                             plotLines: [{
                                 value: 0,
