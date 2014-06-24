@@ -33,8 +33,8 @@ def projects(request):
 
 # pre-define Standard Component Name and its comparison ratio
 component_names_standard = {'CXP': 2,
-                            'Outbound': 1,
-                            'Platform': 3,
+                            #'Outbound': 1,
+                            'Platform': 4,
                             'Reports': 3,
                             'Application': 8,
                             'Voice Slots': 3,
@@ -798,11 +798,11 @@ def defects_density_single_log(request, project):
         except ProjectComponentsDefectsDensity.DoesNotExist:
             component_defects_density = ProjectComponentsDefectsDensity(project=project, version=item, created=today)
         for component in weight_factor_versions[item]:
-            #print item, component[0], component[2]
+            print item, component[0], component[2]
             if component[0] == 'CXP':
                 component_defects_density.cxp = component[2]
-            elif component[0] == 'Outbound':
-                component_defects_density.outbound = component[2]
+            #elif component[0] == 'Outbound':
+            #    component_defects_density.outbound = component[2]
             elif component[0] == 'Platform':
                 component_defects_density.platform = component[2]
             elif component[0] == 'Reports':

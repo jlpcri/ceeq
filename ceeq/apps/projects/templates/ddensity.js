@@ -49,9 +49,6 @@ $(document).ready(function() {
                             name: 'CXP',
                             data: data[key]['cxp']
                         },{
-                            name: 'Outbound',
-                            data: data[key]['outbound']
-                        },{
                             name: 'Platform',
                             data: data[key]['platform']
                         },{
@@ -78,11 +75,11 @@ $(document).ready(function() {
                         {"title": "Version"},
                         {"title": "Date"},
                         {"title": "CXP"},
-                        {"title": "Outbound"},
                         {"title": "Platform"},
                         {"title": "Reports"},
                         {"title": "Application"},
-                        {"title": "Voice Slots"}
+                        {"title": "Voice Slots"},
+                        {"title": "CEEQ"}
                     ],
                     "language": {
                         "decimal": ",",

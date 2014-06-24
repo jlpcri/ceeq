@@ -28,8 +28,8 @@
                     <tr>
                         <td style="text-align: center"><strong>Version</strong></td>
                         <td style="text-align: center"><strong>Date</strong></td>
+                        <td style="text-align: center"><strong>CEEQ</strong></td>
                         <td style="text-align: center"><strong>CXP</strong></td>
-                        <td style="text-align: center"><strong>Outbound</strong></td>
                         <td style="text-align: center"><strong>Platform</strong></td>
                         <td style="text-align: center"><strong>Reports</strong></td>
                         <td style="text-align: center"><strong>Application</strong></td>
@@ -42,8 +42,8 @@
                         <tr>
                             <td class="col-sm-2" style="text-align: center">{{ dd.version }}</td>
                             <td class="col-sm-2" style="text-align: center">{{ dd.created }}</td>
+                            <td class="col-sm-2" style="text-align: center">{{ dd.outbound|floatformat:3 }}</td>
                             <td class="col-sm-1" style="text-align: center">{{ dd.cxp|floatformat:3 }}</td>
-                            <td class="col-sm-1" style="text-align: center">{{ dd.outbound|floatformat:3 }}</td>
                             <td class="col-sm-1" style="text-align: center">{{ dd.platform|floatformat:3 }}</td>
                             <td class="col-sm-1" style="text-align: center">{{ dd.reports|floatformat:3 }}</td>
                             <td class="col-sm-1" style="text-align: center">{{ dd.application|floatformat:3 }}</td>

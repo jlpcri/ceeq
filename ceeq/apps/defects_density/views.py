@@ -90,11 +90,12 @@ def fetch_dds_json(request, project_id):
         temp.append(dd.version)
         temp.append(str(dd.created))
         temp.append(float(dd.cxp))
-        temp.append(float(dd.outbound))
         temp.append(float(dd.platform))
         temp.append(float(dd.reports))
         temp.append(float(dd.application))
         temp.append(float(dd.voiceSlots))
+        temp.append(float(dd.outbound))  # outbound as ceeq score
+
         dds_json.append(temp)
 
     return HttpResponse(json.dumps(dds_json), content_type="application/json")

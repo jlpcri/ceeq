@@ -45,7 +45,7 @@ def home(request):
     return render(request, 'home.html')
 
 
-@user_passes_test(user_is_superuser)
+#@user_passes_test(user_is_superuser)
 def user_management(request):
     users = User.objects.all().order_by('username')
     current_user_id = request.user.id
@@ -58,7 +58,7 @@ def user_management(request):
     return render(request, 'user_management.html', context)
 
 
-@user_passes_test(user_is_superuser)
+#@user_passes_test(user_is_superuser)
 def user_update(request, user_id):
     if request.method == "POST":
         user = get_object_or_404(User, pk=user_id)

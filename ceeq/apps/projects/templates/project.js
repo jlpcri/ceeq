@@ -320,11 +320,11 @@ function loadActiveDataTab() {
                     {"title": "Version"},
                     {"title": "Date"},
                     {"title": "CXP"},
-                    {"title": "Outbound"},
                     {"title": "Platform"},
                     {"title": "Reports"},
                     {"title": "Application"},
-                    {"title": "Voice Slots"}
+                    {"title": "Voice Slots"},
+                    {"title": "CEEQ"}
                 ],
                 "language": {
                     "decimal": ",",
