@@ -15,7 +15,7 @@ class Command(BaseCommand):
                     project = Project.objects.get(pk=project_id)
                 except Project.DoesNotExist:
                     raise CommandError('Project "%s" does not exist' % project_id)
-                calculate_score(project)
+                calculate_score(None, project)
                 defects_density_single_log(None, project)
                 self.stdout.write('Successfully updated score and saved Defects Density for project "%s"' % project.name)
         else:
@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 if project.score < 0:
                     continue
                 else:
-                    calculate_score(project)
+                    calculate_score(None, project)
                     defects_density_single_log(None, project)
 
             self.stdout.write("All projects Score updated, and Defects Density saved")

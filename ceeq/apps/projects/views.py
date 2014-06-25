@@ -590,12 +590,13 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     #construct isstype filter
     # 1-Bug, 2-New Feature, 3-Task, 4-Improvement
     issue_types = ['1']
-    if request.user.usersettings.new_feature:
-        issue_types.append('2')
-    if request.user.usersettings.task:
-        issue_types.append('3')
-    if request.user.usersettings.improvement:
-        issue_types.append('4')
+    if request: # daily_dd_log: request=None
+        if request.user.usersettings.new_feature:
+            issue_types.append('2')
+        if request.user.usersettings.task:
+            issue_types.append('3')
+        if request.user.usersettings.improvement:
+            issue_types.append('4')
 
     for item in jira_data:
         try:
