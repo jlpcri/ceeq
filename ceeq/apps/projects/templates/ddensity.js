@@ -63,9 +63,10 @@ $(document).ready(function() {
                         }],
                         credits: false
                     });
+
                     $("#ceeq_trend_graph_"+key).highcharts({
                         title: {
-                            text: 'CEEQ Score Trending Graph',
+                            text: 'CEEQ Score Average: <b>' + data[key]['ceeq_average'] + ' / 10</b>',
                             x: -20 //center
                         },
                         subtitle: {
@@ -107,6 +108,34 @@ $(document).ready(function() {
                             data: data[key]['ceeq']
                         }],
                         credits: false
+                    });
+
+                    //button handler
+                    var today = new Date();
+                    var export_filename = '{{ project.name }}' + '-' + today.toLocaleDateString();
+                    $('#pdf_'+key).click(function(){
+                        var chart = $('#ceeq_trend_graph_'+key).highcharts();
+                        chart.exportChart({
+                            type: 'application/pdf',
+                            scale: 1,
+                            filename: export_filename
+                        });
+                    });
+                    $('#jpeg_'+key).click(function(){
+                        var chart = $('#ceeq_trend_graph_'+key).highcharts();
+                        chart.exportChart({
+                            type: 'image/jpeg',
+                            scale: 1,
+                            filename: export_filename
+                        });
+                    });
+                    $('#png_'+key).click(function(){
+                        var chart = $('#ceeq_trend_graph_'+key).highcharts();
+                        chart.exportChart({
+                            type: 'image/png',
+                            scale: 1,
+                            filename: export_filename
+                        });
                     });
                 }
             });

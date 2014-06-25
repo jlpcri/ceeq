@@ -648,10 +648,13 @@ def fetch_defects_density_score(request, project_id):
 
         tmp_data_voiceSlots = []
         tmp_data_cxp = []
-        tmp_data_ceeq = []
         tmp_data_platform = []
         tmp_data_reports = []
         tmp_data_application = []
+
+        tmp_data_ceeq = []
+        tmp_data_ceeq_count = 0
+        tmp_data_ceeq_sum = 0
 
         for item in project_dds:
             if item.version == version_name:
@@ -660,18 +663,23 @@ def fetch_defects_density_score(request, project_id):
 
                 tmp_data_voiceSlots.append(float(item.voiceSlots))
                 tmp_data_cxp.append(float(item.cxp))
-                tmp_data_ceeq.append(float(item.ceeq))
                 tmp_data_platform.append(float(item.platform))
                 tmp_data_reports.append(float(item.reports))
                 tmp_data_application.append(float(item.application))
 
+                tmp_data_ceeq.append(float(item.ceeq))
+                tmp_data_ceeq_count += 1
+                tmp_data_ceeq_sum += item.ceeq
+
         data['categories'] = tmp_categories
         data['voiceSlots'] = tmp_data_voiceSlots
         data['cxp'] = tmp_data_cxp
-        data['ceeq'] = tmp_data_ceeq
         data['platform'] = tmp_data_platform
         data['reports'] = tmp_data_reports
         data['application'] = tmp_data_application
+
+        data['ceeq'] = tmp_data_ceeq
+        data['ceeq_average'] = round(float(tmp_data_ceeq_sum / tmp_data_ceeq_count), 2)
 
         #change '.' and ' ' to '_' from version names
         dd_trend_data[remove_period_space(version_name)] = data
