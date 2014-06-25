@@ -104,7 +104,7 @@ $(document).ready(function() {
                         },
                         series: [{
                             name: 'CEEQ',
-                            data: data[key]['outbound']
+                            data: data[key]['ceeq']
                         }],
                         credits: false
                     });

@@ -33,8 +33,8 @@ class ProjectComponentsDefectsDensity(models.Model):
     project = models.ForeignKey(Project)
     version = models.CharField(max_length=200)
     created = models.DateField()
-    # outbound used as ceeq score per day
-    outbound = models.DecimalField(max_digits=5, decimal_places=3, default=0)
+    # log ceeq score per day per version
+    ceeq = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
 
     cxp = models.DecimalField(max_digits=5, decimal_places=3, default=0)

@@ -33,7 +33,6 @@ def projects(request):
 
 # pre-define Standard Component Name and its comparison ratio
 component_names_standard = {'CXP': 2,
-                            #'Outbound': 1,
                             'Platform': 4,
                             'Reports': 3,
                             'Application': 8,
@@ -648,18 +647,19 @@ def fetch_defects_density_score(request, project_id):
 
         tmp_data_voiceSlots = []
         tmp_data_cxp = []
-        tmp_data_outbound = []
+        tmp_data_ceeq = []
         tmp_data_platform = []
         tmp_data_reports = []
         tmp_data_application = []
 
         for item in project_dds:
             if item.version == version_name:
+                #print item.created.month, item.created.day
                 tmp_categories.append(str(item.created))
 
                 tmp_data_voiceSlots.append(float(item.voiceSlots))
                 tmp_data_cxp.append(float(item.cxp))
-                tmp_data_outbound.append(float(item.outbound))
+                tmp_data_ceeq.append(float(item.ceeq))
                 tmp_data_platform.append(float(item.platform))
                 tmp_data_reports.append(float(item.reports))
                 tmp_data_application.append(float(item.application))
@@ -667,7 +667,7 @@ def fetch_defects_density_score(request, project_id):
         data['categories'] = tmp_categories
         data['voiceSlots'] = tmp_data_voiceSlots
         data['cxp'] = tmp_data_cxp
-        data['outbound'] = tmp_data_outbound
+        data['ceeq'] = tmp_data_ceeq
         data['platform'] = tmp_data_platform
         data['reports'] = tmp_data_reports
         data['application'] = tmp_data_application
@@ -804,8 +804,8 @@ def defects_density_single_log(request, project):
         except ProjectComponentsDefectsDensity.DoesNotExist:
             component_defects_density = ProjectComponentsDefectsDensity(project=project, version=item, created=today)
 
-        # use outbound field to store ceeq score
-        component_defects_density.outbound = (1 - ceeq_raw) * 10
+        # use ceeq field to store ceeq score
+        component_defects_density.ceeq = (1 - ceeq_raw) * 10
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
             if component[0] == 'CXP':

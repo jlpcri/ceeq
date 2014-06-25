@@ -82,6 +82,7 @@ INSTALLED_APPS = (
     'ceeq.apps.users',
     'ceeq.apps.search',
     'ceeq.api',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -100,11 +101,11 @@ WSGI_APPLICATION = 'ceeq.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
+DB_DIR = BASE_DIR + '/db/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR + '/db/', 'ceeq.db'),
     }
 }
 
