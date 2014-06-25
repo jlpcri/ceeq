@@ -6,7 +6,7 @@ from models import Project
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = ['name', 'jira_name']
+        fields = ['name', 'jira_name', 'active', 'complete']
         #exclude = ('created', 'score')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),

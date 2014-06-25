@@ -19,6 +19,20 @@
                 <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA URL</div>
                 <div class="col-md-8">{{ form.jira_name }}</div>
             </div>
+            {% if superuser %}
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Active</div>
+                    <div class="col-md-1">{{ form.active }}</div>
+                    <div class="col-md-7">Flag to track JIRA Project.</div>
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Complete</div>
+                    <div class="col-md-1">{{ form.complete }}</div>
+                    <div class="col-md-7">Flag to show CEEQ Project completed.</div>
+                </div>
+            {% endif %}
 
             <!--
             <div class="row">

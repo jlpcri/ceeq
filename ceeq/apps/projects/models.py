@@ -9,6 +9,8 @@ class Project(models.Model):
     score = models.DecimalField(max_digits=5, decimal_places=2, default=-9)
     created = models.DateTimeField('date added', auto_now_add=True)
     modified = models.DateTimeField('date modified', auto_now=True)
+    active = models.BooleanField(default=True)  # tracking JIRA projects or not
+    complete = models.BooleanField(default=False)  # CEEQ projects complete or not
 
      #Domain Testing Characteristics 0-5
     accuracy = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
