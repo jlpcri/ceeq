@@ -16,9 +16,9 @@
             <div class="row" style="width: 80%;">
                 <p style="text-align: center">
                     Export Graph to:
-                    <button id="png_{{ version_name }}">PNG</button>
-                    <button id="jpeg_{{ version_name }}">JPEG</button>
-                    <button id="pdf_{{ version_name }}">PDF</button>
+                    <button id="png_{{ version_name }}" onclick="exportGraph('image/png', '{{ version_name }}')">PNG</button>
+                    <button id="jpeg_{{ version_name }}" onclick="exportGraph('image/jpeg', '{{ version_name }}')">JPEG</button>
+                    <button id="pdf_{{ version_name }}" onclick="exportGraph('application/pdf', '{{ version_name }}')">PDF</button>
                 </p>
             </div>
         {% endfor %}
@@ -29,5 +29,18 @@
 {% endblock %}
 
 {% block footer %}
+    <script>
+        var today = new Date();
+        var export_filename = '{{ project.name }}' + '-' + today.toLocaleDateString();
+        function exportGraph(type, version){
+            //console.log(version);
+            var chart = $('#ceeq_trend_graph_'+version).highcharts();
+            chart.exportChart({
+                type: type,
+                scale: 1, //800 * 400
+                filename: export_filename
+            });
+        }
+    </script>
 
 {% endblock %}

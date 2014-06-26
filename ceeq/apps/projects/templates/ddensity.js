@@ -4,8 +4,10 @@ $(document).ready(function() {
             Highcharts.setOptions({
                         colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
                     });
+            var versions = [];
             $.getJSON("{% url 'fetch_defects_density_score' project.id %}").done(function(data) {
                 for (var key in data){
+                    versions.push(key);
                     $("#dd_trend_graph_"+key).highcharts({
                         title: {
                             text: 'Defects Density Trending Graph',
@@ -100,7 +102,7 @@ $(document).ready(function() {
                         },
                         navigation: {
                             buttonOptions: {
-                                enabled: true
+                                enabled: false
                             }
                         },
                         series: [{
@@ -108,34 +110,6 @@ $(document).ready(function() {
                             data: data[key]['ceeq']
                         }],
                         credits: false
-                    });
-
-                    //button handler
-                    var today = new Date();
-                    var export_filename = '{{ project.name }}' + '-' + today.toLocaleDateString();
-                    $('#pdf_'+key).click(function(){
-                        var chart = $('#ceeq_trend_graph_'+key).highcharts();
-                        chart.exportChart({
-                            type: 'application/pdf',
-                            scale: 1,
-                            filename: export_filename
-                        });
-                    });
-                    $('#jpeg_'+key).click(function(){
-                        var chart = $('#ceeq_trend_graph_'+key).highcharts();
-                        chart.exportChart({
-                            type: 'image/jpeg',
-                            scale: 1,
-                            filename: export_filename
-                        });
-                    });
-                    $('#png_'+key).click(function(){
-                        var chart = $('#ceeq_trend_graph_'+key).highcharts();
-                        chart.exportChart({
-                            type: 'image/png',
-                            scale: 1, //800 * 400
-                            filename: export_filename
-                        });
                     });
                 }
             });
