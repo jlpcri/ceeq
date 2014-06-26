@@ -100,7 +100,7 @@ $(document).ready(function() {
                         },
                         navigation: {
                             buttonOptions: {
-                                enabled: false
+                                enabled: true
                             }
                         },
                         series: [{
@@ -133,7 +133,7 @@ $(document).ready(function() {
                         var chart = $('#ceeq_trend_graph_'+key).highcharts();
                         chart.exportChart({
                             type: 'image/png',
-                            scale: 1,
+                            scale: 1, //800 * 400
                             filename: export_filename
                         });
                     });

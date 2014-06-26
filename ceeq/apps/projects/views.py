@@ -658,8 +658,16 @@ def fetch_defects_density_score(request, project_id):
 
         for item in project_dds:
             if item.version == version_name:
-                #print item.created.month, item.created.day
-                tmp_categories.append(str(item.created))
+                if item.created.month < 10:
+                    tmp_month = '0' + str(item.created.month)
+                else:
+                    tmp_month = str(item.created.month)
+                if item.created.day < 10:
+                    tmp_day = '0' + str(item.created.day)
+                else:
+                    tmp_day = str(item.created.day)
+                #print tmp_month + '-' + tmp_day
+                tmp_categories.append(tmp_month + '-' + tmp_day)
 
                 tmp_data_voiceSlots.append(float(item.voiceSlots))
                 tmp_data_cxp.append(float(item.cxp))
