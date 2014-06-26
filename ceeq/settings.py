@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'ceeq.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DB_DIR = BASE_DIR + '/db/'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

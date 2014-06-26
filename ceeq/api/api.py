@@ -18,7 +18,7 @@ class ProjectResource(ModelResource):
         queryset = Project.objects.all()
         resource_name = 'project'
         authorization = Authorization()
-        fields = ['name', 'url', 'score']
+        fields = ['name', 'jira_name', 'score']
         allowed_methods = ['get', 'post', 'put', 'delete']
 
 
