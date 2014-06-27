@@ -12,6 +12,7 @@ from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm
+from predefine import component_names_standard, issue_priority_weight
 
 
 def projects(request):
@@ -30,13 +31,6 @@ def projects(request):
     })
     return render(request, 'projects_start.html', context)
 
-# pre-define Standard Component Name and its comparison ratio
-component_names_standard = {'CXP': 2,
-                            'Platform': 4,
-                            'Reports': 3,
-                            'Application': 8,
-                            'Voice Slots': 3,
-                            }
 
 @login_required
 def project_detail(request, project_id):
@@ -177,11 +171,11 @@ def get_component_defects_density_all(data, component_names_without_slash):
 
     #calculate defect density of each component
     for item in component_names_without_slash:
-        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 5 / 15 \
-                              + data[item]['critical'] * jira_issue_weight_sum * 4 / 15 \
-                              + data[item]['major'] * jira_issue_weight_sum * 3 / 15 \
-                              + data[item]['minor'] * jira_issue_weight_sum * 2 / 15 \
-                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 15
+        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * issue_priority_weight['blocker'] \
+                              + data[item]['critical'] * jira_issue_weight_sum * issue_priority_weight['critical'] \
+                              + data[item]['major'] * jira_issue_weight_sum * issue_priority_weight['major'] \
+                              + data[item]['minor'] * jira_issue_weight_sum * issue_priority_weight['minor'] \
+                              + data[item]['trivial'] * jira_issue_weight_sum * issue_priority_weight['trivial']
 
     #formalize total sum of each component by divided by number of sub-components
     for component in component_names_without_slash:
@@ -292,11 +286,11 @@ def get_component_defects_density(request, jira_data):
 
         #calculate defect density of each component
         for item in component_names_without_slash:
-            data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 5 / 15 \
-                                  + data[item]['critical'] * jira_issue_weight_sum * 4 / 15 \
-                                  + data[item]['major'] * jira_issue_weight_sum * 3 / 15 \
-                                  + data[item]['minor'] * jira_issue_weight_sum * 2 / 15 \
-                                  + data[item]['trivial'] * jira_issue_weight_sum * 1 / 15
+            data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * issue_priority_weight['blocker'] \
+                                  + data[item]['critical'] * jira_issue_weight_sum * issue_priority_weight['critical'] \
+                                  + data[item]['major'] * jira_issue_weight_sum * issue_priority_weight['major'] \
+                                  + data[item]['minor'] * jira_issue_weight_sum * issue_priority_weight['minor'] \
+                                  + data[item]['trivial'] * jira_issue_weight_sum * issue_priority_weight['trivial']
 
         #formalize total sum of each component by divided by number of sub-components
         for component in component_names_without_slash:
@@ -480,11 +474,11 @@ def calculate_score(request, project):
 
     #calculate defect density of each component
     for item in component_names_without_slash:
-        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * 5 / 15 \
-                              + data[item]['critical'] * jira_issue_weight_sum * 4 / 15 \
-                              + data[item]['major'] * jira_issue_weight_sum * 3 / 15 \
-                              + data[item]['minor'] * jira_issue_weight_sum * 2 / 15 \
-                              + data[item]['trivial'] * jira_issue_weight_sum * 1 / 15
+        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * issue_priority_weight['blocker'] \
+                              + data[item]['critical'] * jira_issue_weight_sum * issue_priority_weight['critical'] \
+                              + data[item]['major'] * jira_issue_weight_sum * issue_priority_weight['major'] \
+                              + data[item]['minor'] * jira_issue_weight_sum * issue_priority_weight['minor'] \
+                              + data[item]['trivial'] * jira_issue_weight_sum * issue_priority_weight['trivial']
 
     # Formalize each component from its sub-component
     for component in component_names_without_slash:
