@@ -64,7 +64,10 @@ function loadActiveDataTab() {
                             align:"right",
                             color:"#FFFFFF",
                             x:-10,
-                            y:-1
+                            y:-1,
+                            formatter: function(){
+                                return this.y.toFixed(2)
+                            }
                         }
                     }
                 },
