@@ -21,7 +21,13 @@ $(document).ready(function() {
                             title: {
                                 text: 'Timeline'
                             },
-                            categories: data[key]['categories']
+                            categories: data[key]['categories'],
+                            labels: {
+                                rotation: -45,
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
                         },
                         yAxis: {
                             title: {
@@ -79,7 +85,13 @@ $(document).ready(function() {
                             title: {
                                 text: 'Timeline'
                             },
-                            categories: data[key]['categories']
+                            categories: data[key]['categories'],
+                            labels: {
+                                rotation: -45,
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
                         },
                         yAxis: {
                             title: {
