@@ -141,3 +141,5 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
+
+JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions,issuetype&jql=project='

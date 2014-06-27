@@ -1,6 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.urlresolvers import reverse
+from django.conf import settings
+import requests
 
 
 class Project(models.Model):
@@ -29,6 +30,16 @@ class Project(models.Model):
 
     def __unicode__(self):
         return unicode(self.name)
+
+    @property
+    def fetch_jira_data(self):
+        data = requests.get(settings.JIRA_API_URL + self.jira_name,
+                            auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+        if len(data) == 2:
+            if data['errorMessages']:
+                return 'No JIRA Data'
+        else:
+            return data
 
 
 class ProjectComponentsDefectsDensity(models.Model):

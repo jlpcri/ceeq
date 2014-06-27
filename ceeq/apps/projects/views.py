@@ -6,7 +6,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-import requests
 from collections import OrderedDict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.users.views import user_is_superuser
@@ -48,7 +47,8 @@ def project_detail(request, project_id):
     component_names_without_slash = []
     version_names = []
 
-    jira_data = fetch_jira_data(project.jira_name)
+    #jira_data = fetch_jira_data(project.jira_name)
+    jira_data = project.fetch_jira_data
 
     #check whether fetch the data from jira or not
 
@@ -121,7 +121,7 @@ def project_defects_density(request, project_id):
     for version_name in version_names:
         version_names_removed.append(remove_period_space(version_name))
 
-    jira_data = fetch_jira_data(project.jira_name)
+    jira_data = project.fetch_jira_data
     #check whether fetch the data from jira or not
 
     if jira_data == 'No JIRA Data':
@@ -420,21 +420,11 @@ def project_update_scores(request, project_id):
     return render(request, 'projects_start.html', context)
 
 
-def fetch_jira_data(jira_name):
-    url = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions,issuetype&jql=project=' + jira_name
-    data = requests.get(url, auth=('readonly_sliu_api_user', 'qualityengineering')).json()
-    if len(data) == 2:
-        if data['errorMessages']:
-            return 'No JIRA Data'
-    else:
-        return data
-
-
 def calculate_score(request, project):
     # Get component names for autocomplete
     component_names = []
     component_names_without_slash = []
-    jira_data = fetch_jira_data(project.jira_name)
+    jira_data = project.fetch_jira_data
 
     if jira_data == 'No JIRA Data':
         project.score = -4
@@ -698,7 +688,7 @@ def fetch_defects_density_score(request, project_id):
 def fetch_defects_density_score_pie(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
-    jira_data = fetch_jira_data(project.jira_name)
+    jira_data = project.fetch_jira_data
 
     component_names = []
     component_names_without_slash = []
@@ -795,7 +785,7 @@ def defects_density_log(request, project_id):
 
 
 def defects_density_single_log(request, project):
-    jira_data = fetch_jira_data(project.jira_name)
+    jira_data = project.fetch_jira_data
 
     #check whether fetch the data from jira or not
 
