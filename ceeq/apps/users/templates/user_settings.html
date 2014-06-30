@@ -23,6 +23,10 @@
                         <td><input type="checkbox" name="bug" {% if user_settings.bug %}checked{% endif %}></td>
                     </tr>
                     <tr>
+                        <td>Environment</td>
+                        <td><input type="checkbox" name="environment" {% if user_settings.environment %}checked{% endif %}></td>
+                    </tr>
+                    <tr>
                         <td>Improvement</td>
                         <td><input type="checkbox" name="improvement" {% if user_settings.improvement %}checked{% endif %}></td>
                     </tr>
@@ -34,6 +38,11 @@
                         <td>Task</td>
                         <td><input type="checkbox" name="task" {% if user_settings.task %}checked{% endif %}></td>
                     </tr>
+                    <tr>
+                        <td>Suggested Improvement</td>
+                        <td><input type="checkbox" name="suggested_improvement" {% if user_settings.suggested_improvement %}checked{% endif %}></td>
+                    </tr>
+
                 </tbody>
             </table>
 

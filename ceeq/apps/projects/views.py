@@ -581,6 +581,10 @@ def issue_counts_compute(request, component_names, component_names_without_slash
             issue_types.append('3')
         if request.user.usersettings.improvement:
             issue_types.append('4')
+        if request.user.usersettings.suggested_improvement:
+            issue_types.append('15')
+        if request.user.usersettings.environment:
+            issue_types.append('17')
 
     for item in jira_data:
         try:

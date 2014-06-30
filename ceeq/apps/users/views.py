@@ -130,6 +130,16 @@ def user_settings_update(request):
             else:
                 user.usersettings.task = False
 
+            if request.POST.get('environment'):
+                user.usersettings.environment = True
+            else:
+                user.usersettings.environment = False
+
+            if request.POST.get('suggested_improvement'):
+                user.usersettings.suggested_improvement = True
+            else:
+                user.usersettings.suggested_improvement = False
+
             user.usersettings.save()
             messages.success(request, 'Your settings have been saved. Need update CEEQ score.')
         else:
