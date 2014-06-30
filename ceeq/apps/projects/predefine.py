@@ -17,3 +17,6 @@ issue_priority_weight = {
     'minor': Decimal(2) / 15,
     'trivial': Decimal(1) /15
 }
+
+# 1-open, 3-In progress, 4-reopen, 5-resolved, 10001-UAT testing, 10003-Discovery
+issue_status = ['1', '3', '4', '5', '10001', '10003']

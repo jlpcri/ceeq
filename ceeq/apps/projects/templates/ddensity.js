@@ -4,10 +4,10 @@ $(document).ready(function() {
             Highcharts.setOptions({
                         colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
                     });
-            var versions = [];
+            //var versions = [];
             $.getJSON("{% url 'fetch_defects_density_score' project.id %}").done(function(data) {
                 for (var key in data){
-                    versions.push(key);
+                    //versions.push(key);
                     $("#dd_trend_graph_"+key).highcharts({
                         title: {
                             text: 'Defects Density Trending Graph',

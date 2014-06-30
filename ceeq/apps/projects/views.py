@@ -12,7 +12,7 @@ from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm
-from predefine import component_names_standard, issue_priority_weight
+from predefine import component_names_standard, issue_priority_weight, issue_status
 
 
 def projects(request):
@@ -565,7 +565,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     for item in component_names:
         data[item] = issue_counts.copy()  # copy the dict object
 
-    for item in component_names_without_slash: # add component item to data
+    for item in component_names_without_slash:  # add component item to data
         if item in data.keys():
             continue
         else:
@@ -574,7 +574,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     #construct isstype filter
     # 1-Bug, 2-New Feature, 3-Task, 4-Improvement
     issue_types = ['1']
-    if request: # daily_dd_log: request=None
+    if request:  # daily_dd_log: request=None
         if request.user.usersettings.new_feature:
             issue_types.append('2')
         if request.user.usersettings.task:
@@ -585,9 +585,8 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     for item in jira_data:
         try:
             component = item['fields']['components'][0]['name']
-            if item['fields']['status']['id'] in ['1', '3', '4', '5', '10001', '10003'] and \
+            if item['fields']['status']['id'] in issue_status and \
                     item['fields']['issuetype']['id'] in issue_types:
-            # 1-open, 3-In progress, 4-reopen, 5-resolved, 10001-UAT testing, 10003-Discovery
                 if item['fields']['priority']['id'] == '1':
                     data[component]['blocker'] += 1
                 elif item['fields']['priority']['id'] == '2':
