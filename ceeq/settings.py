@@ -143,3 +143,5 @@ MESSAGE_TAGS = {
 }
 
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions,issuetype&jql=project='
+
+SESSION_COOKIE_NAME = 'ceeqSeesionId'
