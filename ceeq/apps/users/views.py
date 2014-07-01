@@ -45,7 +45,7 @@ def home(request):
     return render(request, 'home.html')
 
 
-#@user_passes_test(user_is_superuser)
+@user_passes_test(user_is_superuser)
 def user_management(request):
     users = User.objects.all().order_by('username')
     current_user_id = request.user.id
@@ -58,7 +58,7 @@ def user_management(request):
     return render(request, 'user_management.html', context)
 
 
-#@user_passes_test(user_is_superuser)
+@user_passes_test(user_is_superuser)
 def user_update(request, user_id):
     if request.method == "POST":
         user = get_object_or_404(User, pk=user_id)
@@ -100,6 +100,7 @@ def user_delete(request, user_id):
         return redirect('user_management')
 
 
+@login_required()
 def user_settings(request):
     UserSettings.objects.get_or_create(user=request.user)
     user_settings = request.user.usersettings
@@ -110,6 +111,7 @@ def user_settings(request):
     return render(request, 'user_settings.html', context)
 
 
+@login_required()
 def user_settings_update(request):
     if request.method == 'POST':
         user = User.objects.get(pk=request.user.pk)
