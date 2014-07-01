@@ -114,7 +114,12 @@
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
             </div>
-            <div id="component_percentage_pie_chart" style="width: 1000px; height: 300px;" ></div>
+            <div id="component_percentage_pie_chart" style="width: 1000px; height: 300px;" >
+                <div class="loading" style="text-align:center ;margin-top: 100px;">
+                    <i class="fa fa-spinner fa-2x fa-spin"></i>
+                    Loading data from JIRA Database...
+                </div>
+            </div>
             {% if project.score > 0 %}
                 <div class="row">
                     <p style="text-align: center">

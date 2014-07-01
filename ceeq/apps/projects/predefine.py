@@ -11,11 +11,11 @@ component_names_standard = {
 
 # pre-define Priority Weight of Issues in JIRA
 issue_priority_weight = {
-    'blocker': Decimal(5) / 15,
-    'critical': Decimal(4) / 15,
-    'major': Decimal(3) / 15,
-    'minor': Decimal(2) / 15,
-    'trivial': Decimal(1) /15
+    'blocker': Decimal(50) / 150,
+    'critical': Decimal(40) / 150,
+    'major': Decimal(30) / 150,
+    'minor': Decimal(20) / 150,
+    'trivial': Decimal(10) /150
 }
 
 # 1-open, 3-In progress, 4-reopen, 5-resolved, 10001-UAT testing, 10003-Discovery
