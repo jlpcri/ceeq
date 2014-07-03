@@ -1,6 +1,7 @@
 from datetime import date
 from decimal import Decimal
 import json
+import copy
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -556,21 +557,22 @@ def calculate_score(request, project):
 def issue_counts_compute(request, component_names, component_names_without_slash, jira_data):
     data = {}
     issue_counts = {
-        'total': issue_status_count,
-        'blocker': issue_status_count,
-        'critical': issue_status_count,
-        'major': issue_status_count,
-        'minor': issue_status_count,
-        'trivial': issue_status_count
+        'total': issue_status_count.copy(),
+        'blocker': issue_status_count.copy(),
+        'critical': issue_status_count.copy(),
+        'major': issue_status_count.copy(),
+        'minor': issue_status_count.copy(),
+        'trivial': issue_status_count.copy()
     }
+
     for item in component_names:
-        data[item] = issue_counts.copy()  # copy the dict object
+        data[item] = copy.deepcopy(issue_counts)  # copy the dict object
 
     for item in component_names_without_slash:  # add component item to data
         if item in data.keys():
             continue
         else:
-            data[item] = issue_counts.copy()
+            data[item] = copy.deepcopy(issue_counts)
 
     #construct isstype filter
     # 1-Bug, 2-New Feature, 3-Task, 4-Improvement
@@ -590,6 +592,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     for item in jira_data:
         try:
             component = item['fields']['components'][0]['name']
+            #print component
             if item['fields']['issuetype']['id'] in issue_types:
                 if item['fields']['status']['id'] in issue_status_open:
                     if item['fields']['priority']['id'] == '1':
@@ -602,7 +605,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                         data[component]['minor']['open'] += 1
                     elif item['fields']['priority']['id'] == '5':
                         data[component]['trivial']['open'] += 1
-                if item['fields']['status']['id'] in issue_status_resolved:
+                elif item['fields']['status']['id'] in issue_status_resolved:
                     if item['fields']['priority']['id'] == '1':
                         data[component]['blocker']['resolved'] += 1
                     elif item['fields']['priority']['id'] == '2':
@@ -613,7 +616,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                         data[component]['minor']['resolved'] += 1
                     elif item['fields']['priority']['id'] == '5':
                         data[component]['trivial']['resolved'] += 1
-                if item['fields']['status']['id'] in issue_status_closed:
+                elif item['fields']['status']['id'] in issue_status_closed:
                     if item['fields']['priority']['id'] == '1':
                         data[component]['blocker']['closed'] += 1
                     elif item['fields']['priority']['id'] == '2':
@@ -627,8 +630,8 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         except IndexError:
             continue
 
-    for i in data:
-        print i, data[i]
+    #for i in data:
+    #    print i, data[i]
 
     return data
 
