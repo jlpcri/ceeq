@@ -12,7 +12,8 @@ from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm
-from predefine import component_names_standard, issue_priority_weight, issue_status
+from predefine import component_names_standard, issue_priority_weight,\
+    issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed
 
 
 def projects(request):
@@ -555,12 +556,12 @@ def calculate_score(request, project):
 def issue_counts_compute(request, component_names, component_names_without_slash, jira_data):
     data = {}
     issue_counts = {
-        'total': 0,
-        'blocker': 0,
-        'critical': 0,
-        'major': 0,
-        'minor': 0,
-        'trivial': 0
+        'total': issue_status_count,
+        'blocker': issue_status_count,
+        'critical': issue_status_count,
+        'major': issue_status_count,
+        'minor': issue_status_count,
+        'trivial': issue_status_count
     }
     for item in component_names:
         data[item] = issue_counts.copy()  # copy the dict object
@@ -589,20 +590,45 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     for item in jira_data:
         try:
             component = item['fields']['components'][0]['name']
-            if item['fields']['status']['id'] in issue_status and \
-                    item['fields']['issuetype']['id'] in issue_types:
-                if item['fields']['priority']['id'] == '1':
-                    data[component]['blocker'] += 1
-                elif item['fields']['priority']['id'] == '2':
-                    data[component]['critical'] += 1
-                elif item['fields']['priority']['id'] == '3':
-                    data[component]['major'] += 1
-                elif item['fields']['priority']['id'] == '4':
-                    data[component]['minor'] += 1
-                elif item['fields']['priority']['id'] == '5':
-                    data[component]['trivial'] += 1
+            if item['fields']['issuetype']['id'] in issue_types:
+                if item['fields']['status']['id'] in issue_status_open:
+                    if item['fields']['priority']['id'] == '1':
+                        data[component]['blocker']['open'] += 1
+                    elif item['fields']['priority']['id'] == '2':
+                        data[component]['critical']['open'] += 1
+                    elif item['fields']['priority']['id'] == '3':
+                        data[component]['major']['open'] += 1
+                    elif item['fields']['priority']['id'] == '4':
+                        data[component]['minor']['open'] += 1
+                    elif item['fields']['priority']['id'] == '5':
+                        data[component]['trivial']['open'] += 1
+                if item['fields']['status']['id'] in issue_status_resolved:
+                    if item['fields']['priority']['id'] == '1':
+                        data[component]['blocker']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '2':
+                        data[component]['critical']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '3':
+                        data[component]['major']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '4':
+                        data[component]['minor']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '5':
+                        data[component]['trivial']['resolved'] += 1
+                if item['fields']['status']['id'] in issue_status_closed:
+                    if item['fields']['priority']['id'] == '1':
+                        data[component]['blocker']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '2':
+                        data[component]['critical']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '3':
+                        data[component]['major']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '4':
+                        data[component]['minor']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '5':
+                        data[component]['trivial']['closed'] += 1
         except IndexError:
             continue
+
+    for i in data:
+        print i, data[i]
 
     return data
 
