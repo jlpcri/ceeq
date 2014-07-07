@@ -75,7 +75,7 @@
               </tr>
                 </thead>
                 <tbody>
-                    {% for component,weight,dd, total, b_o, b_r, b_c, c_o, c_r, c_c, m_o, m_r, m_c, mi_o, mi_r, mi_c, t_o, t_r, t_c in weight_factor %}
+                    {% for component,weight,dd, total, b_c, b_o, b_r, c_c, c_o, c_r, m_c, m_o, m_r, mi_c, mi_o, mi_r, t_c, t_o, t_r in weight_factor %}
                         <tr>
                             <td>{{ component }}</td>
                             <td>{{ weight|floatformat:3 }}</td>

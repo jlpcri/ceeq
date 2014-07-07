@@ -324,9 +324,8 @@ def get_component_defects_density(request, jira_data):
             if subcomponent_length == 0:
                 continue
             else:
-                data[component]['ceeq']['open'] /= subcomponent_length
-                data[component]['ceeq']['resolved'] /= subcomponent_length
-                data[component]['ceeq']['closed'] /= subcomponent_length
+                for status in issue_status_weight.keys():
+                    data[component]['ceeq'][status] /= subcomponent_length
 
         weight_factor = []
         weight_factor_base = 0
@@ -347,25 +346,12 @@ def get_component_defects_density(request, jira_data):
             temp.append(sum(data[item]['ceeq'].itervalues()))  # defect density
             temp.append(sum(data[item]['total'].itervalues()))  # total number per component
 
-            temp.append(data[item]['blocker']['open'])
-            temp.append(data[item]['blocker']['resolved'])
-            temp.append(data[item]['blocker']['closed'])
-
-            temp.append(data[item]['critical']['open'])
-            temp.append(data[item]['critical']['resolved'])
-            temp.append(data[item]['critical']['closed'])
-
-            temp.append(data[item]['major']['open'])
-            temp.append(data[item]['major']['resolved'])
-            temp.append(data[item]['major']['closed'])
-
-            temp.append(data[item]['minor']['open'])
-            temp.append(data[item]['minor']['resolved'])
-            temp.append(data[item]['minor']['closed'])
-
-            temp.append(data[item]['trivial']['open'])
-            temp.append(data[item]['trivial']['resolved'])
-            temp.append(data[item]['trivial']['closed'])
+            for priority in sorted(issue_priority_weight.keys()):
+                for status in sorted(issue_status_count.keys()):
+                    try:
+                        temp.append(data[item][priority][status])
+                    except KeyError:
+                        continue
 
             weight_factor.append(temp)
 
