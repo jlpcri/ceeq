@@ -344,13 +344,28 @@ def get_component_defects_density(request, jira_data):
                 temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
             except KeyError:
                 continue
-            temp.append(sum(data[item]['ceeq'].itervalues()))  #defect density
-            temp.append(sum(data[item]['total'].itervalues()))
-            temp.append(sum(data[item]['blocker'].itervalues()))
-            temp.append(sum(data[item]['critical'].itervalues()))
-            temp.append(sum(data[item]['major'].itervalues()))
-            temp.append(sum(data[item]['minor'].itervalues()))
-            temp.append(sum(data[item]['trivial'].itervalues()))
+            temp.append(sum(data[item]['ceeq'].itervalues()))  # defect density
+            temp.append(sum(data[item]['total'].itervalues()))  # total number per component
+
+            temp.append(data[item]['blocker']['open'])
+            temp.append(data[item]['blocker']['resolved'])
+            temp.append(data[item]['blocker']['closed'])
+
+            temp.append(data[item]['critical']['open'])
+            temp.append(data[item]['critical']['resolved'])
+            temp.append(data[item]['critical']['closed'])
+
+            temp.append(data[item]['major']['open'])
+            temp.append(data[item]['major']['resolved'])
+            temp.append(data[item]['major']['closed'])
+
+            temp.append(data[item]['minor']['open'])
+            temp.append(data[item]['minor']['resolved'])
+            temp.append(data[item]['minor']['closed'])
+
+            temp.append(data[item]['trivial']['open'])
+            temp.append(data[item]['trivial']['resolved'])
+            temp.append(data[item]['trivial']['closed'])
 
             weight_factor.append(temp)
 
