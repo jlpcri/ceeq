@@ -36,3 +36,14 @@ issue_status_count = {
     #'uat_testing': 0,
     #'discovery': 0
 }
+
+# issue status weight ratio
+issue_status_weight = {
+    'open': Decimal(7) / 10,
+    #'in_progress': 0,
+    #'reopen': 0,
+    'resolved': Decimal(2) / 10,
+    'closed': Decimal(1) / 10,
+    #'uat_testing': 0,
+    #'discovery': 0
+}
