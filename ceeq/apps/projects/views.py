@@ -220,6 +220,7 @@ def get_weight_factor(data, component_names_without_slash_all):
     #except KeyError:
     #    vaf_exp = Decimal(0.65)
 
+    # remove items not in standard
     component_names_without_slash = [component
                                      for component in component_names_without_slash_all
                                      if component in component_names_standard]
@@ -667,11 +668,24 @@ def fetch_defects_density_score_pie(request, project_id):
         temp_graph.append(float(item[1]) * float(item[2]))
 
         temp_table.append(item[0])
-        temp_table.append(float(item[4] + item[5] + item[6]))
-        temp_table.append(float(item[7] + item[8] + item[9]))
-        temp_table.append(float(item[10] + item[11] + item[12]))
-        temp_table.append(float(item[13] + item[14] + item[15]))
-        temp_table.append(float(item[16] + item[17] + item[18]))
+
+        temp_table.append(float(item[5]))
+        temp_table.append(float(item[6]))
+        temp_table.append(float(item[4]))
+        temp_table.append(float(item[8]))
+        temp_table.append(float(item[9]))
+        temp_table.append(float(item[7]))
+        temp_table.append(float(item[11]))
+        temp_table.append(float(item[12]))
+        temp_table.append(float(item[10]))
+        temp_table.append(float(item[14]))
+        temp_table.append(float(item[15]))
+        temp_table.append(float(item[13]))
+        temp_table.append(float(item[17]))
+        temp_table.append(float(item[18]))
+        temp_table.append(float(item[16]))
+
+
         temp_table.append(float(item[3]))
 
         dd_pie_graph.append(temp_graph)
