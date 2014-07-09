@@ -295,6 +295,12 @@
 
                         // user options
                         var row_label = ['Blocker', 'Critical', 'Major', 'Minor', 'Trivial', 'Subtotal'];
+                        var row_orc_label = ['O', 'R', 'C',
+                                            'O', 'R', 'C',
+                                            'O', 'R', 'C',
+                                            'O', 'R', 'C',
+                                            'O', 'R', 'C'
+                                            ];
                         var tableTop = 300,
                             colWidth = 40,
                             tableLeft = 0,
@@ -313,7 +319,7 @@
                             renderer.text(
                                 item[0],
                                 cellLeft + cellPadding,
-                                tableTop + (i + 2) * rowHeight - cellPadding
+                                tableTop + (i + 3) * rowHeight - cellPadding
                             )
                             .css({
                                 fontWeight: 'bold',
@@ -341,6 +347,27 @@
                             .add();
                         });
 
+                        // draw jira priority Open Resolved Closed lables
+                        cellLeft = tableLeft + colWidth;
+                        $.each(row_orc_label, function(i, item) {
+                            cellLeft += colWidth;
+
+                            renderer.text(
+                                item,
+                                cellLeft - cellPadding + colWidth,
+                                tableTop + rowHeight * 2 - cellPadding
+                            )
+                            .attr({
+                                align: 'center'
+                            })
+                            .css({
+                                fontStyle: 'italic',
+                                fontSize: '10pt',
+                                color: 'blue'
+                            })
+                            .add();
+                        });
+
                         $.each(data[1], function(row, item){
                             cellLeft = tableLeft + colWidth;
 
@@ -351,7 +378,7 @@
                                     renderer.text(
                                         priority,
                                         cellLeft - cellPadding,
-                                        tableTop+ (row + 2) * rowHeight -cellPadding
+                                        tableTop + (row + 3) * rowHeight -cellPadding
                                     )
                                     .attr({
                                         align: 'center'
@@ -371,12 +398,19 @@
                                     cellLeft + colWidth * 1.5,
                                     tableTop + cellPadding
                                 );
-                                Highcharts.tableLine( // bottom
+                                Highcharts.tableLine( // bottom - 1
                                     renderer,
                                     tableLeft,
                                     tableTop + (data[1].length + 1) * rowHeight + cellPadding,
                                     cellLeft + colWidth * 1.5,
                                     tableTop + (data[1].length + 1) * rowHeight + cellPadding
+                                );
+                                Highcharts.tableLine( // bottom
+                                    renderer,
+                                    tableLeft,
+                                    tableTop + (data[1].length + 2) * rowHeight + cellPadding,
+                                    cellLeft + colWidth * 1.5,
+                                    tableTop + (data[1].length + 2) * rowHeight + cellPadding
                                 );
                             }
                             // horizontal line

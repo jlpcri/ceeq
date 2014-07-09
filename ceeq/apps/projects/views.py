@@ -685,7 +685,7 @@ def fetch_defects_density_score_pie(request, project_id):
         temp_table.append(float(item[18]))
         temp_table.append(float(item[16]))
 
-
+        temp_table.append(None)
         temp_table.append(float(item[3]))
 
         dd_pie_graph.append(temp_graph)
@@ -693,11 +693,22 @@ def fetch_defects_density_score_pie(request, project_id):
 
     temp_table = []
     temp_table.append('Total')
+    temp_table.append(None)
     temp_table.append(priority_total['blocker'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['critical'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['major'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['minor'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['trivial'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['total'])
 
     dd_pie_table.append(temp_table)
