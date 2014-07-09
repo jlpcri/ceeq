@@ -47,3 +47,12 @@ issue_status_weight = {
     #'uat_testing': 0,
     #'discovery': 0
 }
+
+# index of Open Resolved Closed issues per priority
+issue_status_fields = [
+        ('blocker', [5, 6, 4]),
+        ('critical', [8, 9, 7]),
+        ('major', [11, 12, 10]),
+        ('minor', [14, 15, 13]),
+        ('trivial', [17, 18, 16])
+    ]

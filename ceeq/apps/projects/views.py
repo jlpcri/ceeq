@@ -14,7 +14,8 @@ from ceeq.apps.users.views import user_is_superuser
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm
 from predefine import component_names_standard, issue_priority_weight,\
-    issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, issue_status_weight
+    issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, issue_status_weight, \
+    issue_status_fields
 
 
 def projects(request):
@@ -87,18 +88,16 @@ def project_detail(request, project_id):
         'minor': 0,
         'trivial': 0
     }
+
     for item in weight_factor:
         priority_total['total'] += item[3]
-        priority_total['blocker'] += item[4] + item[5] + item[6]
-        priority_total['critical'] += item[7] + item[8] + item[9]
-        priority_total['major'] += item[10] + item[11] + item[12]
-        priority_total['minor'] += item[13] + item[14] + item[15]
-        priority_total['trivial'] += item[16] + item[17] + item[18]
+        for status in issue_status_fields:
+            priority_total[status[0]] += sum(item[i] for i in status[1])
 
     context = RequestContext(request, {
         'form': form,
         'project': project,
-        'weight_factor': sorted(weight_factor),
+        'weight_factor': weight_factor,
         'priority_total': priority_total,
         'component_names_standard': sorted(component_names_standard.keys()),
         'component_names': sorted([item for item in component_names_standard.keys() if item in component_names_without_slash]),
@@ -707,45 +706,28 @@ def fetch_defects_density_score_pie(request, project_id):
         'trivial': 0
     }
 
-    for item in weight_factor:
-        priority_total['total'] += item[3]
-        priority_total['blocker'] += item[4] + item[5] + item[6]
-        priority_total['critical'] += item[7] + item[8] + item[9]
-        priority_total['major'] += item[10] + item[11] + item[12]
-        priority_total['minor'] += item[13] + item[14] + item[15]
-        priority_total['trivial'] += item[16] + item[17] + item[18]
-
     dd_pie_data = []
     dd_pie_table = []
     dd_pie_graph = []
 
-    for item in sorted(weight_factor):
+    for item in weight_factor:
         temp_graph = []
         temp_table = []
 
         temp_graph.append(item[0])
         temp_graph.append(float(item[1]) * float(item[2]))
 
-        temp_table.append(item[0])
+        priority_total['total'] += item[3]  # Total of all issues of pie chart table
+        temp_table.append(item[0])  # Component name
 
-        temp_table.append(float(item[5]))
-        temp_table.append(float(item[6]))
-        temp_table.append(float(item[4]))
-        temp_table.append(float(item[8]))
-        temp_table.append(float(item[9]))
-        temp_table.append(float(item[7]))
-        temp_table.append(float(item[11]))
-        temp_table.append(float(item[12]))
-        temp_table.append(float(item[10]))
-        temp_table.append(float(item[14]))
-        temp_table.append(float(item[15]))
-        temp_table.append(float(item[13]))
-        temp_table.append(float(item[17]))
-        temp_table.append(float(item[18]))
-        temp_table.append(float(item[16]))
+        # number of issues Open, Resolved, Closed
+        for status in issue_status_fields:
+            for i in status[1]:
+                priority_total[status[0]] += item[i]
+                temp_table.append(float(item[i]))
 
         temp_table.append(None)
-        temp_table.append(float(item[3]))
+        temp_table.append(float(item[3]))   # SubTotal of pie chart table
 
         dd_pie_graph.append(temp_graph)
         dd_pie_table.append(temp_table)
@@ -753,21 +735,10 @@ def fetch_defects_density_score_pie(request, project_id):
     temp_table = []
     temp_table.append('Total')
     temp_table.append(None)
-    temp_table.append(priority_total['blocker'])
-    temp_table.append(None)
-    temp_table.append(None)
-    temp_table.append(priority_total['critical'])
-    temp_table.append(None)
-    temp_table.append(None)
-    temp_table.append(priority_total['major'])
-    temp_table.append(None)
-    temp_table.append(None)
-    temp_table.append(priority_total['minor'])
-    temp_table.append(None)
-    temp_table.append(None)
-    temp_table.append(priority_total['trivial'])
-    temp_table.append(None)
-    temp_table.append(None)
+    for status in issue_status_fields:  # total number per priority
+        temp_table.append(priority_total[status[0]])
+        temp_table.append(None)
+        temp_table.append(None)
     temp_table.append(priority_total['total'])
 
     dd_pie_table.append(temp_table)
