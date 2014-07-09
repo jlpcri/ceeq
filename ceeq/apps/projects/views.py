@@ -1,6 +1,7 @@
 from datetime import date
 from decimal import Decimal
 import json
+import copy
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -12,7 +13,8 @@ from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm
-from predefine import component_names_standard, issue_priority_weight, issue_status
+from predefine import component_names_standard, issue_priority_weight,\
+    issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, issue_status_weight
 
 
 def projects(request):
@@ -68,8 +70,7 @@ def project_detail(request, project_id):
 
     data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
 
-    weight_factor = get_component_defects_density_all(data,
-                                                      component_names_without_slash)
+    weight_factor = get_weight_factor(data, component_names_without_slash)
 
     # calculate total number of issues based on priority
     priority_total = {
@@ -82,11 +83,11 @@ def project_detail(request, project_id):
     }
     for item in weight_factor:
         priority_total['total'] += item[3]
-        priority_total['blocker'] += item[4]
-        priority_total['critical'] += item[5]
-        priority_total['major'] += item[6]
-        priority_total['minor'] += item[7]
-        priority_total['trivial'] += item[8]
+        priority_total['blocker'] += item[4] + item[5] + item[6]
+        priority_total['critical'] += item[7] + item[8] + item[9]
+        priority_total['major'] += item[10] + item[11] + item[12]
+        priority_total['minor'] += item[13] + item[14] + item[15]
+        priority_total['trivial'] += item[16] + item[17] + item[18]
 
     context = RequestContext(request, {
         'form': form,
@@ -140,89 +141,6 @@ def project_defects_density(request, project_id):
     return render(request, 'projects_dd_start.html', context)
 
 
-def get_component_defects_density_all(data, component_names_without_slash):
-
-    #calculate issues number of components and sub-components
-    """
-
-    :param data: jira_data
-    :param component_names_without_slash:
-    :return: weight_factor
-    """
-    for component in component_names_without_slash:
-        for item in data:
-            if item.startswith(component+'/'):
-                data[item]['total'] = data[item]['blocker'] \
-                                    + data[item]['critical'] \
-                                    + data[item]['major'] \
-                                    + data[item]['minor'] \
-                                    + data[item]['trivial']
-                data[component]['blocker'] += data[item]['blocker']
-                data[component]['critical'] += data[item]['critical']
-                data[component]['major'] += data[item]['major']
-                data[component]['minor'] += data[item]['minor']
-                data[component]['trivial'] += data[item]['trivial']
-
-    #get jira issue weight sum value
-    try:
-        jira_issue_weight_sum = FrameworkParameter.objects.get(parameter='jira_issue_weight_sum').value
-    except FrameworkParameter.DoesNotExist or KeyError:
-        jira_issue_weight_sum = Decimal(1.00)
-
-    #calculate defect density of each component
-    for item in component_names_without_slash:
-        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * issue_priority_weight['blocker'] \
-                              + data[item]['critical'] * jira_issue_weight_sum * issue_priority_weight['critical'] \
-                              + data[item]['major'] * jira_issue_weight_sum * issue_priority_weight['major'] \
-                              + data[item]['minor'] * jira_issue_weight_sum * issue_priority_weight['minor'] \
-                              + data[item]['trivial'] * jira_issue_weight_sum * issue_priority_weight['trivial']
-
-    #formalize total sum of each component by divided by number of sub-components
-    for component in component_names_without_slash:
-        subcomponent_length = 0
-        for item in data:
-            #if sub component has zero issue then skip
-            if item.startswith(component+'/') and data[item]['total'] > 0:
-                subcomponent_length += 1
-            else:
-                continue
-        if subcomponent_length == 0:
-            continue
-        else:
-            data[component]['total'] /= subcomponent_length
-
-    weight_factor = []
-    weight_factor_base = 0
-    for item in component_names_without_slash:
-        try:
-            weight_factor_base += component_names_standard[item]
-        except KeyError:
-            continue
-
-    for item in component_names_without_slash:
-        temp = []
-        temp.append(item)
-        try:
-            temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
-        except KeyError:
-            continue
-        temp.append(data[item]['total'])   # defect density
-        # Total number of issues
-        temp.append(data[item]['blocker'] \
-                    + data[item]['critical'] \
-                    + data[item]['major'] \
-                    + data[item]['minor'] \
-                    + data[item]['trivial'])
-        temp.append(data[item]['blocker'])
-        temp.append(data[item]['critical'])
-        temp.append(data[item]['major'])
-        temp.append(data[item]['minor'])
-        temp.append(data[item]['trivial'])
-        weight_factor.append(temp)
-
-    return weight_factor
-
-
 def get_component_defects_density(request, jira_data):
     version_names = []
     for item in jira_data['issues']:
@@ -269,74 +187,146 @@ def get_component_defects_density(request, jira_data):
         data = issue_counts_compute(request, component_names, component_names_without_slash, version_data[key])
 
         #calculate issues number of components and sub-components
-        for component in component_names_without_slash:
-            for item in data:
-                if item.startswith(component+'/'):
-                    data[item]['total'] = data[item]['blocker'] \
-                                        + data[item]['critical'] \
-                                        + data[item]['major'] \
-                                        + data[item]['minor'] \
-                                        + data[item]['trivial']
-                    data[component]['blocker'] += data[item]['blocker']
-                    data[component]['critical'] += data[item]['critical']
-                    data[component]['major'] += data[item]['major']
-                    data[component]['minor'] += data[item]['minor']
-                    data[component]['trivial'] += data[item]['trivial']
+        weight_factor_versions[key] = get_weight_factor(data, component_names_without_slash)
 
-
-        #calculate defect density of each component
-        for item in component_names_without_slash:
-            data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * issue_priority_weight['blocker'] \
-                                  + data[item]['critical'] * jira_issue_weight_sum * issue_priority_weight['critical'] \
-                                  + data[item]['major'] * jira_issue_weight_sum * issue_priority_weight['major'] \
-                                  + data[item]['minor'] * jira_issue_weight_sum * issue_priority_weight['minor'] \
-                                  + data[item]['trivial'] * jira_issue_weight_sum * issue_priority_weight['trivial']
-
-        #formalize total sum of each component by divided by number of sub-components
-        for component in component_names_without_slash:
-            subcomponent_length = 0
-            for item in data:
-                #if sub component has zero issue then skip
-                if item.startswith(component+'/') and data[item]['total'] > 0:
-                    subcomponent_length += 1
-                else:
-                    continue
-            if subcomponent_length == 0:
-                continue
-            else:
-                data[component]['total'] /= subcomponent_length
-
-        weight_factor = []
-        weight_factor_base = 0
-        for item in component_names_without_slash:
-            try:
-                weight_factor_base += component_names_standard[item]
-            except KeyError:
-                continue
-
-        for item in sorted(component_names_without_slash):
-            temp = []
-            temp.append(item)
-            try:
-                temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
-            except KeyError:
-                continue
-            temp.append(data[item]['total'])  #defect density
-            temp.append(data[item]['blocker'] \
-                        + data[item]['critical'] \
-                        + data[item]['major'] \
-                        + data[item]['minor'] \
-                        + data[item]['trivial'])
-            temp.append(data[item]['blocker'])
-            temp.append(data[item]['critical'])
-            temp.append(data[item]['major'])
-            temp.append(data[item]['minor'])
-            temp.append(data[item]['trivial'])
-
-            weight_factor.append(temp)
-
-        weight_factor_versions[key] = weight_factor
     return weight_factor_versions
+
+
+def get_weight_factor(data, component_names_without_slash_all):
+    """
+    calculate issues number of components and sub-components
+
+    :param data: jira_data
+    :param component_names_without_slash:
+    :return: weight_factor
+    """
+
+    #get framework parameter
+    parameter = {}
+    framework_parameters = FrameworkParameter.objects.all()
+    for framework_parameter in framework_parameters:
+        parameter[framework_parameter.parameter] = framework_parameter.value
+
+    try:
+        jira_issue_weight_sum = parameter['jira_issue_weight_sum']
+    except KeyError:
+        jira_issue_weight_sum = Decimal(1.00)
+    #try:
+    #    vaf_ratio = parameter['vaf_ratio']
+    #except KeyError:
+    #    vaf_ratio = Decimal(0.01)
+    #try:
+    #    vaf_exp = parameter['vaf_exp']
+    #except KeyError:
+    #    vaf_exp = Decimal(0.65)
+
+    # remove items not in standard
+    component_names_without_slash = [component
+                                     for component in component_names_without_slash_all
+                                     if component in component_names_standard]
+
+    for component in component_names_without_slash:
+        for item in data:
+            if item.startswith(component+'/'):
+                for status in issue_status_count.keys():
+                    # total number of jiras per sub component
+                    data[item]['total'][status] = data[item]['blocker'][status] \
+                                        + data[item]['critical'][status] \
+                                        + data[item]['major'][status] \
+                                        + data[item]['minor'][status] \
+                                        + data[item]['trivial'][status]
+
+                    # defects density per sub component
+                    data[item]['ceeq'][status] = data[item]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker'] * jira_issue_weight_sum\
+                                        + data[item]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical'] * jira_issue_weight_sum\
+                                        + data[item]['major'][status] * issue_status_weight[status] * issue_priority_weight['major'] * jira_issue_weight_sum\
+                                        + data[item]['minor'][status] * issue_status_weight[status] * issue_priority_weight['minor'] * jira_issue_weight_sum\
+                                        + data[item]['trivial'][status] * issue_status_weight[status] * issue_priority_weight['trivial'] * jira_issue_weight_sum
+
+                    data[component]['blocker'][status] += data[item]['blocker'][status]
+                    data[component]['critical'][status] += data[item]['critical'][status]
+                    data[component]['major'][status] += data[item]['major'][status]
+                    data[component]['minor'][status] += data[item]['minor'][status]
+                    data[component]['trivial'][status] += data[item]['trivial'][status]
+
+                    data[component]['total'][status] += data[item]['total'][status]
+
+    #issue_status_weight_base = 10
+
+    #calculate defect density of each component
+    for component in component_names_without_slash:
+        #for status in issue_status_count.keys():
+        #    try:
+        #        issue_status_weight_base += issue_status_weight[status]
+        #    except KeyError:
+        #        continue
+
+        for item in data:
+            if item.startswith(component + '/'):
+                for status in issue_status_count.keys():
+                    data[component]['ceeq'][status] += data[item]['ceeq'][status]
+
+    #formalize total sum of each component by divided by number of sub-components
+    for component in component_names_without_slash:
+        subcomponent_length = 0
+        for item in data:
+            #if sub component has zero issue then skip
+            if item.startswith(component+'/') and sum(data[item]['ceeq'].itervalues()) > 0:
+                subcomponent_length += 1
+            else:
+                continue
+        if subcomponent_length == 0:
+            # component which does not have sub component
+            for status in issue_status_count.keys():
+                # total number of jiras per sub component
+                data[component]['total'][status] = data[component]['blocker'][status] \
+                                    + data[component]['critical'][status] \
+                                    + data[component]['major'][status] \
+                                    + data[component]['minor'][status] \
+                                    + data[component]['trivial'][status]
+
+                # defects density per sub component
+                data[component]['ceeq'][status] = data[component]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker']\
+                                    + data[component]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical']\
+                                    + data[component]['major'][status] * issue_status_weight[status] * issue_priority_weight['major']\
+                                    + data[component]['minor'][status] * issue_status_weight[status] * issue_priority_weight['minor']\
+                                    + data[component]['trivial'][status] * issue_status_weight[status] * issue_priority_weight['trivial']
+
+            continue
+        else:
+            for status in issue_status_weight.keys():
+                data[component]['ceeq'][status] /= subcomponent_length
+
+    weight_factor = []
+    weight_factor_base = 0
+    for item in component_names_without_slash:
+        try:
+            weight_factor_base += component_names_standard[item]
+        except KeyError:
+            continue
+
+    for item in sorted(component_names_without_slash):
+        temp = []
+        temp.append(item)   # component name
+        try:
+            # dynamic component weight, float
+            temp.append(round(component_names_standard[item] / float(weight_factor_base), 3))
+        except KeyError:
+            continue
+
+        temp.append(sum(data[item]['ceeq'].itervalues()))  # defect density, decimal
+        temp.append(sum(data[item]['total'].itervalues()))  # total number per component
+
+        for priority in sorted(issue_priority_weight.keys()):
+            for status in sorted(issue_status_count.keys()):
+                try:
+                    temp.append(data[item][priority][status])
+                except KeyError:
+                    continue
+
+        weight_factor.append(temp)
+
+    return weight_factor
 
 
 def truncate_after_slash(string):
@@ -438,97 +428,12 @@ def calculate_score(request, project):
     # Construct # of different priority issues dict from jira_data
     data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
 
-    #get framework parameter
-    parameter = {}
-    framework_parameters = FrameworkParameter.objects.all()
-    for framework_parameter in framework_parameters:
-        parameter[framework_parameter.parameter] = framework_parameter.value
-
-    try:
-        jira_issue_weight_sum = parameter['jira_issue_weight_sum']
-    except KeyError:
-        jira_issue_weight_sum = Decimal(1.00)
-    #try:
-    #    vaf_ratio = parameter['vaf_ratio']
-    #except KeyError:
-    #    vaf_ratio = Decimal(0.01)
-    #try:
-    #    vaf_exp = parameter['vaf_exp']
-    #except KeyError:
-    #    vaf_exp = Decimal(0.65)
-
-    #calculate issues number of components and sub-components
-    for component in component_names_without_slash:
-        for item in data:
-            if item.startswith(component+'/'):
-                data[item]['total'] = data[item]['blocker'] \
-                                    + data[item]['critical'] \
-                                    + data[item]['major'] \
-                                    + data[item]['minor'] \
-                                    + data[item]['trivial']
-                data[component]['blocker'] += data[item]['blocker']
-                data[component]['critical'] += data[item]['critical']
-                data[component]['major'] += data[item]['major']
-                data[component]['minor'] += data[item]['minor']
-                data[component]['trivial'] += data[item]['trivial']
-
-    #calculate defect density of each component
-    for item in component_names_without_slash:
-        data[item]['total'] = data[item]['blocker'] * jira_issue_weight_sum * issue_priority_weight['blocker'] \
-                              + data[item]['critical'] * jira_issue_weight_sum * issue_priority_weight['critical'] \
-                              + data[item]['major'] * jira_issue_weight_sum * issue_priority_weight['major'] \
-                              + data[item]['minor'] * jira_issue_weight_sum * issue_priority_weight['minor'] \
-                              + data[item]['trivial'] * jira_issue_weight_sum * issue_priority_weight['trivial']
-
-    # Formalize each component from its sub-component
-    for component in component_names_without_slash:
-        subcomponent_length = 0
-        for item in data:
-            #if sub-component has zero issue then skip
-            if item.startswith(component+'/') and data[item]['total'] > 0:
-                subcomponent_length += 1
-            else:
-                continue
-
-        if subcomponent_length == 0:
-            continue
-        else:
-            data[component]['total'] /= subcomponent_length
-
-    #If no component weight input then return
-    if len(component_names_without_slash) == 0:  # non issue created in JIRA
-        project.score = -1
-        project.save()
-        return
-
-    weight_dict = {}
-
-    #calculate total component weighted factor base
-    weight_factor_base = 0
-    for item in component_names_without_slash:
-        try:
-            weight_factor_base += component_names_standard[item]
-        except KeyError:
-            continue
-
-    for item in component_names_without_slash:
-        try:
-            weight = round(component_names_standard[item] / float(weight_factor_base), 3)
-        except KeyError:
-            continue
-        weight_dict[item] = {
-            'weight': weight,
-            'count': 0
-        }
-
-    for key in weight_dict.keys():
-        if key in data.keys():
-            weight_dict[key]['count'] = Decimal(weight_dict[key]['weight']) * Decimal(data[key]['total'])
+    weight_factor = get_weight_factor(data, component_names_without_slash)
 
     # Calculate Raw Score of project
     raw_score = 0
-    for item in weight_dict:
-        raw_score += weight_dict[item]['count']
+    for item in weight_factor:
+        raw_score += Decimal(item[1]) * item[2]   # item[1]: component weight, float, item[2]: defects density, decimal
 
     #print round(raw_score, 2)
 
@@ -555,21 +460,23 @@ def calculate_score(request, project):
 def issue_counts_compute(request, component_names, component_names_without_slash, jira_data):
     data = {}
     issue_counts = {
-        'total': 0,
-        'blocker': 0,
-        'critical': 0,
-        'major': 0,
-        'minor': 0,
-        'trivial': 0
+        'ceeq': issue_status_count.copy(),  # store ceeq score
+        'total': issue_status_count.copy(),  # total number of jira per component/sub component
+        'blocker': issue_status_count.copy(),
+        'critical': issue_status_count.copy(),
+        'major': issue_status_count.copy(),
+        'minor': issue_status_count.copy(),
+        'trivial': issue_status_count.copy()
     }
+
     for item in component_names:
-        data[item] = issue_counts.copy()  # copy the dict object
+        data[item] = copy.deepcopy(issue_counts)  # copy the dict object
 
     for item in component_names_without_slash:  # add component item to data
         if item in data.keys():
             continue
         else:
-            data[item] = issue_counts.copy()
+            data[item] = copy.deepcopy(issue_counts)
 
     #construct isstype filter
     # 1-Bug, 2-New Feature, 3-Task, 4-Improvement
@@ -589,20 +496,46 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     for item in jira_data:
         try:
             component = item['fields']['components'][0]['name']
-            if item['fields']['status']['id'] in issue_status and \
-                    item['fields']['issuetype']['id'] in issue_types:
-                if item['fields']['priority']['id'] == '1':
-                    data[component]['blocker'] += 1
-                elif item['fields']['priority']['id'] == '2':
-                    data[component]['critical'] += 1
-                elif item['fields']['priority']['id'] == '3':
-                    data[component]['major'] += 1
-                elif item['fields']['priority']['id'] == '4':
-                    data[component]['minor'] += 1
-                elif item['fields']['priority']['id'] == '5':
-                    data[component]['trivial'] += 1
+            #print component
+            if item['fields']['issuetype']['id'] in issue_types:
+                if item['fields']['status']['id'] in issue_status_open:
+                    if item['fields']['priority']['id'] == '1':
+                        data[component]['blocker']['open'] += 1
+                    elif item['fields']['priority']['id'] == '2':
+                        data[component]['critical']['open'] += 1
+                    elif item['fields']['priority']['id'] == '3':
+                        data[component]['major']['open'] += 1
+                    elif item['fields']['priority']['id'] == '4':
+                        data[component]['minor']['open'] += 1
+                    elif item['fields']['priority']['id'] == '5':
+                        data[component]['trivial']['open'] += 1
+                elif item['fields']['status']['id'] in issue_status_resolved:
+                    if item['fields']['priority']['id'] == '1':
+                        data[component]['blocker']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '2':
+                        data[component]['critical']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '3':
+                        data[component]['major']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '4':
+                        data[component]['minor']['resolved'] += 1
+                    elif item['fields']['priority']['id'] == '5':
+                        data[component]['trivial']['resolved'] += 1
+                elif item['fields']['status']['id'] in issue_status_closed:
+                    if item['fields']['priority']['id'] == '1':
+                        data[component]['blocker']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '2':
+                        data[component]['critical']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '3':
+                        data[component]['major']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '4':
+                        data[component]['minor']['closed'] += 1
+                    elif item['fields']['priority']['id'] == '5':
+                        data[component]['trivial']['closed'] += 1
         except IndexError:
             continue
+
+    #for i in data:
+    #    print i, data[i]
 
     return data
 
@@ -613,6 +546,7 @@ def fetch_projects_score(request):
 
     data['categories'] = [project.name for project in projects]
     data['score'] = [str(project.score) for project in projects]
+    data['id'] = [str(project.id) for project in projects]
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -703,8 +637,7 @@ def fetch_defects_density_score_pie(request, project_id):
 
     data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
 
-    weight_factor = get_component_defects_density_all(data,
-                                                      component_names_without_slash)
+    weight_factor = get_weight_factor(data, component_names_without_slash)
 
     # calculate total number of issues based on priority
     priority_total = {
@@ -715,13 +648,14 @@ def fetch_defects_density_score_pie(request, project_id):
         'minor': 0,
         'trivial': 0
     }
+
     for item in weight_factor:
         priority_total['total'] += item[3]
-        priority_total['blocker'] += item[4]
-        priority_total['critical'] += item[5]
-        priority_total['major'] += item[6]
-        priority_total['minor'] += item[7]
-        priority_total['trivial'] += item[8]
+        priority_total['blocker'] += item[4] + item[5] + item[6]
+        priority_total['critical'] += item[7] + item[8] + item[9]
+        priority_total['major'] += item[10] + item[11] + item[12]
+        priority_total['minor'] += item[13] + item[14] + item[15]
+        priority_total['trivial'] += item[16] + item[17] + item[18]
 
     dd_pie_data = []
     dd_pie_table = []
@@ -735,11 +669,24 @@ def fetch_defects_density_score_pie(request, project_id):
         temp_graph.append(float(item[1]) * float(item[2]))
 
         temp_table.append(item[0])
-        temp_table.append(float(item[4]))
+
         temp_table.append(float(item[5]))
         temp_table.append(float(item[6]))
-        temp_table.append(float(item[7]))
+        temp_table.append(float(item[4]))
         temp_table.append(float(item[8]))
+        temp_table.append(float(item[9]))
+        temp_table.append(float(item[7]))
+        temp_table.append(float(item[11]))
+        temp_table.append(float(item[12]))
+        temp_table.append(float(item[10]))
+        temp_table.append(float(item[14]))
+        temp_table.append(float(item[15]))
+        temp_table.append(float(item[13]))
+        temp_table.append(float(item[17]))
+        temp_table.append(float(item[18]))
+        temp_table.append(float(item[16]))
+
+        temp_table.append(None)
         temp_table.append(float(item[3]))
 
         dd_pie_graph.append(temp_graph)
@@ -747,11 +694,22 @@ def fetch_defects_density_score_pie(request, project_id):
 
     temp_table = []
     temp_table.append('Total')
+    temp_table.append(None)
     temp_table.append(priority_total['blocker'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['critical'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['major'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['minor'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['trivial'])
+    temp_table.append(None)
+    temp_table.append(None)
     temp_table.append(priority_total['total'])
 
     dd_pie_table.append(temp_table)

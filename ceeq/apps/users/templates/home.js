@@ -4,7 +4,7 @@ $(document).ready(function() {
         colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
     });
     $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
-        console.log(data);
+        //console.log(data);
         $('#home_score_container').highcharts({
             chart: {
                 type: 'bar'
@@ -39,6 +39,16 @@ $(document).ready(function() {
                         y:-1,
                         formatter: function(){
                             return this.y.toFixed(2)
+                        }
+                    }
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function(){
+                                location.href = '/ceeq/project/' + data['id'][this.x];
+                            }
                         }
                     }
                 }
