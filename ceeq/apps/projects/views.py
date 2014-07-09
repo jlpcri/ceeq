@@ -36,6 +36,12 @@ def projects(request):
 
 @login_required
 def project_detail(request, project_id):
+    """
+    Detail page of project, include pie chart, data table of component
+    :param request:
+    :param project_id:
+    :return:
+    """
     project = get_object_or_404(Project, pk=project_id)
     form = ProjectForm(instance=project)
 
@@ -103,6 +109,12 @@ def project_detail(request, project_id):
 
 @login_required
 def project_defects_density(request, project_id):
+    """
+    Include trending graph of defects density and ceeq score per version
+    :param request:
+    :param project_id:
+    :return: component weight, dds, priority-status, trending graph
+    """
     project = get_object_or_404(Project, pk=project_id)
     project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version', 'created')
 
@@ -142,6 +154,12 @@ def project_defects_density(request, project_id):
 
 
 def get_component_defects_density(request, jira_data):
+    """
+    Get component defects density based on versions
+    :param request:
+    :param jira_data:
+    :return:
+    """
     version_names = []
     for item in jira_data['issues']:
         try:
@@ -387,6 +405,12 @@ def project_delete(request, project_id):
 
 @login_required
 def project_update_scores(request, project_id):
+    """
+    Calculate ceeq score all projects
+    :param request:
+    :param project_id:
+    :return:
+    """
     projects = Project.objects.all().order_by('name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
@@ -405,6 +429,12 @@ def project_update_scores(request, project_id):
 
 
 def calculate_score(request, project):
+    """
+    Calculate ceeq score per project
+    :param request:
+    :param project: which ceeq score need to be calculated
+    :return: ceeq score is saved to project and returned
+    """
     # Get component names for autocomplete
     component_names = []
     component_names_without_slash = []
@@ -458,6 +488,14 @@ def calculate_score(request, project):
 
 
 def issue_counts_compute(request, component_names, component_names_without_slash, jira_data):
+    """
+    Compute number of issues Component, SubComponent, Priority, Status
+    :param request:
+    :param component_names: include SubComponents
+    :param component_names_without_slash: without SubComponents
+    :param jira_data: raw data from JIRA
+    :return: dictionary data
+    """
     data = {}
     issue_counts = {
         'ceeq': issue_status_count.copy(),  # store ceeq score
@@ -541,6 +579,14 @@ def issue_counts_compute(request, component_names, component_names_without_slash
 
 
 def fetch_projects_score(request):
+    """
+    Use for ceeq score bar graph
+    :param request:
+    :return: json data
+            categories: Y axis label
+            score: X axis value
+            id: project id for hyperlink of project detail
+    """
     projects = Project.objects.all()
     data = {}
 
@@ -552,6 +598,12 @@ def fetch_projects_score(request):
 
 
 def fetch_defects_density_score(request, project_id):
+    """
+    Used for trending defects density graph and trending ceeq score graph
+    :param request:
+    :param project_id:
+    :return: json data include average ceeq score per version
+    """
     project = get_object_or_404(Project, pk=project_id)
     project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project)
 
@@ -617,6 +669,12 @@ def fetch_defects_density_score(request, project_id):
 
 
 def fetch_defects_density_score_pie(request, project_id):
+    """
+    Used for pie chart along with drawing data table
+    :param request:
+    :param project_id:
+    :return:
+    """
     project = get_object_or_404(Project, pk=project_id)
 
     jira_data = project.fetch_jira_data
@@ -721,6 +779,12 @@ def fetch_defects_density_score_pie(request, project_id):
 
 
 def defects_density_log(request, project_id):
+    """
+    Record defects density per version for all projects
+    :param request:
+    :param project_id:
+    :return:
+    """
     projects = Project.objects.all().order_by('name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
@@ -740,6 +804,12 @@ def defects_density_log(request, project_id):
 
 
 def defects_density_single_log(request, project):
+    """
+    Record defects density per version for per project
+    :param request:
+    :param project:
+    :return:
+    """
     jira_data = project.fetch_jira_data
 
     #check whether fetch the data from jira or not
