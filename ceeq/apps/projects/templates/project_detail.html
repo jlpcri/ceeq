@@ -114,7 +114,7 @@
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
             </div>
-            <div id="component_percentage_pie_chart" style="width: 700px; height: 550px; margin: 0 auto;">
+            <div id="component_percentage_pie_chart" style="width: 1000px; height: 300px; margin: 0 auto;">
                 <div class="loading" style="text-align:center; margin-top: 100px;">
                     <i class="fa fa-spinner fa-2x fa-spin"></i>
                     Loading data from JIRA Database...
@@ -295,15 +295,9 @@
 
                         // user options
                         var row_label = ['Blocker', 'Critical', 'Major', 'Minor', 'Trivial', 'Subtotal'];
-                        var row_orc_label = ['O', 'R', 'C',
-                                            'O', 'R', 'C',
-                                            'O', 'R', 'C',
-                                            'O', 'R', 'C',
-                                            'O', 'R', 'C'
-                                            ];
-                        var tableTop = 300,
-                            colWidth = 30,
-                            tableLeft = 20,
+                        var tableTop = 80,
+                            colWidth = 60,
+                            tableLeft = 0,
                             rowHeight = 25,
                             cellPadding = 2.5,
                             valueDecimals = 3;
@@ -319,7 +313,7 @@
                             renderer.text(
                                 item[0],
                                 cellLeft + cellPadding,
-                                tableTop + (i + 3) * rowHeight - cellPadding
+                                tableTop + (i + 2) * rowHeight - cellPadding
                             )
                             .css({
                                 fontWeight: 'bold',
@@ -329,9 +323,8 @@
                         });
 
                         // draw jira priority lables
-                        cellLeft += colWidth;
                         $.each(row_label, function(i, item) {
-                            cellLeft += colWidth * 3;
+                            cellLeft += colWidth;
 
                             renderer.text(
                                 item,
@@ -346,39 +339,10 @@
                                 fontSize: '10pt'
                             })
                             .add();
-                            //draw vertical line
-                            Highcharts.tableLine(
-                                renderer,
-                                cellLeft - cellPadding * 6,
-                                tableTop + rowHeight + cellPadding,
-                                cellLeft - cellPadding * 6,
-                                tableTop + (data[1].length + 2) * rowHeight + cellPadding
-                            );
-                        });
-
-                        // draw jira priority Open Resolved Closed lables
-                        cellLeft = tableLeft + colWidth * 2;
-                        $.each(row_orc_label, function(i, item) {
-                            cellLeft += colWidth;
-
-                            renderer.text(
-                                item,
-                                cellLeft - cellPadding + colWidth,
-                                tableTop + rowHeight * 2 - cellPadding
-                            )
-                            .attr({
-                                align: 'center'
-                            })
-                            .css({
-                                fontStyle: 'italic',
-                                fontSize: '10pt',
-                                color: 'blue'
-                            })
-                            .add();
                         });
 
                         $.each(data[1], function(row, item){
-                            cellLeft = tableLeft + colWidth * 2;
+                            cellLeft = tableLeft;
 
                             // apply number of jiras
                             $.each(item, function(i, priority){
@@ -387,7 +351,7 @@
                                     renderer.text(
                                         priority,
                                         cellLeft - cellPadding,
-                                        tableTop + (row + 3) * rowHeight -cellPadding
+                                        tableTop+ (row + 2) * rowHeight -cellPadding
                                     )
                                     .attr({
                                         align: 'center'
@@ -404,22 +368,15 @@
                                     renderer,
                                     tableLeft,
                                     tableTop + cellPadding,
-                                    cellLeft + colWidth * 1.5,
+                                    cellLeft + colWidth,
                                     tableTop + cellPadding
-                                );
-                                Highcharts.tableLine( // bottom - 1
-                                    renderer,
-                                    tableLeft,
-                                    tableTop + (data[1].length + 1) * rowHeight + cellPadding,
-                                    cellLeft + colWidth * 1.5,
-                                    tableTop + (data[1].length + 1) * rowHeight + cellPadding
                                 );
                                 Highcharts.tableLine( // bottom
                                     renderer,
                                     tableLeft,
-                                    tableTop + (data[1].length + 2) * rowHeight + cellPadding,
-                                    cellLeft + colWidth * 1.5,
-                                    tableTop + (data[1].length + 2) * rowHeight + cellPadding
+                                    tableTop + (data[1].length + 1) * rowHeight + cellPadding,
+                                    cellLeft + colWidth,
+                                    tableTop + (data[1].length + 1) * rowHeight + cellPadding
                                 );
                             }
                             // horizontal line
@@ -427,7 +384,7 @@
                                 renderer,
                                 tableLeft,
                                 tableTop + row * rowHeight + rowHeight + cellPadding,
-                                cellLeft + colWidth * 1.5,
+                                cellLeft + colWidth,
                                 tableTop + row * rowHeight + rowHeight + cellPadding
                             );
                         });
@@ -510,8 +467,8 @@
                             pie: {
                                 allowPointSelect: true,
                                 cursor: 'pointer',
-                                center: ['50%', 100],
-                                size: '30%',
+                                center: ['77%', 100],
+                                size: '70%',
                                 dataLabels: {
                                     enabled: true,
                                     format: '<b>{point.name}</b>: {point.percentage:.2f}%',
