@@ -546,6 +546,7 @@ def fetch_projects_score(request):
 
     data['categories'] = [project.name for project in projects]
     data['score'] = [str(project.score) for project in projects]
+    data['id'] = [str(project.id) for project in projects]
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 

@@ -114,8 +114,8 @@
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
             </div>
-            <div id="component_percentage_pie_chart" style="width: 1000px; height: 600px;" >
-                <div class="loading" style="text-align:center ;margin-top: 100px;">
+            <div id="component_percentage_pie_chart" style="width: 700px; height: 550px; margin: 0 auto;">
+                <div class="loading" style="text-align:center; margin-top: 100px;">
                     <i class="fa fa-spinner fa-2x fa-spin"></i>
                     Loading data from JIRA Database...
                 </div>
@@ -302,8 +302,8 @@
                                             'O', 'R', 'C'
                                             ];
                         var tableTop = 300,
-                            colWidth = 40,
-                            tableLeft = 0,
+                            colWidth = 30,
+                            tableLeft = 20,
                             rowHeight = 25,
                             cellPadding = 2.5,
                             valueDecimals = 3;
@@ -329,6 +329,7 @@
                         });
 
                         // draw jira priority lables
+                        cellLeft += colWidth;
                         $.each(row_label, function(i, item) {
                             cellLeft += colWidth * 3;
 
@@ -345,10 +346,18 @@
                                 fontSize: '10pt'
                             })
                             .add();
+                            //draw vertical line
+                            Highcharts.tableLine(
+                                renderer,
+                                cellLeft - cellPadding * 6,
+                                tableTop + rowHeight + cellPadding,
+                                cellLeft - cellPadding * 6,
+                                tableTop + (data[1].length + 2) * rowHeight + cellPadding
+                            );
                         });
 
                         // draw jira priority Open Resolved Closed lables
-                        cellLeft = tableLeft + colWidth;
+                        cellLeft = tableLeft + colWidth * 2;
                         $.each(row_orc_label, function(i, item) {
                             cellLeft += colWidth;
 
@@ -369,7 +378,7 @@
                         });
 
                         $.each(data[1], function(row, item){
-                            cellLeft = tableLeft + colWidth;
+                            cellLeft = tableLeft + colWidth * 2;
 
                             // apply number of jiras
                             $.each(item, function(i, priority){
