@@ -63,22 +63,12 @@ def user_update(request, user_id):
     if request.method == "POST":
         user = get_object_or_404(User, pk=user_id)
 
-        if request.POST.get('is_active'):
-            user.is_active = True
-        else:
-            user.is_staff = False
-
-        if request.POST.get('is_staff'):
-            user.is_staff = True
-        else:
-            user.is_staff = False
-            user.is_superuser = False
-
-        if request.POST.get('is_superuser'):
-            user.is_superuser = True
-            user.is_staff = True
-        else:
-            user.is_superuser = False
+        user.is_active = request.POST.get('is_active', False) \
+                         or request.POST.get('is_staff', False) \
+                         or request.POST.get('is_superuser', False)
+        user.is_staff = request.POST.get('is_staff', False) \
+                        or request.POST.get('is_superuser', False)
+        user.is_superuser = request.POST.get('is_superuser', False)
 
         user.save()
 
