@@ -2,18 +2,19 @@ from datetime import date
 from decimal import Decimal
 import json
 import copy
+
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm
-from predefine import component_names_standard, issue_priority_weight,\
+from ceeq.settings import component_names_standard, issue_priority_weight,\
     issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, issue_status_weight, \
     issue_status_fields
 
@@ -80,14 +81,7 @@ def project_detail(request, project_id):
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
     # calculate total number of issues based on priority
-    priority_total = {
-        'total': 0,
-        'blocker': 0,
-        'critical': 0,
-        'major': 0,
-        'minor': 0,
-        'trivial': 0
-    }
+    priority_total = defaultdict(int)
 
     for item in weight_factor:
         priority_total['total'] += item[3]
@@ -214,8 +208,11 @@ def get_weight_factor(data, component_names_without_slash_all):
     calculate issues number of components and sub-components
 
     :param data: jira_data
-    :param component_names_without_slash:
-    :return: weight_factor
+    :param component_names_without_slash: exclude sub components
+    :return: weight_factor: component name, weight, defect density, total number,
+                            blocker(Closed, Open, Resolved)
+                            ...
+                            trivial(Closed, Open, Resolved)
     """
 
     #get framework parameter
@@ -697,14 +694,7 @@ def fetch_defects_density_score_pie(request, project_id):
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
     # calculate total number of issues based on priority
-    priority_total = {
-        'total': 0,
-        'blocker': 0,
-        'critical': 0,
-        'major': 0,
-        'minor': 0,
-        'trivial': 0
-    }
+    priority_total = defaultdict(int)
 
     dd_pie_data = []
     dd_pie_table = []
