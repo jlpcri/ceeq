@@ -731,10 +731,11 @@ def fetch_defects_density_score_pie(request, project_id):
         temp_table.append(None)
     temp_table.append(priority_total['total'])
 
-    dd_pie_table.append(temp_table)
+    #dd_pie_table.append(temp_table)
 
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
+    dd_pie_data.append(temp_table)
 
     return HttpResponse(json.dumps(dd_pie_data), content_type="application/json")
 

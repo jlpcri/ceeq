@@ -352,7 +352,7 @@
                                 cellLeft - cellPadding * 6,
                                 tableTop + rowHeight + cellPadding,
                                 cellLeft - cellPadding * 6,
-                                tableTop + (data[1].length + 2) * rowHeight + cellPadding
+                                tableTop + (data[1].length + 3) * rowHeight + cellPadding
                             );
                         });
 
@@ -407,20 +407,18 @@
                                     cellLeft + colWidth * 1.5,
                                     tableTop + cellPadding
                                 );
-                                Highcharts.tableLine( // bottom - 1
+
+                                // last three rows
+                                for (var i = 1; i < 4; i++) {
+                                    Highcharts.tableLine( // bottom - 1
                                     renderer,
                                     tableLeft,
-                                    tableTop + (data[1].length + 1) * rowHeight + cellPadding,
+                                    tableTop + (data[1].length + i) * rowHeight + cellPadding,
                                     cellLeft + colWidth * 1.5,
-                                    tableTop + (data[1].length + 1) * rowHeight + cellPadding
-                                );
-                                Highcharts.tableLine( // bottom
-                                    renderer,
-                                    tableLeft,
-                                    tableTop + (data[1].length + 2) * rowHeight + cellPadding,
-                                    cellLeft + colWidth * 1.5,
-                                    tableTop + (data[1].length + 2) * rowHeight + cellPadding
-                                );
+                                    tableTop + (data[1].length + i) * rowHeight + cellPadding
+                                    );
+                                }
+
                             }
                             // horizontal line
                             Highcharts.tableLine(
@@ -432,6 +430,38 @@
                             );
                         });
 
+                        cellLeft = tableLeft + colWidth * 2;
+                        $.each(data[2], function(i, priority_total) {
+                            cellLeft  += colWidth;
+                            if ( i > 0) {
+                                renderer.text(
+                                    priority_total,
+                                    cellLeft - cellPadding,
+                                    tableTop + (data[1].length + 3) * rowHeight - cellPadding
+                                )
+                                .attr({
+                                    align: 'center'
+                                })
+                                .css({
+                                    fontWeight: 'bold',
+                                    fontSize: '10pt'
+                                })
+                                .add();
+                            }
+                            else {
+                                renderer.text(
+                                    priority_total,
+                                    tableLeft + cellPadding,
+                                    tableTop + (data[1].length + 3) * rowHeight - cellPadding
+                                )
+                                .css({
+                                    fontWeight: 'bold',
+                                    fontSize: '10pt'
+                                })
+                                .add();
+                            }
+
+                        });
                         /*
                         cellLeft = tableLeft + 25;
                         $.each(row_label, function(i, item) {
