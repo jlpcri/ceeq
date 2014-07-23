@@ -76,14 +76,16 @@ def project_detail(request, project_id):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
+    #print component_names_without_slash
     data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
-
+    #print data
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
     # calculate total number of issues based on priority
     priority_total = defaultdict(int)
 
     for item in weight_factor:
+        #print item
         priority_total['total'] += item[3]
         for status in issue_status_fields:
             priority_total[status[0]] += sum(item[i] for i in status[1])
@@ -321,6 +323,8 @@ def get_weight_factor(data, component_names_without_slash_all):
 
     for item in sorted(component_names_without_slash):
         temp = []
+        if sum(data[item]['total'].itervalues()) == 0:
+            continue
         temp.append(item)   # component name
         try:
             # dynamic component weight, float
