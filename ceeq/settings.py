@@ -142,7 +142,9 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
-JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=components,status,priority,versions,issuetype&jql=project='
+JIRA_API_FIELDS = 'components,status,priority,versions,issuetype'
+JIRA_API_MAX = 1000
+JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&jql=project=' % (JIRA_API_FIELDS, JIRA_API_MAX)
 
 SESSION_COOKIE_NAME = 'ceeqSessionId'
 
