@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 import json
 import copy
@@ -544,6 +544,12 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                     elif item['fields']['priority']['id'] == '5':
                         data[component]['trivial']['open'] += 1
                 elif item['fields']['status']['id'] in issue_status_resolved:
+                    #TODO: Track time usage of Resolved JIRAs
+                    """
+                    print item['fields']['created'], ',', item['fields']['resolutiondate']
+                    difference = datetime.strptime(item['fields']['resolutiondate'][:19], '%Y-%m-%dT%H:%M:%S') - datetime.strptime(item['fields']['created'][:19], '%Y-%m-%dT%H:%M:%S')
+                    print 'hours: ', divmod(difference.total_seconds(), 3600)[0]
+                    """
                     if item['fields']['priority']['id'] == '1':
                         data[component]['blocker']['resolved'] += 1
                     elif item['fields']['priority']['id'] == '2':
@@ -555,6 +561,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                     elif item['fields']['priority']['id'] == '5':
                         data[component]['trivial']['resolved'] += 1
                 elif item['fields']['status']['id'] in issue_status_closed:
+                    #print 'C', item['fields']['created'], item['fields']['resolutiondate']
                     if item['fields']['priority']['id'] == '1':
                         data[component]['blocker']['closed'] += 1
                     elif item['fields']['priority']['id'] == '2':
