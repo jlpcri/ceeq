@@ -96,7 +96,7 @@ def project_detail(request, project_id):
         'weight_factor': weight_factor,
         'priority_total': priority_total,
         'component_names_standard': sorted(component_names_standard.keys()),
-        'component_names': sorted([item for item in component_names_standard.keys() if item in component_names_without_slash]),
+        'component_names': list(zip(*weight_factor)[0]),
         'superuser': request.user.is_superuser,
     })
     return render(request, 'project_detail.html', context)
