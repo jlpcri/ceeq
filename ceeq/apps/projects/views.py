@@ -90,13 +90,18 @@ def project_detail(request, project_id):
         for status in issue_status_fields:
             priority_total[status[0]] += sum(item[i] for i in status[1])
 
+    try:
+        component_names_exist = list(zip(*weight_factor)[0])
+    except IndexError:
+        component_names_exist = None
+
     context = RequestContext(request, {
         'form': form,
         'project': project,
         'weight_factor': weight_factor,
         'priority_total': priority_total,
         'component_names_standard': sorted(component_names_standard.keys()),
-        'component_names': list(zip(*weight_factor)[0]),
+        'component_names': component_names_exist,
         'superuser': request.user.is_superuser,
     })
     return render(request, 'project_detail.html', context)
@@ -323,6 +328,8 @@ def get_weight_factor(data, component_names_without_slash_all):
             weight_factor_base += component_names_standard[item]
         except KeyError:
             continue
+
+    #weight_factor_base = 20
 
     for item in sorted(component_names_without_slash):
         temp = []
