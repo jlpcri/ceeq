@@ -317,12 +317,16 @@ def get_weight_factor(data, component_names_without_slash_all):
     weight_factor_base = 0
     for item in component_names_without_slash:
         try:
+            # Skip the component with zero issues
+            if sum(data[item]['total'].itervalues()) == 0:
+                continue
             weight_factor_base += component_names_standard[item]
         except KeyError:
             continue
 
     for item in sorted(component_names_without_slash):
         temp = []
+        # Skip the component with zero issues
         if sum(data[item]['total'].itervalues()) == 0:
             continue
         temp.append(item)   # component name
