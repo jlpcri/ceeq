@@ -488,7 +488,7 @@ def calculate_score(request, project):
     score = (1 - raw_score) * 10  # projects score = 10 - defect score
 
     if score < 0:  # projects score out of range (0-10)
-        project.score = -2
+        project.score = 20
     elif score == 10:  # no open issues in JIRA
         project.score = -3
     else:

@@ -97,12 +97,10 @@
             </div>
         </form>
 
-        {% if project.score < 0 %}
+        {% if project.score < 0 and project.score != -2 %}
             <h4>No JIRA Data fetched.</h4>
             {% if project.score == -1 %}
                 No created issues
-            {% elif project.score == -2 %}
-                Out of Range
             {% elif project.score == -3 %}
                 No open issues
             {% elif project.score == -4 %}
@@ -135,7 +133,12 @@
             <div class="row">
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>
-                    Project CEEQ Score: <strong>{{ project.score }}</strong>
+                    Project CEEQ Score:
+                    {% if project.score == 20 %}
+                        Out of Range
+                    {% else %}
+                        <strong>{{ project.score }}</strong>
+                    {% endif %}
                 </p>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
                 <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
@@ -512,6 +515,13 @@
                     Highcharts.setOptions({
                         colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
                     });
+                    var pie_title;
+                    if (parseInt({{ project.score }}) == 20 ) {
+                        pie_title = 'CEEQ Score: ' + 'Out of Range';
+                    }
+                    else {
+                        pie_title = '<b>CEEQ Score: ' + {{ project.score }} + ' / 10</b>';
+                    }
                     $('#component_percentage_pie_chart').highcharts({
                         chart: {
                             //plotBackgroundColor: null,
@@ -523,7 +533,7 @@
                             borderWidth: 0
                         },
                         title: {
-                            text: '<b>CEEQ Score: ' + {{ project.score}} + ' / 10</b>',
+                            text: pie_title,
                             style: {
                                 fontSize: '18pt',
                                 color: '#000000'

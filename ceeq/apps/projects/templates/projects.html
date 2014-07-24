@@ -36,8 +36,8 @@
                                 <td>
                                     {% if project.score == -1 %}
                                         No created issues
-                                    {% elif project.score == -2 %}
-                                        Out of Range
+                                    {% elif project.score == 20 %}
+                                        <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
                                     {% elif project.score == -3 %}
                                         <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
 
