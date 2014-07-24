@@ -319,7 +319,8 @@ def get_weight_factor(data, component_names_without_slash_all):
                 data[component]['ceeq'][status] /= subcomponent_length
 
     weight_factor = []
-    weight_factor_base = 0
+    weight_factor_base = 20
+    """
     for item in component_names_without_slash:
         try:
             # Skip the component with zero issues
@@ -328,8 +329,7 @@ def get_weight_factor(data, component_names_without_slash_all):
             weight_factor_base += component_names_standard[item]
         except KeyError:
             continue
-
-    #weight_factor_base = 20
+    """
 
     for item in sorted(component_names_without_slash):
         temp = []
