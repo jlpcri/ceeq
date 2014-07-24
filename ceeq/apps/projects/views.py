@@ -737,6 +737,18 @@ def fetch_defects_density_score_pie(request, project_id):
         dd_pie_graph.append(temp_graph)
         dd_pie_table.append(temp_table)
 
+    for item in sorted(component_names_standard.keys()):
+        temp_table = []
+        if item not in list(zip(*weight_factor)[0]):
+            temp_table.append(item)
+            for status in issue_status_fields:
+                for i in status[1]:
+                    temp_table.append(0)
+            temp_table.append(None)
+            temp_table.append(0)
+
+            dd_pie_table.append(temp_table)
+
     temp_table = []
     temp_table.append('Total')
     temp_table.append(None)
