@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 from decimal import Decimal
 import json
 import copy
@@ -59,10 +59,10 @@ def project_detail(request, project_id):
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
         context = RequestContext(request, {
-        'form': form,
-        'project': project,
-        'superuser': request.user.is_superuser,
-        'no_jira_data': jira_data,
+            'form': form,
+            'project': project,
+            'superuser': request.user.is_superuser,
+            'no_jira_data': jira_data,
         })
         return render(request, 'project_detail.html', context)
 
@@ -210,7 +210,7 @@ def get_weight_factor(data, component_names_without_slash_all):
     calculate issues number of components and sub-components
 
     :param data: jira_data
-    :param component_names_without_slash: exclude sub components
+    :param component_names_without_slash_all: exclude sub components
     :return: weight_factor: component name, weight, defect density, total number,
                             blocker(Closed, Open, Resolved)
                             ...

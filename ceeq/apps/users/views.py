@@ -64,10 +64,10 @@ def user_update(request, user_id):
         user = get_object_or_404(User, pk=user_id)
 
         user.is_active = request.POST.get('is_active', False) \
-                         or request.POST.get('is_staff', False) \
-                         or request.POST.get('is_superuser', False)
+            or request.POST.get('is_staff', False) \
+            or request.POST.get('is_superuser', False)
         user.is_staff = request.POST.get('is_staff', False) \
-                        or request.POST.get('is_superuser', False)
+            or request.POST.get('is_superuser', False)
         user.is_superuser = request.POST.get('is_superuser', False)
 
         user.save()
