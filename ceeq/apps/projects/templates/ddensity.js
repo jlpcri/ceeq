@@ -10,7 +10,7 @@ $(document).ready(function() {
                     //versions.push(key);
                     $("#dd_trend_graph_"+key).highcharts({
                         title: {
-                            text: 'Defects Density Trending Graph',
+                            text: 'Defect Impact Trending Graph',
                             x: -20 //center
                         },
                         subtitle: {

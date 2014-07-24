@@ -6,7 +6,7 @@ from ceeq.apps.projects.views import defects_density_single_log, calculate_score
 
 class Command(BaseCommand):
     args = '<project_id project_id ...>'
-    help = 'Save daily components defects density to specified project'
+    help = 'Save daily components defect impact to specified project'
 
     def handle(self, *args, **options):
         if args:
@@ -17,7 +17,7 @@ class Command(BaseCommand):
                     raise CommandError('Project "%s" does not exist' % project_id)
                 calculate_score(None, project)
                 defects_density_single_log(None, project)
-                self.stdout.write('Successfully updated score and saved Defects Density for project "%s"' % project.name)
+                self.stdout.write('Successfully updated score and saved Defect Impact for project "%s"' % project.name)
         else:
             projects = Project.objects.all()
             for project in projects:
@@ -27,5 +27,5 @@ class Command(BaseCommand):
                     calculate_score(None, project)
                     defects_density_single_log(None, project)
 
-            self.stdout.write("All projects Score updated, and Defects Density saved")
+            self.stdout.write("All projects Score updated, and Defect Impact saved")
 
