@@ -668,9 +668,9 @@ def fetch_defects_density_score(request, project_id):
                 tmp_data_application.append(float(item.application))
 
                 tmp_data_ceeq.append(float(item.ceeq))
-                if item.ceeq > 0 and item.ceeq != 20:
-                    tmp_data_ceeq_count += 1
-                    tmp_data_ceeq_sum += item.ceeq
+
+                tmp_data_ceeq_count += 1
+                tmp_data_ceeq_sum += item.ceeq
 
         data['categories'] = tmp_categories
         data['voiceSlots'] = tmp_data_voiceSlots
