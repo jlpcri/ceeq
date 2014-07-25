@@ -81,6 +81,10 @@ def project_detail(request, project_id):
     #print data
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
+    #update ceeq score
+    project.score = project_detail_calculate_score(weight_factor)
+    project.save()
+
     # calculate total number of issues based on priority
     priority_total = defaultdict(int)
 
@@ -105,6 +109,22 @@ def project_detail(request, project_id):
         'superuser': request.user.is_superuser,
     })
     return render(request, 'project_detail.html', context)
+
+
+def project_detail_calculate_score(weight_factor):
+    raw_score = 0
+    for item in weight_factor:
+        raw_score += Decimal(item[1]) * item[2]  # item[1]: component weight, float, item[2]: defects density, decimal
+    raw_score = (1 - raw_score) * 10  # projects score = 10 - defect score
+
+    if raw_score < 0:  # projects score out of range (0-10)
+        score = 20
+    elif raw_score == 10:  # no open issues in JIRA
+        score = -3
+    else:
+        score = round(raw_score, 2)
+
+    return score
 
 
 @login_required
@@ -320,7 +340,9 @@ def get_weight_factor(data, component_names_without_slash_all):
 
     weight_factor = []
     weight_factor_base = 20
+
     """
+    -------Dynamic change weight ration-------
     for item in component_names_without_slash:
         try:
             # Skip the component with zero issues
