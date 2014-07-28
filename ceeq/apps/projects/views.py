@@ -49,13 +49,14 @@ def project_detail(request, project_id):
 
     component_names = []
     component_names_without_slash = []
-    version_names = []
+    #version_names = []
 
     #jira_data = fetch_jira_data(project.jira_name)
     jira_data = project.fetch_jira_data
 
-    #check whether fetch the data from jira or not
+    version_names = version_name_from_jira_data(jira_data)
 
+    #check whether fetch the data from jira or not
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
         context = RequestContext(request, {
@@ -107,8 +108,22 @@ def project_detail(request, project_id):
         'component_names_standard': sorted(component_names_standard.keys()),
         'component_names': component_names_exist,
         'superuser': request.user.is_superuser,
+        'version_names': version_names
     })
     return render(request, 'project_detail.html', context)
+
+
+def version_name_from_jira_data(jira_data):
+    version_names = []
+    for item in jira_data['issues']:
+        try:
+            name = str(item['fields']['versions'][0]['name'])
+            version_names.append(name)
+        except IndexError:
+            continue
+    version_names = list(OrderedDict.fromkeys(version_names))
+
+    return version_names
 
 
 def project_detail_calculate_score(weight_factor):
@@ -180,14 +195,8 @@ def get_component_defects_density(request, jira_data):
     :param jira_data:
     :return:
     """
-    version_names = []
-    for item in jira_data['issues']:
-        try:
-            name = str(item['fields']['versions'][0]['name'])
-            version_names.append(name)
-        except IndexError:
-            continue
-    version_names = list(OrderedDict.fromkeys(version_names))
+
+    version_names = version_name_from_jira_data(jira_data)
 
     version_data = {}
     for version_name in version_names:
