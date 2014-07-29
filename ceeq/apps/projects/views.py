@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
-from forms import ProjectForm
+from forms import ProjectForm, ProjectNewForm
 from ceeq.settings import component_names_standard, issue_priority_weight,\
     issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, issue_status_weight, \
     issue_status_fields
@@ -51,10 +51,9 @@ def project_detail(request, project_id):
     component_names_without_slash = []
     #version_names = []
 
-    #jira_data = fetch_jira_data(project.jira_name)
     jira_data = project.fetch_jira_data
 
-    version_names = version_name_from_jira_data(jira_data)
+    #print project.jira_version
 
     #check whether fetch the data from jira or not
     if jira_data == 'No JIRA Data':
@@ -108,7 +107,6 @@ def project_detail(request, project_id):
         'component_names_standard': sorted(component_names_standard.keys()),
         'component_names': component_names_exist,
         'superuser': request.user.is_superuser,
-        'version_names': version_names
     })
     return render(request, 'project_detail.html', context)
 
@@ -419,7 +417,7 @@ def project_edit(request, project_id):
 @user_passes_test(user_is_superuser)
 def project_new(request):
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        form = ProjectNewForm(request.POST)
         if form.is_valid():
             project = form.save()
             messages.success(request, "Project \"{0}\" has been created.".format(project.name))
@@ -431,7 +429,7 @@ def project_new(request):
             })
             return render(request, 'project_new.html', context)
     else:
-        form = ProjectForm()
+        form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
         })
