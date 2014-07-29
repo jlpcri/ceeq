@@ -49,9 +49,11 @@ def project_detail(request, project_id):
 
     component_names = []
     component_names_without_slash = []
-    #version_names = []
 
     jira_data = project.fetch_jira_data
+
+    version_names = version_name_from_jira_data(jira_data)
+    version_names.append('All Versions')
 
     #print project.jira_version
 
@@ -107,6 +109,7 @@ def project_detail(request, project_id):
         'component_names_standard': sorted(component_names_standard.keys()),
         'component_names': component_names_exist,
         'superuser': request.user.is_superuser,
+        'version_names': version_names
     })
     return render(request, 'project_detail.html', context)
 
@@ -120,6 +123,8 @@ def version_name_from_jira_data(jira_data):
         except IndexError:
             continue
     version_names = list(OrderedDict.fromkeys(version_names))
+
+    version_names = sorted(version_names)
 
     return version_names
 

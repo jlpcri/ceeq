@@ -23,7 +23,13 @@
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>
                     <div class="col-md-2" style="text-align: left;font-size: 18px;">JIRA Version</div>
-                    <div class="col-md-8">{{ form.jira_version }}</div>
+                    <div class="col-md-8">
+                        <select name="select_version_name" class="form-control" id="select_version_name">
+                            {% for item in version_names %}
+                                <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>

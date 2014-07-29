@@ -5,6 +5,7 @@ from models import Project
 
 
 class ProjectForm(ModelForm):
+    """
     def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
         choices = [('All Versions', 'All Versions')]
@@ -21,6 +22,7 @@ class ProjectForm(ModelForm):
             choices += [(item, item) for item in version_names]
             #print choices
         self.fields['jira_version'].widget.choices = choices
+    """
 
     class Meta:
         model = Project
