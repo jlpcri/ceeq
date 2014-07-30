@@ -47,6 +47,12 @@
                     <div class="col-md-1">{{ form.complete }}</div>
                     <div class="col-md-7">Flag to show CEEQ Project completed.</div>
                 </div>
+            {% else %}
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Version</div>
+                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.jira_version }}</div>
+                </div>
             {% endif %}
 
             <!--

@@ -743,13 +743,24 @@ def fetch_defects_density_score_pie(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
-
-    jira_data = project.fetch_jira_data
-
     component_names = []
     component_names_without_slash = []
+    jira_data = project.fetch_jira_data
 
-    for item in jira_data['issues']:
+    #get jira data based on version
+    if project.jira_version == 'All Versioins':
+        version_data = jira_data['issues']
+    else:
+        version_data = []
+        for item in jira_data['issues']:
+            try:
+                name = str(item['fields']['versions'][0]['name'])
+                if name == project.jira_version:
+                    version_data.append(item)
+            except IndexError:
+                continue
+
+    for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
             component_names.append(name)
@@ -760,7 +771,7 @@ def fetch_defects_density_score_pie(request, project_id):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
+    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data)
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
