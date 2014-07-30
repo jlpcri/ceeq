@@ -52,11 +52,6 @@ def project_detail(request, project_id):
 
     jira_data = project.fetch_jira_data
 
-    version_names = version_name_from_jira_data(jira_data)
-    version_names.append('All Versions')
-
-    #print project.jira_version
-
     #check whether fetch the data from jira or not
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
@@ -65,10 +60,28 @@ def project_detail(request, project_id):
             'project': project,
             'superuser': request.user.is_superuser,
             'no_jira_data': jira_data,
+            'version_names': ['All Versions']
         })
         return render(request, 'project_detail.html', context)
 
-    for item in jira_data['issues']:
+    #List for choice of jira verion per project
+    version_names = version_name_from_jira_data(jira_data)
+    version_names.append('All Versions')
+
+    # get jira_data based on version
+    if project.jira_version == 'All Versions':
+        version_data = jira_data['issues']
+    else:
+        version_data = []
+        for item in jira_data['issues']:
+            try:
+                name = str(item['fields']['versions'][0]['name'])
+                if name == project.jira_version:
+                    version_data.append(item)
+            except IndexError:
+                continue
+
+    for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
             component_names.append(name)
@@ -79,7 +92,7 @@ def project_detail(request, project_id):
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
     #print component_names_without_slash
-    data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
+    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data)
     #print data
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
