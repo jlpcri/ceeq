@@ -748,7 +748,7 @@ def fetch_defects_density_score_pie(request, project_id):
     jira_data = project.fetch_jira_data
 
     #get jira data based on version
-    if project.jira_version == 'All Versioins':
+    if project.jira_version == 'All Versions':
         version_data = jira_data['issues']
     else:
         version_data = []
