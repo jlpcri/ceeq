@@ -498,12 +498,26 @@ def calculate_score(request, project):
     component_names_without_slash = []
     jira_data = project.fetch_jira_data
 
+    # check whether fetch the data from JIRA or not
     if jira_data == 'No JIRA Data':
         project.score = -4
         project.save()
         return
 
-    for item in jira_data['issues']:
+    #get jira data based on version
+    if project.jira_version == 'All Versions':
+        version_data = jira_data['issues']
+    else:
+        version_data = []
+        for item in jira_data['issues']:
+            try:
+                name = str(item['fields']['versions'][0]['name'])
+                if name == project.jira_version:
+                    version_data.append(item)
+            except IndexError:
+                continue
+
+    for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
             component_names.append(name)
@@ -514,7 +528,7 @@ def calculate_score(request, project):
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
     # Construct # of different priority issues dict from jira_data
-    data = issue_counts_compute(request, component_names, component_names_without_slash, jira_data['issues'])
+    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data)
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
