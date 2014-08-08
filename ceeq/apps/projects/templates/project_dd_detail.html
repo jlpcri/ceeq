@@ -3,22 +3,32 @@
     <div class="container">
         <div class="row">
             <legend>Project Information</legend>
-            <p><strong>Project Name: </strong>{{ project.name }}</p>
-            <p>
-                {% if project.score == -1 %}
-                    No created issues
-                {% elif project.score == 20 %}
-                    <strong>CEEQ Score: &nbsp;&nbsp;</strong>Out of Range
-                {% elif project.score == -3 %}
-                    No open issues
-                {% elif project.score == -4 %}
-                    No JIRA Data
-                {% elif project.score == -9 %}
-                    No evaluate
-                {% else %}
-                    <strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score }}
-                {% endif %}
-            </p>
+            <div class="row">
+                <div class="col-md-2"><strong>Project Name: </strong> </div>
+                <div class="col-md-1">{{ project.name }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"><strong>Current Version: </strong></div>
+                <div class="col-md-1">{{ project.jira_version }}</div>
+            </div>
+
+            <div class="row">
+            {% if project.score == -1 %}
+                No created issues
+            {% elif project.score == 20 %}
+                <strong>CEEQ Score: &nbsp;&nbsp;</strong>Out of Range
+            {% elif project.score == -3 %}
+                No open issues
+            {% elif project.score == -4 %}
+                No JIRA Data
+            {% elif project.score == -9 %}
+                No evaluate
+            {% else %}
+                <div class="col-md-2"><strong>CEEQ Score: &nbsp;&nbsp;</strong></div>
+                <div class="col-md-1">{{ project.score }}</div>
+            {% endif %}
+            </div>
+
             <br>
         </div>
 
@@ -27,6 +37,7 @@
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
             </div>
+
             {% for version, weight_factor in weight_factor_versions.items %}
                 Affected Version: <strong>{{ version }}</strong>
                 <table class="table table-hover table-striped" id="factor_table" >
