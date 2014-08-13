@@ -844,6 +844,7 @@ def fetch_defects_density_score_pie(request, project_id):
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
     dd_pie_data.append(temp_table)
+    dd_pie_data.append((project.jira_name, request.user.is_superuser))
 
     return HttpResponse(json.dumps(dd_pie_data), content_type="application/json")
 

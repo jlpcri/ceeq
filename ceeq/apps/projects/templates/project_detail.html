@@ -592,8 +592,8 @@
                             point: {
                                 events: {
                                     click:function(e){
-                                        //alert(getJIRAName());
-                                        if (e.point.name=='Application' ){
+                                        //alert(data[3]);
+                                        if (e.point.name=='Application' && data[3][0]=='VISI' && data[3][1]==true){
                                             location.href= e.point.name;
                                             e.preventDefault();
                                         }
