@@ -933,5 +933,125 @@ def remove_period_space(str):
     return tmp
 
 
+@user_passes_test(user_is_superuser)
 def project_sub_apps_piechart(request, project_id):
-    return render(request, 'project_sub_apps.html')
+    project = get_object_or_404(Project, pk=project_id)
+    if project.jira_name == 'VISI':
+        context = RequestContext(request, {
+            'project': project
+        })
+        return render(request, 'project_sub_apps.html', context)
+    else:
+        return redirect('home')
+
+
+def fetch_apps_subcomponents_pie(request, project_id):
+    """
+    Used for pie chart along with drawing data table of Subcomponents of Applications
+    :param request:
+    :param project_id:
+    :return:
+    """
+
+    project = get_object_or_404(Project, pk=project_id)
+
+    jira_data = project.fetch_jira_data
+    if project.jira_version == 'All Versions':
+        version_data = jira_data['issues']
+    else:
+        version_data = []
+        for item in jira_data['issues']:
+            try:
+                name = str(item['fields']['versions'][0]['name'])
+                if name == project.jira_version:
+                    version_data.append(item)
+            except IndexError:
+                continue
+
+    component_name = ['Application']
+    sub_component_names = []
+
+    for item in version_data:
+        try:
+            name = str(item['fields']['components'][0]['name'])
+            if name.startswith(component_name[0]):
+                sub_component_names.append(name)
+        except IndexError:
+            continue
+
+    sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
+
+    data = issue_counts_compute(request, sub_component_names, component_name, version_data)
+
+    weight_factor = get_sub_component_weight_factor(data)
+    #for item in weight_factor:
+    #    print item, weight_factor[item]
+
+    priority_total = defaultdict(int)
+
+    sub_pie_data = []
+    sub_pie_table = []
+    sub_pie_graph = []
+
+    for item in data:
+        if item == component_name[0] or sum(data[item]['total'].itervalues()) == 0:
+            continue
+        temp_graph = []
+        temp_table = []
+        sub_total = 0
+
+        priority_total['total'] += sum(data[item]['total'].itervalues())
+
+        temp_graph.append(item[12:])
+        temp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
+
+        temp_table.append(item[12:])
+        for status in issue_status_fields:
+            temp_table.append(float(data[item][status[0]]['open']))
+            temp_table.append(float(data[item][status[0]]['resolved']))
+            temp_table.append(float(data[item][status[0]]['closed']))
+
+            sub_total += sum(data[item][status[0]].itervalues())
+
+            priority_total[status[0]] += sum(data[item][status[0]].itervalues())
+
+        temp_table.append(None)
+        temp_table.append(sub_total)
+
+        sub_pie_graph.append(temp_graph)
+        sub_pie_table.append(temp_table)
+
+    temp_table = []
+    temp_table.append('Total')
+    temp_table.append(None)
+    for status in issue_status_fields:
+        temp_table.append(priority_total[status[0]])
+        temp_table.append(None)
+        temp_table.append(None)
+    temp_table.append(priority_total['total'])
+
+    sub_pie_data.append(sub_pie_graph)
+    sub_pie_data.append(sub_pie_table)
+    sub_pie_data.append(temp_table)
+
+    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
+
+
+def get_sub_component_weight_factor(data):
+    for item in data:
+        for status in issue_status_count.keys():
+            # total number of jiras per sub component
+            data[item]['total'][status] = data[item]['blocker'][status] \
+                                        + data[item]['critical'][status] \
+                                        + data[item]['major'][status] \
+                                        + data[item]['minor'][status] \
+                                        + data[item]['trivial'][status]
+
+            # defects density per sub component
+            data[item]['ceeq'][status] = data[item]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker'] \
+                                + data[item]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical'] \
+                                + data[item]['major'][status] * issue_status_weight[status] * issue_priority_weight['major'] \
+                                + data[item]['minor'][status] * issue_status_weight[status] * issue_priority_weight['minor'] \
+                                + data[item]['trivial'][status] * issue_status_weight[status] * issue_priority_weight['trivial']
+
+    return data

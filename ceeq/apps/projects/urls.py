@@ -17,4 +17,5 @@ urlpatterns = patterns('ceeq.apps.projects.views',
       #url(r'^characteristics/$', 'characteristics', name='characteristics'),
 
       url(r'^project/(?P<project_id>\d+)/Application/$', 'project_sub_apps_piechart', name='project_sub_apps_piechart'),
+      url(r'^project/app_sub_pie/(?P<project_id>\d+)/$', 'fetch_apps_subcomponents_pie', name='fetch_apps_subcomponents_pie'),
       )

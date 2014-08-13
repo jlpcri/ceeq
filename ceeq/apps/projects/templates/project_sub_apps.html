@@ -4,7 +4,29 @@
 
 {% block body %}
     <div class="container">
-    <h2>Detail Info - Application Subcomponents</h2>
-    ongoing...
+        <br>
+        <div class="row">
+            <legend>Sub Components Percentage to Applications</legend>
+        </div>
+        <div id="apps_subcomponent_percentage_pie_chart" style="width: 800px; height: 600px; margin: 0 auto;">
+            <div class="loading" style="text-align: center; margin-top: 10px;">
+                <i class="fa fa-spinner fa-2x fa-spin"></i>
+                Loading data from JIRA Database...
+            </div>
+        </div>
+        <div class="row">
+            <p style="text-align: center;">
+                Export Graph to:
+                <button id="png">PNG</button>
+                <button id="jpeg">JPEG</button>
+                <button id="pdf">PDF</button>
+            </p>
+        </div>
     </div>
+{% endblock %}
+
+{% block footer %}
+    <script>
+        {% include 'apps_sub_components.js' %}
+    </script>
 {% endblock %}
