@@ -839,7 +839,7 @@ def fetch_defects_density_score_pie(request, project_id):
         temp_table.append(None)
     temp_table.append(priority_total['total'])
 
-    #dd_pie_table.append(temp_table)
+    #print dd_pie_graph
 
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
@@ -930,3 +930,7 @@ def remove_period_space(str):
     tmp = tmp.replace(' ', '_')
     tmp = tmp.replace(',', '_')
     return tmp
+
+
+def project_sub_apps_piechart(request, project_id):
+    return render(request, 'project_sub_apps.html')

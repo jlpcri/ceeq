@@ -589,6 +589,17 @@
                         series: [{
                             type: 'pie',
                             name: 'Component Contribution',
+                            point: {
+                                events: {
+                                    click:function(e){
+                                        //alert(getJIRAName());
+                                        if (e.point.name=='Application' ){
+                                            location.href= e.point.name;
+                                            e.preventDefault();
+                                        }
+                                    }
+                                }
+                            },
                             data: data[0]
                         }],
                         navigation: {

@@ -15,4 +15,6 @@ urlpatterns = patterns('ceeq.apps.projects.views',
       url(r'^project/dd_score/(?P<project_id>\d+)/$', 'fetch_defects_density_score', name='fetch_defects_density_score'),
       url(r'^project/dd_pie/(?P<project_id>\d+)/$', 'fetch_defects_density_score_pie', name='fetch_defects_density_score_pie'),
       #url(r'^characteristics/$', 'characteristics', name='characteristics'),
+
+      url(r'^project/(?P<project_id>\d+)/Application/$', 'project_sub_apps_piechart', name='project_sub_apps_piechart'),
       )
