@@ -30,7 +30,7 @@ function loadActiveDataTab() {
     }
     else if (active_tab == '#score_overall') {
         Highcharts.setOptions({
-        colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
+            //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
         });
         $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
             $('#score_container').highcharts({
