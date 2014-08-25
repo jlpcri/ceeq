@@ -948,10 +948,45 @@ def project_sub_apps_piechart(request, project_id):
     context = RequestContext(request, {
         'project': project
     })
-    return render(request, 'project_sub_apps.html', context)
+    return render(request, 'project_sub_component_apps.html', context)
 
 
 def fetch_apps_subcomponents_pie(request, project_id):
+    component_name = ['Application']
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
+
+    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
+
+
+def fetch_reports_subcomponents_pie(request, project_id):
+    component_name = ['Reports']
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
+
+    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
+
+
+def fetch_cxp_subcomponents_pie(request, project_id):
+    component_name = ['CXP']
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
+
+    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
+
+
+def fetch_platform_subcomponents_pie(request, project_id):
+    component_name = ['Platform']
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
+
+    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
+
+
+def fetch_voiceslots_subcomponents_pie(request, project_id):
+    component_name = ['Voice Slots']
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
+
+    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
+
+
+def fetch_subcomponents_pie(request, project_id, component_name):
     """
     Used for pie chart along with drawing data table of Subcomponents of Applications
     :param request:
@@ -974,7 +1009,7 @@ def fetch_apps_subcomponents_pie(request, project_id):
             except IndexError:
                 continue
 
-    component_name = ['Application']
+    #component_name = ['Application']
     sub_component_names = []
 
     for item in version_data:
@@ -1008,10 +1043,10 @@ def fetch_apps_subcomponents_pie(request, project_id):
 
         priority_total['total'] += sum(data[item]['total'].itervalues())
 
-        temp_graph.append(item[12:])
+        temp_graph.append(item[len(component_name[0]) + 1:])
         temp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
 
-        temp_table.append(item[12:])
+        temp_table.append(item[len(component_name[0]) + 1:])
         for status in issue_status_fields:
             temp_table.append(float(data[item][status[0]]['open']))
             temp_table.append(float(data[item][status[0]]['resolved']))
@@ -1042,7 +1077,7 @@ def fetch_apps_subcomponents_pie(request, project_id):
 
     #print sub_pie_data
 
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
+    return sub_pie_data
 
 
 def get_sub_component_weight_factor(data):

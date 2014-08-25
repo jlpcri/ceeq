@@ -27,6 +27,9 @@
 
 {% block footer %}
     <script>
-        {% include 'apps_sub_components.js' %}
+        $.getJSON("{% url 'fetch_reports_subcomponents_pie' project.id %}").done(function(data){
+            draw_pie_chart_graph(data);
+        });
+        {% include 'project_sub_components.js' %}
     </script>
 {% endblock %}
