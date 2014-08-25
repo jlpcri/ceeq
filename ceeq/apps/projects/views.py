@@ -92,7 +92,7 @@ def project_detail(request, project_id):
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
     #print component_names_without_slash
-    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data)
+    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
     #print data
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
@@ -247,7 +247,7 @@ def get_component_defects_density(request, jira_data):
         component_names = list(OrderedDict.fromkeys(component_names))
         component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-        data = issue_counts_compute(request, component_names, component_names_without_slash, version_data[key])
+        data = issue_counts_compute(request, component_names, component_names_without_slash, version_data[key], 'components')
 
         #calculate issues number of components and sub-components
         weight_factor_versions[key] = get_weight_factor(data, component_names_without_slash)
@@ -528,7 +528,7 @@ def calculate_score(request, project):
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
     # Construct # of different priority issues dict from jira_data
-    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data)
+    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
@@ -559,13 +559,14 @@ def calculate_score(request, project):
     return round(score, 2)
 
 
-def issue_counts_compute(request, component_names, component_names_without_slash, jira_data):
+def issue_counts_compute(request, component_names, component_names_without_slash, jira_data, component_type):
     """
     Compute number of issues Component, SubComponent, Priority, Status
     :param request:
     :param component_names: include SubComponents
     :param component_names_without_slash: without SubComponents
     :param jira_data: raw data from JIRA
+    :param type: calculate based on Components or SubComponents
     :return: dictionary data
     """
     data = {}
@@ -611,6 +612,9 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         try:
             component = item['fields']['components'][0]['name']
             #print component
+            if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
+                continue
+
             if item['fields']['issuetype']['id'] in issue_types:
                 if item['fields']['status']['id'] in issue_status_open:
                     if item['fields']['priority']['id'] == '1':
@@ -652,6 +656,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                         data[component]['minor']['closed'] += 1
                     elif item['fields']['priority']['id'] == '5':
                         data[component]['trivial']['closed'] += 1
+
         except IndexError:
             continue
 
@@ -789,7 +794,7 @@ def fetch_defects_density_score_pie(request, project_id):
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data)
+    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
@@ -940,13 +945,10 @@ def remove_period_space(str):
 @user_passes_test(user_is_superuser)
 def project_sub_apps_piechart(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    if project.jira_name == 'VISI':
-        context = RequestContext(request, {
-            'project': project
-        })
-        return render(request, 'project_sub_apps.html', context)
-    else:
-        return redirect('home')
+    context = RequestContext(request, {
+        'project': project
+    })
+    return render(request, 'project_sub_apps.html', context)
 
 
 def fetch_apps_subcomponents_pie(request, project_id):
@@ -985,7 +987,7 @@ def fetch_apps_subcomponents_pie(request, project_id):
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
 
-    data = issue_counts_compute(request, sub_component_names, component_name, version_data)
+    data = issue_counts_compute(request, sub_component_names, component_name, version_data, 'sub_components')
 
     weight_factor = get_sub_component_weight_factor(data)
     #for item in weight_factor:
@@ -1037,6 +1039,8 @@ def fetch_apps_subcomponents_pie(request, project_id):
     sub_pie_data.append(sub_pie_graph)
     sub_pie_data.append(sub_pie_table)
     sub_pie_data.append(temp_table)
+
+    #print sub_pie_data
 
     return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
 
