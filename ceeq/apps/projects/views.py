@@ -604,6 +604,10 @@ def issue_counts_compute(request, component_names, component_names_without_slash
             issue_types.append('17')
 
     for item in jira_data:
+        # Closed type: Works as Designed not counted
+        if item['fields']['resolution'] and item['fields']['resolution']['id'] == '6':
+            continue
+
         try:
             component = item['fields']['components'][0]['name']
             #print component

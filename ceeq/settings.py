@@ -142,7 +142,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
-JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,created,resolutiondate'
+#JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,created,resolutiondate'
+JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution'
 JIRA_API_MAX = 200
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&jql=project=' % (JIRA_API_FIELDS, JIRA_API_MAX)
 
