@@ -76,10 +76,12 @@ def project_detail(request, project_id):
         for item in jira_data['issues']:
             try:
                 name = str(item['fields']['versions'][0]['name'])
-                if name == project.jira_version:
-                    version_data.append(item)
+            except UnicodeEncodeError:
+                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
+            if name == project.jira_version:
+                version_data.append(item)
 
     for item in version_data:
         try:
@@ -132,9 +134,12 @@ def version_name_from_jira_data(jira_data):
     for item in jira_data['issues']:
         try:
             name = str(item['fields']['versions'][0]['name'])
-            version_names.append(name)
+        except UnicodeEncodeError:
+            name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
         except IndexError:
             continue
+        version_names.append(name)
+
     version_names = list(OrderedDict.fromkeys(version_names))
 
     version_names = sorted(version_names)
@@ -220,10 +225,13 @@ def get_component_defects_density(request, jira_data):
         for item in jira_data['issues']:
             try:
                 name = str(item['fields']['versions'][0]['name'])
-                if name == version_name:
-                    temp_data.append(item)
+            except UnicodeEncodeError:
+                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
+            if name == version_name:
+                temp_data.append(item)
+
         version_data[version_name] = temp_data
 
     weight_factor_versions = {}
@@ -512,10 +520,12 @@ def calculate_score(request, project):
         for item in jira_data['issues']:
             try:
                 name = str(item['fields']['versions'][0]['name'])
-                if name == project.jira_version:
-                    version_data.append(item)
+            except UnicodeEncodeError:
+                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
+            if name == project.jira_version:
+                version_data.append(item)
 
     for item in version_data:
         try:
@@ -778,10 +788,12 @@ def fetch_defects_density_score_pie(request, project_id):
         for item in jira_data['issues']:
             try:
                 name = str(item['fields']['versions'][0]['name'])
-                if name == project.jira_version:
-                    version_data.append(item)
+            except UnicodeEncodeError:
+                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
+            if name == project.jira_version:
+                version_data.append(item)
 
     for item in version_data:
         try:
@@ -1022,10 +1034,12 @@ def fetch_subcomponents_pie(request, project_id, component_name):
         for item in jira_data['issues']:
             try:
                 name = str(item['fields']['versions'][0]['name'])
-                if name == project.jira_version:
-                    version_data.append(item)
+            except UnicodeEncodeError:
+                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
+            if name == project.jira_version:
+                version_data.append(item)
 
     #component_name = ['Application']
     sub_component_names = []
