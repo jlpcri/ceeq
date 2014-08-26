@@ -594,7 +594,7 @@
                                     click:function(e){
                                         //data[3][0] - Jira name, data[3][1] - is_superuser
                                         //if (e.point.name=='Application' && data[3][0]=='VISI' && data[3][1]==true){
-                                        if ( data[3][1]==true){
+                                        if (e.point.name!='Voice Slots' && data[3][1]==true){
                                             location.href= e.point.name;
                                             e.preventDefault();
                                         }

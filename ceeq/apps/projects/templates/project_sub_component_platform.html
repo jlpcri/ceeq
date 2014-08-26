@@ -6,7 +6,7 @@
     <div class="container">
         <br>
         <div class="row">
-            <legend>Sub Components Percentage to Reports</legend>
+            <legend>Sub Components Percentage to Platform</legend>
         </div>
         <div id="apps_subcomponent_percentage_pie_chart" style="width: 800px; height: 600px; margin: 0 auto;">
             <div class="loading" style="text-align: center; margin-top: 10px;">
@@ -27,7 +27,7 @@
 
 {% block footer %}
     <script>
-        $.getJSON("{% url 'fetch_reports_subcomponents_pie' project.id %}").done(function(data){
+        $.getJSON("{% url 'fetch_platform_subcomponents_pie' project.id %}").done(function(data){
             draw_pie_chart_graph(data);
         });
         {% include 'project_sub_components.js' %}

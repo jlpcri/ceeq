@@ -942,6 +942,7 @@ def remove_period_space(str):
     return tmp
 
 
+# Handling sub component pie chart
 @user_passes_test(user_is_superuser)
 def project_sub_apps_piechart(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
@@ -949,6 +950,30 @@ def project_sub_apps_piechart(request, project_id):
         'project': project
     })
     return render(request, 'project_sub_component_apps.html', context)
+
+
+def project_sub_cxp_piechart(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    context = RequestContext(request, {
+        'project': project
+    })
+    return render(request, 'project_sub_component_cxp.html', context)
+
+
+def project_sub_platform_piechart(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    context = RequestContext(request, {
+        'project': project
+    })
+    return render(request, 'project_sub_component_platform.html', context)
+
+
+def project_sub_reports_piechart(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    context = RequestContext(request, {
+        'project': project
+    })
+    return render(request, 'project_sub_component_reports.html', context)
 
 
 def fetch_apps_subcomponents_pie(request, project_id):
@@ -974,13 +999,6 @@ def fetch_cxp_subcomponents_pie(request, project_id):
 
 def fetch_platform_subcomponents_pie(request, project_id):
     component_name = ['Platform']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-
-def fetch_voiceslots_subcomponents_pie(request, project_id):
-    component_name = ['Voice Slots']
     sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
 
     return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
