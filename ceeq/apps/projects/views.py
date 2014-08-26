@@ -80,7 +80,7 @@ def project_detail(request, project_id):
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
-            if name == project.jira_version:
+            if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
 
     for item in version_data:
@@ -134,9 +134,7 @@ def version_name_from_jira_data(jira_data):
     for item in jira_data['issues']:
         try:
             name = str(item['fields']['versions'][0]['name'])
-        except UnicodeEncodeError:
-            name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
-        except IndexError:
+        except (IndexError, UnicodeEncodeError):
             continue
         version_names.append(name)
 
@@ -229,7 +227,7 @@ def get_component_defects_density(request, jira_data):
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
-            if name == version_name:
+            if name.decode('utf-8') == version_name:
                 temp_data.append(item)
 
         version_data[version_name] = temp_data
@@ -524,7 +522,7 @@ def calculate_score(request, project):
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
-            if name == project.jira_version:
+            if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
 
     for item in version_data:
@@ -792,7 +790,7 @@ def fetch_defects_density_score_pie(request, project_id):
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
-            if name == project.jira_version:
+            if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
 
     for item in version_data:
@@ -1038,7 +1036,7 @@ def fetch_subcomponents_pie(request, project_id, component_name):
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
             except IndexError:
                 continue
-            if name == project.jira_version:
+            if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
 
     #component_name = ['Application']
