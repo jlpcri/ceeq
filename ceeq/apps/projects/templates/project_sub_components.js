@@ -218,7 +218,7 @@ function draw_pie_chart_graph(data){
     Highcharts.setOptions({
         //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
     });
-    var pie_title='Application Subcomponent';
+    var pie_title = title + ' Subcomponent';
 
     $('#apps_subcomponent_percentage_pie_chart').highcharts({
         chart: {
