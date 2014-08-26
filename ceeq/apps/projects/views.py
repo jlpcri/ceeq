@@ -1039,6 +1039,9 @@ def fetch_subcomponents_pie(request, project_id, component_name):
             continue
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
+    if component_name[0] in sub_component_names:
+        return 'component configuration issue'
+
 
     data = issue_counts_compute(request, sub_component_names, component_name, version_data, 'sub_components')
 

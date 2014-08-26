@@ -30,6 +30,10 @@ $('#png').click(function () {
 });
 
 function draw_pie_chart_graph(data){
+    if (data === 'component configuration issue') {
+        alert(data);
+        window.history.back();
+    }
     //Create the data table
     Highcharts.drawTable = function() {
 
