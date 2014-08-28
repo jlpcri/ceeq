@@ -83,6 +83,10 @@ def project_detail(request, project_id):
             if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
 
+    # Try get pie chart data
+    dd_pie_data = temp_fetch_defects_density_score_pie(request, project.jira_name, version_data)
+    #print dd_pie_data
+
     for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
@@ -124,7 +128,8 @@ def project_detail(request, project_id):
         'component_names_standard': sorted(component_names_standard.keys()),
         'component_names': component_names_exist,
         'superuser': request.user.is_superuser,
-        'version_names': version_names
+        'version_names': version_names,
+        'dd_pie_data': json.dumps(dd_pie_data)
     })
     return render(request, 'project_detail.html', context)
 
@@ -574,7 +579,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     :param component_names: include SubComponents
     :param component_names_without_slash: without SubComponents
     :param jira_data: raw data from JIRA
-    :param type: calculate based on Components or SubComponents
+    :param component_type: calculate based on Components or SubComponents
     :return: dictionary data
     """
     data = {}
@@ -952,3 +957,87 @@ def remove_period_space(str):
     return tmp
 
 
+def temp_fetch_defects_density_score_pie(request, jira_name, version_data):
+    """
+    Used for pie chart along with drawing data table
+    :param request:
+    :param jira_name:
+    :version_data:
+    :return:
+    """
+    component_names = []
+    component_names_without_slash = []
+
+    for item in version_data:
+        try:
+            name = str(item['fields']['components'][0]['name'])
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
+        except IndexError:
+            continue
+
+    component_names = list(OrderedDict.fromkeys(component_names))
+    component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
+
+    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
+
+    weight_factor = get_weight_factor(data, component_names_without_slash)
+
+    # calculate total number of issues based on priority
+    priority_total = defaultdict(int)
+
+    dd_pie_data = []
+    dd_pie_table = []
+    dd_pie_graph = []
+
+    for item in weight_factor:
+        temp_graph = []
+        temp_table = []
+
+        temp_graph.append(item[0])
+        temp_graph.append(float(item[1]) * float(item[2]))
+
+        priority_total['total'] += item[3]  # Total of all issues of pie chart table
+        temp_table.append(item[0])  # Component name
+
+        # number of issues Open, Resolved, Closed
+        for status in issue_status_fields:
+            for i in status[1]:
+                priority_total[status[0]] += item[i]
+                temp_table.append(float(item[i]))
+
+        temp_table.append(None)
+        temp_table.append(float(item[3]))   # SubTotal of pie chart table
+
+        dd_pie_graph.append(temp_graph)
+        dd_pie_table.append(temp_table)
+
+    for item in sorted(component_names_standard.keys()):
+        temp_table = []
+        if item not in list(zip(*weight_factor)[0]):
+            temp_table.append(item)
+            for status in issue_status_fields:
+                for i in status[1]:
+                    temp_table.append(0)
+            temp_table.append(None)
+            temp_table.append(0)
+
+            dd_pie_table.append(temp_table)
+
+    temp_table = []
+    temp_table.append('Total')
+    temp_table.append(None)
+    for status in issue_status_fields:  # total number per priority
+        temp_table.append(priority_total[status[0]])
+        temp_table.append(None)
+        temp_table.append(None)
+    temp_table.append(priority_total['total'])
+
+    #print dd_pie_graph
+
+    dd_pie_data.append(dd_pie_graph)
+    dd_pie_data.append(dd_pie_table)
+    dd_pie_data.append(temp_table)
+    dd_pie_data.append((jira_name, request.user.is_superuser))
+
+    return dd_pie_data

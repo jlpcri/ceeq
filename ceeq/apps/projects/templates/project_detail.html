@@ -282,8 +282,6 @@
             {% endif %}
         {% endif %}
 
-
-
         <!--Delete Project confirmatoin modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -312,8 +310,10 @@
 {% block footer %}
     <script>
         $(document).ready(function(){
+            var data = {{ dd_pie_data | safe }};
+            //console.log(data);
             if (Number({{ project.score }}) > 0 ) {
-                $.getJSON("{% url 'fetch_defects_density_score_pie' project.id %}").done(function(data){
+                //$.getJSON("{% url 'fetch_defects_density_score_pie' project.id %}").done(function(data){
                     //Create the data table
                     Highcharts.drawTable = function() {
 
@@ -610,7 +610,7 @@
                         },
                         credits: false
                     });
-                });
+                //});
 
                 //button handler
                 var today = new Date();
