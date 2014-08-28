@@ -539,7 +539,7 @@
                     pie_title = 'CEEQ Score: ' + 'Out of Range';
                 }
                 else {
-                    pie_title = '<b>CEEQ Score: ' + {{ project.score }} + ' / 10</b>';
+                    pie_title = '<b>{{ project.name }} - </b>'+'CEEQ Score: ' + {{ project.score }} + ' / 10';
                 }
                 $('#component_percentage_pie_chart').highcharts({
                     chart: {
