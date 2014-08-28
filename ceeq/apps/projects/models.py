@@ -1,3 +1,4 @@
+from multiprocessing import Process, Queue, JoinableQueue, cpu_count
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.conf import settings
@@ -34,13 +35,40 @@ class Project(models.Model):
 
     @property
     def fetch_jira_data(self):
-        data = requests.get(settings.JIRA_API_URL + self.jira_name,
+
+        def worker(start, que):
+            data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
+                                       auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+            que.put(data_single)
+            #data_total.append(data_single['issues'])
+
+        data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
                             auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+        #print 'total: ', data['total']
         if len(data) == 2:
             if data['errorMessages']:
                 return 'No JIRA Data'
         else:
-            return data
+            jobs = []
+            que = Queue()
+            procs = data['total'] / 50 + 1
+            issues = []
+            results = {}
+
+            for i in range(procs):
+                p = Process(target=worker, args=(i * 50, que,))
+                jobs.append(p)
+                p.start()
+                #print p
+                for item in que.get()['issues']:
+                    issues.append(item)
+                p.join()
+
+            results['issues'] = issues
+            return results
+
+            #return data
+
 
 
 class ProjectComponentsDefectsDensity(models.Model):
