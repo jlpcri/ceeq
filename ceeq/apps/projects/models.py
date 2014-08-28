@@ -1,4 +1,4 @@
-from multiprocessing import Process, Queue, JoinableQueue, cpu_count
+from multiprocessing import Process, Queue
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.conf import settings
@@ -50,25 +50,21 @@ class Project(models.Model):
                 return 'No JIRA Data'
         else:
             jobs = []
-            que = Queue()
-            procs = data['total'] / 50 + 1
+            queue = Queue()
+            processes = data['total'] / 50 + 1
             issues = []
             results = {}
 
-            for i in range(procs):
-                p = Process(target=worker, args=(i * 50, que,))
-                jobs.append(p)
-                p.start()
-                #print p
-                for item in que.get()['issues']:
+            for i in range(processes):
+                process = Process(target=worker, args=(i * 50, queue,))
+                jobs.append(processes)
+                process.start()
+                for item in queue.get()['issues']:
                     issues.append(item)
-                p.join()
+                process.join()
 
             results['issues'] = issues
             return results
-
-            #return data
-
 
 
 class ProjectComponentsDefectsDensity(models.Model):
@@ -77,7 +73,6 @@ class ProjectComponentsDefectsDensity(models.Model):
     created = models.DateField()
     # log ceeq score per day per version
     ceeq = models.DecimalField(max_digits=5, decimal_places=3, default=0)
-
 
     cxp = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     platform = models.DecimalField(max_digits=5, decimal_places=3, default=0)
@@ -94,10 +89,5 @@ class FrameworkParameter(models.Model):
     #Store framework parameters: jira_issue_weight_sum, vaf_ratio, vaf_exp
     parameter = models.CharField(max_length=200, unique=True)
     value = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-
-
-
-
-
 
 

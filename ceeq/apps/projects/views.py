@@ -433,7 +433,7 @@ def project_edit(request, project_id):
         if form.is_valid():
             project = form.save()
             messages.success(request, "Projects info has been saved.")
-            return redirect(projects)
+            return redirect(project_detail, project.id)
         else:
             messages.error(request, "Correct errors in the form.")
             context = RequestContext(request, {
