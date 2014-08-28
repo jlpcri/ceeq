@@ -439,6 +439,8 @@ def project_edit(request, project_id):
             context = RequestContext(request, {
                 'form': form,
                 'project': project,
+                'superuser': request.user.is_superuser,
+                'version_names': ['All Versions']
             })
             return render(request, 'project_detail.html', context)
     else:
@@ -832,15 +834,18 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
 
     for item in sorted(component_names_standard.keys()):
         temp_table = []
-        if item not in list(zip(*weight_factor)[0]):
-            temp_table.append(item)
-            for status in issue_status_fields:
-                for i in status[1]:
-                    temp_table.append(0)
-            temp_table.append(None)
-            temp_table.append(0)
+        try:
+            if item not in list(zip(*weight_factor)[0]):
+                temp_table.append(item)
+                for status in issue_status_fields:
+                    for i in status[1]:
+                        temp_table.append(0)
+                temp_table.append(None)
+                temp_table.append(0)
 
-            dd_pie_table.append(temp_table)
+                dd_pie_table.append(temp_table)
+        except IndexError:
+            continue
 
     temp_table = []
     temp_table.append('Total')
@@ -943,5 +948,3 @@ def remove_period_space(str):
     tmp = tmp.replace(' ', '_')
     tmp = tmp.replace(',', '_')
     return tmp
-
-
