@@ -10,7 +10,7 @@ from ceeq.apps.projects.views import issue_counts_compute
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project
-from ceeq.settings import issue_priority_weight,\
+from ceeq.settings.base import issue_priority_weight,\
     issue_status_count, issue_status_weight, \
     issue_status_fields
 

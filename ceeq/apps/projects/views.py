@@ -14,7 +14,7 @@ from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm, ProjectNewForm
-from ceeq.settings import component_names_standard, issue_priority_weight,\
+from ceeq.settings.base import component_names_standard, issue_priority_weight,\
     issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, issue_status_weight, \
     issue_status_fields
 
