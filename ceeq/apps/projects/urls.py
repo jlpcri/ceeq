@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url, include
+from django.contrib import admin
 
 
 urlpatterns = patterns('ceeq.apps.projects.views',
@@ -16,4 +17,6 @@ urlpatterns = patterns('ceeq.apps.projects.views',
       #url(r'^characteristics/$', 'characteristics', name='characteristics'),
 
       url(r'^', include('ceeq.apps.projects.urls_sub_components')),
+
+      url(r'^admin/', include(admin.site.urls)),
       )

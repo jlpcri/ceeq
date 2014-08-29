@@ -1,3 +1,4 @@
+{% load admin_urls %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -136,6 +137,7 @@
 
                                 {% if user.is_superuser %}
                                     <li><a href="{% url 'user_management' %}"><i class="fa fa-wrench"></i> User Management</a> </li>
+                                    <li><a href="{% url 'admin:index' %}"><i class="fa fa-cogs"></i> Django Admin</a> </li>
                                 {% endif %}
                                 <li><a href="{% url 'sign_out' %}"><i class="fa fa-user"></i> Sign Out</a></li>
                             </ul>
