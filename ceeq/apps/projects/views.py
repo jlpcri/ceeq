@@ -861,7 +861,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
     dd_pie_data.append(temp_table)
-    dd_pie_data.append((jira_name, request.user.is_superuser))
+    #dd_pie_data.append((jira_name, request.user.is_superuser))
 
     return dd_pie_data
 

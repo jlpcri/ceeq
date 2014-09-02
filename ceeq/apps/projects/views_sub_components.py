@@ -5,9 +5,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from collections import OrderedDict, defaultdict
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from ceeq.apps.projects.views import issue_counts_compute
-from ceeq.apps.users.views import user_is_superuser
 
 from models import Project
 from ceeq.settings.base import issue_priority_weight,\
@@ -15,7 +14,7 @@ from ceeq.settings.base import issue_priority_weight,\
     issue_status_fields
 
 # Handling sub component pie chart
-@user_passes_test(user_is_superuser)
+@login_required
 def project_sub_apps_piechart(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     context = RequestContext(request, {
@@ -115,7 +114,6 @@ def fetch_subcomponents_pie(request, project_id, component_name):
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
     if component_name[0] in sub_component_names:
         return 'component configuration issue'
-
 
     data = issue_counts_compute(request, sub_component_names, component_name, version_data, 'sub_components')
 
