@@ -158,7 +158,7 @@
                     {% if project.score == 20 %}
                         Out of Range
                     {% else %}
-                        <strong>{{ project.score }}</strong>
+                        <strong>{{ project.score|floatformat:2 }}</strong>
                     {% endif %}
                 </p>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
@@ -539,7 +539,7 @@
                     pie_title = 'CEEQ Score: ' + 'Out of Range';
                 }
                 else {
-                    pie_title = '<b>{{ project.name }} - </b>'+'CEEQ Score: ' + {{ project.score }} + ' / 10';
+                    pie_title = '<b>{{ project.name }} - </b>'+'CEEQ Score: ' + parseFloat({{ project.score }}).toFixed(2) + ' / 10';
                 }
                 $('#component_percentage_pie_chart').highcharts({
                     chart: {
