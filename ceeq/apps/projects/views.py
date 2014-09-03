@@ -50,7 +50,12 @@ def project_detail(request, project_id):
     component_names = []
     component_names_without_slash = []
 
-    jira_data = project.fetch_jira_data
+    try:
+        jira_data = project.fetch_jira_data
+    except ValueError:
+        messages.warning(request, 'Cannot Access to JIRA')
+        return render(request, 'home.html')
+
 
     #check whether fetch the data from jira or not
     if jira_data == 'No JIRA Data':
@@ -187,7 +192,12 @@ def project_defects_density(request, project_id):
     for version_name in version_names:
         version_names_removed.append(remove_period_space(version_name))
 
-    jira_data = project.fetch_jira_data
+    try:
+        jira_data = project.fetch_jira_data
+    except ValueError:
+        messages.warning(request, 'Cannot Access to JIRA')
+        return render(request, 'home.html')
+
     #check whether fetch the data from jira or not
 
     if jira_data == 'No JIRA Data':
@@ -513,7 +523,12 @@ def calculate_score(request, project):
     # Get component names for autocomplete
     component_names = []
     component_names_without_slash = []
-    jira_data = project.fetch_jira_data
+
+    try:
+        jira_data = project.fetch_jira_data
+    except ValueError:
+        messages.warning(request, 'Cannot Access to JIRA')
+        return render(request, 'home.html')
 
     # check whether fetch the data from JIRA or not
     if jira_data == 'No JIRA Data':
@@ -898,7 +913,11 @@ def defects_density_single_log(request, project):
     :param project:
     :return:
     """
-    jira_data = project.fetch_jira_data
+    try:
+        jira_data = project.fetch_jira_data
+    except ValueError:
+        messages.warning(request, 'Cannot Access to JIRA')
+        return render(request, 'home.html')
 
     #check whether fetch the data from jira or not
 
