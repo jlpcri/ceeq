@@ -709,7 +709,7 @@ def fetch_projects_score(request):
             score: X axis value
             id: project id for hyperlink of project detail
     """
-    projects = Project.objects.all()
+    projects = Project.objects.all().exclude(active=False)
     data = {}
 
     data['categories'] = [project.name for project in projects]
