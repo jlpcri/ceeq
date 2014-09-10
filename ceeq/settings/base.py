@@ -52,11 +52,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '^)mf_^fz@e*e5zh%3=rtvnn@-2(u!3ezl%p8_y!q^qn)#8bqcr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = ['*']
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -135,7 +131,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
+STATIC_ROOT = ''
+STATIC_URL = '/static/'
 
 from django.contrib.messages import constants as messages
 
@@ -149,13 +146,7 @@ JIRA_API_MAX = 50
 JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=5&jql=project=' % (JIRA_API_FIELDS)
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&startAt=%d&jql=project=%s'
 
-#Use QACI01 as proxy server for staging server
-if socket.gethostname() == 'linux6438':
-    JIRA_PROXY = {
-        'http': 'http://qaci01.wic.west.com:3128',
-    }
-else:
-    JIRA_PROXY = None
+JIRA_PROXY = None
 
 SESSION_COOKIE_NAME = 'ceeqSessionId'
 
