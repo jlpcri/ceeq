@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
 #Using LDAP
+import socket
 import ldap
 from django_auth_ldap.config import LDAPSearch
 
@@ -147,6 +148,14 @@ JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution'
 JIRA_API_MAX = 50
 JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=5&jql=project=' % (JIRA_API_FIELDS)
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&startAt=%d&jql=project=%s'
+
+#Use QACI01 as proxy server for staging server
+if socket.gethostname() == 'linux6438':
+    JIRA_PROXY = {
+        'http': 'http://qaci01.wic.west.com:3128',
+    }
+else:
+    JIRA_PROXY = None
 
 SESSION_COOKIE_NAME = 'ceeqSessionId'
 

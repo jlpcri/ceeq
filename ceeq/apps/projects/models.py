@@ -38,11 +38,13 @@ class Project(models.Model):
 
         def worker(start, que):
             data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
+                                       proxies=settings.JIRA_PROXY,
                                        auth=('readonly_sliu_api_user', 'qualityengineering')).json()
             que.put(data_single)
             #data_total.append(data_single['issues'])
 
         data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
+                            proxies=settings.JIRA_PROXY,
                             auth=('readonly_sliu_api_user', 'qualityengineering')).json()
         #print 'total: ', data['total']
         if len(data) == 2:
