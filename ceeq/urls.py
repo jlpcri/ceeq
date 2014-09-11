@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, include, url
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from tastypie.api import Api
+from django.conf import settings
 
 from django.contrib import admin
 admin.autodiscover()
@@ -19,6 +21,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     #url(r'^admin/', include(admin.site.urls)),
+
     url(r'^ceeq/$', 'ceeq.apps.core.views.landing', name='landing'),
     url(r'^ceeq/', include('ceeq.apps.projects.urls')),
     url(r'^ceeq/', include('ceeq.apps.help.urls')),
@@ -28,3 +31,6 @@ urlpatterns = patterns('',
 
     url(r'^ceeq/api/', include(v1_api.urls)),
 )
+
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
