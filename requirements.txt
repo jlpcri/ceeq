@@ -4,3 +4,4 @@ django_auth_ldap==1.2.1
 requests==2.4.0
 django-tastypie==0.11.1
 south==1.0
+jira==0.31
