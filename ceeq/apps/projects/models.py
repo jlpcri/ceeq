@@ -36,36 +36,35 @@ class Project(models.Model):
     @property
     def fetch_jira_data(self):
 
-        def worker(start, que):
-            data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
-                                       proxies=settings.JIRA_PROXY,
-                                       auth=('readonly_sliu_api_user', 'qualityengineering')).json()
-            que.put(data_single)
-            #data_total.append(data_single['issues'])
-
         data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
                             proxies=settings.JIRA_PROXY,
                             auth=('readonly_sliu_api_user', 'qualityengineering')).json()
         #print 'total: ', data['total']
+
+        from jira.client import JIRA
+        jira_data = JIRA(server='http://jira.west.com',
+                         basic_auth=('readonly_sliu_api_user', 'qualityengineering'),
+                         )
+
+
         if len(data) == 2:
             if data['errorMessages']:
                 return 'No JIRA Data'
         else:
-            jobs = []
-            queue = Queue()
-            processes = data['total'] / 50 + 1
-            issues = []
             results = {}
+            jira_project = jira_data.project(self.jira_name.upper())
 
-            for i in range(processes):
-                process = Process(target=worker, args=(i * 50, queue,))
-                jobs.append(processes)
-                process.start()
-                for item in queue.get()['issues']:
-                    issues.append(item)
-                process.join()
+            jira_issues = jira_data.search_issues('project=%s' % self.jira_name,
+                                                  fields=settings.JIRA_API_FIELDS,
+                                                  maxResults=data['total'],
+                                                  )
+            components = [c.name for c in jira_project.components]
+            versions = [v.name for v in jira_project.versions]
 
-            results['issues'] = issues
+            results['components'] = components
+            results['versions'] = versions
+            results['issues'] = jira_issues
+
             return results
 
 

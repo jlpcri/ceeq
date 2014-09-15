@@ -70,23 +70,20 @@ def project_detail(request, project_id):
         return render(request, 'project_detail.html', context)
 
     #List for choice of jira verion per project
-    version_names = version_name_from_jira_data(jira_data)
+    version_names = jira_data['versions']
     version_names.append('All Versions')
 
     # get jira_data based on version
     if project.jira_version == 'All Versions':
         version_data = jira_data['issues']
     else:
-        version_data = []
+        version_data = jira_data['issues']
         for item in jira_data['issues']:
-            try:
-                name = str(item['fields']['versions'][0]['name'])
-            except UnicodeEncodeError:
-                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
-            except IndexError:
-                continue
-            if name.decode('utf-8') == project.jira_version:
-                version_data.append(item)
+
+            if item.fields.versions[0] == project.jira_version:
+                print item
+
+    print version_data
 
     # Try get pie chart data
     dd_pie_data = fetch_defects_density_score_pie(request, project.jira_name, version_data)
@@ -603,6 +600,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     :param component_type: calculate based on Components or SubComponents
     :return: dictionary data
     """
+
     data = {}
     issue_counts = {
         'ceeq': issue_status_count.copy(),  # store ceeq score
@@ -640,62 +638,62 @@ def issue_counts_compute(request, component_names, component_names_without_slash
 
     for item in jira_data:
         # Closed type: Works as Designed not counted
-        if item['fields']['resolution'] and item['fields']['resolution']['id'] == '6':
+        if item.fields.resolution and item.fields.resolution.id == '6':
             continue
 
         try:
-            component = item['fields']['components'][0]['name']
-            #print component
+            component = item.fields.components[0]
+            #print component, data
             if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
                 continue
 
-            if item['fields']['issuetype']['id'] in issue_types:
-                if item['fields']['status']['id'] in issue_status_open:
-                    if item['fields']['priority']['id'] == '1':
+            if item.fields.issuetype.id in issue_types:
+                if item.fields.status.id in issue_status_open:
+                    if item.fields.priority.id == '1':
                         data[component]['blocker']['open'] += 1
-                    elif item['fields']['priority']['id'] == '2':
+                    elif item.fields.priority.id == '2':
                         data[component]['critical']['open'] += 1
-                    elif item['fields']['priority']['id'] == '3':
+                    elif item.fields.priority.id == '3':
                         data[component]['major']['open'] += 1
-                    elif item['fields']['priority']['id'] == '4':
+                    elif item.fields.priority.id == '4':
                         data[component]['minor']['open'] += 1
-                    elif item['fields']['priority']['id'] == '5':
+                    elif item.fields.priority.id == '5':
                         data[component]['trivial']['open'] += 1
-                elif item['fields']['status']['id'] in issue_status_resolved:
+                elif item.fields.status.id in issue_status_resolved:
                     #TODO: Track time usage of Resolved JIRAs
                     """
                     print item['fields']['created'], ',', item['fields']['resolutiondate']
                     difference = datetime.strptime(item['fields']['resolutiondate'][:19], '%Y-%m-%dT%H:%M:%S') - datetime.strptime(item['fields']['created'][:19], '%Y-%m-%dT%H:%M:%S')
                     print 'hours: ', divmod(difference.total_seconds(), 3600)[0]
                     """
-                    if item['fields']['priority']['id'] == '1':
+                    if item.fields.priority.id == '1':
                         data[component]['blocker']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '2':
+                    elif item.fields.priority.id == '2':
                         data[component]['critical']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '3':
+                    elif item.fields.priority.id == '3':
                         data[component]['major']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '4':
+                    elif item.fields.priority.id == '4':
                         data[component]['minor']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '5':
+                    elif item.fields.priority.id == '5':
                         data[component]['trivial']['resolved'] += 1
-                elif item['fields']['status']['id'] in issue_status_closed:
+                elif item.fields.status.id in issue_status_closed:
                     #print 'C', item['fields']['created'], item['fields']['resolutiondate']
-                    if item['fields']['priority']['id'] == '1':
+                    if item.fields.priority.id == '1':
                         data[component]['blocker']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '2':
+                    elif item.fields.priority.id == '2':
                         data[component]['critical']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '3':
+                    elif item.fields.priority.id == '3':
                         data[component]['major']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '4':
+                    elif item.fields.priority.id == '4':
                         data[component]['minor']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '5':
+                    elif item.fields.priority.id == '5':
                         data[component]['trivial']['closed'] += 1
 
-        except IndexError:
+        except (IndexError):
             continue
 
-    #for i in data:
-    #    print i, data[i]
+    for i in data:
+        print i, data[i]
 
     return data
 
@@ -805,7 +803,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
 
     for item in version_data:
         try:
-            name = str(item['fields']['components'][0]['name'])
+            name = str(item.fields.components[0])
             component_names.append(name)
             component_names_without_slash.append(truncate_after_slash(name))
         except IndexError:
