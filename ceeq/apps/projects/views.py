@@ -83,7 +83,7 @@ def project_detail(request, project_id):
             if item.fields.versions[0] == project.jira_version:
                 print item
 
-    print version_data
+    #print version_data
 
     # Try get pie chart data
     dd_pie_data = fetch_defects_density_score_pie(request, project.jira_name, version_data)
@@ -692,8 +692,8 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         except (IndexError):
             continue
 
-    for i in data:
-        print i, data[i]
+    #for i in data:
+    #    print i, data[i]
 
     return data
 
