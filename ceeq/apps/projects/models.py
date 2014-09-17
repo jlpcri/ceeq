@@ -1,7 +1,9 @@
+from json import dumps
 from multiprocessing import Process, Queue
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.conf import settings
+from django.forms.models import model_to_dict
 import requests
 
 
@@ -36,6 +38,15 @@ class Project(models.Model):
     @property
     def fetch_jira_data(self):
 
+        def to_json(object):
+            return {'components': object.components[0].name,
+                    'status': object.status.id,
+                    'priority': object.priority.id,
+                    'versions': object.versions[0].name,
+                    'issuetype': object.issuetype.id,
+                    'resolution': object.resolution.id if object.resolution else None
+            }
+
         def worker(start, que):
             data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
                                        proxies=settings.JIRA_PROXY,
@@ -53,7 +64,15 @@ class Project(models.Model):
                          #options=settings.JIRA_PROXY,
                          basic_auth=('readonly_sliu_api_user', 'qualityengineering'),
                          )
-        print len(jira_data.projects())
+        jira_issues = jira_data.search_issues('project=%s' % self.jira_name.upper(),
+                                              fields=settings.JIRA_API_FIELDS.split(','),
+                                              )
+        for issue in jira_issues:
+            try:
+                print to_json(issue.fields)
+            except IndexError:
+                continue
+
         if len(data) == 2:
             if data['errorMessages']:
                 return 'No JIRA Data'
@@ -73,6 +92,12 @@ class Project(models.Model):
                 process.join()
 
             results['issues'] = issues
+
+            print '--------------------'
+            for item in results['issues']:
+                for i in item['fields']:
+                    print i, item['fields'][i]
+
             return results
 
 
