@@ -47,6 +47,13 @@ class Project(models.Model):
                             proxies=settings.JIRA_PROXY,
                             auth=('readonly_sliu_api_user', 'qualityengineering')).json()
         #print 'total: ', data['total']
+
+        from jira.client import JIRA
+        jira_data = JIRA(server='http://jira.west.com',
+                         #options=settings.JIRA_PROXY,
+                         basic_auth=('readonly_sliu_api_user', 'qualityengineering'),
+                         )
+        print len(jira_data.projects())
         if len(data) == 2:
             if data['errorMessages']:
                 return 'No JIRA Data'
