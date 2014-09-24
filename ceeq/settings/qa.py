@@ -7,8 +7,6 @@ JIRA_PROXY = {
 
 DEBUG = False
 
-#SETTINGS_MODULE = 'ceeq.settings.qa'
-
 ALLOWED_HOSTS = [
     'apps.qaci01.wic.west.com',
     'apps.qaci01',
