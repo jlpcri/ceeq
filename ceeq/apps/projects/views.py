@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
-    project_detail_calculate_score, get_weight_factor
+    project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
@@ -629,7 +629,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
     data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
-    print weight_factor
+    #print weight_factor
 
     # calculate total number of issues based on priority
     priority_total = defaultdict(int)
@@ -646,7 +646,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_graph.append(item[0])
         temp_graph.append(float(item[1]) * float(item[2]))
 
-        print item
+        temp_graph_subcomponent = get_subcomponent_defects_density(item[0], version_data)
 
         priority_total['total'] += item[3]  # Total of all issues of pie chart table
         temp_table.append(item[0])  # Component name
@@ -687,7 +687,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_table.append(None)
     temp_table.append(priority_total['total'])
 
-    print dd_pie_graph
+    #print dd_pie_graph
 
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)

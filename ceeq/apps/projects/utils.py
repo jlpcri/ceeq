@@ -3,7 +3,6 @@ from decimal import Decimal
 from ceeq.apps.projects.models import FrameworkParameter
 from ceeq.settings.base import component_names_standard, issue_status_count, issue_status_weight, issue_priority_weight
 
-__author__ = 'sliu'
 """
  Methods used for abstraction, code duplicatoin
 """
@@ -205,3 +204,19 @@ def get_weight_factor(data, component_names_without_slash_all):
 
     return weight_factor
 
+
+def get_subcomponent_defects_density(component_name, version_data):
+    sub_component_names = []
+
+    for item in version_data:
+        try:
+            name = str(item['fields']['components'][0]['name'])
+            if name.startswith(component_name):
+                sub_component_names.append(name)
+        except IndexError:
+            continue
+
+    sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
+    #print sub_component_names
+
+    return component_name
