@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
-    project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density
+    project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
@@ -405,111 +405,6 @@ def calculate_score(request, project):
     return round(score, 2)
 
 
-def issue_counts_compute(request, component_names, component_names_without_slash, jira_data, component_type):
-    """
-    Compute number of issues Component, SubComponent, Priority, Status
-    :param request:
-    :param component_names: include SubComponents
-    :param component_names_without_slash: without SubComponents
-    :param jira_data: raw data from JIRA
-    :param component_type: calculate based on Components or SubComponents
-    :return: dictionary data
-    """
-    data = {}
-    issue_counts = {
-        'ceeq': issue_status_count.copy(),  # store ceeq score
-        'total': issue_status_count.copy(),  # total number of jira per component/sub component
-        'blocker': issue_status_count.copy(),
-        'critical': issue_status_count.copy(),
-        'major': issue_status_count.copy(),
-        'minor': issue_status_count.copy(),
-        'trivial': issue_status_count.copy()
-    }
-
-    for item in component_names:
-        data[item] = copy.deepcopy(issue_counts)  # copy the dict object
-
-    for item in component_names_without_slash:  # add component item to data
-        if item in data.keys():
-            continue
-        else:
-            data[item] = copy.deepcopy(issue_counts)
-
-    #construct isstype filter
-    # 1-Bug, 2-New Feature, 3-Task, 4-Improvement
-    issue_types = ['1']
-    if request:  # daily_dd_log: request=None
-        if request.user.usersettings.new_feature:
-            issue_types.append('2')
-        if request.user.usersettings.task:
-            issue_types.append('3')
-        if request.user.usersettings.improvement:
-            issue_types.append('4')
-        if request.user.usersettings.suggested_improvement:
-            issue_types.append('15')
-        if request.user.usersettings.environment:
-            issue_types.append('17')
-
-    for item in jira_data:
-        # Closed type: Works as Designed not counted
-        if item['fields']['resolution'] and item['fields']['resolution']['id'] in issue_resolution_not_count:
-            continue
-
-        try:
-            component = item['fields']['components'][0]['name']
-            #print component
-            if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
-                continue
-
-            if item['fields']['issuetype']['id'] in issue_types:
-                if item['fields']['status']['id'] in issue_status_open:
-                    if item['fields']['priority']['id'] == '1':
-                        data[component]['blocker']['open'] += 1
-                    elif item['fields']['priority']['id'] == '2':
-                        data[component]['critical']['open'] += 1
-                    elif item['fields']['priority']['id'] == '3':
-                        data[component]['major']['open'] += 1
-                    elif item['fields']['priority']['id'] == '4':
-                        data[component]['minor']['open'] += 1
-                    elif item['fields']['priority']['id'] == '5':
-                        data[component]['trivial']['open'] += 1
-                elif item['fields']['status']['id'] in issue_status_resolved:
-                    #TODO: Track time usage of Resolved JIRAs
-                    """
-                    print item['fields']['created'], ',', item['fields']['resolutiondate']
-                    difference = datetime.strptime(item['fields']['resolutiondate'][:19], '%Y-%m-%dT%H:%M:%S') - datetime.strptime(item['fields']['created'][:19], '%Y-%m-%dT%H:%M:%S')
-                    print 'hours: ', divmod(difference.total_seconds(), 3600)[0]
-                    """
-                    if item['fields']['priority']['id'] == '1':
-                        data[component]['blocker']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '2':
-                        data[component]['critical']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '3':
-                        data[component]['major']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '4':
-                        data[component]['minor']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '5':
-                        data[component]['trivial']['resolved'] += 1
-                elif item['fields']['status']['id'] in issue_status_closed:
-                    #print 'C', item['fields']['created'], item['fields']['resolutiondate']
-                    if item['fields']['priority']['id'] == '1':
-                        data[component]['blocker']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '2':
-                        data[component]['critical']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '3':
-                        data[component]['major']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '4':
-                        data[component]['minor']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '5':
-                        data[component]['trivial']['closed'] += 1
-
-        except IndexError:
-            continue
-
-    #for i in data:
-    #    print i, data[i]
-
-    return data
 
 
 def fetch_projects_score(request):
@@ -646,7 +541,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_graph.append(item[0])
         temp_graph.append(float(item[1]) * float(item[2]))
 
-        temp_graph_subcomponent = get_subcomponent_defects_density(item[0], version_data)
+        temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data)
 
         priority_total['total'] += item[3]  # Total of all issues of pie chart table
         temp_table.append(item[0])  # Component name

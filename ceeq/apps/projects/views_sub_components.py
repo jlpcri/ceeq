@@ -116,6 +116,8 @@ def fetch_subcomponents_pie(request, project_id, component_name):
         return 'component configuration issue'
 
     data = issue_counts_compute(request, sub_component_names, component_name, version_data, 'sub_components')
+    for item in data:
+        print item, data[item]['total']
 
     weight_factor = get_sub_component_weight_factor(data)
     #for item in weight_factor:
