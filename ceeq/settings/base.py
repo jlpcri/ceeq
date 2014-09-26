@@ -187,8 +187,20 @@ issue_priority_weight = {
     'trivial': Decimal(1) / 15
 }
 
-# 1-open, 3-In progress, 4-reopen, 5-resolved, 6-closed, 10001-UAT testing, 10003-Discovery
-issue_status_open = ['1', '3', '4', '10001', '10003']
+"""
+ Issue Status
+ 1-open,
+ 3-In progress,
+ 4-reopen,
+ 5-resolved,
+ 6-closed,
+ 10001-UAT testing,
+ 10003-Discovery,
+ 10062-Review,
+ 10668-Pending,
+ 10669-Research
+"""
+issue_status_open = ['1', '3', '4', '10001', '10003', '10062', '10668', '10669']
 #issue_status_in_progress = '3'
 issue_status_resolved = ['5']
 issue_status_closed = ['6']
