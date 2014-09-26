@@ -16,7 +16,7 @@ from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm, ProjectNewForm
 from ceeq.settings.base import component_names_standard, issue_priority_weight,\
     issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, issue_status_weight, \
-    issue_status_fields
+    issue_status_fields, issue_resolution_not_count
 
 
 def projects(request):
@@ -640,7 +640,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
 
     for item in jira_data:
         # Closed type: Works as Designed not counted
-        if item['fields']['resolution'] and item['fields']['resolution']['id'] == '6':
+        if item['fields']['resolution'] and item['fields']['resolution']['id'] in issue_resolution_not_count:
             continue
 
         try:

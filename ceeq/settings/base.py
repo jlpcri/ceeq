@@ -195,6 +195,9 @@ issue_status_closed = ['6']
 #issue_status_uat_testing = '10001'
 #issue_status_discovery = '10003'
 
+# 2-Won't Fix, 3-Duplicate, 6-Works as Design
+issue_resolution_not_count = ['3', '6']
+
 # data structure for broken issue status
 issue_status_count = {
     'open': 0,
