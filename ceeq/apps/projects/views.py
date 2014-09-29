@@ -534,18 +534,16 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
     dd_pie_graph = []
     donut_pie_inner = []
     donut_pie_outer = []
-    dd_pie_graph_new = []
 
     for item in weight_factor:
         temp_graph = []  # data for Component as outer ring
-        temp_graph_subcomponent = []  # data for subcomponent as inner ring
+        #temp_graph_subcomponent = []  # data for subcomponent as inner ring
         temp_table = []
 
         temp_graph.append(item[0])
         temp_graph.append(float(item[1]) * float(item[2]))
 
         temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data)
-
 
         priority_total['total'] += item[3]  # Total of all issues of pie chart table
         temp_table.append(item[0])  # Component name
@@ -559,7 +557,6 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_table.append(None)
         temp_table.append(float(item[3]))   # SubTotal of pie chart table
 
-        dd_pie_graph.append(temp_graph)
         dd_pie_table.append(temp_table)
         donut_pie_inner.append(temp_graph)
         donut_pie_outer.append(temp_graph_subcomponent)
@@ -588,13 +585,13 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_table.append(None)
     temp_table.append(priority_total['total'])
 
-    print 'old: ', dd_pie_graph
+    #print 'old: ', dd_pie_graph
 
-    dd_pie_graph_new.append(donut_pie_inner)
-    dd_pie_graph_new.append(donut_pie_outer)
-    print 'new: ', dd_pie_graph_new
+    dd_pie_graph.append(donut_pie_inner)
+    dd_pie_graph.append(donut_pie_outer)
+    #print 'new: ', dd_pie_graph_new
 
-    dd_pie_data.append(dd_pie_graph_new)
+    dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
     dd_pie_data.append(temp_table)
     #dd_pie_data.append((jira_name, request.user.is_superuser))

@@ -566,7 +566,7 @@
                     for (j = 0; j < drillDataLen; j += 1) {
                         brightness = 0.2 - (j / drillDataLen) / 5;
                         subcomData.push({
-                            name: data[0][1][i][j][0],
+                            name: data[0][0][i][0] + '/' + data[0][1][i][j][0],
                             y: data[0][1][i][j][1],
                             color: Highcharts.Color(colors[i]).brighten(brightness).get()
                         });
