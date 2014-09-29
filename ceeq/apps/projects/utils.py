@@ -332,28 +332,29 @@ def get_subcomponent_defects_density(request, component_name, version_data):
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
     sub_component_names_length = Decimal(len(sub_component_names))
-    #print component_name, ', Weight: ', component_name_weight, 'len: ', sub_component_names_length
 
     data = issue_counts_compute(request, sub_component_names, component_name_list, version_data, 'sub_components')
 
     weight_factor = get_sub_component_weight_factor(data, sub_component_names_length, component_name_weight)
 
     for item in data:
-        if item == component_name:
+        temp_graph = []
+
+        if item == component_name and item != 'Voice Slots':
             continue
 
-        #print item
-
-        temp_graph = []
-        temp_graph.append(item[len(component_name) + 1:])
+        if item != 'Voice Slots':
+            temp_graph.append(item[len(component_name) + 1:])
+        else:
+            temp_graph.append(item)
         temp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
         #print temp_graph
 
         sub_pie_graph.append(temp_graph)
 
-    print sub_pie_graph
+    #print sub_pie_graph
 
-    return component_name
+    return sub_pie_graph
 
 
 def get_sub_component_weight_factor(data, sub_component_names_length, component_name_weight):

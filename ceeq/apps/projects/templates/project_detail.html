@@ -133,7 +133,7 @@
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
             </div>
-            <div id="component_percentage_pie_chart" style="width: 700px; height: 540px; margin: 0 auto;">
+            <div id="component_percentage_pie_chart" style="width: 700px; height: 600px; margin: 0 auto;">
                 <div class="loading" style="text-align:center; margin-top: 100px;">
                     <i class="fa fa-spinner fa-2x fa-spin"></i>
                     Loading data from JIRA Database...
@@ -323,7 +323,7 @@
                                         'O', 'R', 'C',
                                         'O', 'R', 'C'
                                         ];
-                    var tableTop = 310,
+                    var tableTop = 350,
                         colWidth = 30,
                         tableLeft = 25,
                         rowHeight = 25,
@@ -541,11 +541,47 @@
                 else {
                     pie_title = '<b>{{ project.name }} - </b>'+'CEEQ Score: ' + parseFloat({{ project.score }}).toFixed(2) + ' / 10';
                 }
+
+                //console.log(data[0][0]);
+                //console.log(data[0][1]);
+                var colors = Highcharts.getOptions().colors,
+                        componentData = [],
+                        subcomData = [],
+                        i,
+                        j,
+                        dataLen = data[0][0].length,
+                        drillDataLen,
+                        brightness;
+                // Build the data arrays
+                for (i = 0; i < dataLen; i += 1) {
+                    // add component data
+                    componentData.push({
+                        name: data[0][0][i][0],
+                        y: data[0][0][i][1],
+                        color: colors[i]
+                    });
+
+                    // add sub component data
+                    drillDataLen = data[0][1][i].length;
+                    for (j = 0; j < drillDataLen; j += 1) {
+                        brightness = 0.2 - (j / drillDataLen) / 5;
+                        subcomData.push({
+                            name: data[0][1][i][j][0],
+                            y: data[0][1][i][j][1],
+                            color: Highcharts.Color(colors[i]).brighten(brightness).get()
+                        });
+                    }
+                }
+
+                //console.log(componentData);
+                //console.log(subcomData);
+
                 $('#component_percentage_pie_chart').highcharts({
                     chart: {
                         //plotBackgroundColor: null,
                         //plotBorderWidth: null,
                         //plotShadow: false,
+                        type: 'pie',
                         events: {
                             load: Highcharts.drawTable
                         },
@@ -573,19 +609,12 @@
                             //allowPointSelect: true,
                             cursor: 'pointer',
                             center: ['50%', 100],
-                            size: '35%',
-                            dataLabels: {
-                                enabled: true,
-                                format: '<b>{point.name}</b>: {point.percentage:.2f}%',
-                                style: {
-                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                                },
-                                overflow: 'none'
-                            }
+                            size: '35%'
+
                         }
                     },
                     series: [{
-                        type: 'pie',
+                        //type: 'pie',
                         name: 'Component Contribution',
                         point: {
                             events: {
@@ -599,8 +628,28 @@
                                 }
                             }
                         },
-                        data: data[0]
-                    }],
+                        size: '40%',
+                        dataLabels: {
+                            formatter: function () {
+                                return this.point.percentage > 5 ? this.point.name : null;
+                            },
+                            color: 'white',
+                            distance: -50
+                        },
+                        data: componentData
+                    }, {
+                        name: 'Sub component',
+                        data: subcomData,
+                        size: '50%',
+                        innerSize: '40%',
+                        dataLabels: {
+                            formatter: function() {
+                                //display only if large than XXX
+                                return this.point.percentage > 5 ? this.point.name + ': ' + this.point.percentage.toFixed(2) + '%' : null;
+                            }
+                        }
+                    }
+                    ],
                     navigation: {
                         buttonOptions: {
                             enabled: false
