@@ -608,9 +608,8 @@
                         pie: {
                             //allowPointSelect: true,
                             cursor: 'pointer',
-                            center: ['50%', 100],
-                            size: '35%'
-
+                            center: ['50%', 100]
+                            //size: '40%'
                         }
                     },
                     series: [{
@@ -628,10 +627,10 @@
                                 }
                             }
                         },
-                        size: '40%',
+                        size: '35%',
                         dataLabels: {
                             formatter: function () {
-                                return this.point.percentage > 5 ? this.point.name : null;
+                                return this.point.percentage > 0 ? this.point.name : null;
                             },
                             color: 'white',
                             distance: -50
@@ -640,12 +639,12 @@
                     }, {
                         name: 'Sub component',
                         data: subcomData,
-                        size: '50%',
-                        innerSize: '40%',
+                        size: '45%',
+                        innerSize: '35%',
                         dataLabels: {
                             formatter: function() {
                                 //display only if large than XXX
-                                return this.point.percentage > 5 ? this.point.name + ': ' + this.point.percentage.toFixed(2) + '%' : null;
+                                return this.point.percentage > 0 ? this.point.name + ': ' + this.point.percentage.toFixed(2) + '%' : null;
                             }
                         }
                     }

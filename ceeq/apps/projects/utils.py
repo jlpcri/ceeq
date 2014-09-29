@@ -335,7 +335,7 @@ def get_subcomponent_defects_density(request, component_name, version_data):
 
     data = issue_counts_compute(request, sub_component_names, component_name_list, version_data, 'sub_components')
 
-    weight_factor = get_sub_component_weight_factor(data, sub_component_names_length, component_name_weight)
+    weight_factor = get_sub_component_weight_factor(data, component_name, component_name_weight)
 
     for item in data:
         temp_graph = []
@@ -357,7 +357,7 @@ def get_subcomponent_defects_density(request, component_name, version_data):
     return sub_pie_graph
 
 
-def get_sub_component_weight_factor(data, sub_component_names_length, component_name_weight):
+def get_sub_component_weight_factor(data, component_name, component_name_weight):
     for item in data:
         for status in issue_status_count.keys():
             # total number of jiras per sub component
@@ -367,6 +367,18 @@ def get_sub_component_weight_factor(data, sub_component_names_length, component_
                                         + data[item]['minor'][status] \
                                         + data[item]['trivial'][status]
 
+    sub_component_names_length = 0
+    for item in data:
+        if item == 'Voice Slots' and sum(data[item]['total'].itervalues()) > 0:
+            sub_component_names_length = 1
+            break
+        elif item.startswith(component_name+'/') and sum(data[item]['total'].itervalues()) > 0:
+            sub_component_names_length += 1
+        else:
+            continue
+
+    for item in data:
+        for status in issue_status_count.keys():
             # defects density per sub component
             data[item]['ceeq'][status] = data[item]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker'] / sub_component_names_length * component_name_weight \
                                 + data[item]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical'] / sub_component_names_length * component_name_weight \
