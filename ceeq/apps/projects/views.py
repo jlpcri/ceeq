@@ -582,7 +582,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_table.append(None)
     temp_table.append(priority_total['total'])
 
-    #print dd_pie_graph
+    print dd_pie_graph
 
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)

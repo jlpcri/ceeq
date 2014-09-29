@@ -319,6 +319,7 @@ def get_subcomponent_defects_density(request, component_name, version_data):
     component_name_list = []
     sub_pie_graph = []
 
+    component_name_weight = Decimal(round(component_names_standard[component_name] / Decimal(20), 3))
     component_name_list.append(component_name)
 
     for item in version_data:
@@ -330,10 +331,12 @@ def get_subcomponent_defects_density(request, component_name, version_data):
             continue
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
+    sub_component_names_length = Decimal(len(sub_component_names))
+    #print component_name, ', Weight: ', component_name_weight, 'len: ', sub_component_names_length
 
     data = issue_counts_compute(request, sub_component_names, component_name_list, version_data, 'sub_components')
 
-    get_sub_component_weight_factor(data)
+    weight_factor = get_sub_component_weight_factor(data, sub_component_names_length, component_name_weight)
 
     for item in data:
         if item == component_name:
@@ -353,7 +356,7 @@ def get_subcomponent_defects_density(request, component_name, version_data):
     return component_name
 
 
-def get_sub_component_weight_factor(data):
+def get_sub_component_weight_factor(data, sub_component_names_length, component_name_weight):
     for item in data:
         for status in issue_status_count.keys():
             # total number of jiras per sub component
@@ -364,10 +367,10 @@ def get_sub_component_weight_factor(data):
                                         + data[item]['trivial'][status]
 
             # defects density per sub component
-            data[item]['ceeq'][status] = data[item]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker'] \
-                                + data[item]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical'] \
-                                + data[item]['major'][status] * issue_status_weight[status] * issue_priority_weight['major'] \
-                                + data[item]['minor'][status] * issue_status_weight[status] * issue_priority_weight['minor'] \
-                                + data[item]['trivial'][status] * issue_status_weight[status] * issue_priority_weight['trivial']
+            data[item]['ceeq'][status] = data[item]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker'] / sub_component_names_length * component_name_weight \
+                                + data[item]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical'] / sub_component_names_length * component_name_weight \
+                                + data[item]['major'][status] * issue_status_weight[status] * issue_priority_weight['major'] / sub_component_names_length * component_name_weight \
+                                + data[item]['minor'][status] * issue_status_weight[status] * issue_priority_weight['minor'] / sub_component_names_length * component_name_weight \
+                                + data[item]['trivial'][status] * issue_status_weight[status] * issue_priority_weight['trivial'] / sub_component_names_length * component_name_weight
 
     return data
