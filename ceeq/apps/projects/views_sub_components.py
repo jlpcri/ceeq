@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required
+from ceeq.apps.projects.utils import get_sub_component_weight_factor
 from ceeq.apps.projects.views import issue_counts_compute
 
 from models import Project
@@ -116,8 +117,6 @@ def fetch_subcomponents_pie(request, project_id, component_name):
         return 'component configuration issue'
 
     data = issue_counts_compute(request, sub_component_names, component_name, version_data, 'sub_components')
-    for item in data:
-        print item, data[item]['total']
 
     weight_factor = get_sub_component_weight_factor(data)
     #for item in weight_factor:
@@ -175,21 +174,3 @@ def fetch_subcomponents_pie(request, project_id, component_name):
     return sub_pie_data
 
 
-def get_sub_component_weight_factor(data):
-    for item in data:
-        for status in issue_status_count.keys():
-            # total number of jiras per sub component
-            data[item]['total'][status] = data[item]['blocker'][status] \
-                                        + data[item]['critical'][status] \
-                                        + data[item]['major'][status] \
-                                        + data[item]['minor'][status] \
-                                        + data[item]['trivial'][status]
-
-            # defects density per sub component
-            data[item]['ceeq'][status] = data[item]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker'] \
-                                + data[item]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical'] \
-                                + data[item]['major'][status] * issue_status_weight[status] * issue_priority_weight['major'] \
-                                + data[item]['minor'][status] * issue_status_weight[status] * issue_priority_weight['minor'] \
-                                + data[item]['trivial'][status] * issue_status_weight[status] * issue_priority_weight['trivial']
-
-    return data

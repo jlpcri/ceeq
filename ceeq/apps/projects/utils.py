@@ -333,8 +333,7 @@ def get_subcomponent_defects_density(request, component_name, version_data):
 
     data = issue_counts_compute(request, sub_component_names, component_name_list, version_data, 'sub_components')
 
-    for item in data:
-        print item, data[item]['ceeq']
+    get_sub_component_weight_factor(data)
 
     for item in data:
         if item == component_name:
@@ -349,6 +348,26 @@ def get_subcomponent_defects_density(request, component_name, version_data):
 
         sub_pie_graph.append(temp_graph)
 
-    #print sub_pie_graph
+    print sub_pie_graph
 
     return component_name
+
+
+def get_sub_component_weight_factor(data):
+    for item in data:
+        for status in issue_status_count.keys():
+            # total number of jiras per sub component
+            data[item]['total'][status] = data[item]['blocker'][status] \
+                                        + data[item]['critical'][status] \
+                                        + data[item]['major'][status] \
+                                        + data[item]['minor'][status] \
+                                        + data[item]['trivial'][status]
+
+            # defects density per sub component
+            data[item]['ceeq'][status] = data[item]['blocker'][status] * issue_status_weight[status] * issue_priority_weight['blocker'] \
+                                + data[item]['critical'][status] * issue_status_weight[status] * issue_priority_weight['critical'] \
+                                + data[item]['major'][status] * issue_status_weight[status] * issue_priority_weight['major'] \
+                                + data[item]['minor'][status] * issue_status_weight[status] * issue_priority_weight['minor'] \
+                                + data[item]['trivial'][status] * issue_status_weight[status] * issue_priority_weight['trivial']
+
+    return data
