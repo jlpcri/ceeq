@@ -545,29 +545,31 @@
                 //console.log(data[0][0]);
                 //console.log(data[0][1]);
                 var colors = Highcharts.getOptions().colors,
-                        componentData = [],
-                        subcomData = [],
-                        i,
-                        j,
-                        dataLen = data[0][0].length,
-                        drillDataLen,
-                        brightness;
+                    componentData = [],
+                    subcomData = [],
+                    i,
+                    j,
+                    innerData = data[0][0],
+                    outerData = data[0][1],
+                    dataLen = innerData.length,
+                    drillDataLen,
+                    brightness;
                 // Build the data arrays
                 for (i = 0; i < dataLen; i += 1) {
                     // add component data
                     componentData.push({
-                        name: data[0][0][i][0],
-                        y: data[0][0][i][1],
+                        name: innerData[i][0],
+                        y: innerData[i][1],
                         color: colors[i]
                     });
 
                     // add sub component data
-                    drillDataLen = data[0][1][i].length;
+                    drillDataLen = outerData[i].length;
                     for (j = 0; j < drillDataLen; j += 1) {
                         brightness = 0.2 - (j / drillDataLen) / 5;
                         subcomData.push({
-                            name: data[0][0][i][0] + '/' + data[0][1][i][j][0],
-                            y: data[0][1][i][j][1],
+                            name: outerData[i][j][0],
+                            y: outerData[i][j][1],
                             color: Highcharts.Color(colors[i]).brighten(brightness).get()
                         });
                     }
