@@ -1,4 +1,5 @@
 from multiprocessing import Process, Queue
+import socket
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.conf import settings
@@ -35,38 +36,40 @@ class Project(models.Model):
 
     @property
     def fetch_jira_data(self):
-
-        def worker(start, que):
-            data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
-                                       proxies=settings.JIRA_PROXY,
-                                       auth=('readonly_sliu_api_user', 'qualityengineering')).json()
-            que.put(data_single)
-            #data_total.append(data_single['issues'])
-
         data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
                             proxies=settings.JIRA_PROXY,
                             auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+
         #print 'total: ', data['total']
         if len(data) == 2:
             if data['errorMessages']:
                 return 'No JIRA Data'
         else:
-            jobs = []
-            queue = Queue()
-            processes = data['total'] / 50 + 1
-            issues = []
-            results = {}
+            if socket.gethostname() == 'OM1960L1':
+                return data
+            else:
+                def worker(start, que):
+                    data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
+                                               proxies=settings.JIRA_PROXY,
+                                               auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                    que.put(data_single)
+                    #data_total.append(data_single['issues'])
+                jobs = []
+                queue = Queue()
+                processes = data['total'] / 50 + 1
+                issues = []
+                results = {}
 
-            for i in range(processes):
-                process = Process(target=worker, args=(i * 50, queue,))
-                jobs.append(processes)
-                process.start()
-                for item in queue.get()['issues']:
-                    issues.append(item)
-                process.join()
+                for i in range(processes):
+                    process = Process(target=worker, args=(i * 50, queue,))
+                    jobs.append(processes)
+                    process.start()
+                    for item in queue.get()['issues']:
+                        issues.append(item)
+                    process.join()
 
-            results['issues'] = issues
-            return results
+                results['issues'] = issues
+                return results
 
 
 class ProjectComponentsDefectsDensity(models.Model):
