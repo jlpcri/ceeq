@@ -544,7 +544,9 @@
 
                 //console.log(data[0][0]);
                 //console.log(data[0][1]);
-                var colors = Highcharts.getOptions().colors,
+                var colors_default = Highcharts.getOptions().colors,
+                    colors = colors_default.concat(colors_default),
+                    random = Math.floor((Math.random() * 10) + 1),
                     componentData = [],
                     subcomData = [],
                     i,
@@ -554,13 +556,14 @@
                     dataLen = innerData.length,
                     drillDataLen,
                     brightness;
+
                 // Build the data arrays
                 for (i = 0; i < dataLen; i += 1) {
                     // add component data
                     componentData.push({
                         name: innerData[i][0],
                         y: innerData[i][1],
-                        color: colors[i]
+                        color: colors[i+random]
                     });
 
                     // add sub component data
@@ -570,7 +573,7 @@
                         subcomData.push({
                             name: outerData[i][j][0],
                             y: outerData[i][j][1],
-                            color: Highcharts.Color(colors[i]).brighten(brightness).get()
+                            color: Highcharts.Color(colors[i+random]).brighten(brightness).get()
                         });
                     }
                 }
