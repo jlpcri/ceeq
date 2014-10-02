@@ -32,6 +32,8 @@ def sign_in(request):
         else:
             messages.error(request, 'Invalid username or password.')
             return redirect('landing')
+    else:
+        return redirect('landing')
 
 
 @login_required
