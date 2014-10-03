@@ -75,7 +75,7 @@ class Project(models.Model):
 class ProjectComponentsDefectsDensity(models.Model):
     project = models.ForeignKey(Project)
     version = models.CharField(max_length=200)
-    created = models.DateField()
+    created = models.DateField(auto_now_add=True)
     # log ceeq score per day per version
     ceeq = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
@@ -84,6 +84,9 @@ class ProjectComponentsDefectsDensity(models.Model):
     reports = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     application = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     voiceSlots = models.DecimalField(max_digits=5, decimal_places=3, default=0)
+
+    def __unicode__(self):
+        return unicode(self.project.name)
 
     class Meta:
         #unique_together = (("project", "created", "version"),)

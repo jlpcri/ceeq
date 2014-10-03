@@ -1,4 +1,3 @@
-from datetime import date
 from django.test import Client, TestCase
 from django.core.urlresolvers import resolve, reverse
 
@@ -17,7 +16,6 @@ class DefectsDensityViewTests(TestCase):
         self.dd_single = ProjectComponentsDefectsDensity.objects.create(
             project=self.project,
             version='1.1',
-            created=date.today()
         )
 
         self.url_dd_all = reverse('dd_all')
