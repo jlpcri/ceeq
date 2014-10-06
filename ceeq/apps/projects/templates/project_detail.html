@@ -562,7 +562,7 @@
                     // add component data
                     componentData.push({
                         name: innerData[i][0],
-                        y: innerData[i][1],
+                        y: parseFloat(innerData[i][1]),
                         color: colors[i+random]
                     });
 
@@ -572,7 +572,7 @@
                         brightness = 0.2 - (j / drillDataLen) / 5;
                         subcomData.push({
                             name: outerData[i][j][0],
-                            y: outerData[i][j][1],
+                            y: parseFloat(outerData[i][j][1]),
                             color: Highcharts.Color(colors[i+random]).brighten(brightness).get()
                         });
                     }
