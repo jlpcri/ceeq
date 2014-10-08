@@ -546,7 +546,7 @@
                 //console.log(data[0][1]);
                 var colors_default = Highcharts.getOptions().colors,
                     colors = colors_default.concat(colors_default),
-                    random = Math.floor((Math.random() * 10) + 1),
+                    color_index = 5,
                     componentData = [],
                     subcomData = [],
                     i,
@@ -563,7 +563,7 @@
                     componentData.push({
                         name: innerData[i][0],
                         y: parseFloat(innerData[i][1]),
-                        color: colors[i+random]
+                        color: colors[i+color_index]
                     });
 
                     // add sub component data
@@ -573,7 +573,7 @@
                         subcomData.push({
                             name: outerData[i][j][0],
                             y: parseFloat(outerData[i][j][1]),
-                            color: Highcharts.Color(colors[i+random]).brighten(brightness).get()
+                            color: Highcharts.Color(colors[i+color_index]).brighten(brightness).get()
                         });
                     }
                 }
