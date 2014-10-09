@@ -544,9 +544,12 @@
 
                 //console.log(data[0][0]);
                 //console.log(data[0][1]);
-                var colors_default = Highcharts.getOptions().colors,
-                    colors = colors_default.concat(colors_default),
-                    color_index = 0,
+                var
+                    //colors = ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600'],
+                    //scheme #5
+                    //colors = ['#9C775C', '#7D7D7D', '#3C7DC4', '#AD8B3B', '#0C2C52', '#4F193A'],
+                    //scheme #6
+                    colors = ['#AD7C1F', '#FF8F00', '#1E8F9C', '#3B73A1', '#23635A', '#173096'],
                     componentData = [],
                     subcomData = [],
                     i,
@@ -557,13 +560,14 @@
                     drillDataLen,
                     brightness;
 
+                //console.log(innerData);
                 // Build the data arrays
                 for (i = 0; i < dataLen; i += 1) {
                     // add component data
                     componentData.push({
                         name: innerData[i][0],
                         y: parseFloat(innerData[i][1]),
-                        color: colors[i+color_index]
+                        color: colors[innerData[i][2]]
                     });
 
                     // add sub component data
@@ -573,7 +577,7 @@
                         subcomData.push({
                             name: outerData[i][j][0],
                             y: parseFloat(outerData[i][j][1]),
-                            color: Highcharts.Color(colors[i+color_index]).brighten(brightness).get()
+                            color: Highcharts.Color(colors[innerData[i][2]]).brighten(brightness).get()
                         });
                     }
                 }

@@ -542,6 +542,8 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
 
         temp_graph.append(item[0])
         temp_graph.append(float(item[1]) * float(item[2]))
+        # for color index
+        temp_graph.append(sorted(component_names_standard.keys()).index(item[0]))
 
         temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data)
 
