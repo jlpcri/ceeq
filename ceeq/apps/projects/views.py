@@ -405,8 +405,6 @@ def calculate_score(request, project):
     return round(score, 2)
 
 
-
-
 def fetch_projects_score(request):
     """
     Use for ceeq score bar graph
