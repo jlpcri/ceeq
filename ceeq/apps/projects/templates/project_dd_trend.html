@@ -5,15 +5,15 @@
             <legend>Project Information</legend>
             <p><strong>Project Name: </strong>{{ project.name }}</p>
             <p>
-                {% if project.score == -1 %}
+                {% if project.score == 101 %}
                     No created issues
-                {% elif project.score == -2 %}
+                {% elif project.score == 102 %}
                     Out of Range
-                {% elif project.score == -3 %}
+                {% elif project.score == 103 %}
                     No open issues
-                {% elif project.score == -4 %}
+                {% elif project.score == 104 %}
                     No JIRA Data
-                {% elif project.score == -9 %}
+                {% elif project.score == 109 %}
                     No evaluate
                 {% else %}
                     <strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score }}

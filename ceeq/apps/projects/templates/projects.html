@@ -34,16 +34,16 @@
                                 <td><a href='{% url 'project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
                                 <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
                                 <td>
-                                    {% if project.score == -1 %}
+                                    {% if project.score == 101 %}
                                         No created issues
-                                    {% elif project.score == 20 %}
+                                    {% elif project.score == 102 %}
                                         <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
-                                    {% elif project.score == -3 %}
+                                    {% elif project.score == 103 %}
                                         <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
 
-                                    {% elif project.score == -4 %}
+                                    {% elif project.score == 104 %}
                                         No JIRA Data
-                                    {% elif project.score == -9 %}
+                                    {% elif project.score == 109 %}
                                         No evaluate
                                     {% else %}
                                         <a href="{% url 'project_defects_density' project.id %}"> {{ project.score |floatformat:2 }}</a>
