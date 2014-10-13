@@ -47,16 +47,20 @@ class ProjectTemplateTests(TestCase):
 class ProjectFormTemplatesTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user_account_normaluser = {
-            'username': 'normalUserName',
-            'password': 'normalUserPassword'
+        self.user_account_super_user = {
+            'username': 'superUserName',
+            'password': 'superUserPassword',
+            'email': ''
         }
         self.user_normaluser = User.objects.create_superuser(
-            username=self.user_account_normaluser['username'],
-            password=self.user_account_normaluser['password'],
-            email=''
+            username=self.user_account_super_user['username'],
+            password=self.user_account_super_user['password'],
+            email=self.user_account_super_user['email']
         )
-
+        self.client.login(
+            username=self.user_account_super_user['username'],
+            password=self.user_account_super_user['password']
+        )
         self.project = Project.objects.create(
             name='Test Project',
             jira_name='Test JIRA Name',
@@ -65,13 +69,17 @@ class ProjectFormTemplatesTests(TestCase):
         )
 
     def test_project_detail_contains_form(self):
-        self.client.login(
-            username=self.user_account_normaluser['username'],
-            password=self.user_account_normaluser['password']
-        )
+
         response = self.client.get(reverse('project_detail',
                                            args=[str(self.project.id)]),
                                    follow=True)
         form = ProjectForm()
+        for field in form:
+            self.assertContains(response, field.html_name)
+
+    def test_project_new_contains_form(self):
+        response = self.client.get(reverse('project_new'),
+                                   follow=True)
+        form = ProjectNewForm()
         for field in form:
             self.assertContains(response, field.html_name)
