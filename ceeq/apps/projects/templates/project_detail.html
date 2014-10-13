@@ -118,15 +118,15 @@
             </div>
         </form>
 
-        {% if project.score < 0 and project.score != -2 %}
+        {% if project.score > 10  %}
             <h4>No JIRA Data fetched.</h4>
-            {% if project.score == -1 %}
+            {% if project.score == 101 %}
                 No created issues
-            {% elif project.score == -3 %}
+            {% elif project.score == 103 %}
                 No open issues
-            {% elif project.score == -4 %}
+            {% elif project.score == 104 %}
                 No JIRA Data
-            {% elif project.score == -9 %}
+            {% elif project.score == 109 %}
                 No evaluate
             {% endif %}
         {% else %}
@@ -155,7 +155,7 @@
                 <legend>Components Weighted Factors (Scales: 0 -1)</legend>
                 <p>
                     Project CEEQ Score:
-                    {% if project.score == 20 %}
+                    {% if project.score > 10 %}
                         Out of Range
                     {% else %}
                         <strong>{{ project.score|floatformat:2 }}</strong>
@@ -311,7 +311,7 @@
     <script>
         $(document).ready(function(){
             var data = {{ dd_pie_data | safe }};
-            if (Number({{ project.score }}) > 0 ) {
+            if (Number({{ project.score }}) < 10 ) {
                 //Create the data table
                 Highcharts.drawTable = function() {
 
@@ -534,12 +534,19 @@
                 Highcharts.setOptions({
                     //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
                 });
-                var pie_title;
-                if (parseInt({{ project.score }}) == 20 ) {
+                var pie_title, color_title;
+                if (parseInt({{ project.score }}) > 10 ) {
                     pie_title = 'CEEQ Score: ' + 'Out of Range';
                 }
                 else {
                     pie_title = '<b>{{ project.name }} - </b>'+'CEEQ Score: ' + parseFloat({{ project.score }}).toFixed(2) + ' / 10';
+                }
+
+                if (parseInt({{ project.score }}) < 0){
+                    color_title = '#FF0000';
+                }
+                else {
+                    color_title = '#000000';
                 }
 
                 //console.log(data[0][0]);
@@ -603,7 +610,7 @@
                         text: pie_title,
                         style: {
                             fontSize: '18pt',
-                            color: '#000000'
+                            color: color_title
                         },
                         align: 'left'
                     },

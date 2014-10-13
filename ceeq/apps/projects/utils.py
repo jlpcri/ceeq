@@ -16,11 +16,12 @@ def project_detail_calculate_score(weight_factor):
         raw_score += Decimal(item[1]) * item[2]  # item[1]: component weight, float, item[2]: defects density, decimal
     raw_score = (1 - raw_score) * 10  # projects score = 10 - defect score
 
-    print round(raw_score, 2)
+    #print round(raw_score, 2)
     if raw_score < 0:  # projects score out of range (0-10)
-        score = 20
+        #score = 20
+        score = round(raw_score, 2)
     elif raw_score == 10:  # no open issues in JIRA
-        score = -3
+        score = 103
     else:
         score = round(raw_score, 2)
 

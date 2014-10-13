@@ -344,7 +344,7 @@ def calculate_score(request, project):
 
     # check whether fetch the data from JIRA or not
     if jira_data == 'No JIRA Data':
-        project.score = -4
+        project.score = 104
         project.save()
         return
 
@@ -395,9 +395,10 @@ def calculate_score(request, project):
     score = (1 - raw_score) * 10  # projects score = 10 - defect score
 
     if score < 0:  # projects score out of range (0-10)
-        project.score = 20
+        #project.score = 20
+        project.score = round(score, 2)
     elif score == 10:  # no open issues in JIRA
-        project.score = -3
+        project.score = 103
     else:
         project.score = round(score, 2)
     project.save()
