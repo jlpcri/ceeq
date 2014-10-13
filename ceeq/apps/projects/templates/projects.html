@@ -46,7 +46,13 @@
                                     {% elif project.score == 109 %}
                                         No evaluate
                                     {% else %}
-                                        <a href="{% url 'project_defects_density' project.id %}"> {{ project.score |floatformat:2 }}</a>
+                                        <a href="{% url 'project_defects_density' project.id %}">
+                                            {% if project.score < 0 %}
+                                                <font color="red">{{ project.score |floatformat:2 }}</font>
+                                            {% else %}
+                                                {{ project.score |floatformat:2 }}
+                                            {% endif %}
+                                        </a>
                                         {% if superuser %}
                                             <i class="fa fa-indent"></i>
                                             <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>

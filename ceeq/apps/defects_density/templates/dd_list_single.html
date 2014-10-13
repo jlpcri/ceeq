@@ -15,7 +15,7 @@
                 {% elif project.score == 109 %}
                     No evaluate
                 {% else %}
-                    <strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score }}
+                    <strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score|floatformat:2 }}
                 {% endif %}
             </p>
             <br>

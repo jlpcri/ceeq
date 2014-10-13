@@ -29,7 +29,7 @@
                 </div>
             {% else %}
                 <div class="col-md-2"><strong>CEEQ Score: &nbsp;&nbsp;</strong></div>
-                <div class="col-md-2">{{ project.score }}</div>
+                <div class="col-md-2">{{ project.score | floatformat:2}}</div>
             {% endif %}
             </div>
 
