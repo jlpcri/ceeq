@@ -9,7 +9,7 @@ $(document).ready(function() {
         ]
     });
     $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
-        console.log(data);
+        //console.log(data);
         $('#home_score_container').highcharts({
             chart: {
                 type: 'bar'
