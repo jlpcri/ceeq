@@ -4,7 +4,7 @@ $(document).ready(function() {
         //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
     });
     $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
-        //console.log(data);
+        console.log(data);
         $('#home_score_container').highcharts({
             chart: {
                 type: 'bar'
@@ -19,7 +19,7 @@ $(document).ready(function() {
                 categories: data['categories']
             },
             yAxis: {
-                min: 0,
+                min: -2,
                 max: 10,
                 title: {
                     text: 'CEEQ Score'

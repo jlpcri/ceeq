@@ -419,8 +419,8 @@ def fetch_projects_score(request):
     data = {}
 
     data['categories'] = [project.name for project in projects]
-    # score = 20 represents it is below zero
-    data['score'] = [str(project.score) if project.score != 20 else str(-2) for project in projects]
+    # score = 102 represents it is below zero
+    data['score'] = [str(project.score) if project.score < 10 else str(0) for project in projects]
     data['id'] = [str(project.id) for project in projects]
 
     return HttpResponse(json.dumps(data), content_type="application/json")

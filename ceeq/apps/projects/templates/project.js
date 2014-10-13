@@ -47,7 +47,7 @@ function loadActiveDataTab() {
                     categories: data['categories']
                 },
                 yAxis: {
-                    min: 0,
+                    min: -2,
                     max: 10,
                     title: {
                         text: 'CEEQ Score'
