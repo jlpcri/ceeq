@@ -344,8 +344,10 @@
                             tableTop + (i + 3) * rowHeight - cellPadding
                         )
                         .css({
-                            fontWeight: 'bold',
-                            fontSize: '10pt'
+                            //fontWeight: 'bold',
+                            //fontSize: '10pt',
+                            font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+
                         })
                         .add();
                     });
@@ -364,8 +366,9 @@
                             align: 'center'
                         })
                         .css({
-                            fontWeight: 'bold',
-                            fontSize: '10pt'
+                            //fontWeight: 'bold',
+                            //fontSize: '10pt',
+                            font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                         })
                         .add();
                         //draw vertical line
@@ -392,9 +395,10 @@
                             align: 'center'
                         })
                         .css({
-                            fontStyle: 'italic',
-                            fontSize: '10pt',
-                            color: 'blue'
+                            //fontStyle: 'italic',
+                            //fontSize: '10pt',
+                            color: 'blue',
+                            font: 'bold italic 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                         })
                         .add();
                     });
@@ -415,7 +419,8 @@
                                     align: 'center'
                                 })
                                 .css({
-                                    fontSize: '10pt'
+                                    //fontSize: '10pt'
+                                    font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                                 })
                                 .add();
                             }
@@ -465,8 +470,9 @@
                                 align: 'center'
                             })
                             .css({
-                                fontWeight: 'bold',
-                                fontSize: '10pt'
+                                //fontWeight: 'bold',
+                                //fontSize: '10pt',
+                                font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                             })
                             .add();
                         }
@@ -477,8 +483,9 @@
                                 tableTop + (data[1].length + 3) * rowHeight - cellPadding
                             )
                             .css({
-                                fontWeight: 'bold',
-                                fontSize: '10pt'
+                                //fontWeight: 'bold',
+                                //fontSize: '10pt',
+                                font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                             })
                             .add();
                         }
@@ -609,8 +616,9 @@
                     title: {
                         text: pie_title,
                         style: {
-                            fontSize: '18pt',
-                            color: color_title
+                            //fontSize: '18pt',
+                            color: color_title,
+                            font: '18pt "Lucida Grande", Helvetica, Arial, sans-serif'
                         },
                         align: 'left'
                     },
@@ -618,6 +626,9 @@
                         //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
                         formatter: function() {
                             return this.point.name + ": <b>" + this.point.percentage.toFixed(2) + "%</b>";
+                        },
+                        style: {
+                            font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                         }
                     },
                     plotOptions: {
@@ -648,6 +659,9 @@
                             formatter: function () {
                                 return this.point.percentage > 0 ? this.point.name : null;
                             },
+                            style: {
+                                font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                            },
                             color: 'white',
                             distance: -50
                         },
@@ -661,6 +675,9 @@
                             formatter: function() {
                                 //display only if large than XXX
                                 return this.point.percentage > 0 ? this.point.name + ': ' + this.point.percentage.toFixed(2) + '%' : null;
+                            },
+                            style: {
+                                font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                             }
                         }
                     }
