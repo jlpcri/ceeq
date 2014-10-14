@@ -139,7 +139,7 @@
                     Loading data from JIRA Database...
                 </div>
             </div>
-            {% if project.score > 0 %}
+            {% if project.score < 10 %}
                 <div class="row">
                     <p style="text-align: center">
                         Export Graph to:
@@ -549,7 +549,7 @@
                     pie_title = '<b>{{ project.name }} - </b>'+'CEEQ Score: ' + parseFloat({{ project.score }}).toFixed(2) + ' / 10';
                 }
 
-                if (parseInt({{ project.score }}) < 0){
+                if (parseFloat({{ project.score }}) < 0){
                     color_title = '#FF0000';
                 }
                 else {
