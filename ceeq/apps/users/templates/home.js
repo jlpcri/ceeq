@@ -10,6 +10,18 @@ $(document).ready(function() {
     });
     $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
         //console.log(data);
+        var i, min_yaxis, min = data['score'][0];
+        for (i = 1; i < data['score'].length; i++) {
+            if (data['score'][i] < min) {
+                min = data['score'][i];
+            }
+        }
+        if (min < 0) {
+            min_yaxis = Math.floor(min);
+        } else {
+            min_yaxis = 0;
+        }
+
         $('#home_score_container').highcharts({
             chart: {
                 type: 'bar'
@@ -24,7 +36,7 @@ $(document).ready(function() {
                 categories: data['categories']
             },
             yAxis: {
-                min: -2,
+                min: min_yaxis,
                 max: 10,
                 title: {
                     text: 'CEEQ Score'
