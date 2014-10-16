@@ -80,7 +80,7 @@ function loadActiveDataTab() {
                             enabled:true,
                             align:"right",
                             color:"#FFFFFF",
-                            x:-10,
+                            x: 0,
                             y:-1,
                             formatter: function(){
                                 return this.y.toFixed(2)
