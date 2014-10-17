@@ -283,3 +283,21 @@ class ProjectDeleteTests(TestCase):
         found = resolve(reverse('project_delete',
                                 args=[self.project_exist.id, ]))
         self.assertEqual(found.func, project_delete)
+
+    def test_project_delete_with_valid_id_successful(self):
+        response = self.client.get(reverse('project_delete',
+                                           args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 302)
+        projects = Project.objects.filter(name=self.project['name'])
+        self.assertEqual(projects.count(), 0)
+
+    def test_project_delete_with_valid_redirect_to_project_list(self):
+        response = self.client.get(reverse('project_delete',
+                                           args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('projects'))
+
+    def test_project_delete_with_invalid_id_unsuccessful(self):
+        response = self.client.get(reverse('project_delete',
+                                           args=[100, ]))
+        self.assertEqual(response.status_code, 404)
