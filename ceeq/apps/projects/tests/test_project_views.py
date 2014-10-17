@@ -4,7 +4,8 @@ from django.core.urlresolvers import resolve, reverse
 
 
 from ceeq.apps.projects.models import Project
-from ceeq.apps.projects.views import projects, project_new, project_detail, project_edit, project_delete
+from ceeq.apps.projects.views import projects, project_new, project_detail, project_edit, project_delete, \
+    project_defects_density, project_update_scores, defects_density_log
 
 
 class ProjectsViewTests(TestCase):
@@ -299,5 +300,112 @@ class ProjectDeleteTests(TestCase):
 
     def test_project_delete_with_invalid_id_unsuccessful(self):
         response = self.client.get(reverse('project_delete',
+                                           args=[100, ]))
+        self.assertEqual(response.status_code, 404)
+
+
+class ProjectDefectsDensityTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.project = {
+            'name': 'Existing Project',
+            'jira_name': 'Existing Jira Name'
+        }
+        self.project_exist = Project.objects.create(name=self.project['name'],
+                                                    jira_name=self.project['jira_name'])
+
+        self.user_account = {
+            'username': 'userName',
+            'password': 'userPassword',
+            'email': ''
+        }
+        self.user = User.objects.create_user(
+            username=self.user_account['username'],
+            password=self.user_account['password']
+        )
+        self.client.login(
+            username=self.user_account['username'],
+            password=self.user_account['password']
+        )
+
+    def test_project_defects_density_url_resolves_to_view(self):
+        found = resolve(reverse('project_defects_density',
+                                args=[self.project_exist.id, ]))
+        self.assertEqual(found.func, project_defects_density)
+
+    def test_project_defects_density_with_valid_id_returns_200(self):
+        response = self.client.get(reverse('project_defects_density',
+                                           args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Current Defect Impact')
+        self.assertContains(response, 'Trending Defect Impact')
+        self.assertContains(response, 'Trending CEEQ Score')
+        self.assertContains(response, 'History Defect Impact')
+        self.assertContains(response, self.project['name'])
+
+    def test_project_defects_density_with_invalid_id_gives_error(self):
+        response = self.client.get(reverse('project_defects_density',
+                                           args=[100, ]))
+        self.assertEqual(response.status_code, 404)
+
+    #Following relate to project update scores
+
+    def test_project_update_scores_url_resolves_to_view(self):
+        found = resolve(reverse('project_update_scores',
+                                args=[self.project_exist.id, ]))
+        self.assertEqual(found.func, project_update_scores)
+
+    def test_project_update_scores_with_valid_id_returns_200(self):
+        response = self.client.get(reverse('project_update_scores',
+                                           args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Projects List')
+        self.assertContains(response, self.project['name'])
+
+    def test_project_update_scores_with_invalid_id_gives_error(self):
+        response = self.client.get(reverse('project_update_scores',
+                                           args=[100, ]))
+        self.assertEqual(response.status_code, 404)
+
+
+class ProjectDefectsDensityLogTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.project = {
+            'name': 'Existing Project',
+            'jira_name': 'Existing Jira Name'
+        }
+        self.project_exist = Project.objects.create(name=self.project['name'],
+                                                    jira_name=self.project['jira_name'])
+
+        self.superuser_account_correct = {
+            'username': 'superUserName',
+            'password': 'superUserPassword',
+            'email': ''
+        }
+        self.superuser = User.objects.create_superuser(
+            username=self.superuser_account_correct['username'],
+            password=self.superuser_account_correct['password'],
+            email=self.superuser_account_correct['email']
+        )
+        self.client.login(
+            username=self.superuser_account_correct['username'],
+            password=self.superuser_account_correct['password']
+        )
+
+    def test_project_defects_density_log_url_resolves_view(self):
+        found = resolve(reverse('defects_density_log',
+                                args=[self.project_exist.id, ]))
+        self.assertEqual(found.func, defects_density_log)
+
+    def test_project_defects_density_log_with_valid_id_returns_200(self):
+        response = self.client.get(reverse('defects_density_log',
+                                           args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Projects List')
+        self.assertContains(response, self.project['name'])
+
+    def test_project_defects_density_log_with_invalid_id_gives_error(self):
+        response = self.client.get(reverse('defects_density_log',
                                            args=[100, ]))
         self.assertEqual(response.status_code, 404)

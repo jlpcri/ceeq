@@ -613,7 +613,8 @@ def defects_density_log(request, project_id):
         for project in projects:
             defects_density_single_log(request, project)
     else:
-        project = Project.objects.get(pk=project_id)
+        #project = Project.objects.get(pk=project_id)
+        project = get_object_or_404(Project, pk=project_id)
         defects_density_single_log(request, project)
 
     context = RequestContext(request, {
