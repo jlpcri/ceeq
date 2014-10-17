@@ -4,7 +4,7 @@ from django.core.urlresolvers import resolve, reverse
 
 
 from ceeq.apps.projects.models import Project
-from ceeq.apps.projects.views import projects, project_new
+from ceeq.apps.projects.views import projects, project_new, project_detail, project_edit, project_delete
 
 
 class ProjectsViewTests(TestCase):
@@ -51,17 +51,21 @@ class ProjectNewTests(TestCase):
             'name': 'New Project',
             'jira_name': 'New Jira Name',
         }
-        self.new_project_without_name = {
+        self.new_project_invalid_without_name = {
             'name': '',
             'jira_name': 'New Jira Name',
         }
-        self.new_project_without_jira_name = {
+        self.new_project_invalid_without_jira_name = {
             'name': 'New Project',
             'jira_name': '',
         }
+        self.new_project_invalid_with_duplicate_name = {
+            'name': 'New Project',
+            'jira_name': 'Not Duplicate Jira Name',
+        }
         self.superuser_account_correct = {
-            'username': 'correctName',
-            'password': 'correctPassword',
+            'username': 'superUserName',
+            'password': 'superUserPassword',
             'email': ''
         }
         self.superuser = User.objects.create_superuser(
@@ -93,11 +97,189 @@ class ProjectNewTests(TestCase):
         self.assertRedirects(response, reverse('projects'))
 
     def test_project_new_without_name_gives_required_error(self):
-        response = self.client.post(self.url, self.new_project_without_name)
+        response = self.client.post(self.url, self.new_project_invalid_without_name)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Correct errors in the form.')
 
     def test_project_new_without_jira_name_gives_required_error(self):
-        response = self.client.post(self.url, self.new_project_without_jira_name)
+        response = self.client.post(self.url, self.new_project_invalid_without_jira_name)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Correct errors in the form.')
+
+    def test_project_new_with_duplicate_name_gives_required_error(self):
+        response = self.client.post(self.url, self.new_project_valid, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(self.url, self.new_project_invalid_with_duplicate_name, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Correct errors in the form.')
+
+
+class ProjectDetailTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.project = {
+            'name': 'Existing Project',
+            'jira_name': 'Existing Jira Name'
+        }
+        self.project_exist = Project.objects.create(name=self.project['name'],
+                                                    jira_name=self.project['jira_name'])
+
+        self.user_account = {
+            'username': 'userName',
+            'password': 'userPassword',
+            'email': ''
+        }
+        self.user = User.objects.create_user(
+            username=self.user_account['username'],
+            password=self.user_account['password']
+        )
+        self.client.login(
+            username=self.user_account['username'],
+            password=self.user_account['password']
+        )
+
+    def test_project_detail_resolves_to_view(self):
+        found = resolve(reverse('project_detail',
+                                args=[self.project_exist.id, ]))
+        self.assertEqual(found.func, project_detail)
+
+    def test_project_detail_with_valid_id_successful(self):
+        response = self.client.get(reverse('project_detail',
+                                           args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.project['name'])
+
+    def test_project_detail_with_invalid_id_unsuccessful(self):
+        response = self.client.get(reverse('project_detail',
+                                           args=[100, ]))
+        self.assertEqual(response.status_code, 404)
+
+
+class ProjectEditTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.project = {
+            'name': 'Existing Project',
+            'jira_name': 'Existing Jira Name'
+        }
+        self.project_exist = Project.objects.create(name=self.project['name'],
+                                                    jira_name=self.project['jira_name'])
+        self.project_edit = {
+            'name': 'Editing Project',
+            'jira_name': 'Editing Jira Name',
+            'jira_version': 'Editing Versions'
+        }
+        self.project_edit_empty_name = {
+            'name': '',
+            'jira_name': 'Editing Jira Name',
+            'jira_version': 'Editing Versions'
+        }
+        self.project_edit_empty_jira_name = {
+            'name': 'Editing Project',
+            'jira_name': '',
+            'jira_version': 'Editing Versions'
+        }
+        self.project_edit_empty_jira_version = {
+            'name': 'Editing Project',
+            'jira_name': 'Editing Jira Name',
+            'jira_version': '',
+        }
+
+        self.superuser_account_correct = {
+            'username': 'superUserName',
+            'password': 'superUserPassword',
+            'email': ''
+        }
+        self.superuser = User.objects.create_superuser(
+            username=self.superuser_account_correct['username'],
+            password=self.superuser_account_correct['password'],
+            email=self.superuser_account_correct['email']
+        )
+        self.client.login(
+            username=self.superuser_account_correct['username'],
+            password=self.superuser_account_correct['password']
+        )
+
+    def test_project_edit_resolves_to_view(self):
+        found = resolve(reverse('project_edit',
+                                args=[self.project_exist.id, ]))
+        self.assertEqual(found.func, project_edit)
+
+    def test_project_edit_with_invalid_id_unsuccessful(self):
+        response = self.client.get(reverse('project_edit',
+                                           args=[100, ]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_project_edit_with_other_than_post_method_redirect_project_lists(self):
+        response = self.client.get(reverse('project_edit',
+                                           args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('projects'))
+
+    def test_project_edit_with_valid_data_successful(self):
+        response = self.client.post(reverse('project_edit',
+                                            args=[self.project_exist.id, ]),
+                                    self.project_edit)
+        project = Project.objects.get(name=self.project_edit['name'])
+        self.assertIsNotNone(project)
+
+    def test_project_edit_with_valid_data_redirect_to_project_detail(self):
+        response = self.client.post(reverse('project_edit',
+                                            args=[self.project_exist.id, ]),
+                                    self.project_edit)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('project_detail',
+                                               args=[self.project_exist.id, ]))
+
+    def test_project_edit_with_empty_name_gives_error(self):
+        response = self.client.post(reverse('project_edit',
+                                            args=[self.project_exist.id, ]),
+                                    self.project_edit_empty_name)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Correct errors in the form.')
+
+    def test_project_edit_with_empty_jira_name_gives_error(self):
+        response = self.client.post(reverse('project_edit',
+                                            args=[self.project_exist.id, ]),
+                                    self.project_edit_empty_jira_name)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Correct errors in the form.')
+
+    def test_project_edit_with_empty_jira_version_gives_error(self):
+        response = self.client.post(reverse('project_edit',
+                                            args=[self.project_exist.id, ]),
+                                    self.project_edit_empty_jira_version)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Correct errors in the form.')
+
+
+class ProjectDeleteTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.project = {
+            'name': 'Existing Project',
+            'jira_name': 'Existing Jira Name'
+        }
+        self.project_exist = Project.objects.create(name=self.project['name'],
+                                                    jira_name=self.project['jira_name'])
+
+        self.superuser_account_correct = {
+            'username': 'superUserName',
+            'password': 'superUserPassword',
+            'email': ''
+        }
+        self.superuser = User.objects.create_superuser(
+            username=self.superuser_account_correct['username'],
+            password=self.superuser_account_correct['password'],
+            email=self.superuser_account_correct['email']
+        )
+        self.client.login(
+            username=self.superuser_account_correct['username'],
+            password=self.superuser_account_correct['password']
+        )
+
+    def test_project_delete_resolves_to_view(self):
+        found = resolve(reverse('project_delete',
+                                args=[self.project_exist.id, ]))
+        self.assertEqual(found.func, project_delete)
