@@ -49,8 +49,7 @@ class Project(models.Model):
                 return data
             else:
                 def worker(start, que):
-                    #data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
-                    data_single = requests.get(settings.JIRA_API_URL_ALL_FIELDS % (50, start, self.jira_name),
+                    data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
                                                proxies=settings.JIRA_PROXY,
                                                auth=('readonly_sliu_api_user', 'qualityengineering')).json()
                     que.put(data_single)
