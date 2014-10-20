@@ -14,6 +14,10 @@
                             <li><a href="#introduction">Introduction</a> </li>
                             <li><a href="#components_weight">Components Weights</a> </li>
                             <li><a href="#jira_issue_weight">JIRA Issues Weights</a> </li>
+                            <li><a href="#jira_issue_scope">CEEQ Framework Scope</a> </li>
+                            {% if superuser %}
+                                <li><a href="#voice_slots_percentage_range">Voice Slots Range</a> </li>
+                            {% endif %}
                             <li><a href="#testing_character">Testing Characteristics</a> </li>
                         </ul>
                     </div>
@@ -98,7 +102,7 @@
                         <p>During the procedure of West developed solutions testing, the ration of following components
                         are considered as <strong>(8 : 2 : 4 : 3 : 3)</strong> - (alphabet order)</p>
                         <ul>
-                            <li>Application</li>
+                            <li>Application - 0.40</li>
                                 <ul>
                                     <li>Design</li>
                                     <ul>
@@ -112,20 +116,15 @@
                                     </ul>
                                     <li>Web Service</li>
                                     <li>Grammars</li>
-                                    <li>Outbound</li>
-                                    <ul>
-                                        <li>SMS</li>
-                                        <li>Outdial</li>
-                                    </ul>
                                 </ul>
-                            <li>CXP - Customer Experience Portal</li>
+                            <li>CXP - Customer Experience Portal - 0.10</li>
                                 <ul>
                                     <li>Real Feed</li>
                                     <li>ODP - On Demand Portal</li>
                                     <li>HCCP - Host Customer Contact Portal</li>
                                     <li>User Portal</li>
                                 </ul>
-                            <li>Infrastructure Platform</li>
+                            <li>Infrastructure Platform - 0.20</li>
                                 <ul>
                                     <li>Host</li>
                                     <ul>
@@ -136,14 +135,14 @@
                                     <li>Database</li>
                                 </ul>
 
-                            <li>Reports</li>
+                            <li>Reports - 0.15</li>
                                 <ul>
                                     <li>TXL/BHV Logs</li>
                                     <li>Standard Reports</li>
                                     <li>Custom Reports</li>
                                     <li>CDR Feeds - Client Detail Reports</li>
                                 </ul>
-                            <li>Voice Slots</li>
+                            <li>Voice Slots - 0.15</li>
                                 <ul>
                                     <li>English</li>
                                     <li>Spanish</li>
@@ -156,8 +155,8 @@
                     <div id="jira_issue_weight">
                         <h4 style="padding-top: 75px; margin-top: -75px;">JIRA Issues Weight Factor&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
                         <p>Our framework takes the data from JIRA to evaluate the CEEQ score of West developed solutions.
-                        We are focus the issue type "Bug", and the following different priority of the issue
-                        are taken account into our framework:</p>
+                        There five priorities are included in CEEQ, the ratio of these priorities is <strong>5:4:3:2:1</strong>.
+                        The following different priority of the issue are taken account into our framework:</p>
                         <ul>
                             <li>Blocker: </li></p>
                                 <p>Highest priority. Indicates that this issue takes precedence over all others.</p>
@@ -172,6 +171,92 @@
                         </ul>
 
                     </div>
+
+                    <div id="jira_issue_scope">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">CEEQ Framework Scope&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>It won't be nesseary to track all issues in JIRA into our framework.</p>
+                        <ul>
+                            <li>Issue Types: </li>
+                                <ul>
+                                    <li>Types included</li>
+                                        <ul>
+                                            <li>Bug</li>
+                                        </ul>
+                                    <li>Types not included</li>
+                                        <ul>
+                                            <li>New Feature</li>
+                                            <li>Task</li>
+                                            <li>Improvement</li>
+                                            <li>Suggested Improvement</li>
+                                            <li>Environment</li>
+                                        </ul>
+                                </ul>
+                            <li>Issue Status: </li>
+                                <ul>
+                                    <li>Open</li>
+                                        <ul>
+                                            <li>Open</li>
+                                            <li>In Progress</li>
+                                            <li>Reopen</li>
+                                            <li>UAT Testing</li>
+                                            <li>Discovery</li>
+                                            <li>Review</li>
+                                            <li>Pending</li>
+                                            <li>Research</li>
+                                        </ul>
+                                    <li>Resolved</li>
+                                    <li>Closed</li>
+                                </ul>
+                            <li>Issue Resolution: </li>
+                                <ul>
+                                    <li>Resolution not included</li>
+                                        <ul>
+                                            <li>Duplicate</li>
+                                            <li>Works as Design</li>
+                                        </ul>
+                                </ul>
+
+                        </ul>
+                    </div>
+
+                    {% if superuser%}
+                    <div id="voice_slots_percentage_range">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Voice Slots Percentage Range - Planning&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>Voice Slots has three sub components, each sub component only has 1 ‘Missing’ and 1 ‘Wrong’ issues.
+                            Issue is Open when percentage of ‘Missing’ or ‘Wrong’ reaches following range.
+                            Issue will be changed from ‘Open’ to ‘Resolved’  as ‘Trivial’ until all verbiages are cleared. </p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Trivial</th>
+                                    <th>Minor</th>
+                                    <th>Major</th>
+                                    <th>Critical</th>
+                                    <th>Blocker</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Missing</td>
+                                    <td>0-5</td>
+                                    <td>6-20</td>
+                                    <td>21-40</td>
+                                    <td>41-70</td>
+                                    <td>71-100</td>
+                                </tr>
+                                <tr>
+                                    <td>Wrong</td>
+                                    <td>0-5</td>
+                                    <td>6-20</td>
+                                    <td>21-40</td>
+                                    <td>41-70</td>
+                                    <td>71-100</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
 
                     <div id="testing_character">
                         <h4 style="padding-top: 75px; margin-top: -75px;">Software Testing Characteristics&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
@@ -196,7 +281,6 @@
                                 <li>Accessibility</li></p>
                                     <p>It is important to consider the accessibility of software to those with particular requirements or restrictions in its use. This includes those with disabilities. </p>
                             </ul>
-
                         </div>
 
                         <div id="testing_character_technical">
