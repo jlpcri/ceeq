@@ -259,7 +259,11 @@ function displayPieChart(data, uat_type) {
         });
         var pie_title, color_title;
         if ( parseFloat(data[3]) > 10) {
-            pie_title = 'CEEQ Score: ' + 'Out of Range';
+            if (parseFloat(data[3]) == 103 ){
+                pie_title = 'No Open Issues';
+            } else {
+                pie_title = 'CEEQ Score: ' + 'Out of Range';
+            }
         }
         else {
             pie_title = '<b>{{ project.name }} - </b>' + 'CEEQ Score: ' + parseFloat(data[3]).toFixed(2) + ' / 10';
