@@ -102,7 +102,7 @@ def project_detail(request, project_id):
     dd_pie_data_only_uat = fetch_defects_density_score_pie(request,
                                                            project.jira_name,
                                                            version_data,
-                                                           'exclude_uat')
+                                                           'only_uat')
     #print dd_pie_data_exclude_uat
 
     for item in version_data:
@@ -143,7 +143,7 @@ def project_detail(request, project_id):
                                                component_names_without_slash)
 
     #update ceeq score
-    project.score = project_detail_calculate_score(weight_factor_exclude_uat)
+    project.score = project_detail_calculate_score(weight_factor_include_uat)
     project.save()
 
     # calculate total number of issues based on priority
