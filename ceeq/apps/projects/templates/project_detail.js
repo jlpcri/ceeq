@@ -416,8 +416,8 @@ function displayPieChart(data, uat_type) {
         //button handler
         var today = new Date();
         var export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
-        $('#pdf').click(function () {
-            var chart = $('#component_percentage_pie_chart').highcharts();
+        $('#pdf_' + uat_type).click(function () {
+            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
             chart.exportChart({
                 type: 'application/pdf',
                 scale: 1,
@@ -425,16 +425,16 @@ function displayPieChart(data, uat_type) {
                 filename: export_filename
             });
         });
-        $('#jpeg').click(function () {
-            var chart = $('#component_percentage_pie_chart').highcharts();
+        $('#jpeg_' + uat_type).click(function () {
+            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
             chart.exportChart({
                 type: 'image/jpeg',
                 scale: 1,
                 filename: export_filename
             });
         });
-        $('#png').click(function () {
-            var chart = $('#component_percentage_pie_chart').highcharts();
+        $('#png_' + uat_type).click(function () {
+            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
             chart.exportChart({
                 type: 'image/png',
                 scale: 1,
