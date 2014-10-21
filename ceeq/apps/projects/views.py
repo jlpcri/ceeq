@@ -274,7 +274,12 @@ def get_component_defects_density(request, jira_data):
         component_names = list(OrderedDict.fromkeys(component_names))
         component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-        data = issue_counts_compute(request, component_names, component_names_without_slash, version_data[key], 'components')
+        data = issue_counts_compute(request,
+                                    component_names,
+                                    component_names_without_slash,
+                                    version_data[key],
+                                    'components',
+                                    'include_uat')
 
         #calculate issues number of components and sub-components
         weight_factor_versions[key] = get_weight_factor(data, component_names_without_slash)
@@ -411,7 +416,12 @@ def calculate_score(request, project):
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
     # Construct # of different priority issues dict from jira_data
-    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
+    data = issue_counts_compute(request,
+                                component_names,
+                                component_names_without_slash,
+                                version_data,
+                                'components',
+                                'include_uat')
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
@@ -586,7 +596,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
         # for color index
         temp_graph.append(sorted(component_names_standard.keys()).index(item[0]))
 
-        temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data)
+        temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data, uat_type)
 
         priority_total['total'] += item[3]  # Total of all issues of pie chart table
         temp_table.append(item[0])  # Component name

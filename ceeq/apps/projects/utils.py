@@ -327,7 +327,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     return data
 
 
-def get_subcomponent_defects_density(request, component_name, version_data):
+def get_subcomponent_defects_density(request, component_name, version_data, uat_type):
     sub_component_names = []
     component_name_list = []
     sub_pie_graph = []
@@ -351,7 +351,7 @@ def get_subcomponent_defects_density(request, component_name, version_data):
                                 component_name_list,
                                 version_data,
                                 'sub_components',
-                                'exclude_uat')
+                                uat_type)
 
     weight_factor = get_sub_component_weight_factor(data, component_name, component_name_weight)
 

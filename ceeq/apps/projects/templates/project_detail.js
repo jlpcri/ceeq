@@ -286,17 +286,14 @@ function displayPieChart(data, uat_type) {
             subcomData = [],
             i,
             j,
-            innerData_include_uat = data_include_uat[0][0],
-            outerData_include_uat = data_include_uat[0][1],
-            dataLen_include_uat = innerData_include_uat.length,
+            innerData = data[0][0],
+            outerData = data[0][1],
+            dataLen = innerData.length,
             drillDataLen,
             brightness;
 
         //console.log(innerData);
         // Build the data arrays
-        var temp = get_donut_pie_data(innerData, outerData, dataLen);
-        console.log(temp[0]);
-        console.log(temp[1]);
 
         for (i = 0; i < dataLen; i += 1) {
             // add component data
@@ -447,39 +444,4 @@ function displayPieChart(data, uat_type) {
     }
 }
 
-function get_donut_pie_data(innerData, outerData, dataLen){
-    var colors = ['#AD7C1F', '#FF8F00', '#1E8F9C', '#3B73A1', '#23635A', '#173096'],
-        i,
-        j,
-        componentData = [],
-        subcomData = [],
-        donutData = [],
-        drillDataLen,
-        brightness;
-
-    for (i = 0; i < dataLen; i += 1) {
-        // add component data
-        componentData.push({
-            name: innerData[i][0],
-            y: parseFloat(innerData[i][1]),
-            color: colors[innerData[i][2]]
-        });
-
-        // add sub component data
-        drillDataLen = outerData[i].length;
-        for (j = 0; j < drillDataLen; j += 1) {
-            brightness = 0.2 - (j / drillDataLen) / 5;
-            subcomData.push({
-                name: outerData[i][j][0],
-                y: parseFloat(outerData[i][j][1]),
-                color: Highcharts.Color(colors[innerData[i][2]]).brighten(brightness).get()
-            });
-        }
-    }
-
-    donutData.push(componentData);
-    donutData.push(subcomData);
-
-    return donutData;
-}
 
