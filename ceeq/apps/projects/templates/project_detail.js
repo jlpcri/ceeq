@@ -1,7 +1,6 @@
 var active_tab = String(""),
-    donut_pie,
-    innerData,
-    outerData;
+    donut_pie;
+
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
     active_tab = e.target.hash;
     loadUatActiveDataTab();
@@ -28,7 +27,6 @@ function loadUatActiveDataTab() {
 }
 
 function displayPieChart(data, uat_type) {
-    //data = data_include_uat;
     if (score < 10) {
         //Create the data table
         Highcharts.drawTable = function () {
@@ -260,14 +258,14 @@ function displayPieChart(data, uat_type) {
             //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
         });
         var pie_title, color_title;
-        if (score > 10) {
+        if ( parseFloat(data[3]) > 10) {
             pie_title = 'CEEQ Score: ' + 'Out of Range';
         }
         else {
-            pie_title = '<b>{{ project.name }} - </b>' + 'CEEQ Score: ' + score.toFixed(2) + ' / 10';
+            pie_title = '<b>{{ project.name }} - </b>' + 'CEEQ Score: ' + parseFloat(data[3]).toFixed(2) + ' / 10';
         }
 
-        if (score < 0) {
+        if ( parseFloat(data[3]) < 0) {
             color_title = '#FF0000';
         }
         else {

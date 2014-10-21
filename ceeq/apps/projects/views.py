@@ -577,6 +577,9 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
     weight_factor = get_weight_factor(data, component_names_without_slash)
     #print weight_factor
 
+    project_score_uat = project_detail_calculate_score(weight_factor)
+    #print uat_type, ':', project_score_uat
+
     # calculate total number of issues based on priority
     priority_total = defaultdict(int)
 
@@ -647,6 +650,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
     dd_pie_data.append(temp_table)
+    dd_pie_data.append(project_score_uat)
     #dd_pie_data.append((jira_name, request.user.is_superuser))
 
     return dd_pie_data
