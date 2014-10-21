@@ -187,7 +187,7 @@
             })
         $(document).ready(function(){
             $('#subnav-tabs').find('a[href="#include_uat"]').tab('show');
-            var data = {{ dd_pie_data | safe }};
+            var data = {{ dd_pie_data_include_uat | safe }};
             if (Number({{ project.score }}) < 10 ) {
                 //Create the data table
                 Highcharts.drawTable = function() {

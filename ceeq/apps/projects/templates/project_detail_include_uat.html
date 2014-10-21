@@ -27,10 +27,10 @@
                     {% endif %}
                 </p>
                 <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
-                <p>Exist Components Names: <strong>{{ component_names }}</strong></p>
+                <p>Exist Components Names: <strong>{{ component_names_include_uat }}</strong></p>
             </div>
 
-            {% if weight_factor %}
+            {% if weight_factor_include_uat %}
                <table class="table table-hover table-striped" id="factor_table" >
                 <thead>
                     <tr>
@@ -80,7 +80,7 @@
               </tr>
                 </thead>
                 <tbody>
-                    {% for component,weight,dd, total, b_c, b_o, b_r, c_c, c_o, c_r, m_c, m_o, m_r, mi_c, mi_o, mi_r, t_c, t_o, t_r in weight_factor %}
+                    {% for component,weight,dd, total, b_c, b_o, b_r, c_c, c_o, c_r, m_c, m_o, m_r, mi_c, mi_o, mi_r, t_c, t_o, t_r in weight_factor_include_uat %}
                         <tr>
                             <td>{{ component }}</td>
                             <td>{{ weight|floatformat:3 }}</td>
@@ -126,21 +126,21 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: center">{{ priority_total.blocker }}</td>
+                    <td style="text-align: center">{{ priority_total_include_uat.blocker }}</td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: center">{{ priority_total.critical }}</td>
+                    <td style="text-align: center">{{ priority_total_include_uat.critical }}</td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: center">{{ priority_total.major }}</td>
+                    <td style="text-align: center">{{ priority_total_include_uat.major }}</td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: center">{{ priority_total.minor }}</td>
+                    <td style="text-align: center">{{ priority_total_include_uat.minor }}</td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: center">{{ priority_total.trivial }}</td>
+                    <td style="text-align: center">{{ priority_total_include_uat.trivial }}</td>
                     <td></td>
-                    <td style="text-align: center">{{ priority_total.total }}</td>
+                    <td style="text-align: center">{{ priority_total_include_uat.total }}</td>
                 </tr>
                 </tbody>
                 </table>
