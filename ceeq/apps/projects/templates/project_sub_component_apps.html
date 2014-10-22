@@ -28,7 +28,7 @@
 {% block footer %}
     <script>
         var title = 'Applications'
-        $.getJSON("{% url 'fetch_apps_subcomponents_pie' project.id %}").done(function(data){
+        $.getJSON("{% url 'fetch_apps_subcomponents_pie' project.id %}?uat_type={{ uat_type }}").done(function(data){
             draw_pie_chart_graph(data);
         });
         {% include 'project_sub_components.js' %}

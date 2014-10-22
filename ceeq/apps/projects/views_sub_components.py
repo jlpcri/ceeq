@@ -17,9 +17,15 @@ from ceeq.settings.base import issue_priority_weight,\
 # Handling sub component pie chart
 @login_required
 def project_sub_apps_piechart(request, project_id):
+    if not request.GET.get('uat_type'):
+        uat_type = 'include_uat'
+    else:
+        uat_type = request.GET.get('uat_type')
+
     project = get_object_or_404(Project, pk=project_id)
     context = RequestContext(request, {
-        'project': project
+        'project': project,
+        'uat_type': uat_type
     })
     return render(request, 'project_sub_component_apps.html', context)
 
@@ -48,9 +54,9 @@ def project_sub_reports_piechart(request, project_id):
     return render(request, 'project_sub_component_reports.html', context)
 
 
-def fetch_apps_subcomponents_pie(request, project_id):
+def fetch_apps_subcomponents_pie(request, project_id, uat_type):
     component_name = ['Application']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type)
 
     return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
 
@@ -76,7 +82,7 @@ def fetch_platform_subcomponents_pie(request, project_id):
     return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
 
 
-def fetch_subcomponents_pie(request, project_id, component_name):
+def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
     """
     Used for pie chart along with drawing data table of Subcomponents of Applications
     :param request:
@@ -118,7 +124,11 @@ def fetch_subcomponents_pie(request, project_id, component_name):
     if component_name[0] in sub_component_names:
         return 'component configuration issue'
 
-    data = issue_counts_compute(request, sub_component_names, component_name, version_data, 'sub_components')
+    data = issue_counts_compute(request,
+                                sub_component_names,
+                                component_name, version_data,
+                                'sub_components',
+                                uat_type)
 
     weight_factor = get_sub_component_weight_factor(data, component_name[0], 1)
     #for item in weight_factor:
