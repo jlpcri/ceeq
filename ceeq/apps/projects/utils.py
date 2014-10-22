@@ -260,8 +260,10 @@ def issue_counts_compute(request, component_names, component_names_without_slash
             continue
 
         try:
-            component = item['fields']['components'][0]['name']
-        except (IndexError, UnicodeEncodeError):
+            component = str(item['fields']['components'][0]['name'])
+        except UnicodeEncodeError:
+            component = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+        except IndexError:
             continue
 
         #print 'a', component
@@ -329,7 +331,9 @@ def get_subcomponent_defects_density(request, component_name, version_data):
     for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
-        except (IndexError, UnicodeEncodeError):
+        except UnicodeEncodeError:
+            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+        except IndexError:
             continue
         if name.startswith(component_name):
             sub_component_names.append(name)

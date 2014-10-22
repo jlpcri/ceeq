@@ -96,8 +96,9 @@ def project_detail(request, project_id):
     for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
-
-        except (IndexError, UnicodeEncodeError):
+        except UnicodeEncodeError:
+            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+        except IndexError:
             continue
         component_names.append(name)
         component_names_without_slash.append(truncate_after_slash(name))
@@ -232,7 +233,9 @@ def get_component_defects_density(request, jira_data):
         for item in version_data[key]:
             try:
                 name = str(item['fields']['components'][0]['name'])
-            except (IndexError, UnicodeEncodeError):
+            except UnicodeEncodeError:
+                name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            except IndexError:
                 continue
             component_names.append(name)
             component_names_without_slash.append(truncate_after_slash(name))
@@ -369,7 +372,9 @@ def calculate_score(request, project):
     for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
-        except (IndexError, UnicodeEncodeError):
+        except UnicodeEncodeError:
+            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+        except IndexError:
             continue
         component_names.append(name)
         component_names_without_slash.append(truncate_after_slash(name))
@@ -516,7 +521,9 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
     for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
-        except (IndexError, UnicodeEncodeError):
+        except UnicodeEncodeError:
+            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+        except IndexError:
             continue
         component_names.append(name)
         component_names_without_slash.append(truncate_after_slash(name))
