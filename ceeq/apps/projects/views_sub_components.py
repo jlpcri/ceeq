@@ -107,10 +107,12 @@ def fetch_subcomponents_pie(request, project_id, component_name):
     for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
-            if name.startswith(component_name[0]):
-                sub_component_names.append(name)
+        except UnicodeEncodeError:
+            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
         except IndexError:
             continue
+        if name.startswith(component_name[0]):
+            sub_component_names.append(name)
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
     if component_name[0] in sub_component_names:

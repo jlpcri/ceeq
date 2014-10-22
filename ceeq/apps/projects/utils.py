@@ -271,55 +271,59 @@ def issue_counts_compute(request, component_names, component_names_without_slash
             continue
 
         try:
-            component = item['fields']['components'][0]['name']
-            #print component
-            if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
-                continue
-
-            if item['fields']['issuetype']['id'] in issue_types:
-                if item['fields']['status']['id'] in issue_status_open:
-                    if item['fields']['priority']['id'] == '1':
-                        data[component]['blocker']['open'] += 1
-                    elif item['fields']['priority']['id'] == '2':
-                        data[component]['critical']['open'] += 1
-                    elif item['fields']['priority']['id'] == '3':
-                        data[component]['major']['open'] += 1
-                    elif item['fields']['priority']['id'] == '4':
-                        data[component]['minor']['open'] += 1
-                    elif item['fields']['priority']['id'] == '5':
-                        data[component]['trivial']['open'] += 1
-                elif item['fields']['status']['id'] in issue_status_resolved:
-                    #TODO: Track time usage of Resolved JIRAs
-                    """
-                    print item['fields']['created'], ',', item['fields']['resolutiondate']
-                    difference = datetime.strptime(item['fields']['resolutiondate'][:19], '%Y-%m-%dT%H:%M:%S') - datetime.strptime(item['fields']['created'][:19], '%Y-%m-%dT%H:%M:%S')
-                    print 'hours: ', divmod(difference.total_seconds(), 3600)[0]
-                    """
-                    if item['fields']['priority']['id'] == '1':
-                        data[component]['blocker']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '2':
-                        data[component]['critical']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '3':
-                        data[component]['major']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '4':
-                        data[component]['minor']['resolved'] += 1
-                    elif item['fields']['priority']['id'] == '5':
-                        data[component]['trivial']['resolved'] += 1
-                elif item['fields']['status']['id'] in issue_status_closed:
-                    #print 'C', item['fields']['created'], item['fields']['resolutiondate']
-                    if item['fields']['priority']['id'] == '1':
-                        data[component]['blocker']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '2':
-                        data[component]['critical']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '3':
-                        data[component]['major']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '4':
-                        data[component]['minor']['closed'] += 1
-                    elif item['fields']['priority']['id'] == '5':
-                        data[component]['trivial']['closed'] += 1
-
+            component = str(item['fields']['components'][0]['name'])
+        except UnicodeEncodeError:
+            component = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
         except IndexError:
             continue
+
+        #print 'a', component
+        if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
+            continue
+
+        if item['fields']['issuetype']['id'] in issue_types:
+            if item['fields']['status']['id'] in issue_status_open:
+                if item['fields']['priority']['id'] == '1':
+                    data[component]['blocker']['open'] += 1
+                elif item['fields']['priority']['id'] == '2':
+                    data[component]['critical']['open'] += 1
+                elif item['fields']['priority']['id'] == '3':
+                    data[component]['major']['open'] += 1
+                elif item['fields']['priority']['id'] == '4':
+                    data[component]['minor']['open'] += 1
+                elif item['fields']['priority']['id'] == '5':
+                    data[component]['trivial']['open'] += 1
+            elif item['fields']['status']['id'] in issue_status_resolved:
+                #TODO: Track time usage of Resolved JIRAs
+                """
+                print item['fields']['created'], ',', item['fields']['resolutiondate']
+                difference = datetime.strptime(item['fields']['resolutiondate'][:19], '%Y-%m-%dT%H:%M:%S') - datetime.strptime(item['fields']['created'][:19], '%Y-%m-%dT%H:%M:%S')
+                print 'hours: ', divmod(difference.total_seconds(), 3600)[0]
+                """
+                if item['fields']['priority']['id'] == '1':
+                    data[component]['blocker']['resolved'] += 1
+                elif item['fields']['priority']['id'] == '2':
+                    data[component]['critical']['resolved'] += 1
+                elif item['fields']['priority']['id'] == '3':
+                    data[component]['major']['resolved'] += 1
+                elif item['fields']['priority']['id'] == '4':
+                    data[component]['minor']['resolved'] += 1
+                elif item['fields']['priority']['id'] == '5':
+                    data[component]['trivial']['resolved'] += 1
+            elif item['fields']['status']['id'] in issue_status_closed:
+                #print 'C', item['fields']['created'], item['fields']['resolutiondate']
+                if item['fields']['priority']['id'] == '1':
+                    data[component]['blocker']['closed'] += 1
+                elif item['fields']['priority']['id'] == '2':
+                    data[component]['critical']['closed'] += 1
+                elif item['fields']['priority']['id'] == '3':
+                    data[component]['major']['closed'] += 1
+                elif item['fields']['priority']['id'] == '4':
+                    data[component]['minor']['closed'] += 1
+                elif item['fields']['priority']['id'] == '5':
+                    data[component]['trivial']['closed'] += 1
+
+
 
     #for i in data:
     #    print i, data[i]
@@ -338,10 +342,12 @@ def get_subcomponent_defects_density(request, component_name, version_data, uat_
     for item in version_data:
         try:
             name = str(item['fields']['components'][0]['name'])
-            if name.startswith(component_name):
-                sub_component_names.append(name)
+        except UnicodeEncodeError:
+            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
         except IndexError:
             continue
+        if name.startswith(component_name):
+            sub_component_names.append(name)
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
     sub_component_names_length = Decimal(len(sub_component_names))
