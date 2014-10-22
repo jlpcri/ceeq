@@ -266,7 +266,12 @@ function displayPieChart(data, uat_type) {
             }
         }
         else {
-            pie_title = '<b>{{ project.name }} - </b>' + 'CEEQ Score: ' + parseFloat(data[3]).toFixed(2) + ' / 10';
+            pie_title = '<b>{{ project.name }} - </b>'
+                //+ 'CEEQ Score - '
+                + active_tab.substring(1).toUpperCase()
+                + ': '
+                + parseFloat(data[3]).toFixed(2)
+                + ' / 10';
         }
 
         if ( parseFloat(data[3]) < 0) {
@@ -371,7 +376,7 @@ function displayPieChart(data, uat_type) {
                                 //if (e.point.name=='Application' && data[3][0]=='VISI' && data[3][1]==true){
                                 if (e.point.name != 'Voice Slots') {
                                     //location.href = e.point.name;
-                                    location.href = e.point.name +'?uat_type='+ active_tab.substring(1, active_tab.length);
+                                    location.href = e.point.name +'?uat_type='+ active_tab.substring(1);
                                     e.preventDefault();
                                 }
                             }
