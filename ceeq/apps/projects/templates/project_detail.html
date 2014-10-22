@@ -187,6 +187,11 @@
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
 
         {% include 'project_detail.js' %}
+
+        if (data_only_uat[3] == 103 ) {
+            $('#component_percentage_pie_chart_only_uat').hide();
+            $('#export_data_only_uat').html('No Issues Open.');
+        }
     </script>
 
 {% endblock %}
