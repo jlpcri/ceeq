@@ -20,7 +20,7 @@
                     {% for project in projects %}
                         <tr>
                             <td><a href='{% url 'project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
-                            <td><a href='http://jira.west.com/browse/{{ project.jira_name }}'>{{ project.jira_name }}</a></td>
+                            <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
                             <td>
                                 {% if project.score == 101 %}
                                     No created issues
