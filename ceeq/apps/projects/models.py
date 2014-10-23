@@ -36,10 +36,14 @@ class Project(models.Model):
 
     @property
     def fetch_jira_data(self):
-        data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
-                            proxies=settings.JIRA_PROXY,
-                            auth=('readonly_sliu_api_user', 'qualityengineering')).json()
-
+        if self.jira_version == 'All Versions':
+            data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
+                                proxies=settings.JIRA_PROXY,
+                                auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+        else:
+            data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name + '%20AND%20affectedversion=\'' + self.jira_version + '\'',
+                                proxies=settings.JIRA_PROXY,
+                                auth=('readonly_sliu_api_user', 'qualityengineering')).json()
         #print 'total: ', data['total']
         if len(data) == 2:
             if data['errorMessages']:
@@ -49,9 +53,15 @@ class Project(models.Model):
                 return data
             else:
                 def worker(start, que):
-                    data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name),
-                                               proxies=settings.JIRA_PROXY,
-                                               auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                    if self.jira_version == 'All Versions':
+                        data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '&expand=names',
+                                                   proxies=settings.JIRA_PROXY,
+                                                   auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+
+                    else:
+                        data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '%20AND%20affectedversion=\'' + self.jira_version +'\'&expand=names',
+                                                   proxies=settings.JIRA_PROXY,
+                                                   auth=('readonly_sliu_api_user', 'qualityengineering')).json()
                     que.put(data_single)
                     #data_total.append(data_single['issues'])
                 jobs = []
@@ -70,6 +80,19 @@ class Project(models.Model):
 
                 results['issues'] = issues
                 return results
+
+    @property
+    def fectch_jira_versions(self):
+        versions = []
+        data = requests.get(settings.JIRA_API_URL_VERSIONS % self.jira_name.upper(),
+                            proxies=settings.JIRA_PROXY,
+                            auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+        for item in data:
+            versions.append(item['name'])
+
+        versions.append('All Versions')
+
+        return versions
 
 
 class ProjectComponentsDefectsDensity(models.Model):
