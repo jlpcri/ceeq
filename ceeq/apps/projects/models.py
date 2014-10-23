@@ -44,7 +44,7 @@ class Project(models.Model):
             data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name + '%20AND%20affectedversion=\'' + self.jira_version + '\'',
                                 proxies=settings.JIRA_PROXY,
                                 auth=('readonly_sliu_api_user', 'qualityengineering')).json()
-        print 'total: ', data['total']
+        #print 'total: ', data['total']
         if len(data) == 2:
             if data['errorMessages']:
                 return 'No JIRA Data'
@@ -80,6 +80,19 @@ class Project(models.Model):
 
                 results['issues'] = issues
                 return results
+
+    @property
+    def fectch_jira_versions(self):
+        versions = []
+        data = requests.get(settings.JIRA_API_URL_VERSIONS % self.jira_name.upper(),
+                            proxies=settings.JIRA_PROXY,
+                            auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+        for item in data:
+            versions.append(item['name'])
+
+        versions.append('All Versions')
+
+        return versions
 
 
 class ProjectComponentsDefectsDensity(models.Model):

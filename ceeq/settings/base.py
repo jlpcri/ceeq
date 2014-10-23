@@ -160,6 +160,7 @@ JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution'
 JIRA_API_MAX = 50
 JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=5&jql=project=' % (JIRA_API_FIELDS)
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&startAt=%d&jql=project=%s'
+JIRA_API_URL_VERSIONS = 'http://jira.west.com/rest/api/2/project/%s/versions'
 
 JIRA_PROXY = None
 

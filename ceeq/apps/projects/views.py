@@ -71,8 +71,9 @@ def project_detail(request, project_id):
         return render(request, 'project_detail.html', context)
 
     #List for choice of jira verion per project
-    version_names = version_name_from_jira_data(jira_data)
-    version_names.append('All Versions')
+    version_names = project.fectch_jira_versions
+    #version_names = version_name_from_jira_data(jira_data)
+    #version_names.append('All Versions')
 
     # get jira_data based on version
     if project.jira_version == 'All Versions':
