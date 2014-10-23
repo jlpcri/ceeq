@@ -10,6 +10,7 @@ def search(request):
 
         projects = Project.objects.filter(name__icontains=query)
         context = RequestContext(request, {
-            'projects': projects
+            'projects': projects,
+            'superuser': request.user.is_superuser
         })
         return render(request, 'search.html', context)

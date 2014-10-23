@@ -20,12 +20,31 @@
                     {% for project in projects %}
                         <tr>
                             <td><a href='{% url 'project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
-                            <td><a href='http://jira.west.com/browse/{{ project.jira_name }}'>{{ project.jira_name }}</a></td>
+                            <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
                             <td>
-                                {% if project.score == -1 %}
-                                    Not Available
+                                {% if project.score == 101 %}
+                                    No created issues
+                                {% elif project.score == 102 %}
+                                    <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
+                                {% elif project.score == 103 %}
+                                    <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
+
+                                {% elif project.score == 104 %}
+                                    No JIRA Data
+                                {% elif project.score == 109 %}
+                                    No evaluate
                                 {% else %}
-                                        {{ project.score }}
+                                    <a href="{% url 'project_defects_density' project.id %}">
+                                        {% if project.score < 0 %}
+                                            <font color="red">{{ project.score |floatformat:2 }}</font>
+                                        {% else %}
+                                            {{ project.score |floatformat:2 }}
+                                        {% endif %}
+                                    </a>
+                                    {% if superuser %}
+                                        <i class="fa fa-indent"></i>
+                                        <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td><a href="{% url 'project_update_scores' project.id %}" style="color: green; padding-left: 25%; cursor: pointer; cursor: hand;"><i class="fa fa-refresh"></i></a> </td>
