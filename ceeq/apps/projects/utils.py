@@ -256,7 +256,9 @@ def issue_counts_compute(request, component_names, component_names_without_slash
 
     for item in jira_data:
         # Closed type: Works as Designed not counted
-        if item['fields']['resolution'] and item['fields']['resolution']['id'] in issue_resolution_not_count:
+        if item['fields']['resolution'] \
+                and item['fields']['resolution']['id'] in issue_resolution_not_count\
+                and item['fields']['status']['id'] in issue_status_closed:
             continue
 
         try:
