@@ -29,7 +29,7 @@
     <script>
         var title = 'Reports';
         $.getJSON("{% url 'fetch_reports_subcomponents_pie' project.id %}?uat_type={{ uat_type }}").done(function(data){
-            draw_pie_chart_graph(data);
+            draw_pie_chart_graph(data, '{{ uat_type }}');
         });
         {% include 'project_sub_components.js' %}
     </script>
