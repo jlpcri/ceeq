@@ -66,8 +66,7 @@ function draw_pie_chart_graph(data){
                 tableTop + (i + 3) * rowHeight - cellPadding
             )
             .css({
-                fontWeight: 'bold',
-                fontSize: '10pt'
+                font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
             })
             .add();
         });
@@ -86,8 +85,7 @@ function draw_pie_chart_graph(data){
                 align: 'center'
             })
             .css({
-                fontWeight: 'bold',
-                fontSize: '10pt'
+                font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
             })
             .add();
             //draw vertical line
@@ -114,9 +112,8 @@ function draw_pie_chart_graph(data){
                 align: 'center'
             })
             .css({
-                fontStyle: 'italic',
-                fontSize: '10pt',
-                color: 'blue'
+                color: 'blue',
+                font: 'bold italic 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
             })
             .add();
         });
@@ -137,7 +134,7 @@ function draw_pie_chart_graph(data){
                         align: 'center'
                     })
                     .css({
-                        fontSize: '10pt'
+                        font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                     })
                     .add();
                 }
@@ -187,8 +184,7 @@ function draw_pie_chart_graph(data){
                     align: 'center'
                 })
                 .css({
-                    fontWeight: 'bold',
-                    fontSize: '10pt'
+                    font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                 })
                 .add();
             }
@@ -199,8 +195,7 @@ function draw_pie_chart_graph(data){
                     tableTop + (data[1].length + 3) * rowHeight - cellPadding
                 )
                 .css({
-                    fontWeight: 'bold',
-                    fontSize: '10pt'
+                    font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                 })
                 .add();
             }
@@ -240,8 +235,8 @@ function draw_pie_chart_graph(data){
         title: {
             text: pie_title,
             style: {
-                fontSize: '18pt',
-                color: '#000000'
+                color: '#000000',
+                font: '18pt "Lucida Grande", Helvetica, Arial, sans-serif'
             },
             align: 'left'
         },
@@ -249,6 +244,9 @@ function draw_pie_chart_graph(data){
             //pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
             formatter: function() {
                 return this.point.name + ": <b>" + this.point.percentage.toFixed(2) + "%</b>";
+            },
+            style: {
+                font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
             }
         },
         plotOptions: {
@@ -261,7 +259,8 @@ function draw_pie_chart_graph(data){
                     enabled: true,
                     format: '<b>{point.name}</b>: {point.percentage:.2f}%',
                     style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                        font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
                     },
                     overflow: 'none'
                 }
