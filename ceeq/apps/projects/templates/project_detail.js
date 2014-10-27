@@ -374,11 +374,11 @@ function displayPieChart(data, uat_type) {
                             click: function (e) {
                                 //data[3][0] - Jira name, data[3][1] - is_superuser
                                 //if (e.point.name=='Application' && data[3][0]=='VISI' && data[3][1]==true){
-                                if (e.point.name != 'Voice Slots') {
+                                //if (e.point.name != 'Voice Slots') {
                                     //location.href = e.point.name;
                                     location.href = 'sub/' +'?component_type=' + e.point.name +'&uat_type='+ active_tab.substring(1);
                                     e.preventDefault();
-                                }
+                                //}
                             }
                         }
                     },

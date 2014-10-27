@@ -27,6 +27,7 @@
 
 {% block footer %}
     <script>
+        var title = 'Voice Slots';
         $.getJSON("{% url 'fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}").done(function(data){
             draw_pie_chart_graph(data, '{{ uat_type }}');
         });
