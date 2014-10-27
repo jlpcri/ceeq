@@ -31,6 +31,8 @@ def project_sub_piechart(request, project_id):
         sub_component_template = 'project_sub_component_reports.html'
     elif component_type == 'Voice Slots':
         sub_component_template = 'project_sub_component_voiceslots.html'
+    else:
+        sub_component_template = ''
 
     project = get_object_or_404(Project, pk=project_id)
     context = RequestContext(request, {
