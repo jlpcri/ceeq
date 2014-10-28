@@ -4,8 +4,7 @@ from django.core.urlresolvers import resolve, reverse
 
 
 from ceeq.apps.projects.models import Project
-from ceeq.apps.projects.views_sub_components import project_sub_apps_piechart,\
-    project_sub_cxp_piechart, project_sub_platform_piechart, project_sub_reports_piechart
+from ceeq.apps.projects.views_sub_components import project_sub_piechart
 
 
 class ProjectSubComponentsTests(TestCase):
@@ -32,46 +31,173 @@ class ProjectSubComponentsTests(TestCase):
             password=self.user_account['password']
         )
 
-    def test_project_sub_components_apps_url_resolves_to_view(self):
-        found = resolve(reverse('project_sub_apps_piechart',
+    def test_project_sub_components_url_resolves_to_view(self):
+        found = resolve(reverse('project_sub_piechart',
                                 args=[self.project_exist.id, ]))
-        self.assertEqual(found.func, project_sub_apps_piechart)
+        self.assertEqual(found.func, project_sub_piechart)
 
-    def test_project_sub_components_apps_returns_200(self):
-        response = self.client.get(reverse('project_sub_apps_piechart',
-                                           args=[self.project_exist.id, ]))
+    def test_project_sub_components_apps_include_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Application',
+            'uat_type': 'include_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Sub Components Percentage to Applications - ' + self.project['name'])
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
 
-    def test_project_sub_components_cxp_url_resolves_to_view(self):
-        found = resolve(reverse('project_sub_cxp_piechart',
-                                args=[self.project_exist.id, ]))
-        self.assertEqual(found.func, project_sub_cxp_piechart)
-
-    def test_project_sub_components_cxp_returns_200(self):
-        response = self.client.get(reverse('project_sub_cxp_piechart',
-                                           args=[self.project_exist.id, ]))
+    def test_project_sub_components_apps_exclude_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Application',
+            'uat_type': 'exclude_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Sub Components Percentage to CXP - ' + self.project['name'])
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
 
-    def test_project_sub_components_platform_url_resolves_to_view(self):
-        found = resolve(reverse('project_sub_platform_piechart',
-                                args=[self.project_exist.id, ]))
-        self.assertEqual(found.func, project_sub_platform_piechart)
-
-    def test_project_sub_components_platform_returns_200(self):
-        response = self.client.get(reverse('project_sub_platform_piechart',
-                                           args=[self.project_exist.id, ]))
+    def test_project_sub_components_apps_only_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Application',
+            'uat_type': 'only_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Sub Components Percentage to Platform - ' + self.project['name'])
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
 
-    def test_project_sub_components_reports_url_resolves_to_view(self):
-        found = resolve(reverse('project_sub_reports_piechart',
-                                args=[self.project_exist.id, ]))
-        self.assertEqual(found.func, project_sub_reports_piechart)
-
-    def test_project_sub_components_reports_returns_200(self):
-        response = self.client.get(reverse('project_sub_reports_piechart',
-                                           args=[self.project_exist.id, ]))
+    def test_project_sub_components_cxp_include_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'CXP',
+            'uat_type': 'include_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Sub Components Percentage to Reports - ' + self.project['name'])
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_cxp_exclude_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'CXP',
+            'uat_type': 'exclude_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_cxp_only_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'CXP',
+            'uat_type': 'only_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_platform_include_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Platform',
+            'uat_type': 'include_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_platform_exclude_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Platform',
+            'uat_type': 'exclude_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_platform_only_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Platform',
+            'uat_type': 'only_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_reports_include_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Reports',
+            'uat_type': 'include_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_reports_exclude_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Reports',
+            'uat_type': 'exclude_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_reports_only_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Reports',
+            'uat_type': 'only_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_voiceslots_include_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Voice Slots',
+            'uat_type': 'include_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_voiceslots_exclude_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Voice Slots',
+            'uat_type': 'exclude_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
+    def test_project_sub_components_voiceslots_only_uat_returns_200(self):
+        request_get_data = {
+            'component_type': 'Voice Slots',
+            'uat_type': 'only_uat'
+        }
+        response = self.client.get(reverse('project_sub_piechart',
+                                           args=[self.project_exist.id, ]), request_get_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
+        self.assertContains(response, request_get_data['uat_type'])
+
