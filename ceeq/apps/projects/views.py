@@ -153,7 +153,7 @@ def project_defects_density(request, project_id):
     :return: component weight, dds, priority-status, trending graph
     """
     project = get_object_or_404(Project, pk=project_id)
-    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version', 'created')
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project, version=project.jira_version).order_by('version', 'created')
 
     version_names = []
     for project_dd in project_dds:

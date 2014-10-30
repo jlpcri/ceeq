@@ -81,7 +81,8 @@ def fetch_dds_json(request, project_id):
     if project_id == '1000000':
         dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version', 'created')
     else:
-        dds = ProjectComponentsDefectsDensity.objects.filter(project=project_id).order_by('version', 'created')
+        project = get_object_or_404(Project, pk=project_id)
+        dds = ProjectComponentsDefectsDensity.objects.filter(project=project_id, version=project.jira_version).order_by('created')
 
     dds_json = []
     for dd in dds:
