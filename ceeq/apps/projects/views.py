@@ -657,7 +657,7 @@ def defects_density_single_log(request, project):
     #check whether fetch the data from jira or not
 
     if jira_data == 'No JIRA Data':
-        messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        #messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
         context = RequestContext(request, {
         'project': project,
         'superuser': request.user.is_superuser,
