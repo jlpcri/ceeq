@@ -3,7 +3,8 @@ import copy
 from decimal import Decimal
 from ceeq.apps.projects.models import FrameworkParameter
 from ceeq.settings.base import component_names_standard, issue_status_count, issue_status_weight, issue_priority_weight, \
-    issue_status_open, issue_status_resolved, issue_status_closed, issue_resolution_not_count
+    issue_status_open, issue_status_resolved, issue_status_closed, issue_resolution_not_count, \
+    issue_resolution_external_limitation, issue_tfcc_is_root_cause
 
 """
  Methods used for abstraction, code duplicatoin
@@ -259,6 +260,16 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         if item['fields']['resolution'] \
                 and item['fields']['resolution']['id'] in issue_resolution_not_count\
                 and item['fields']['status']['id'] in issue_status_closed:
+            continue
+
+        # TFCC Is Root Cause - customfield_10092 not counted
+        try:
+            if item['fields']['resolution']\
+                    and item['fields']['resolution']['id'] in issue_resolution_external_limitation \
+                    and item['fields']['customfield_10092']['id'] in issue_tfcc_is_root_cause \
+                    and item['fields']['status']['id'] in issue_status_closed:
+                continue
+        except (KeyError, TypeError):
             continue
 
         try:

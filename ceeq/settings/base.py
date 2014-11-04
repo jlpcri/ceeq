@@ -156,7 +156,8 @@ MESSAGE_TAGS = {
 }
 
 #JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,created,resolutiondate'
-JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,customfield_13286'
+#                                                                              workflow UAT   TFCC Is Root Cause
+JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,customfield_13286,customfield_10092'
 JIRA_API_MAX = 50
 JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=5&jql=project=' % (JIRA_API_FIELDS)
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&startAt=%d&jql=project=%s'
@@ -210,6 +211,12 @@ issue_status_closed = ['6']
 
 # 2-Won't Fix, 3-Duplicate, 6-Works as Design
 issue_resolution_not_count = ['3', '6']
+
+# 11 - External Limitation
+issue_resolution_external_limitation = ['11']
+
+# TFCC Is Root Cause - Test Data - 13499
+issue_tfcc_is_root_cause = ['13499']
 
 # data structure for broken issue status
 issue_status_count = {
