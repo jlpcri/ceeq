@@ -27,6 +27,14 @@
         {% for version_name in version_names %}
             <h3>Version: {{ version_name }}</h3>
             <div id="dd_trend_graph_{{ version_name }}" style="width: 800px; height: 400px;"></div>
+            <div class="row" style="width: 80%;">
+                <p style="text-align: center">
+                    Export Graph to:
+                    <button id="png_di_{{ version_name }}" onclick="exportGraphDefectImpact('image/png', '{{ version_name }}')">PNG</button>
+                    <button id="jpeg_di_{{ version_name }}" onclick="exportGraphDefectImpact('image/jpeg', '{{ version_name }}')">JPEG</button>
+                    <button id="pdf_di_{{ version_name }}" onclick="exportGraphDefectImpact('application/pdf', '{{ version_name }}')">PDF</button>
+                </p>
+            </div>
         {% endfor %}
 
         <div id="version_key"></div>

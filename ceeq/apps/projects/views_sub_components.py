@@ -10,9 +10,7 @@ from ceeq.apps.projects.utils import get_sub_component_weight_factor
 from ceeq.apps.projects.views import issue_counts_compute
 
 from models import Project
-from ceeq.settings.base import issue_priority_weight,\
-    issue_status_count, issue_status_weight, \
-    issue_status_fields
+from django.conf import settings
 
 # Handling sub component pie chart
 
@@ -232,7 +230,7 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
         temp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
 
         temp_table.append(item[len(component_name[0]) + 1:])
-        for status in issue_status_fields:
+        for status in settings.ISSUE_STATUS_FIELDS:
             temp_table.append(float(data[item][status[0]]['open']))
             temp_table.append(float(data[item][status[0]]['resolved']))
             temp_table.append(float(data[item][status[0]]['closed']))
@@ -250,7 +248,7 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
     temp_table = []
     temp_table.append('Total')
     temp_table.append(None)
-    for status in issue_status_fields:
+    for status in settings.ISSUE_STATUS_FIELDS:
         temp_table.append(priority_total[status[0]])
         temp_table.append(None)
         temp_table.append(None)

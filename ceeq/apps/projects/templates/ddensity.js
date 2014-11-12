@@ -148,3 +148,26 @@ $(document).ready(function() {
         });
     });
 });
+
+
+var today = new Date();
+var export_filename = '{{ project.name }}' + '-' + today.toLocaleDateString();
+function exportGraphCeeq(type, version){
+    //console.log(version);
+    var chart = $('#ceeq_trend_graph_'+version).highcharts();
+    chart.exportChart({
+        type: type,
+        scale: 1, //800 * 400
+        filename: 'Trending-CEEQ-' + export_filename
+    });
+}
+
+function exportGraphDefectImpact(type, version){
+    //console.log(version);
+    var chart = $('#dd_trend_graph_'+version).highcharts();
+    chart.exportChart({
+        type: type,
+        scale: 1, //800 * 400
+        filename: 'Trending-DI-' + export_filename
+    });
+}
