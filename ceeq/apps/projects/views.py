@@ -16,9 +16,8 @@ from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm, ProjectNewForm
-from ceeq.settings.base import component_names_standard,\
-    issue_status_count, issue_status_open, issue_status_resolved, issue_status_closed, \
-    issue_status_fields, issue_resolution_not_count
+
+from django.conf import settings
 
 
 def projects(request):
@@ -122,7 +121,7 @@ def project_detail(request, project_id):
     for item in weight_factor:
         #print item
         priority_total['total'] += item[3]
-        for status in issue_status_fields:
+        for status in settings.ISSUE_STATUS_FIELDS:
             priority_total[status[0]] += sum(item[i] for i in status[1])
 
     try:
@@ -135,7 +134,7 @@ def project_detail(request, project_id):
         'project': project,
         'weight_factor': weight_factor,
         'priority_total': priority_total,
-        'component_names_standard': sorted(component_names_standard.keys()),
+        'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
         'component_names': component_names_exist,
         'superuser': request.user.is_superuser,
         'version_names': version_names,
@@ -192,7 +191,7 @@ def project_defects_density(request, project_id):
         'project_dds': project_dds,
         'version_names': version_names_removed,
         'weight_factor_versions': weight_factor_versions,
-        'component_names_standard': sorted(component_names_standard.keys()),
+        'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
         'superuser': request.user.is_superuser
     })
     return render(request, 'projects_dd_start.html', context)
@@ -557,7 +556,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_graph.append(item[0])
         temp_graph.append(float(item[1]) * float(item[2]))
         # for color index
-        temp_graph.append(sorted(component_names_standard.keys()).index(item[0]))
+        temp_graph.append(sorted(settings.COMPONENT_NAMES_STANDARD.keys()).index(item[0]))
 
         temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data)
 
@@ -565,7 +564,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         temp_table.append(item[0])  # Component name
 
         # number of issues Open, Resolved, Closed
-        for status in issue_status_fields:
+        for status in settings.ISSUE_STATUS_FIELDS:
             for i in status[1]:
                 priority_total[status[0]] += item[i]
                 temp_table.append(float(item[i]))
@@ -577,12 +576,12 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         donut_pie_inner.append(temp_graph)
         donut_pie_outer.append(temp_graph_subcomponent)
 
-    for item in sorted(component_names_standard.keys()):
+    for item in sorted(settings.COMPONENT_NAMES_STANDARD.keys()):
         temp_table = []
         try:
             if item not in list(zip(*weight_factor)[0]):
                 temp_table.append(item)
-                for status in issue_status_fields:
+                for status in settings.ISSUE_STATUS_FIELDS:
                     for i in status[1]:
                         temp_table.append(0)
                 temp_table.append(None)
@@ -595,7 +594,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
     temp_table = []
     temp_table.append('Total')
     temp_table.append(None)
-    for status in issue_status_fields:  # total number per priority
+    for status in settings.ISSUE_STATUS_FIELDS:  # total number per priority
         temp_table.append(priority_total[status[0]])
         temp_table.append(None)
         temp_table.append(None)

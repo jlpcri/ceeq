@@ -172,7 +172,7 @@ SESSION_COOKIE_NAME = 'ceeqSessionId'
 # Standard Component Name and its comparison ratio
 from decimal import Decimal
 
-component_names_standard = {
+COMPONENT_NAMES_STANDARD = {
     'CXP': 2,
     'Platform': 4,
     'Reports': 3,
@@ -181,7 +181,7 @@ component_names_standard = {
 }
 
 # Priority Weight of Issues in JIRA
-issue_priority_weight = {
+ISSUE_PRIORITY_WEIGHT = {
     'blocker': Decimal(5) / 15,
     'critical': Decimal(4) / 15,
     'major': Decimal(3) / 15,
@@ -202,24 +202,24 @@ issue_priority_weight = {
  10668-Pending,
  10669-Research
 """
-issue_status_open = ['1', '3', '4', '10001', '10003', '10062', '10668', '10669']
+ISSUE_STATUS_OPEN = ['1', '3', '4', '10001', '10003', '10062', '10668', '10669']
 #issue_status_in_progress = '3'
-issue_status_resolved = ['5']
-issue_status_closed = ['6']
+ISSUE_STATUS_RESOLVED = ['5']
+ISSUE_STATUS_CLOSED = ['6']
 #issue_status_uat_testing = '10001'
 #issue_status_discovery = '10003'
 
 # 2-Won't Fix, 3-Duplicate, 6-Works as Design
-issue_resolution_not_count = ['3', '6']
+ISSUE_RESOLUTION_NOT_COUNT = ['3', '6']
 
 # 11 - External Limitation
-issue_resolution_external_limitation = ['11']
+ISSUE_RESOLUTION_EXTERNAL_LIMITATION = ['11']
 
 # TFCC Is Root Cause - Test Data - 13499
-issue_tfcc_is_root_cause = ['13499']
+ISSUE_TFCC_IS_ROOT_CAUSE = ['13499']
 
 # data structure for broken issue status
-issue_status_count = {
+ISSUE_STATUS_COUNT = {
     'open': 0,
     #'in_progress': 0,
     #'reopen': 0,
@@ -230,7 +230,7 @@ issue_status_count = {
 }
 
 # issue status weight ratio
-issue_status_weight = {
+ISSUE_STATUS_WEIGHT = {
     'open': Decimal(7) / 10,
     #'in_progress': 0,
     #'reopen': 0,
@@ -241,7 +241,7 @@ issue_status_weight = {
 }
 
 # index of Open Resolved Closed issues per priority
-issue_status_fields = [
+ISSUE_STATUS_FIELDS = [
         ('blocker', [5, 6, 4]),
         ('critical', [8, 9, 7]),
         ('major', [11, 12, 10]),
