@@ -75,6 +75,7 @@ def project_detail(request, project_id):
     #version_names.append('All Versions')
 
     # get jira_data based on version
+    """
     if project.jira_version == 'All Versions':
         version_data = jira_data['issues']
     else:
@@ -88,6 +89,8 @@ def project_detail(request, project_id):
                 continue
             if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
+    """
+    version_data = jira_data['issues']
 
     # Try get pie chart data
     dd_pie_data = fetch_defects_density_score_pie(request, project.jira_name, version_data)
@@ -358,6 +361,7 @@ def calculate_score(request, project):
         return
 
     #get jira data based on version
+    """
     if project.jira_version == 'All Versions':
         version_data = jira_data['issues']
     else:
@@ -371,6 +375,9 @@ def calculate_score(request, project):
                 continue
             if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
+    """
+
+    version_data = jira_data['issues']
 
     for item in version_data:
         try:
