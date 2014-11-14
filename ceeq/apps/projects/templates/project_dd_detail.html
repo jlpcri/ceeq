@@ -88,7 +88,7 @@
                         <th style="background-color: cadetblue">C</th>
 
                         <th style="background-color: antiquewhite"></th>
-              </tr>
+            </tr>
                 </thead>
                 <tbody>
                     {% for component,weight,dd, total, b_c, b_o, b_r, c_c, c_o, c_r, m_c, m_o, m_r, mi_c, mi_o, mi_r, t_c, t_o, t_r in weight_factor %}
@@ -121,6 +121,40 @@
 
                         </tr>
                     {% endfor %}
+                {% if priority_total %}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: center">{{ priority_total.blocker }}</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: center">{{ priority_total.critical }}</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: center">{{ priority_total.major }}</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: center">{{ priority_total.minor }}</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: center">{{ priority_total.trivial }}</td>
+                        <td></td>
+                        <td style="text-align: center">{{ priority_total.total }}</td>
+                    </tr>
+                {% endif %}
                 </tbody>
                 </table>
             {% endfor %}

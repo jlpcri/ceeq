@@ -189,9 +189,18 @@ def project_defects_density(request, project_id):
     else:
         weight_factor_versions = get_component_defects_density(request, jira_data)
 
+    priority_total = defaultdict(int)
     if project.jira_version != 'All Versions':
         project.score = project_detail_calculate_score(weight_factor_versions[project.jira_version])
         project.save()
+
+        # calculate total number of issues based on priority
+        for item in weight_factor_versions[project.jira_version]:
+            priority_total['total'] += item[3]
+            for status in settings.ISSUE_STATUS_FIELDS:
+                priority_total[status[0]] += sum(item[i] for i in status[1])
+    else:
+        priority_total = None
 
     context = RequestContext(request, {
         'project': project,
@@ -199,6 +208,7 @@ def project_defects_density(request, project_id):
         'version_names': version_names_removed,
         'weight_factor_versions': weight_factor_versions,
         'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
+        'priority_total': priority_total,
         'superuser': request.user.is_superuser
     })
     return render(request, 'projects_dd_start.html', context)
