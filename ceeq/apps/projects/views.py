@@ -189,6 +189,10 @@ def project_defects_density(request, project_id):
     else:
         weight_factor_versions = get_component_defects_density(request, jira_data)
 
+    if project.jira_version != 'All Versions':
+        project.score = project_detail_calculate_score(weight_factor_versions[project.jira_version])
+        project.save()
+
     context = RequestContext(request, {
         'project': project,
         'project_dds': project_dds,
