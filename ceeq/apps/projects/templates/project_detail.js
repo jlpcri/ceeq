@@ -286,9 +286,11 @@ function displayPieChart(data, uat_type) {
         var
         //colors = ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600'],
         //scheme #5
-        //colors = ['#9C775C', '#7D7D7D', '#3C7DC4', '#AD8B3B', '#0C2C52', '#4F193A'],
+            //colors = ['#9C775C', '#7D7D7D', '#3C7DC4', '#AD8B3B', '#0C2C52', '#4F193A'],
         //scheme #6
-            colors = ['#AD7C1F', '#FF8F00', '#1E8F9C', '#3B73A1', '#23635A', '#173096'],
+            //colors = ['#AD7C1F', '#FF8F00', '#1E8F9C', '#3B73A1', '#23635A', '#173096'],
+        //scheme #6 change sequence
+            colors = ['#23635A', '#FF8F00', '#1E8F9C', '#3B73A1', '#AD7C1F', '#173096'],
             componentData = [],
             subcomData = [],
             i,
