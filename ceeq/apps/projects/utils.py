@@ -271,6 +271,16 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                 and item['fields']['status']['id'] in settings.ISSUE_STATUS_CLOSED:
             continue
 
+        # TFCC Is Root Cause - customfield_10092 not counted
+        try:
+            if item['fields']['resolution']\
+                    and item['fields']['resolution']['id'] in settings.ISSUE_RESOLUTION_EXTERNAL_LIMITATION \
+                    and item['fields']['customfield_10092']['id'] in settings.ISSUE_TFCC_IS_ROOT_CAUSE \
+                    and item['fields']['status']['id'] in settings.ISSUE_STATUS_CLOSED:
+                continue
+        except (KeyError, TypeError):
+            continue
+
         try:
             component = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
