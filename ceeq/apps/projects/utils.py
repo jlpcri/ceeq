@@ -285,6 +285,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
             component = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
             component = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            component = component.decode('utf-8')
         except IndexError:
             continue
 

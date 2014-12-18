@@ -192,6 +192,7 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
             name = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
             name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            name = name.decode('utf-8')
         except IndexError:
             continue
         if name.startswith(component_name[0]):
