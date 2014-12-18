@@ -179,9 +179,10 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
                 name = str(item['fields']['versions'][0]['name'])
             except UnicodeEncodeError:
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
+                name = name.decode('utf-8')
             except IndexError:
                 continue
-            if name.decode('utf-8') == project.jira_version:
+            if name == project.jira_version:
                 version_data.append(item)
 
     #component_name = ['Application']

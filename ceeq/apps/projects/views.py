@@ -112,6 +112,7 @@ def project_detail(request, project_id):
             name = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
             name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            name = name.decode('utf-8')
         except IndexError:
             continue
         component_names.append(name)
@@ -268,9 +269,10 @@ def get_component_defects_density(request, jira_data):
                 name = str(item['fields']['versions'][0]['name'])
             except UnicodeEncodeError:
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
+                name = name.decode('utf-8')
             except IndexError:
                 continue
-            if name.decode('utf-8') == version_name:
+            if name == version_name:
                 temp_data.append(item)
 
         version_data[version_name] = temp_data
@@ -291,6 +293,7 @@ def get_component_defects_density(request, jira_data):
                 name = str(item['fields']['components'][0]['name'])
             except UnicodeEncodeError:
                 name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+                name = name.decode('utf-8')
             except IndexError:
                 continue
             component_names.append(name)
@@ -439,6 +442,7 @@ def calculate_score(request, project):
             name = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
             name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            name = name.decode('utf-8')
         except IndexError:
             continue
         component_names.append(name)
@@ -593,6 +597,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
             name = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
             name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            name = name.decode('utf-8')
         except IndexError:
             continue
         component_names.append(name)

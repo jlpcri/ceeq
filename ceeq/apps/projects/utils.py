@@ -335,8 +335,6 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                 elif item['fields']['priority']['id'] == '5':
                     data[component]['trivial']['closed'] += 1
 
-
-
     #for i in data:
     #    print i, data[i]
 
@@ -356,6 +354,7 @@ def get_subcomponent_defects_density(request, component_name, version_data, uat_
             name = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
             name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            name = name.decode('utf-8')
         except IndexError:
             continue
         if name.startswith(component_name):
