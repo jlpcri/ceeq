@@ -1,11 +1,11 @@
 var framework_parameter_items = ['jira_issue_weight_sum',
                                        'vaf_ratio',
-                                       'vaf_exp']
+                                       'vaf_exp'];
 
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
     active_tab = e.target.hash;
     loadActiveDataTab();
-})
+});
 
 
 $(document).ready(function() {
