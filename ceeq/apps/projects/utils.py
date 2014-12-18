@@ -1,8 +1,7 @@
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
 from ceeq.apps.projects.models import FrameworkParameter
-
 from django.conf import settings
 
 """
@@ -209,7 +208,7 @@ def get_weight_factor(data, component_names_without_slash_all):
     return weight_factor
 
 
-def issue_counts_compute(request, component_names, component_names_without_slash, jira_data, component_type):
+def issue_counts_compute(request, component_names, component_names_without_slash, jira_data, component_type, uat_type):
     """
     Compute number of issues Component, SubComponent, Priority, Status
     :param request:
@@ -255,6 +254,17 @@ def issue_counts_compute(request, component_names, component_names_without_slash
             issue_types.append('17')
 
     for item in jira_data:
+        if uat_type == 'include_uat':
+            pass
+        elif uat_type == 'exclude_uat':
+            # UAT workflow metatype not counted
+            if item['fields']['customfield_13286']:
+                continue
+        elif uat_type == 'only_uat':
+            # Only workflow metatype counted
+            if item['fields']['customfield_13286'] is None:
+                continue
+
         # Closed type: Works as Designed not counted
         if item['fields']['resolution'] \
                 and item['fields']['resolution']['id'] in settings.ISSUE_RESOLUTION_NOT_COUNT\
@@ -332,7 +342,7 @@ def issue_counts_compute(request, component_names, component_names_without_slash
     return data
 
 
-def get_subcomponent_defects_density(request, component_name, version_data):
+def get_subcomponent_defects_density(request, component_name, version_data, uat_type):
     sub_component_names = []
     component_name_list = []
     sub_pie_graph = []
@@ -353,7 +363,12 @@ def get_subcomponent_defects_density(request, component_name, version_data):
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
     sub_component_names_length = Decimal(len(sub_component_names))
 
-    data = issue_counts_compute(request, sub_component_names, component_name_list, version_data, 'sub_components')
+    data = issue_counts_compute(request,
+                                sub_component_names,
+                                component_name_list,
+                                version_data,
+                                'sub_components',
+                                uat_type)
 
     weight_factor = get_sub_component_weight_factor(data, component_name, component_name_weight)
 
@@ -407,3 +422,24 @@ def get_sub_component_weight_factor(data, component_name, component_name_weight)
                                 + data[item]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial'] / sub_component_names_length * component_name_weight
 
     return data
+
+
+def get_priority_total(weight_factor):
+    priority_total = defaultdict(int)
+
+    for item in weight_factor:
+        #print item
+        priority_total['total'] += item[3]
+        for status in settings.ISSUE_STATUS_FIELDS:
+            priority_total[status[0]] += sum(item[i] for i in status[1])
+
+    return priority_total
+
+
+def get_component_names(weight_factor):
+    try:
+        component_names_exist = list(zip(*weight_factor)[0])
+    except IndexError:
+        component_names_exist = None
+
+    return component_names_exist
