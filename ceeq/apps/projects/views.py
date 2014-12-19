@@ -380,17 +380,19 @@ def project_update_scores(request, project_id):
     :param project_id:
     :return:
     """
-    projects = Project.objects.all().order_by('name')
+    projects_active = Project.objects.filter(complete=False).order_by('name')
+    projects_archive = Project.objects.filter(complete=True).order_by('name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
-        for project in projects:
+        for project in projects_active:
             calculate_score(request, project)
     else:
         project = get_object_or_404(Project, pk=project_id)
         calculate_score(request, project)
 
     context = RequestContext(request, {
-        'projects': projects,
+        'projects_active': projects_active,
+        'projects_archive': projects_archive,
         'framework_parameters': framework_parameters,
         'superuser': request.user.is_superuser
     })
@@ -704,10 +706,11 @@ def defects_density_log(request, project_id):
     :param project_id:
     :return:
     """
-    projects = Project.objects.all().order_by('name')
+    projects_active = Project.objects.filter(complete=False).order_by('name')
+    projects_archive = Project.objects.filter(complete=True).order_by('name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
-        for project in projects:
+        for project in projects_active:
             defects_density_single_log(request, project)
     else:
         #project = Project.objects.get(pk=project_id)
@@ -715,7 +718,8 @@ def defects_density_log(request, project_id):
         defects_density_single_log(request, project)
 
     context = RequestContext(request, {
-        'projects': projects,
+        'projects_active': projects_active,
+        'projects_archive': projects_archive,
         'framework_parameters': framework_parameters,
         'superuser': request.user.is_superuser
     })
