@@ -27,7 +27,8 @@ class ProjectsViewTests(TestCase):
     def test_projects_view_with_no_projects(self):
         response = self.client.get(reverse('projects'))
         self.assertContains(response, "No projects available", status_code=200)
-        self.assertQuerysetEqual(response.context['projects'], [])
+        self.assertQuerysetEqual(response.context['projects_active'], [])
+        self.assertQuerysetEqual(response.context['projects_archive'], [])
 
     def test_projects_view_contains_projects_list(self):
         p1 = Project(name=self.project1['name'],
@@ -359,7 +360,7 @@ class ProjectDefectsDensityTests(TestCase):
         response = self.client.get(reverse('project_update_scores',
                                            args=[self.project_exist.id, ]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Projects List')
+        self.assertContains(response, 'Projects')
         self.assertContains(response, self.project['name'])
 
     def test_project_update_scores_with_invalid_id_gives_error(self):
@@ -402,7 +403,7 @@ class ProjectDefectsDensityLogTests(TestCase):
         response = self.client.get(reverse('defects_density_log',
                                            args=[self.project_exist.id, ]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Projects List')
+        self.assertContains(response, 'Projects')
         self.assertContains(response, self.project['name'])
 
     def test_project_defects_density_log_with_invalid_id_gives_error(self):
