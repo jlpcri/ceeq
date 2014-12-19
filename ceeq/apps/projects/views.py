@@ -21,11 +21,13 @@ from django.conf import settings
 
 
 def projects(request):
-    projects = Project.objects.all().order_by('name')
+    projects_active = Project.objects.filter(complete=False).order_by('name')
+    projects_archive = Project.objects.filter(complete=True).order_by('name')
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
     context = RequestContext(request, {
-        'projects': projects,
+        'projects_active': projects_active,
+        'projects_archive': projects_archive,
         'dds': project_dds,
         'framework_parameters': framework_parameters,
         'framework_parameters_items': ['jira_issue_weight_sum',

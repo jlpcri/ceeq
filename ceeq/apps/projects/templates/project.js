@@ -1,12 +1,17 @@
 var framework_parameter_items = ['jira_issue_weight_sum',
                                        'vaf_ratio',
                                        'vaf_exp'];
+var active_tab = String("");
+var active_pill = String("");
 
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
     active_tab = e.target.hash;
     loadActiveDataTab();
 });
 
+$('#projects-pills').find('a[data-toggle="pill"]').on('show.bs.tab', function(e) {
+   active_pill = e.target.hash;
+});
 
 $(document).ready(function() {
     $('#subnav-tabs').find('a[href="#projects"]').tab('show');
@@ -20,6 +25,8 @@ function showThrobber() {
 function loadActiveDataTab() {
 
     if (active_tab == '#projects'){
+        $('#projects-pills').find('a[href="#projects-active"]').tab('show');
+
         $('#update_all').click(function () {
             showThrobber();
         });
