@@ -257,7 +257,14 @@ function displayPieChart(data, uat_type) {
         Highcharts.setOptions({
             //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
         });
-        var pie_title, color_title;
+        var pie_title, color_title, uat_title;
+        if (uat_type == 'include_uat') {
+            uat_title = 'Overall';
+        } else if (uat_type == 'exclude_uat') {
+            uat_title = 'Internal Testing';
+        } else if (uat_type == 'only_uat') {
+            uat_title = 'UAT';
+        }
         if ( parseFloat(data[3]) > 10) {
             if (parseFloat(data[3]) == 103 ){
                 pie_title = 'No Open Issues';
@@ -268,7 +275,7 @@ function displayPieChart(data, uat_type) {
         else {
             pie_title = '<b>{{ project.name }} - </b>'
                 //+ 'CEEQ Score - '
-                + active_tab.substring(1).toUpperCase()
+                + uat_title
                 + ': '
                 + parseFloat(data[3]).toFixed(2)
                 + ' / 10';
@@ -378,7 +385,7 @@ function displayPieChart(data, uat_type) {
                                 //if (e.point.name=='Application' && data[3][0]=='VISI' && data[3][1]==true){
                                 //if (e.point.name != 'Voice Slots') {
                                     //location.href = e.point.name;
-                                    location.href = 'sub/' +'?component_type=' + e.point.name +'&uat_type='+ active_tab.substring(1);
+                                    location.href = 'sub/' +'?component_type=' + e.point.name +'&uat_type='+ uat_type;
                                     e.preventDefault();
                                 //}
                             }
