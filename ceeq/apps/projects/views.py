@@ -783,3 +783,27 @@ def defects_density_single_log(request, project):
     return
 
 
+def project_archive(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        if project.complete:
+            project.complete = False
+        elif not project.complete:
+            project.complete = True
+
+        project.save()
+
+    return redirect(projects)
+
+
+def project_track(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        if project.active:
+            project.active = False
+        elif not project.active:
+            project.active = True
+
+        project.save()
+
+    return redirect(projects)
