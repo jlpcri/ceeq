@@ -140,15 +140,15 @@
             </div>
             <div class="tab-content">
                 <div class="tab-pane" id="include_uat">
-                    {% include 'project_detail_include_uat.html' %}
+                    {% include 'project_detail/project_detail_include_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="exclude_uat">
-                    {% include 'project_detail_exclude_uat.html' %}
+                    {% include 'project_detail/project_detail_exclude_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="only_uat">
-                    {% include 'project_detail_only_uat.html' %}
+                    {% include 'project_detail/project_detail_only_uat.html' %}
                 </div>
             </div>
 
@@ -186,7 +186,7 @@
         var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
 
-        {% include 'project_detail.js' %}
+        {% include 'project_detail/project_detail.js' %}
 
         if (data_only_uat[3] == 103 ) {
             $('#component_percentage_pie_chart_only_uat').hide();

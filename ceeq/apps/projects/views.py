@@ -36,7 +36,7 @@ def projects(request):
         'superuser': request.user.is_superuser
 
     })
-    return render(request, 'projects_start.html', context)
+    return render(request, 'projects/projects_start.html', context)
 
 
 @login_required
@@ -69,7 +69,7 @@ def project_detail(request, project_id):
             'no_jira_data': jira_data,
             'version_names': ['All Versions']
         })
-        return render(request, 'project_detail.html', context)
+        return render(request, 'project_detail/project_detail.html', context)
 
     #List for choice of jira verion per project
     version_names = project.fectch_jira_versions
@@ -182,7 +182,7 @@ def project_detail(request, project_id):
         'dd_pie_data_exclude_uat': json.dumps(dd_pie_data_exclude_uat),
         'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat)
     })
-    return render(request, 'project_detail.html', context)
+    return render(request, 'project_detail/project_detail.html', context)
 
 
 @login_required
@@ -224,7 +224,7 @@ def project_defects_density(request, project_id):
         'superuser': request.user.is_superuser,
         'no_jira_data': jira_data,
         })
-        return render(request, 'projects_dd_start.html', context)
+        return render(request, 'defects_density/projects_dd_start.html', context)
     else:
         weight_factor_versions = get_component_defects_density(request, jira_data)
 
@@ -250,7 +250,7 @@ def project_defects_density(request, project_id):
         'priority_total': priority_total,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'projects_dd_start.html', context)
+    return render(request, 'defects_density/projects_dd_start.html', context)
 
 
 def get_component_defects_density(request, jira_data):
@@ -336,7 +336,7 @@ def project_edit(request, project_id):
                 'superuser': request.user.is_superuser,
                 'version_names': ['All Versions']
             })
-            return render(request, 'project_detail.html', context)
+            return render(request, 'project_detail/project_detail.html', context)
     else:
         return redirect(projects)
 
@@ -354,13 +354,13 @@ def project_new(request):
             context = RequestContext(request, {
                 'form': form,
             })
-            return render(request, 'project_new.html', context)
+            return render(request, 'projects/project_new.html', context)
     else:
         form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
         })
-        return render(request, 'project_new.html', context)
+        return render(request, 'projects/project_new.html', context)
 
 
 @user_passes_test(user_is_superuser)
@@ -396,7 +396,7 @@ def project_update_scores(request, project_id):
         'framework_parameters': framework_parameters,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'projects_start.html', context)
+    return render(request, 'projects/projects_start.html', context)
 
 
 def calculate_score(request, project):
@@ -724,7 +724,7 @@ def defects_density_log(request, project_id):
         'superuser': request.user.is_superuser
     })
 
-    return render(request, 'projects_start.html', context)
+    return render(request, 'projects/projects_start.html', context)
 
 
 def defects_density_single_log(request, project):
@@ -749,7 +749,7 @@ def defects_density_single_log(request, project):
         'superuser': request.user.is_superuser,
         'no_jira_data': jira_data,
         })
-        return render(request, 'projects_dd_start.html', context)
+        return render(request, 'defects_density/projects_dd_start.html', context)
     else:
         weight_factor_versions = get_component_defects_density(request, jira_data)
 

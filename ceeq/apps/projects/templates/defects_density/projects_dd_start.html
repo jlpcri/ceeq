@@ -15,15 +15,15 @@
     <div class="container">
         <div class="tab-content">
             <div class="tab-pane" id="dd_detail">
-                {% include 'project_dd_detail.html' %}
+                {% include 'defects_density/project_dd_detail.html' %}
             </div>
 
             <div class="tab-pane" id="dd_trend">
-                {% include 'project_dd_trend.html' %}
+                {% include 'defects_density/project_dd_trend.html' %}
             </div>
 
             <div class="tab-pane" id="ceeq_trend">
-                {% include 'project_ceeq_trend.html' %}
+                {% include 'defects_density/project_ceeq_trend.html' %}
             </div>
 
             <div class="tab-pane" id="dd_history">
@@ -36,6 +36,6 @@
 
 {% block footer %}
     <script>
-        {% include 'ddensity.js' %}
+        {% include 'defects_density/ddensity.js' %}
     </script>
 {% endblock %}

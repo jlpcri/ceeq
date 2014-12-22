@@ -20,15 +20,15 @@ def project_sub_piechart(request, project_id):
     component_type = request.GET.get('component_type')
 
     if component_type == 'Application':
-        sub_component_template = 'project_sub_component_apps.html'
+        sub_component_template = 'sub_component/project_sub_component_apps.html'
     elif component_type == 'CXP':
-        sub_component_template = 'project_sub_component_cxp.html'
+        sub_component_template = 'sub_component/project_sub_component_cxp.html'
     elif component_type == 'Platform':
-        sub_component_template = 'project_sub_component_platform.html'
+        sub_component_template = 'sub_component/project_sub_component_platform.html'
     elif component_type == 'Reports':
-        sub_component_template = 'project_sub_component_reports.html'
+        sub_component_template = 'sub_component/project_sub_component_reports.html'
     elif component_type == 'Voice Slots':
-        sub_component_template = 'project_sub_component_voiceslots.html'
+        sub_component_template = 'sub_component/project_sub_component_voiceslots.html'
     else:
         sub_component_template = ''
 
@@ -40,64 +40,6 @@ def project_sub_piechart(request, project_id):
     })
     return render(request, sub_component_template, context)
 
-"""
-@login_required
-def project_sub_apps_piechart(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    project = get_object_or_404(Project, pk=project_id)
-    context = RequestContext(request, {
-        'project': project,
-        'uat_type': uat_type
-    })
-    return render(request, 'project_sub_component_apps.html', context)
-
-
-def project_sub_cxp_piechart(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    project = get_object_or_404(Project, pk=project_id)
-    context = RequestContext(request, {
-        'project': project,
-        'uat_type': uat_type
-    })
-    return render(request, 'project_sub_component_cxp.html', context)
-
-
-def project_sub_platform_piechart(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    project = get_object_or_404(Project, pk=project_id)
-    context = RequestContext(request, {
-        'project': project,
-        'uat_type': uat_type
-    })
-    return render(request, 'project_sub_component_platform.html', context)
-
-
-def project_sub_reports_piechart(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    project = get_object_or_404(Project, pk=project_id)
-    context = RequestContext(request, {
-        'project': project,
-        'uat_type': uat_type
-    })
-    return render(request, 'project_sub_component_reports.html', context)
-"""
-
 
 def fetch_subcomponents_pie_component(request, project_id):
     uat_type = request.GET.get('uat_type')
@@ -108,55 +50,6 @@ def fetch_subcomponents_pie_component(request, project_id):
     sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type)
 
     return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-"""
-def fetch_apps_subcomponents_pie(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    component_name = ['Application']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-
-def fetch_reports_subcomponents_pie(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    component_name = ['Reports']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-
-def fetch_cxp_subcomponents_pie(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    component_name = ['CXP']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-
-def fetch_platform_subcomponents_pie(request, project_id):
-    if not request.GET.get('uat_type'):
-        uat_type = 'include_uat'
-    else:
-        uat_type = request.GET.get('uat_type')
-
-    component_name = ['Platform']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name,uat_type)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-"""
 
 
 def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
