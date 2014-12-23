@@ -28,9 +28,9 @@
 {% block footer %}
     <script>
         var title = 'CXP'
-        $.getJSON("{% url 'fetch_cxp_subcomponents_pie' project.id %}").done(function(data){
-            draw_pie_chart_graph(data);
+        $.getJSON("{% url 'fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}").done(function(data){
+            draw_pie_chart_graph(data, '{{ uat_type }}');
         });
-        {% include 'project_sub_components.js' %}
+        {% include 'sub_component/project_sub_components.js' %}
     </script>
 {% endblock %}

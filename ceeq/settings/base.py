@@ -162,6 +162,8 @@ JIRA_API_MAX = 50
 JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=5&jql=project=' % (JIRA_API_FIELDS)
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&startAt=%d&jql=project=%s'
 JIRA_API_URL_VERSIONS = 'http://jira.west.com/rest/api/2/project/%s/versions'
+JIRA_API_USERNAME = 'readonly_sliu_api_user'
+JIRA_API_PASSWORD = 'qualityengineering'
 
 JIRA_PROXY = None
 

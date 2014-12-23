@@ -13,68 +13,46 @@ from models import Project
 from django.conf import settings
 
 # Handling sub component pie chart
+
 @login_required
-def project_sub_apps_piechart(request, project_id):
+def project_sub_piechart(request, project_id):
+    uat_type = request.GET.get('uat_type')
+    component_type = request.GET.get('component_type')
+
+    if component_type == 'Application':
+        sub_component_template = 'sub_component/project_sub_component_apps.html'
+    elif component_type == 'CXP':
+        sub_component_template = 'sub_component/project_sub_component_cxp.html'
+    elif component_type == 'Platform':
+        sub_component_template = 'sub_component/project_sub_component_platform.html'
+    elif component_type == 'Reports':
+        sub_component_template = 'sub_component/project_sub_component_reports.html'
+    elif component_type == 'Voice Slots':
+        sub_component_template = 'sub_component/project_sub_component_voiceslots.html'
+    else:
+        sub_component_template = ''
+
     project = get_object_or_404(Project, pk=project_id)
     context = RequestContext(request, {
-        'project': project
+        'project': project,
+        'uat_type': uat_type,
+        'component_type': component_type
     })
-    return render(request, 'project_sub_component_apps.html', context)
+    return render(request, sub_component_template, context)
 
 
-def project_sub_cxp_piechart(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    context = RequestContext(request, {
-        'project': project
-    })
-    return render(request, 'project_sub_component_cxp.html', context)
+def fetch_subcomponents_pie_component(request, project_id):
+    uat_type = request.GET.get('uat_type')
+    component_type = request.GET.get('component_type')
 
+    component_name = [component_type]
 
-def project_sub_platform_piechart(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    context = RequestContext(request, {
-        'project': project
-    })
-    return render(request, 'project_sub_component_platform.html', context)
-
-
-def project_sub_reports_piechart(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    context = RequestContext(request, {
-        'project': project
-    })
-    return render(request, 'project_sub_component_reports.html', context)
-
-
-def fetch_apps_subcomponents_pie(request, project_id):
-    component_name = ['Application']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type)
 
     return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
 
 
-def fetch_reports_subcomponents_pie(request, project_id):
-    component_name = ['Reports']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-
-def fetch_cxp_subcomponents_pie(request, project_id):
-    component_name = ['CXP']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-
-def fetch_platform_subcomponents_pie(request, project_id):
-    component_name = ['Platform']
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name)
-
-    return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
-
-
-def fetch_subcomponents_pie(request, project_id, component_name):
+def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
     """
     Used for pie chart along with drawing data table of Subcomponents of Applications
     :param request:
@@ -94,9 +72,10 @@ def fetch_subcomponents_pie(request, project_id, component_name):
                 name = str(item['fields']['versions'][0]['name'])
             except UnicodeEncodeError:
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
+                name = name.decode('utf-8')
             except IndexError:
                 continue
-            if name.decode('utf-8') == project.jira_version:
+            if name == project.jira_version:
                 version_data.append(item)
 
     #component_name = ['Application']
@@ -107,6 +86,7 @@ def fetch_subcomponents_pie(request, project_id, component_name):
             name = str(item['fields']['components'][0]['name'])
         except UnicodeEncodeError:
             name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+            name = name.decode('utf-8')
         except IndexError:
             continue
         if name.startswith(component_name[0]):
@@ -116,7 +96,11 @@ def fetch_subcomponents_pie(request, project_id, component_name):
     if component_name[0] in sub_component_names:
         return 'component configuration issue'
 
-    data = issue_counts_compute(request, sub_component_names, component_name, version_data, 'sub_components')
+    data = issue_counts_compute(request,
+                                sub_component_names,
+                                component_name, version_data,
+                                'sub_components',
+                                uat_type)
 
     weight_factor = get_sub_component_weight_factor(data, component_name[0], 1)
     #for item in weight_factor:
