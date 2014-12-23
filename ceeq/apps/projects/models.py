@@ -39,11 +39,11 @@ class Project(models.Model):
         if self.jira_version == 'All Versions':
             data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
                                 proxies=settings.JIRA_PROXY,
-                                auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
         else:
             data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name + '%20AND%20affectedversion=\'' + self.jira_version + '\'',
                                 proxies=settings.JIRA_PROXY,
-                                auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
         #print 'total: ', data['total']
         if len(data) == 2:
             if data['errorMessages']:
@@ -56,12 +56,12 @@ class Project(models.Model):
                     if self.jira_version == 'All Versions':
                         data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '&expand=names',
                                                    proxies=settings.JIRA_PROXY,
-                                                   auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                                   auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
 
                     else:
                         data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '%20AND%20affectedversion=\'' + self.jira_version +'\'&expand=names',
                                                    proxies=settings.JIRA_PROXY,
-                                                   auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                                   auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
                     que.put(data_single)
                     #data_total.append(data_single['issues'])
                 jobs = []
@@ -86,7 +86,7 @@ class Project(models.Model):
         versions = []
         data = requests.get(settings.JIRA_API_URL_VERSIONS % self.jira_name.upper(),
                             proxies=settings.JIRA_PROXY,
-                            auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                            auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
         for item in data:
             versions.append(item['name'])
 
