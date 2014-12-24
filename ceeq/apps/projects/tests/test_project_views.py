@@ -446,6 +446,6 @@ class ProjectUatTests(TestCase):
 
         self.assertContains(response, self.project['name'])
         self.assertContains(response, self.project['jira_name'])
-        self.assertContains(response, 'Overall')
-        self.assertContains(response, 'Internal Testing')
-        self.assertContains(response, 'UAT')
+        self.assertContains(response, '<a href="#include_uat" data-toggle="tab">Overall</a>')
+        self.assertContains(response, '<a href="#exclude_uat" data-toggle="tab">Internal Testing</a>')
+        self.assertContains(response, '<a href="#only_uat" data-toggle="tab">UAT</a>')
