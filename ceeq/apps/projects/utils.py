@@ -281,13 +281,29 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         except (KeyError, TypeError):
             continue
 
-        try:
-            component = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            component = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-            component = component.decode('utf-8')
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
+        else:
+            for i in range(component_len):
+                try:
+                    component = str(item['fields']['components'][i]['name'])
+                except UnicodeEncodeError:
+                    component = ''.join(item['fields']['components'][i]['name']).encode('utf-8').strip()
+                    component = component.decode('utf-8')
+                if component.startswith(tuple(settings.COMPONENT_NAMES_STANDARD.keys())):
+                    break
+            else:
+                continue
+
+        # try:
+        #     component = str(item['fields']['components'][0]['name'])
+        # except UnicodeEncodeError:
+        #     component = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
+        #     component = component.decode('utf-8')
+        #except IndexError:
+        #    continue
 
         #print 'a', component
         if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
