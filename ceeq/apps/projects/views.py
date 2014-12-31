@@ -118,8 +118,9 @@ def project_detail(request, project_id):
         else:
             name = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-        component_names.append(name)
-        component_names_without_slash.append(truncate_after_slash(name))
+        if name:
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
 
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
@@ -299,8 +300,9 @@ def get_component_defects_density(request, jira_data):
             else:
                 name = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-            component_names.append(name)
-            component_names_without_slash.append(truncate_after_slash(name))
+            if name:
+                component_names.append(name)
+                component_names_without_slash.append(truncate_after_slash(name))
 
         component_names = list(OrderedDict.fromkeys(component_names))
         component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
@@ -450,8 +452,9 @@ def calculate_score(request, project):
         else:
             name = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-        component_names.append(name)
-        component_names_without_slash.append(truncate_after_slash(name))
+        if name:
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
 
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
@@ -605,8 +608,9 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
         else:
             name = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-        component_names.append(name)
-        component_names_without_slash.append(truncate_after_slash(name))
+        if name:
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
 
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))

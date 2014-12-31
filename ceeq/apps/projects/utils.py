@@ -44,7 +44,7 @@ def version_name_from_jira_data(jira_data):
 
 
 def truncate_after_slash(string):
-    if '/' in string:
+    if string and '/' in string:
         index = string.index('/')
         return string[:index]
     else:
@@ -290,7 +290,10 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         else:
             component = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-        #print 'a', component
+        # if return component is None, then continue to next
+        if not component:
+            continue
+
         if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
             continue
 
@@ -358,7 +361,7 @@ def get_subcomponent_defects_density(request, component_name, version_data, uat_
         else:
             name = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-        if name.startswith(component_name):
+        if name and name.startswith(component_name):
             sub_component_names.append(name)
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
@@ -458,3 +461,5 @@ def get_component_names_from_jira_data(component_len, components):
             return component
         else:
             continue
+
+    return None
