@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required
-from ceeq.apps.projects.utils import get_sub_component_weight_factor
+from ceeq.apps.projects.utils import get_sub_component_weight_factor, get_component_names_from_jira_data
 from ceeq.apps.projects.views import issue_counts_compute
 
 from models import Project
@@ -82,13 +82,13 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
     sub_component_names = []
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-            name = name.decode('utf-8')
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
         if name.startswith(component_name[0]):
             sub_component_names.append(name)
 

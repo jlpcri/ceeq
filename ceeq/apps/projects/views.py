@@ -11,7 +11,7 @@ from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required, user_passes_test
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
     project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute, \
-    get_priority_total, get_component_names
+    get_priority_total, get_component_names, get_component_names_from_jira_data
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
@@ -110,13 +110,14 @@ def project_detail(request, project_id):
     #print dd_pie_data_exclude_uat
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-            name = name.decode('utf-8')
-        except IndexError:
+
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
         component_names.append(name)
         component_names_without_slash.append(truncate_after_slash(name))
 
@@ -291,13 +292,13 @@ def get_component_defects_density(request, jira_data):
             jira_issue_weight_sum = Decimal(1.00)
 
         for item in version_data[key]:
-            try:
-                name = str(item['fields']['components'][0]['name'])
-            except UnicodeEncodeError:
-                name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-                name = name.decode('utf-8')
-            except IndexError:
+            # if first item-component is not in framework, then check next, until end
+            component_len = len(item['fields']['components'])
+            if component_len == 0:
                 continue
+            else:
+                name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
             component_names.append(name)
             component_names_without_slash.append(truncate_after_slash(name))
 
@@ -442,13 +443,13 @@ def calculate_score(request, project):
     version_data = jira_data['issues']
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-            name = name.decode('utf-8')
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
         component_names.append(name)
         component_names_without_slash.append(truncate_after_slash(name))
 
@@ -597,13 +598,13 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
     component_names_without_slash = []
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-            name = name.decode('utf-8')
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
         component_names.append(name)
         component_names_without_slash.append(truncate_after_slash(name))
 
