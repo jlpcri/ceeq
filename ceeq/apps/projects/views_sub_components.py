@@ -89,7 +89,7 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
         else:
             name = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-        if name.startswith(component_name[0]):
+        if name and name.startswith(component_name[0]):
             sub_component_names.append(name)
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
