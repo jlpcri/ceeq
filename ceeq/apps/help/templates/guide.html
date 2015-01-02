@@ -228,6 +228,18 @@
                                     <li>Exclude UAT: JIRAs with Workflow Metatype as UAT are not counted</li>
                                     <li>Only UAT: JIRAs with Workflow Metatype as UAT are only counted</li>
                                 </ul>
+                            <li>Multiple Components</li>
+                                If a ticket has more than one components, we take first component which is under our framework:
+                                <ul>
+                                    <li>If the first component is under our framework, then take the first component</li>
+                                    <li>If the first component is not under our framework, then check next one</li>
+                                        <ul>
+                                            <li>If the second component is under our framework, then take the second component</li>
+                                            <li>If the second component is not under our framework, then check next one</li>
+                                            <li>Until check the last component</li>
+                                        </ul>
+                                    <li>If none component is under our framework, then no component is selected for this ticket</li>
+                                </ul>
                         </ul>
                     </div>
 
