@@ -44,7 +44,7 @@ def version_name_from_jira_data(jira_data):
 
 
 def truncate_after_slash(string):
-    if '/' in string:
+    if string and '/' in string:
         index = string.index('/')
         return string[:index]
     else:
@@ -229,6 +229,8 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         'trivial': settings.ISSUE_STATUS_COUNT.copy()
     }
 
+    #print 'aaa: ', component_names
+    #print 'bbb: ', component_names_without_slash
     for item in component_names:
         data[item] = copy.deepcopy(issue_counts)  # copy the dict object
 
@@ -286,26 +288,12 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         if component_len == 0:
             continue
         else:
-            for i in range(component_len):
-                try:
-                    component = str(item['fields']['components'][i]['name'])
-                except UnicodeEncodeError:
-                    component = ''.join(item['fields']['components'][i]['name']).encode('utf-8').strip()
-                    component = component.decode('utf-8')
-                if component.startswith(tuple(settings.COMPONENT_NAMES_STANDARD.keys())):
-                    break
-            else:
-                continue
+            component = get_component_names_from_jira_data(component_len, item['fields']['components'])
 
-        # try:
-        #     component = str(item['fields']['components'][0]['name'])
-        # except UnicodeEncodeError:
-        #     component = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-        #     component = component.decode('utf-8')
-        #except IndexError:
-        #    continue
+        # if return component is None, then continue to next
+        if not component:
+            continue
 
-        #print 'a', component
         if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
             continue
 
@@ -366,14 +354,14 @@ def get_subcomponent_defects_density(request, component_name, version_data, uat_
     component_name_list.append(component_name)
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-            name = name.decode('utf-8')
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
-        if name.startswith(component_name):
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        if name and name.startswith(component_name):
             sub_component_names.append(name)
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
@@ -459,3 +447,19 @@ def get_component_names(weight_factor):
         component_names_exist = None
 
     return component_names_exist
+
+
+def get_component_names_from_jira_data(component_len, components):
+    # if first item-component is not in framework, then check next, until end
+    for i in range(component_len):
+        try:
+            component = str(components[i]['name'])
+        except UnicodeEncodeError:
+            component = ''.join(components[i]['name']).encode('utf-8').strip()
+            component = component.decode('utf-8')
+        if component.startswith(tuple(settings.COMPONENT_NAMES_STANDARD.keys())):
+            return component
+        else:
+            continue
+
+    return None
