@@ -21,7 +21,8 @@ from django.conf import settings
 
 
 def projects(request):
-    projects_active = Project.objects.filter(complete=False).order_by('name')
+    #projects_active = Project.objects.filter(complete=False).order_by('name')
+    projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     projects_archive = Project.objects.filter(complete=True).order_by('name')
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
@@ -506,7 +507,8 @@ def fetch_projects_score(request):
             score: X axis value
             id: project id for hyperlink of project detail
     """
-    projects = Project.objects.filter(complete=False).order_by('name')
+    #projects = Project.objects.filter(complete=False).order_by('name')
+    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     data = {}
 
     data['categories'] = [project.name for project in projects]
