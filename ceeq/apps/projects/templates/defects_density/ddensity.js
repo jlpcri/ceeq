@@ -23,11 +23,14 @@ $(document).ready(function() {
                     },
                     categories: data[key]['categories'],
                     labels: {
-                        rotation: -45,
+                        //rotation: -45,
                         style: {
                             fontSize: '10px'
                         }
-                    }
+                    },
+                    tickInterval: 10,
+                    showLastLabel: true,
+                    endOnTick: true
                 },
                 yAxis: {
                     title: {
@@ -87,11 +90,14 @@ $(document).ready(function() {
                     },
                     categories: data[key]['categories'],
                     labels: {
-                        rotation: -45,
+                        //rotation: -45,
                         style: {
                             fontSize: '10px'
                         }
-                    }
+                    },
+                    tickInterval: 10,
+                    showLastLabel: true,
+                    endOnTick: true
                 },
                 yAxis: {
                     title: {
