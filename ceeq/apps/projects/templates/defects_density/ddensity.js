@@ -28,9 +28,7 @@ $(document).ready(function() {
                             fontSize: '10px'
                         }
                     },
-                    tickInterval: 10,
-                    showLastLabel: true,
-                    endOnTick: true
+                    tickInterval: 10
                 },
                 yAxis: {
                     title: {
@@ -95,9 +93,7 @@ $(document).ready(function() {
                             fontSize: '10px'
                         }
                     },
-                    tickInterval: 10,
-                    showLastLabel: true,
-                    endOnTick: true
+                    tickInterval: 10
                 },
                 yAxis: {
                     title: {
