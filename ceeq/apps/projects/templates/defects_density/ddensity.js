@@ -69,7 +69,7 @@ $(document).ready(function() {
                     name: 'Application',
                     data: data[key]['application']
                 },{
-                    name: 'VoiceSlots',
+                    name: 'VoicePrompts',
                     data: data[key]['voiceSlots']
                 }],
                 credits: false
