@@ -179,8 +179,8 @@ COMPONENT_NAMES_STANDARD = {
     'Platform': 4,
     'Reports': 3,
     'Application': 8,
-    'Voice Slots': 3,
-    #'Voice Prompts': 3
+    #'Voice Slots': 3,
+    'Voice Prompts': 3
 }
 
 # Priority Weight of Issues in JIRA
