@@ -55,6 +55,7 @@ def remove_period_space(str):
     tmp = str.replace('.', '_')
     tmp = tmp.replace(' ', '_')
     tmp = tmp.replace(',', '_')
+    tmp = tmp.replace('/', '_')
     return tmp
 
 
