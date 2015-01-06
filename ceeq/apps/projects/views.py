@@ -773,6 +773,9 @@ def defects_density_single_log(request, project):
 
         # use ceeq field to store ceeq score
         component_defects_density.ceeq = (1 - ceeq_raw) * 10
+
+        print weight_factor_versions[item]
+
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
             if component[0] == 'CXP':
@@ -783,7 +786,7 @@ def defects_density_single_log(request, project):
                 component_defects_density.reports = component[2]
             elif component[0] == 'Application':
                 component_defects_density.application = component[2]
-            elif component[0] == 'Voice Slots':
+            elif component[0] == 'Voice Prompts':
                 component_defects_density.voiceSlots = component[2]
         component_defects_density.save()
 
