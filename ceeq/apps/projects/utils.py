@@ -146,20 +146,20 @@ def get_weight_factor(data, component_names_without_slash_all):
                 continue
         if subcomponent_length == 0:
             # component which does not have sub component
-            for status in settings.ISSUE_STATUS_COUNT.keys():
-                # total number of jiras per sub component
-                data[component]['total'][status] = data[component]['blocker'][status] \
-                                    + data[component]['critical'][status] \
-                                    + data[component]['major'][status] \
-                                    + data[component]['minor'][status] \
-                                    + data[component]['trivial'][status]
-
-                # defects density per sub component
-                data[component]['ceeq'][status] = data[component]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker']\
-                                    + data[component]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical']\
-                                    + data[component]['major'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['major']\
-                                    + data[component]['minor'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['minor']\
-                                    + data[component]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial']
+            # for status in settings.ISSUE_STATUS_COUNT.keys():
+            #     # total number of jiras per sub component
+            #     data[component]['total'][status] = data[component]['blocker'][status] \
+            #                         + data[component]['critical'][status] \
+            #                         + data[component]['major'][status] \
+            #                         + data[component]['minor'][status] \
+            #                         + data[component]['trivial'][status]
+            #
+            #     # defects density per sub component
+            #     data[component]['ceeq'][status] = data[component]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker']\
+            #                         + data[component]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical']\
+            #                         + data[component]['major'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['major']\
+            #                         + data[component]['minor'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['minor']\
+            #                         + data[component]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial']
 
             continue
         else:
@@ -415,6 +415,8 @@ def get_sub_component_weight_factor(data, component_name, component_name_weight)
 
     for item in data:
         for status in settings.ISSUE_STATUS_COUNT.keys():
+            if sub_component_names_length == 0:
+                continue
             # defects density per sub component
             data[item]['ceeq'][status] = data[item]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker'] / sub_component_names_length * component_name_weight \
                                 + data[item]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical'] / sub_component_names_length * component_name_weight \
