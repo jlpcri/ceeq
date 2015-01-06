@@ -27,7 +27,7 @@ def project_sub_piechart(request, project_id):
         sub_component_template = 'sub_component/project_sub_component_platform.html'
     elif component_type == 'Reports':
         sub_component_template = 'sub_component/project_sub_component_reports.html'
-    elif component_type == 'Voice Slots':
+    elif component_type == 'Voice Prompts':
         sub_component_template = 'sub_component/project_sub_component_voiceslots.html'
     else:
         sub_component_template = ''

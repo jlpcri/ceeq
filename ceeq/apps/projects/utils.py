@@ -379,10 +379,10 @@ def get_subcomponent_defects_density(request, component_name, version_data, uat_
     for item in data:
         temp_graph = []
 
-        if item == component_name and item != 'Voice Slots':
+        if item == component_name and item != 'Voice Promts':
             continue
 
-        if item != 'Voice Slots':
+        if item != 'Voice Promts':
             temp_graph.append(item[len(component_name) + 1:])
         else:
             temp_graph.append(item)
@@ -408,7 +408,7 @@ def get_sub_component_weight_factor(data, component_name, component_name_weight)
 
     sub_component_names_length = 0
     for item in data:
-        if item == 'Voice Slots' and sum(data[item]['total'].itervalues()) > 0:
+        if item == 'Voice Promts' and sum(data[item]['total'].itervalues()) > 0:
             sub_component_names_length = 1
             break
         elif item.startswith(component_name+'/') and sum(data[item]['total'].itervalues()) > 0:
