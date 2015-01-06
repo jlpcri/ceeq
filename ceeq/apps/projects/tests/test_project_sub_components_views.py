@@ -168,9 +168,9 @@ class ProjectSubComponentsTests(TestCase):
         self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
         self.assertContains(response, request_get_data['uat_type'])
 
-    def test_project_sub_components_voiceslots_include_uat_returns_200(self):
+    def test_project_sub_components_voiceprompts_include_uat_returns_200(self):
         request_get_data = {
-            'component_type': 'Voice Slots',
+            'component_type': 'Voice Prompts',
             'uat_type': 'include_uat'
         }
         response = self.client.get(reverse('project_sub_piechart',
@@ -179,9 +179,9 @@ class ProjectSubComponentsTests(TestCase):
         self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
         self.assertContains(response, request_get_data['uat_type'])
 
-    def test_project_sub_components_voiceslots_exclude_uat_returns_200(self):
+    def test_project_sub_components_voiceprompts_exclude_uat_returns_200(self):
         request_get_data = {
-            'component_type': 'Voice Slots',
+            'component_type': 'Voice Prompts',
             'uat_type': 'exclude_uat'
         }
         response = self.client.get(reverse('project_sub_piechart',
@@ -190,9 +190,9 @@ class ProjectSubComponentsTests(TestCase):
         self.assertContains(response, 'Sub Components Percentage to ' + request_get_data['component_type'] + ' - ' + self.project['name'])
         self.assertContains(response, request_get_data['uat_type'])
 
-    def test_project_sub_components_voiceslots_only_uat_returns_200(self):
+    def test_project_sub_components_voiceprompts_only_uat_returns_200(self):
         request_get_data = {
-            'component_type': 'Voice Slots',
+            'component_type': 'Voice Prompts',
             'uat_type': 'only_uat'
         }
         response = self.client.get(reverse('project_sub_piechart',
