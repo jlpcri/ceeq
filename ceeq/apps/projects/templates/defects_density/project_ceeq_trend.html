@@ -11,14 +11,14 @@
 
 
         {% for version_name in version_names %}
-            <h3>Version: {{ version_name }}</h3>
-            <div id="ceeq_trend_graph_{{ version_name }}" style="width: 800px; height: 400px;"></div>
+            <h3>Version: {{ version_name.original_name }}</h3>
+            <div id="ceeq_trend_graph_{{ version_name.js_name }}" style="width: 800px; height: 400px;"></div>
             <div class="row" style="width: 80%;">
                 <p style="text-align: center">
                     Export Graph to:
-                    <button id="png_ceeq_{{ version_name }}" onclick="exportGraphCeeq('image/png', '{{ version_name }}')">PNG</button>
-                    <button id="jpeg_ceeq_{{ version_name }}" onclick="exportGraphCeeq('image/jpeg', '{{ version_name }}')">JPEG</button>
-                    <button id="pdf_ceeq_{{ version_name }}" onclick="exportGraphCeeq('application/pdf', '{{ version_name }}')">PDF</button>
+                    <button id="png_ceeq_{{ version_name.js_name }}" onclick="exportGraphCeeq('image/png', '{{ version_name.js_name }}')">PNG</button>
+                    <button id="jpeg_ceeq_{{ version_name.js_name }}" onclick="exportGraphCeeq('image/jpeg', '{{ version_name.js_name }}')">JPEG</button>
+                    <button id="pdf_ceeq_{{ version_name.js_name }}" onclick="exportGraphCeeq('application/pdf', '{{ version_name.js_name }}')">PDF</button>
                 </p>
             </div>
         {% endfor %}
