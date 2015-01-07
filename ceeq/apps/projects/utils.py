@@ -51,12 +51,13 @@ def truncate_after_slash(string):
         return string
 
 
-def remove_period_space(str):
-    tmp = str.replace('.', '_')
-    tmp = tmp.replace(' ', '_')
-    tmp = tmp.replace(',', '_')
-    tmp = tmp.replace('/', '_')
-    return tmp
+def remove_period_space(string):
+    special_chars = [' ', '.', ',', '/']
+    for ch in special_chars:
+        if ch in string:
+            string = string.replace(ch, '_')
+
+    return string
 
 
 def get_weight_factor(data, component_names_without_slash_all):

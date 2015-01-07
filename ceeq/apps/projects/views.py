@@ -207,7 +207,7 @@ def project_defects_density(request, project_id):
         version_names.append(project_dd.version)
     version_names = list(OrderedDict.fromkeys(version_names))
 
-    #change '.' and ' ' to '_' from version names
+    #change '.', ' ' and '/' to '_' from version names
     version_names_removed = []
     for version_name in version_names:
         version_names_removed.append(remove_period_space(version_name))
