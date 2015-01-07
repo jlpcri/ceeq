@@ -51,11 +51,13 @@ def truncate_after_slash(string):
         return string
 
 
-def remove_period_space(str):
-    tmp = str.replace('.', '_')
-    tmp = tmp.replace(' ', '_')
-    tmp = tmp.replace(',', '_')
-    return tmp
+def remove_period_space(string):
+    special_chars = [' ', '.', ',', '/']
+    for ch in special_chars:
+        if ch in string:
+            string = string.replace(ch, '_')
+
+    return string
 
 
 def get_weight_factor(data, component_names_without_slash_all):
@@ -146,20 +148,20 @@ def get_weight_factor(data, component_names_without_slash_all):
                 continue
         if subcomponent_length == 0:
             # component which does not have sub component
-            for status in settings.ISSUE_STATUS_COUNT.keys():
-                # total number of jiras per sub component
-                data[component]['total'][status] = data[component]['blocker'][status] \
-                                    + data[component]['critical'][status] \
-                                    + data[component]['major'][status] \
-                                    + data[component]['minor'][status] \
-                                    + data[component]['trivial'][status]
-
-                # defects density per sub component
-                data[component]['ceeq'][status] = data[component]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker']\
-                                    + data[component]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical']\
-                                    + data[component]['major'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['major']\
-                                    + data[component]['minor'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['minor']\
-                                    + data[component]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial']
+            # for status in settings.ISSUE_STATUS_COUNT.keys():
+            #     # total number of jiras per sub component
+            #     data[component]['total'][status] = data[component]['blocker'][status] \
+            #                         + data[component]['critical'][status] \
+            #                         + data[component]['major'][status] \
+            #                         + data[component]['minor'][status] \
+            #                         + data[component]['trivial'][status]
+            #
+            #     # defects density per sub component
+            #     data[component]['ceeq'][status] = data[component]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker']\
+            #                         + data[component]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical']\
+            #                         + data[component]['major'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['major']\
+            #                         + data[component]['minor'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['minor']\
+            #                         + data[component]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial']
 
             continue
         else:
@@ -379,13 +381,10 @@ def get_subcomponent_defects_density(request, component_name, version_data, uat_
     for item in data:
         temp_graph = []
 
-        if item == component_name and item != 'Voice Slots':
+        if item == component_name:
             continue
 
-        if item != 'Voice Slots':
-            temp_graph.append(item[len(component_name) + 1:])
-        else:
-            temp_graph.append(item)
+        temp_graph.append(item[len(component_name) + 1:])
         temp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
         #print temp_graph
 
@@ -408,16 +407,18 @@ def get_sub_component_weight_factor(data, component_name, component_name_weight)
 
     sub_component_names_length = 0
     for item in data:
-        if item == 'Voice Slots' and sum(data[item]['total'].itervalues()) > 0:
-            sub_component_names_length = 1
-            break
-        elif item.startswith(component_name+'/') and sum(data[item]['total'].itervalues()) > 0:
+        #if item == 'Voice Prompts' and sum(data[item]['total'].itervalues()) > 0:
+        #    sub_component_names_length = 1
+        #    break
+        if item.startswith(component_name+'/') and sum(data[item]['total'].itervalues()) > 0:
             sub_component_names_length += 1
         else:
             continue
 
     for item in data:
         for status in settings.ISSUE_STATUS_COUNT.keys():
+            if sub_component_names_length == 0:
+                continue
             # defects density per sub component
             data[item]['ceeq'][status] = data[item]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker'] / sub_component_names_length * component_name_weight \
                                 + data[item]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical'] / sub_component_names_length * component_name_weight \

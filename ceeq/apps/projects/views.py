@@ -207,10 +207,13 @@ def project_defects_density(request, project_id):
         version_names.append(project_dd.version)
     version_names = list(OrderedDict.fromkeys(version_names))
 
-    #change '.' and ' ' to '_' from version names
+    #change '.', ' ' and '/' to '_' from version names
     version_names_removed = []
     for version_name in version_names:
-        version_names_removed.append(remove_period_space(version_name))
+        version_names_removed.append({
+            'original_name': version_name,
+            'js_name': remove_period_space(version_name),
+        })
 
     try:
         jira_data = project.fetch_jira_data
@@ -773,6 +776,7 @@ def defects_density_single_log(request, project):
 
         # use ceeq field to store ceeq score
         component_defects_density.ceeq = (1 - ceeq_raw) * 10
+
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
             if component[0] == 'CXP':
@@ -783,7 +787,7 @@ def defects_density_single_log(request, project):
                 component_defects_density.reports = component[2]
             elif component[0] == 'Application':
                 component_defects_density.application = component[2]
-            elif component[0] == 'Voice Slots':
+            elif component[0] == 'Voice Prompts':
                 component_defects_density.voiceSlots = component[2]
         component_defects_density.save()
 
