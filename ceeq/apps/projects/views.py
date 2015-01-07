@@ -588,6 +588,7 @@ def fetch_defects_density_score(request, project_id):
         data['ceeq'] = tmp_data_ceeq
         data['ceeq_average'] = round(float(tmp_data_ceeq_sum / tmp_data_ceeq_count), 2)
 
+        data['version_name'] = version_name
         #change '.' and ' ' to '_' from version names
         dd_trend_data[remove_period_space(version_name)] = data
 
