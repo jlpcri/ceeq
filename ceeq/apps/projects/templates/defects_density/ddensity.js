@@ -14,7 +14,7 @@ $(document).ready(function() {
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Affected Version:'+key,
+                    text: 'Affected Version:'+data[key]['version_name'],
                     x: -20
                 },
                 xAxis: {
@@ -79,7 +79,7 @@ $(document).ready(function() {
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Affected Version:'+key,
+                    text: 'Affected Version:'+data[key]['version_name'],
                     x: -20
                 },
                 xAxis: {
