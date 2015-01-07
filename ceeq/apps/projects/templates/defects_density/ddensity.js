@@ -41,7 +41,9 @@ $(document).ready(function() {
                     }]
                 },
                 tooltip: {
-                    valueSuffix: ''
+                    pointFormat:'{series.name}: <b>{point.y}</b><br>',
+                    valueSuffix: '',
+                    shared: true
                 },
                 legend: {
                     layout: 'vertical',
@@ -106,7 +108,9 @@ $(document).ready(function() {
                     }]
                 },
                 tooltip: {
-                    valueSuffix: ''
+                    pointFormat:'{series.name}: <b>{point.y}</b><br>',
+                    valueSuffix: '',
+                    shared: true
                 },
                 legend: {
                     layout: 'vertical',
