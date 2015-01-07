@@ -28,7 +28,7 @@ $(document).ready(function() {
                             fontSize: '10px'
                         }
                     },
-                    tickInterval: 10
+                    tickInterval: Math.floor(data[key]['categories'].length / 10)
                 },
                 yAxis: {
                     title: {
@@ -93,7 +93,7 @@ $(document).ready(function() {
                             fontSize: '10px'
                         }
                     },
-                    tickInterval: 10
+                    tickInterval: Math.floor(data[key]['categories'].length / 10)
                 },
                 yAxis: {
                     title: {
