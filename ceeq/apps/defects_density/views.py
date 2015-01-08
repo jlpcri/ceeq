@@ -92,7 +92,7 @@ def fetch_dds_json(request, project_id):
         temp = []
         temp.append(dd.project.name)
         temp.append(dd.version)
-        temp.append(str(dd.created))
+        temp.append(dd.created.strftime("%m/%d/%y"))
         temp.append(float(dd.cxp))
         temp.append(float(dd.platform))
         temp.append(float(dd.reports))

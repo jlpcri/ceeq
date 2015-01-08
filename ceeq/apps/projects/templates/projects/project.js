@@ -356,7 +356,7 @@ function loadActiveDataTab() {
                     {"title": "Platform"},
                     {"title": "Reports"},
                     {"title": "Application"},
-                    {"title": "Voice Slots"},
+                    {"title": "Prompts"},
                     {"title": "CEEQ"}
                 ],
                 "language": {
