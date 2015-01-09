@@ -21,9 +21,8 @@ from django.conf import settings
 
 
 def projects(request):
-    #projects_active = Project.objects.filter(complete=False).order_by('name')
     projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-    projects_archive = Project.objects.filter(complete=True).order_by('name')
+    projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
     context = RequestContext(request, {
@@ -387,8 +386,8 @@ def project_update_scores(request, project_id):
     :param project_id:
     :return:
     """
-    projects_active = Project.objects.filter(complete=False).order_by('name')
-    projects_archive = Project.objects.filter(complete=True).order_by('name')
+    projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects_active:
@@ -717,8 +716,8 @@ def defects_density_log(request, project_id):
     :param project_id:
     :return:
     """
-    projects_active = Project.objects.filter(complete=False).order_by('name')
-    projects_archive = Project.objects.filter(complete=True).order_by('name')
+    projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects_active:
