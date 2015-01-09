@@ -23,7 +23,10 @@ $(document).ready(function() {
                     },
                     categories: data[key]['categories'],
                     labels: {
-                        //rotation: -45,
+                        //only display month-day in xAxis label
+                        formatter: function (){
+                            return this.value.substring(5);
+                        },
                         style: {
                             fontSize: '10px'
                         }
@@ -97,7 +100,10 @@ $(document).ready(function() {
                     },
                     categories: data[key]['categories'],
                     labels: {
-                        //rotation: -45,
+                        //only display month-day in xAxis label
+                        formatter: function (){
+                            return this.value.substring(5);
+                        },
                         style: {
                             fontSize: '10px'
                         }

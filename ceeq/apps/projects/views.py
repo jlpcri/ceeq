@@ -564,7 +564,8 @@ def fetch_defects_density_score(request, project_id):
                 else:
                     tmp_day = str(item.created.day)
                 #print tmp_month + '-' + tmp_day
-                tmp_categories.append(tmp_month + '-' + tmp_day)
+                tmp_year = str(item.created.year)
+                tmp_categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
                 tmp_data_voiceSlots.append(float(item.voiceSlots))
                 tmp_data_cxp.append(float(item.cxp))
