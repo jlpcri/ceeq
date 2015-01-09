@@ -41,7 +41,14 @@ $(document).ready(function() {
                     }]
                 },
                 tooltip: {
-                    pointFormat:'{series.name}: <b>{point.y}</b><br>',
+                    //pointFormat:'{series.name}: <b>{point.y}</b><br>',
+                    formatter:function(){
+                        var s = '<b>' + this.x + '</b>';
+                        $.each(this.points, function(){
+                            s += '<br/>' + this.series.name + ': <b>' + this.y + '</b>';
+                        });
+                        return s;
+                    },
                     valueSuffix: '',
                     shared: true
                 },
@@ -57,6 +64,9 @@ $(document).ready(function() {
                     }
                 },
                 series: [{
+                    name: 'Application',
+                    data: data[key]['application']
+                },{
                     name: 'CXP',
                     data: data[key]['cxp']
                 },{
@@ -65,9 +75,6 @@ $(document).ready(function() {
                 },{
                     name: 'Reports',
                     data: data[key]['reports']
-                },{
-                    name: 'Application',
-                    data: data[key]['application']
                 },{
                     name: 'VoicePrompts',
                     data: data[key]['voiceSlots']
@@ -108,9 +115,12 @@ $(document).ready(function() {
                     }]
                 },
                 tooltip: {
-                    pointFormat:'{series.name}: <b>{point.y}</b><br>',
-                    valueSuffix: '',
-                    shared: true
+                    //pointFormat:'{series.name}: <b>{point.y}</b><br>',
+                    formatter: function () {
+                        var s = '<b>' + this.x + '</b><br/>';
+                        s += this.series.name +': <b>' + this.y + '</b>';
+                        return s;
+                    }
                 },
                 legend: {
                     layout: 'vertical',
