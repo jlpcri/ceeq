@@ -257,7 +257,14 @@ function displayPieChart(data, uat_type) {
         Highcharts.setOptions({
             //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
         });
-        var pie_title, color_title;
+        var pie_title, color_title, uat_title;
+        if (uat_type == 'include_uat') {
+            uat_title = 'Overall';
+        } else if (uat_type == 'exclude_uat') {
+            uat_title = 'Internal Testing';
+        } else if (uat_type == 'only_uat') {
+            uat_title = 'UAT';
+        }
         if ( parseFloat(data[3]) > 10) {
             if (parseFloat(data[3]) == 103 ){
                 pie_title = 'No Open Issues';
@@ -268,7 +275,7 @@ function displayPieChart(data, uat_type) {
         else {
             pie_title = '<b>{{ project.name }} - </b>'
                 //+ 'CEEQ Score - '
-                + active_tab.substring(1).toUpperCase()
+                + uat_title
                 + ': '
                 + parseFloat(data[3]).toFixed(2)
                 + ' / 10';
