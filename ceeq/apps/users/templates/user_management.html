@@ -2,17 +2,39 @@
 {% block title %}User Management{% endblock %}
 
 {% block body %}
-        <div class="container">
+        <div class="container"><br>
         <table class="table table-hover table-condensed">
             <thead>
                 <tr>
-                    <td class="col-xs-2"><strong>Username</strong></td>
-                    <td class="col-xs-2"><strong>Last Login</strong></td>
-                    <td class="col-xs-2" style="text-align: center;"><strong>Active</strong></td>
-                    <td class="col-xs-2" style="text-align: center;"><strong>Staff</strong></td>
-                    <td class="col-xs-2" style="text-align: center;"><strong>Superuser</strong></td>
-                    <td class="col-xs-1" style="text-align: center;"><strong>Update</strong></td>
-                    <td class="col-xs-1" style="text-align: center;"><strong>Delete</strong></td>
+                    <th class="col-xs-2">
+                        {% if sort == 'username' %}
+                            <a href="{% url 'user_management' %}?sort=-username"
+                            <strong>Username</strong>&nbsp;<i class="fa fa-sort-asc"></i>
+                        {% elif sort == '-username' %}
+                            <a href="{% url 'user_management' %}?sort=username"
+                            <strong>Username</strong>&nbsp;<i class="fa fa-sort-desc"></i>
+                        {% else %}
+                            <a href="{% url 'user_management' %}?sort=username"
+                            <strong>Username</strong>&nbsp;<i class="fa fa-sort"></i>
+                        {% endif %}
+                    </th>
+                    <th class="col-xs-2">
+                        {% if sort == 'last_login' %}
+                            <a href="{% url 'user_management' %}?sort=-last_login"
+                            <strong>Last Login</strong>&nbsp;<i class="fa fa-sort-asc"></i>
+                        {% elif sort == '-last_login' %}
+                            <a href="{% url 'user_management' %}?sort=last_login"
+                            <strong>Last Login</strong>&nbsp;<i class="fa fa-sort-desc"></i>
+                        {% else %}
+                            <a href="{% url 'user_management' %}?sort=last_login"
+                            <strong>Last Login</strong>&nbsp;<i class="fa fa-sort"></i>
+                        {% endif %}
+                    </th>
+                    <th class="col-xs-2" style="text-align: center;"><strong>Active</strong></th>
+                    <th class="col-xs-2" style="text-align: center;"><strong>Staff</strong></th>
+                    <th class="col-xs-2" style="text-align: center;"><strong>Superuser</strong></th>
+                    <th class="col-xs-1" style="text-align: center;"><strong>Update</strong></th>
+                    <th class="col-xs-1" style="text-align: center;"><strong>Delete</strong></th>
                 </tr>
             </thead>
             {% for user in users %}
