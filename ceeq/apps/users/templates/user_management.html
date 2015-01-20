@@ -8,26 +8,26 @@
                 <tr>
                     <th class="col-xs-2">
                         {% if sort == 'username' %}
-                            <a href="{% url 'user_management' %}?sort=-username"
-                            <strong>Username</strong>&nbsp;<i class="fa fa-sort-asc"></i>
+                            <a href="{% url 'user_management' %}?sort=-username">
+                            <strong>Username</strong></a>&nbsp;<i class="fa fa-sort-asc"></i>
                         {% elif sort == '-username' %}
-                            <a href="{% url 'user_management' %}?sort=username"
-                            <strong>Username</strong>&nbsp;<i class="fa fa-sort-desc"></i>
+                            <a href="{% url 'user_management' %}?sort=username">
+                            <strong>Username</strong></a>&nbsp;<i class="fa fa-sort-desc"></i>
                         {% else %}
-                            <a href="{% url 'user_management' %}?sort=username"
-                            <strong>Username</strong>&nbsp;<i class="fa fa-sort"></i>
+                            <a href="{% url 'user_management' %}?sort=username">
+                            <strong>Username</strong></a>&nbsp;<i class="fa fa-sort"></i>
                         {% endif %}
                     </th>
                     <th class="col-xs-2">
                         {% if sort == 'last_login' %}
-                            <a href="{% url 'user_management' %}?sort=-last_login"
-                            <strong>Last Login</strong>&nbsp;<i class="fa fa-sort-asc"></i>
+                            <a href="{% url 'user_management' %}?sort=-last_login">
+                            <strong>Last Login</strong></a>&nbsp;<i class="fa fa-sort-asc"></i>
                         {% elif sort == '-last_login' %}
-                            <a href="{% url 'user_management' %}?sort=last_login"
-                            <strong>Last Login</strong>&nbsp;<i class="fa fa-sort-desc"></i>
+                            <a href="{% url 'user_management' %}?sort=last_login">
+                            <strong>Last Login</strong></a>&nbsp;<i class="fa fa-sort-desc"></i>
                         {% else %}
-                            <a href="{% url 'user_management' %}?sort=last_login"
-                            <strong>Last Login</strong>&nbsp;<i class="fa fa-sort"></i>
+                            <a href="{% url 'user_management' %}?sort=last_login">
+                            <strong>Last Login</strong></a>&nbsp;<i class="fa fa-sort"></i>
                         {% endif %}
                     </th>
                     <th class="col-xs-2" style="text-align: center;"><strong>Active</strong></th>
