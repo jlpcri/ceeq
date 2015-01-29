@@ -176,11 +176,10 @@ from decimal import Decimal
 
 COMPONENT_NAMES_STANDARD = {
     'CXP': 2,
-    'Platform': 4,
+    'Platform': 3,
     'Reports': 3,
     'Application': 8,
-    #'Voice Slots': 3,
-    'Voice Prompts': 3
+    'Voice Prompts': 4
 }
 
 # Priority Weight of Issues in JIRA
