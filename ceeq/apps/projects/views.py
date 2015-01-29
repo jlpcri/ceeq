@@ -48,6 +48,10 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
+    if project.complete:
+        messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
+        return redirect(projects)
+
     form = ProjectForm(instance=project)
 
     component_names = []
