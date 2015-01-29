@@ -48,7 +48,7 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
-    if project.complete:
+    if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
         return redirect(projects)
 
@@ -395,10 +395,12 @@ def project_update_scores(request, project_id):
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects_active:
-            calculate_score(request, project)
+            if not project.complete:
+                calculate_score(request, project)
     else:
         project = get_object_or_404(Project, pk=project_id)
-        calculate_score(request, project)
+        if not project.complete:
+            calculate_score(request, project)
 
     context = RequestContext(request, {
         'projects_active': projects_active,
@@ -726,11 +728,13 @@ def defects_density_log(request, project_id):
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects_active:
-            defects_density_single_log(request, project)
+            if not project.complete:
+                defects_density_single_log(request, project)
     else:
         #project = Project.objects.get(pk=project_id)
         project = get_object_or_404(Project, pk=project_id)
-        defects_density_single_log(request, project)
+        if not project.complete:
+            defects_density_single_log(request, project)
 
     context = RequestContext(request, {
         'projects_active': projects_active,
