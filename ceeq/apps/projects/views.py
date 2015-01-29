@@ -145,9 +145,10 @@ def project_detail(request, project_id):
         if item[0] == 'Voice Prompts' and item[3] > 6:
             #messages.warning(request, 'Need send email to QEI')
             send_mail('Number of Project \"{0}\" Voice Prompts exceed limitation - 6'.format(project.name),
-                      'Please check the number of JIRAs of component Voice Prompts of Project \"{0}\"'.format(project.name),
+                      'Please check the number of JIRAs of component Voice Prompts \nProject: {0},\nAffected Version: {1}'.format(project.name, project.jira_version),
                       'ceeqwic@gmail.com',  # sender
                       ['sliu@west.com', ],  # receiver list
+                      #['gpallapa@west.com', 'caheyden@west.com', 'sliu@west.com'],  # receiver list
                       fail_silently=False
             )
 
