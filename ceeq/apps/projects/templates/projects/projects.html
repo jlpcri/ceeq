@@ -49,7 +49,7 @@
                                     {% elif project.score == 104 %}
                                         No JIRA Data
                                     {% elif project.score == 109 %}
-                                        No evaluate
+                                        No evaluation
                                     {% else %}
                                         <a href="{% url 'project_defects_density' project.id %}">
                                             {% if project.score < 0 %}
@@ -110,7 +110,7 @@
                                     {% elif project.score == 104 %}
                                         No JIRA Data
                                     {% elif project.score == 109 %}
-                                        No evaluate
+                                        No evaluation
                                     {% else %}
                                         <a href="{% url 'project_defects_density' project.id %}">
                                             {% if project.score < 0 %}
