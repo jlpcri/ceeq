@@ -6,8 +6,8 @@
     </div>
 </div>
 
-{% if project.score < 10 %}
-    <div class="row">
+{% if project.score < 10 or project.score == 103 %}
+    <div class="row" >
         <p style="text-align: center" id="export_data_only_uat">
             Export Graph to:
             <button id="png_only_uat">PNG</button>
@@ -16,6 +16,11 @@
         </p>
     </div>
 {% endif %}
+
+<div id="qei_log_only_uat" style="text-align: center" hidden >
+    <h3><strong>{{ project.name }} - UAT: 10 / 10 </strong></h3><br>
+    <img src="{{ STATIC_URL }}common/QEIPowerQ.ico" />
+</div>
 
 <br>
 <div class="row">
