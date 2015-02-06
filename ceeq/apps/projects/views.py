@@ -221,6 +221,9 @@ def project_defects_density(request, project_id):
         return render(request, 'home.html')
 
     #check whether fetch the data from jira or not
+    if not jira_data['issues']:
+        messages.warning(request, 'No JIRA data fetched!')
+        return render(request, 'home.html')
 
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
