@@ -4,9 +4,9 @@
                     Loading data from JIRA Database...
                 </div>
             </div>
-            {% if project.score < 10 %}
+            {% if project.score < 10 or project.score == 103 %}
                 <div class="row">
-                    <p style="text-align: center">
+                    <p style="text-align: center" id="export_data_include_uat">
                         Export Graph to:
                         <button id="png_include_uat">PNG</button>
                         <button id="jpeg_include_uat">JPEG</button>
@@ -14,6 +14,11 @@
                     </p>
                 </div>
             {% endif %}
+
+            <div id="qei_log_include_uat" style="text-align: center" hidden >
+                <h3><strong>{{ project.name }}</strong> - Overall: 10 / 10 </h3><br>
+                <img src="{{ STATIC_URL }}common/QEIPowerQ.ico" style="width: 200px; height: 200px;" />
+            </div>
 
             <br>
             <div class="row">

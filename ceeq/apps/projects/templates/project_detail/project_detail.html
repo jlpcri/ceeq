@@ -128,17 +128,17 @@
             </div>
         </form>
 
-        {% if project.score > 10  %}
+        {% if project.score == 101 %}
             <h4>No JIRA Data fetched.</h4>
-            {% if project.score == 101 %}
-                No created issues
-            {% elif project.score == 103 %}
-                No open issues
-            {% elif project.score == 104 %}
-                No JIRA Data
-            {% elif project.score == 109 %}
-                No evaluate
-            {% endif %}
+            No created issues
+{#        {% elif project.score == 103 %}#}
+{#            No open issues#}
+        {% elif project.score == 104 %}
+            <h4>No JIRA Data fetched.</h4>
+            No JIRA Data
+        {% elif project.score == 109 %}
+            <h4>No JIRA Data fetched.</h4>
+            No evaluate
         {% else %}
             <div class="row">
                 <legend>Components Percentage to CEEQ Score</legend>
@@ -196,11 +196,26 @@
         var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
 
+        console.log(data_include_uat);
+        console.log(data_exclude_uat);
+        console.log(data_only_uat);
+
         {% include 'project_detail/project_detail.js' %}
 
+        if (data_include_uat[3] == 103 ) {
+            $('#component_percentage_pie_chart_include_uat').hide();
+            $('#export_data_include_uat').hide();
+            $('#qei_log_include_uat').show();
+        }
+        if (data_exclude_uat[3] == 103 ) {
+            $('#component_percentage_pie_chart_exclude_uat').hide();
+            $('#export_data_exclude_uat').hide();
+            $('#qei_log_exclude_uat').show();
+        }
         if (data_only_uat[3] == 103 ) {
             $('#component_percentage_pie_chart_only_uat').hide();
-            $('#export_data_only_uat').html('<br><font size=\'4\'><b>No UAT JIRA Issues Found.</b></font>');
+            $('#export_data_only_uat').hide();
+            $('#qei_log_only_uat').show();
         }
     </script>
 
