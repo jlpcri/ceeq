@@ -45,7 +45,7 @@ $(document).ready(function() {
        title: {
           style: {
              color: 'black',
-             fontSize: '16px',
+             fontSize: '20px',
              fontWeight: 'bold'
           }
        },
@@ -66,7 +66,8 @@ $(document).ready(function() {
        xAxis: {
           labels: {
              style: {
-                color: '#6e6e70'
+                 color: '#6e6e70',
+                 fontWeight: 'bold'
              }
           }
        },
