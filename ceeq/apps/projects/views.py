@@ -220,11 +220,6 @@ def project_defects_density(request, project_id):
         messages.warning(request, 'Cannot Access to JIRA')
         return render(request, 'home.html')
 
-    #check whether fetch the data from jira or not
-    if not jira_data['issues']:
-        messages.warning(request, 'No JIRA data fetched!')
-        return render(request, 'home.html')
-
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
         context = RequestContext(request, {
@@ -235,6 +230,11 @@ def project_defects_density(request, project_id):
         return render(request, 'defects_density/projects_dd_start.html', context)
     else:
         weight_factor_versions = get_component_defects_density(request, jira_data)
+
+    #check whether fetch the data from jira or not
+    if not jira_data['issues']:
+        messages.warning(request, 'No JIRA data fetched!')
+        return render(request, 'home.html')
 
     priority_total = defaultdict(int)
     if project.jira_version != 'All Versions':
