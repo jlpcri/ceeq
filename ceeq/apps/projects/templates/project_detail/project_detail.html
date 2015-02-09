@@ -196,10 +196,6 @@
         var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
 
-        console.log(data_include_uat);
-        console.log(data_exclude_uat);
-        console.log(data_only_uat);
-
         {% include 'project_detail/project_detail.js' %}
 
         if (data_include_uat[3] == 103 ) {
