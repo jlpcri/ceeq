@@ -150,6 +150,7 @@ $(document).ready(function() {
             yAxis: {
                 min: min_yaxis,
                 max: 10,
+                tickInterval: 0.5,
                 title: {
                     text: 'CEEQ Score'
                 }
