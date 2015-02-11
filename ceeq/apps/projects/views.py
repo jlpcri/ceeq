@@ -142,7 +142,7 @@ def project_detail(request, project_id):
 
     for item in weight_factor_include_uat:
         # total number of JIRAs of Voice Prompts should not beyond 6
-        if item[0] == 'Voice Prompts' and item[3] > 6:
+        if item[0] == 'Voice Prompts' and item[3] > 6000:  # effective after Voice Prompts from Pheme
             #messages.warning(request, 'Need send email to QEI')
             send_mail('Number of Project \"{0}\" Voice Prompts exceed limitation - 6'.format(project.name),
                       'Please check the number of JIRAs of component Voice Prompts \nProject: {0},\nAffected Version: {1}'.format(project.name, project.jira_version),

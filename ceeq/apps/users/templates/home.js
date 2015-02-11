@@ -142,9 +142,12 @@ $(document).ready(function() {
                 text: 'Comprehensive End to End Quality Overall'
             },
             xAxis: {
-                title: {
-                    text: 'Projects'
-                },
+//                title: {
+//                    text: 'Projects',
+//                    style: {
+//                        fontSize: '18px'
+//                    }
+//                },
                 categories: data['categories']
             },
             yAxis: {
@@ -152,7 +155,10 @@ $(document).ready(function() {
                 max: 10,
                 tickInterval: 0.5,
                 title: {
-                    text: 'CEEQ Score'
+                    text: 'CEEQ Score',
+                    style: {
+                        fontSize: '18px'
+                    }
                 }
             },
             legend: {
