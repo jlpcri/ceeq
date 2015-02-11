@@ -179,7 +179,6 @@ COMPONENT_NAMES_STANDARD = {
     'Platform': 4,
     'Reports': 3,
     'Application': 8,
-    #'Voice Slots': 3,
     'Voice Prompts': 3
 }
 
@@ -251,3 +250,10 @@ ISSUE_STATUS_FIELDS = [
         ('minor', [14, 15, 13]),
         ('trivial', [17, 18, 16])
     ]
+
+#----------------EMAIL Backend----------------
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ceeqwic@gmail.com'
+EMAIL_HOST_PASSWORD = '^S=+c3gyYu6F74D'
+EMAIL_PORT = 587

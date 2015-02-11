@@ -9,6 +9,8 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.mail import send_mail
+
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
     project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute, \
     get_priority_total, get_component_names, get_component_names_from_jira_data
@@ -48,6 +50,10 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
+    if project.complete and not request.user.is_superuser:
+        messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
+        return redirect(projects)
+
     form = ProjectForm(instance=project)
 
     component_names = []
@@ -73,25 +79,7 @@ def project_detail(request, project_id):
 
     #List for choice of jira verion per project
     version_names = project.fectch_jira_versions
-    #version_names = version_name_from_jira_data(jira_data)
-    #version_names.append('All Versions')
 
-    # get jira_data based on version
-    """
-    if project.jira_version == 'All Versions':
-        version_data = jira_data['issues']
-    else:
-        version_data = []
-        for item in jira_data['issues']:
-            try:
-                name = str(item['fields']['versions'][0]['name'])
-            except UnicodeEncodeError:
-                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
-            except IndexError:
-                continue
-            if name.decode('utf-8') == project.jira_version:
-                version_data.append(item)
-    """
     version_data = jira_data['issues']
 
     # Try get pie chart data
@@ -151,6 +139,18 @@ def project_detail(request, project_id):
                                                   component_names_without_slash)
     weight_factor_only_uat = get_weight_factor(data_only_uat,
                                                component_names_without_slash)
+
+    for item in weight_factor_include_uat:
+        # total number of JIRAs of Voice Prompts should not beyond 6
+        if item[0] == 'Voice Prompts' and item[3] > 6:
+            #messages.warning(request, 'Need send email to QEI')
+            send_mail('Number of Project \"{0}\" Voice Prompts exceed limitation - 6'.format(project.name),
+                      'Please check the number of JIRAs of component Voice Prompts \nProject: {0},\nAffected Version: {1}'.format(project.name, project.jira_version),
+                      'ceeqwic@gmail.com',  # sender
+                      ['sliu@west.com', ],  # receiver list
+                      #['QEIInnovation@west.com',],  # receiver list
+                      fail_silently=False
+            )
 
     #update ceeq score
     project.score = project_detail_calculate_score(weight_factor_include_uat)
@@ -394,10 +394,12 @@ def project_update_scores(request, project_id):
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects_active:
-            calculate_score(request, project)
+            if not project.complete:
+                calculate_score(request, project)
     else:
         project = get_object_or_404(Project, pk=project_id)
-        calculate_score(request, project)
+        if not project.complete:
+            calculate_score(request, project)
 
     context = RequestContext(request, {
         'projects_active': projects_active,
@@ -733,11 +735,13 @@ def defects_density_log(request, project_id):
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
         for project in projects_active:
-            defects_density_single_log(request, project)
+            if not project.complete:
+                defects_density_single_log(request, project)
     else:
         #project = Project.objects.get(pk=project_id)
         project = get_object_or_404(Project, pk=project_id)
-        defects_density_single_log(request, project)
+        if not project.complete:
+            defects_density_single_log(request, project)
 
     context = RequestContext(request, {
         'projects_active': projects_active,
