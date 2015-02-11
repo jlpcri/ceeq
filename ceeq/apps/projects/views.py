@@ -148,7 +148,7 @@ def project_detail(request, project_id):
                       'Please check the number of JIRAs of component Voice Prompts \nProject: {0},\nAffected Version: {1}'.format(project.name, project.jira_version),
                       'ceeqwic@gmail.com',  # sender
                       ['sliu@west.com', ],  # receiver list
-                      #['gpallapa@west.com', 'caheyden@west.com', 'sliu@west.com'],  # receiver list
+                      #['QEIInnovation@west.com',],  # receiver list
                       fail_silently=False
             )
 
