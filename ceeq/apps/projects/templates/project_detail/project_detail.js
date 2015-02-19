@@ -7,7 +7,7 @@ $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
 });
 
 $(document).ready(function(){
-    $('#subnav-tabs').find('a[href="#include_uat"]').tab('show');
+    $('#subnav-tabs').find('a[href="#exclude_uat"]').tab('show');
 });
 
 
