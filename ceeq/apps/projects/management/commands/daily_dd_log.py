@@ -19,13 +19,10 @@ class Command(BaseCommand):
                 defects_density_single_log(None, project)
                 self.stdout.write('Successfully updated score and saved Defect Impact for project "%s"' % project.name)
         else:
-            projects = Project.objects.all()
-            for project in projects:
-                if project.score < 0:
-                    continue
-                else:
-                    calculate_score(None, project)
-                    defects_density_single_log(None, project)
+            projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+            for project in projects_active:
+                calculate_score(None, project)
+                defects_density_single_log(None, project)
 
-            self.stdout.write("All projects Score updated, and Defect Impact saved")
+            self.stdout.write("All active projects Score updated, and Defect Impact saved")
 
