@@ -168,6 +168,10 @@ JIRA_API_PASSWORD = 'qualityengineering'
 JIRA_PROXY = None
 
 SESSION_COOKIE_NAME = 'ceeqSessionId'
+# Age of session cookies, in seconds
+SESSION_COOKIE_AGE = 43200  # 12 hours
+# Save the session data on every request
+SESSION_SAVE_EVERY_REQUEST = True
 
 # ---------------------Pre Define Section --------------------
 
