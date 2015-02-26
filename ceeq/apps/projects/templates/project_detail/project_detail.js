@@ -15,14 +15,17 @@ function loadUatActiveDataTab() {
     if (active_tab == '#include_uat') {
         donut_pie = 'include_uat';
         displayPieChart(data_include_uat, donut_pie);
+        displayQEIlogo(donut_pie);
     }
     else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
         displayPieChart(data_exclude_uat, donut_pie);
+        displayQEIlogo(donut_pie);
     }
     else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
         displayPieChart(data_only_uat, donut_pie);
+        displayQEIlogo(donut_pie);
     }
 }
 
@@ -461,4 +464,49 @@ function displayPieChart(data, uat_type) {
     }
 }
 
+function displayQEIlogo(uat_type) {
+    Highcharts.drawQEIlogo = function() {
+        var chart = this,
+            renderer = this.renderer;
 
+        renderer.image('http://apps.qaci01.wic.west.com/static/common/QEIPowerQ.ico', 100, 80, 200, 200)
+                .attr({
+                    id:'only_uat_img_path'
+                })
+                .add();
+
+    };
+
+    var pie_title, uat_title;
+    if (uat_type == 'include_uat') {
+        uat_title = 'Overall';
+    } else if (uat_type == 'exclude_uat') {
+        uat_title = 'Internal Testing';
+    } else if (uat_type == 'only_uat') {
+        uat_title = 'UAT';
+    }
+    pie_title = '<b>{{project.name}} - </b>' + uat_title + ': 10 / 10';
+
+    $('#qei_log_' + uat_type).highcharts({
+        chart: {
+            background: 'white',
+            events: {
+                load: Highcharts.drawQEIlogo
+            },
+            borderWidth: 0
+        },
+        title: {
+            text: pie_title,
+            style: {
+                font: '18pt "Lucida Grande", Helvetica, Arial, sans-serif'
+            },
+            align: 'left'
+        },
+        navigation: {
+            buttonOptions: {
+                enabled: false
+            }
+        },
+        credits: false
+    })
+}
