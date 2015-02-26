@@ -467,18 +467,6 @@ function displayPieChart(data, uat_type) {
 }
 
 function displayQEIlogo(uat_type) {
-    //draw picture
-    Highcharts.drawQEIlogo = function() {
-        var chart = this,
-            renderer = this.renderer;
-
-        renderer.image('http://apps.qaci01.wic.west.com/static/common/QEIPowerQ.ico', 100, 80, 200, 200)
-                .attr({
-                    id:'only_uat_img_path'
-                })
-                .add();
-
-    };
 
     var pie_title, uat_title;
     if (uat_type == 'include_uat') {
@@ -493,9 +481,6 @@ function displayQEIlogo(uat_type) {
     $('#qei_log_' + uat_type).highcharts({
         chart: {
             background: 'white',
-            events: {
-                load: Highcharts.drawQEIlogo
-            },
             borderWidth: 0
         },
         title: {
@@ -511,7 +496,12 @@ function displayQEIlogo(uat_type) {
             }
         },
         credits: false
-    })
+    }, function(chart) {
+        chart.renderer.image('http://apps.qaci01.wic.west.com/static/common/QEIPowerQ.png', 100, 80, 200, 200)
+            .add();
+//        chart.renderer.image('http://highcharts.com/demo/gfx/sun.png', 20, 20, 100, 100)
+//            .add();
+    });
 
     //export button handler
     $('#pdf_qei_log_' + uat_type).click(function () {
@@ -519,7 +509,6 @@ function displayQEIlogo(uat_type) {
         chart.exportChart({
             type: 'application/pdf',
             scale: 1,
-            width: 350,
             filename: export_filename
         });
     });
