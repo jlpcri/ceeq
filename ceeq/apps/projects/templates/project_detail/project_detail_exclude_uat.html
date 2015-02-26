@@ -4,7 +4,10 @@
                     Loading data from JIRA Database...
                 </div>
             </div>
-            {% if project.score < 10 or project.score == 103 %}
+
+            <div id="qei_log_exclude_uat" style="width: 500px; height: 300px; margin: 0 auto;" hidden></div>
+
+            {% if weight_factor_exclude_uat %}
                 <div class="row">
                     <p style="text-align: center" id="export_data_exclude_uat">
                         Export Graph to:
@@ -13,10 +16,16 @@
                         <button id="pdf_exclude_uat">PDF</button>
                     </p>
                 </div>
+            {% else %}
+                <div class="row">
+                    <p style="text-align: center" id="export_qei_log_exclude_uat">
+                        Export Graph to:
+                        <button id="png_qei_log_exclude_uat">PNG</button>
+                        <button id="qei_log_jpeg_exclude_uat">JPEG</button>
+                        <button id="pdf_qei_log_exclude_uat">PDF</button>
+                    </p>
+                </div>
             {% endif %}
-
-            <div id="qei_log_exclude_uat" style="width: 500px; height: 300px; margin: 0 auto;" hidden></div>
-
 
             <br>
             <div class="row">

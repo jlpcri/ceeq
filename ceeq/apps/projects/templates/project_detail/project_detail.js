@@ -1,5 +1,7 @@
 var active_tab = String(""),
-    donut_pie;
+    donut_pie,
+    today = new Date(),
+    export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
 
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
     active_tab = e.target.hash;
@@ -30,6 +32,7 @@ function loadUatActiveDataTab() {
 }
 
 function displayPieChart(data, uat_type) {
+
     if (score < 10) {
         //Create the data table
         Highcharts.drawTable = function () {
@@ -432,8 +435,7 @@ function displayPieChart(data, uat_type) {
         });
 
         //button handler
-        var today = new Date();
-        var export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
+
         $('#pdf_' + uat_type).click(function () {
             var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
             chart.exportChart({
@@ -465,6 +467,7 @@ function displayPieChart(data, uat_type) {
 }
 
 function displayQEIlogo(uat_type) {
+    //draw picture
     Highcharts.drawQEIlogo = function() {
         var chart = this,
             renderer = this.renderer;
@@ -500,7 +503,7 @@ function displayQEIlogo(uat_type) {
             style: {
                 font: '18pt "Lucida Grande", Helvetica, Arial, sans-serif'
             },
-            align: 'left'
+            align: 'center'
         },
         navigation: {
             buttonOptions: {
@@ -509,4 +512,33 @@ function displayQEIlogo(uat_type) {
         },
         credits: false
     })
+
+    //export button handler
+    $('#pdf_qei_log_' + uat_type).click(function () {
+        var chart = $('#qei_log_' + uat_type).highcharts();
+        chart.exportChart({
+            type: 'application/pdf',
+            scale: 1,
+            width: 350,
+            filename: export_filename
+        });
+    });
+    $('#jpeg_qei_log_' + uat_type).click(function () {
+        var chart = $('#qei_log_' + uat_type).highcharts();
+        chart.exportChart({
+            type: 'image/jpeg',
+            scale: 1,
+            filename: export_filename
+        });
+    });
+    $('#png_qei_log_' + uat_type).click(function () {
+        var chart = $('#qei_log_' + uat_type).highcharts();
+        chart.exportChart({
+            type: 'image/png',
+            scale: 1,
+            //sourceWidth: 1000,
+            //sourceHeight: 300,
+            filename: export_filename
+        });
+    });
 }
