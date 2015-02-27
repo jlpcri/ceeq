@@ -497,10 +497,10 @@ function displayQEIlogo(uat_type) {
         },
         credits: false
     }, function(chart) {
-        chart.renderer.image('http://apps.qaci01.wic.west.com/static/common/QEIPowerQ.png', 100, 80, 200, 200)
-            .add();
-//        chart.renderer.image('http://highcharts.com/demo/gfx/sun.png', 20, 20, 100, 100)
+//        chart.renderer.image('http://apps.qaci01.wic.west.com/static/common/QEIPowerQ.png', 100, 80, 200, 200)
 //            .add();
+        chart.renderer.image('https://lh4.googleusercontent.com/-lrM9yKFyk5s/VPCN3p_9NRI/AAAAAAAAGIU/4Eid6EHuId8/s426/QEIPowerQ.png', 100, 80, 200, 200)
+            .add();
     });
 
     //export button handler
