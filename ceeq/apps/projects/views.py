@@ -77,10 +77,20 @@ def project_detail(request, project_id):
         })
         return render(request, 'project_detail/project_detail.html', context)
 
+
+
     #List for choice of jira verion per project
     version_names = project.fectch_jira_versions
 
-    version_data = jira_data['issues']
+    version_data_all = jira_data['issues']
+
+    # Filter version_data for input created date range
+    start = '2014-10-01'
+    end = '2015-01-01'
+    version_data = []
+    for item in version_data_all:
+        if start <= item['fields']['created'] <= end:
+            version_data.append(item)
 
     # Try get pie chart data
     dd_pie_data_include_uat = fetch_defects_density_score_pie(request,
