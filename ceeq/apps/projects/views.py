@@ -228,7 +228,7 @@ def project_detail(request, project_id):
         'component_names_include_uat': component_names_exist_include_uat,
         'component_names_exclude_uat': component_names_exist_exclude_uat,
         'component_names_only_uat': component_names_exist_only_uat,
-        'component_names_custom': component_names_custom,
+        'component_names_custom': component_names_exist_custom,
 
         'superuser': request.user.is_superuser,
         'version_names': version_names,
