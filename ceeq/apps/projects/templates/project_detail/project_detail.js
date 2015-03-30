@@ -272,6 +272,8 @@ function displayPieChart(data, uat_type) {
             uat_title = 'Internal Testing';
         } else if (uat_type == 'only_uat') {
             uat_title = 'UAT';
+        } else if (uat_type == 'custom') {
+            uat_title = 'Custom';
         }
         if ( parseFloat(data[3]) > 10) {
             if (parseFloat(data[3]) == 103 ){
