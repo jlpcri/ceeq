@@ -18,15 +18,17 @@ function loadUatActiveDataTab() {
         donut_pie = 'include_uat';
         displayPieChart(data_include_uat, donut_pie);
         displayQEIlogo(donut_pie);
-    }
-    else if (active_tab == '#exclude_uat') {
+    } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
         displayPieChart(data_exclude_uat, donut_pie);
         displayQEIlogo(donut_pie);
-    }
-    else if (active_tab == '#only_uat') {
+    } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
         displayPieChart(data_only_uat, donut_pie);
+        displayQEIlogo(donut_pie);
+    } else if (active_tab == '#custom') {
+        donut_pie = 'custom';
+        displayPieChart(data_custom, donut_pie);
         displayQEIlogo(donut_pie);
     }
 }
