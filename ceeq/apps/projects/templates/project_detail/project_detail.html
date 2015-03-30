@@ -146,6 +146,7 @@
                     <li><a href="#include_uat" data-toggle="tab">Overall</a> </li>
                     <li><a href="#exclude_uat" data-toggle="tab">Internal Testing</a> </li>
                     <li><a href="#only_uat" data-toggle="tab">UAT</a> </li>
+                    <li><a href="#custom" data-toggle="tab">Custom</a> </li>
                 </ul>
             </div>
             <div class="tab-content">
@@ -159,6 +160,10 @@
 
                 <div class="tab-pane" id="only_uat">
                     {% include 'project_detail/project_detail_only_uat.html' %}
+                </div>
+
+                <div class="tab-pane" id="custom">
+                    {% include 'project_detail/project_detail_custom.html' %}
                 </div>
             </div>
 
