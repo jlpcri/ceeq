@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime, timedelta
+import time
 from decimal import Decimal
 import json
 
@@ -87,12 +88,21 @@ def project_detail(request, project_id):
     version_data = jira_data['issues']
 
     # Filter version_data for input created date range
-    start = '2014-10-01'
-    end = '2015-01-01'
+    try:
+        end = date.fromtimestamp(float(request.GET.get('end')))
+    except (TypeError, ValueError):
+        end = datetime.now().date()
+
+    try:
+        start = date.fromtimestamp(float(request.GET.get('start')))
+    except (TypeError, ValueError):
+        start = end - timedelta(days=29)
+    print start, end
+
     uat_type_custom = 'include_uat'
     version_data_custom = []
     for item in version_data:
-        if start <= item['fields']['created'] <= end:
+        if start.strftime("%Y-%m-%d") <= item['fields']['created'] <= end.strftime("%Y-%m-%d"):
             version_data_custom.append(item)
 
     # Try get pie chart data
@@ -229,6 +239,9 @@ def project_detail(request, project_id):
         'component_names_exclude_uat': component_names_exist_exclude_uat,
         'component_names_only_uat': component_names_exist_only_uat,
         'component_names_custom': component_names_exist_custom,
+
+        'start': float(request.GET.get('start', time.mktime(start.timetuple()))),
+        'end': time.mktime(end.timetuple()),
 
         'superuser': request.user.is_superuser,
         'version_names': version_names,

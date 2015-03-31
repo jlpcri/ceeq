@@ -4,6 +4,21 @@ var active_tab = String(""),
     export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
 
 moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
+var startDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
+var endDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
+function setStartDate(datetime) {
+    startDatetime = moment.tz(moment(datetime*1000), 'America/Chicago');
+//    startDatetime = moment(datetime*1000);
+}
+
+function setEndDate(datetime) {
+    endDatetime = moment.tz(moment(datetime*1000), 'America/Chicago');
+//    endDatetime = moment(datetime*1000);
+}
+
+function loadRecords() {
+    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X');
+}
 
 function attachDateRangePicker() {
     $('#report-range').daterangepicker(
@@ -16,8 +31,8 @@ function attachDateRangePicker() {
                 'This Month': [moment.tz(moment().valueOf(), 'America/Chicago').startOf('month').startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').endOf('month').endOf('day')],
                 'Last Month': [moment.tz(moment().valueOf(), 'America/Chicago').subtract('month', 1).startOf('month').startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').subtract('month', 1).endOf('month').endOf('day')]
             },
-            startDate: moment().subtract('days', 29),
-            endDate: moment(),
+            startDate: moment.tz(startDatetime.valueOf(), 'America/Chicago'),
+            endDate: moment.tz(endDatetime.valueOf(), 'America/Chicago'),
             maxDate: moment.tz(moment().valueOf(), 'America/Chicago').endOf('day'),
             timePicker: true,
             timePickerIncrement: 1
@@ -26,10 +41,9 @@ function attachDateRangePicker() {
             $('#report-range span').html(moment.tz(start.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(end.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
             startDatetime = moment.tz(start.valueOf(), 'America/Chicago');
             endDatetime = moment.tz(end.valueOf(), 'America/Chicago');
-            //loadRecords();
+            loadRecords();
         });
-    //$('#report-range-display').html(moment.tz(startDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(endDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
-    $('#report-range span').html(moment().subtract('days', 29).format('MMMM D, YYYY HH:mm') + ' - ' + moment().format('MMMM D, YYYY HH:mm'));
+    $('#report-range span').html(moment.tz(startDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(endDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
 }
 
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function(e) {

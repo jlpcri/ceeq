@@ -226,6 +226,8 @@
 
         {% include 'project_detail/project_detail.js' %}
 
+        setStartDate("{{ start }}");
+        setEndDate("{{ end }}");
         attachDateRangePicker();
 
         if (data_include_uat[3] == 103 ) {
