@@ -19,7 +19,7 @@ function setEndDate(datetime) {
 }
 
 function loadRecords() {
-    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type=" + uat_type_custom;
+    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type_custom=" + uat_type_custom;
 }
 
 function attachDateRangePicker() {
@@ -326,7 +326,11 @@ function displayPieChart(data, uat_type) {
         } else if (uat_type == 'only_uat') {
             uat_title = 'UAT';
         } else if (uat_type == 'custom') {
-            uat_title = 'Custom';
+            if (uat_type_custom == 'exclude_uat') {
+                uat_title = 'Custom Internal Testing';
+            } else {
+                uat_title = 'Custom UAT';
+            }
         }
         if ( parseFloat(data[3]) > 10) {
             if (parseFloat(data[3]) == 103 ){
@@ -532,6 +536,12 @@ function displayQEIlogo(uat_type) {
         uat_title = 'Internal Testing';
     } else if (uat_type == 'only_uat') {
         uat_title = 'UAT';
+    } else if (uat_type == 'custom') {
+        if (uat_type_custom == 'exclude_uat') {
+            uat_title = 'Custom Internal Testing';
+        } else {
+            uat_title = 'Custom UAT';
+        }
     }
     pie_title = '<b>{{project.name}} - </b>' + uat_title + ': 10 / 10';
 

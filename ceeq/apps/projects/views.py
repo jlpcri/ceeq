@@ -97,7 +97,7 @@ def project_detail(request, project_id):
         start = date.fromtimestamp(float(request.GET.get('start')))
     except (TypeError, ValueError):
         start = end - timedelta(days=29)
-    uat_type_custom = request.GET.get('uat_type', 'include_uat')
+    uat_type_custom = request.GET.get('uat_type_custom', 'exclude_uat')
     #print start, end, uat_type_custom
 
     version_data_custom = []

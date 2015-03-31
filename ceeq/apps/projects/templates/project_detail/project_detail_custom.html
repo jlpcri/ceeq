@@ -8,11 +8,11 @@
 
     <div id="custom-uat-type" class="query-field pull-right">
         <select onchange="attachUatType()">
-            {% if  uat_type_custom  == 'include_uat' %}
-                <option value="include_uat" selected>Internal Testing</option>
+            {% if  uat_type_custom  == 'exclude_uat' %}
+                <option value="exclude_uat" selected>Internal Testing</option>
                 <option value="only_uat">UAT</option>
             {% else %}
-                <option value="include_uat" >Internal Testing</option>
+                <option value="exclude_uat" >Internal Testing</option>
                 <option value="only_uat" selected>UAT</option>
             {% endif %}
         </select>
