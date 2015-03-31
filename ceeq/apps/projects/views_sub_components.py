@@ -20,18 +20,7 @@ def project_sub_piechart(request, project_id):
     uat_type = request.GET.get('uat_type')
     component_type = request.GET.get('component_type')
 
-    if component_type == 'Application':
-        sub_component_template = 'sub_component/project_sub_component_apps.html'
-    elif component_type == 'CXP':
-        sub_component_template = 'sub_component/project_sub_component_cxp.html'
-    elif component_type == 'Platform':
-        sub_component_template = 'sub_component/project_sub_component_platform.html'
-    elif component_type == 'Reports':
-        sub_component_template = 'sub_component/project_sub_component_reports.html'
-    elif component_type == 'Voice Prompts':
-        sub_component_template = 'sub_component/project_sub_component_voiceslots.html'
-    else:
-        sub_component_template = ''
+    sub_component_template = 'sub_component/project_sub_component_apps.html'
 
     project = get_object_or_404(Project, pk=project_id)
     context = RequestContext(request, {
