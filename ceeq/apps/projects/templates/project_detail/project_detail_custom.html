@@ -7,7 +7,7 @@
     </div>
 
     <div id="custom-uat-type" class="query-field pull-right">
-        <select onchange="attachUatType()">
+        <select class="form-control" style="width: 150px; height: 30px; border: 0; padding: 0; background: #f4f4f4;" onchange="attachUatType()">
             {% if  uat_type_custom  == 'exclude_uat' %}
                 <option value="exclude_uat" selected>Internal Testing</option>
                 <option value="only_uat">UAT</option>
