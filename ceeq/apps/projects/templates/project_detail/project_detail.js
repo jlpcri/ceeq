@@ -114,7 +114,6 @@ function displayPieChart(data, uat_type) {
 
             // draw components lables
             $.each(data[1], function (i, item) {
-                //console.log(item);
                 renderer.text(
                     item[0],
                         cellLeft + cellPadding,
@@ -355,8 +354,6 @@ function displayPieChart(data, uat_type) {
             color_title = '#000000';
         }
 
-        //console.log(data[0][0]);
-        //console.log(data[0][1]);
         var
         //colors = ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600'],
         //scheme #5
@@ -375,7 +372,6 @@ function displayPieChart(data, uat_type) {
             drillDataLen,
             brightness;
 
-        //console.log(innerData);
         // Build the data arrays
 
         for (i = 0; i < dataLen; i += 1) {
@@ -397,9 +393,6 @@ function displayPieChart(data, uat_type) {
                 });
             }
         }
-
-        //console.log(componentData);
-        //console.log(subcomData);
 
         $('#component_percentage_pie_chart_' + uat_type).highcharts({
             chart: {

@@ -63,7 +63,6 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type, start
 
     version_data = jira_data['issues']
 
-    #print uat_type, start, end, uat_type_custom
     version_data_custom = []
     if uat_type == 'custom':
         start_date = datetime.datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d')
@@ -155,8 +154,6 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type, start
     sub_pie_data.append(sub_pie_graph)
     sub_pie_data.append(sub_pie_table)
     sub_pie_data.append(temp_table)
-
-    #print sub_pie_data
 
     return sub_pie_data
 
