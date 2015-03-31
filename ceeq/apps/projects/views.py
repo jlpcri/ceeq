@@ -97,9 +97,9 @@ def project_detail(request, project_id):
         start = date.fromtimestamp(float(request.GET.get('start')))
     except (TypeError, ValueError):
         start = end - timedelta(days=29)
-    print start, end
+    uat_type_custom = request.GET.get('uat_type', 'include_uat')
+    #print start, end, uat_type_custom
 
-    uat_type_custom = 'include_uat'
     version_data_custom = []
     for item in version_data:
         if start.strftime("%Y-%m-%d") <= item['fields']['created'] <= end.strftime("%Y-%m-%d"):
@@ -242,6 +242,7 @@ def project_detail(request, project_id):
 
         'start': float(request.GET.get('start', time.mktime(start.timetuple()))),
         'end': time.mktime(end.timetuple()),
+        'uat_type_custom': uat_type_custom,
 
         'superuser': request.user.is_superuser,
         'version_names': version_names,

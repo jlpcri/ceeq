@@ -1,8 +1,22 @@
 <br>
-<div id="report-range" class="query-field pull-right">
-    <i class="fa fa-caret-down"></i>
-    <i class="fa fa-calendar"></i>
-    <span></span>
+<div class="row">
+    <div id="report-range" class="query-field pull-left">
+        <i class="fa fa-caret-down"></i>
+        <i class="fa fa-calendar"></i>
+        <span></span>
+    </div>
+
+    <div id="custom-uat-type" class="query-field pull-right">
+        <select onchange="attachUatType()">
+            {% if  uat_type_custom  == 'include_uat' %}
+                <option value="include_uat" selected>Internal Testing</option>
+                <option value="only_uat">UAT</option>
+            {% else %}
+                <option value="include_uat" >Internal Testing</option>
+                <option value="only_uat" selected>UAT</option>
+            {% endif %}
+        </select>
+    </div>
 </div>
 <br><br>
 <div id="component_percentage_pie_chart_custom" style="width: 700px; height: 600px; margin: 0 auto;">

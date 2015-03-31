@@ -6,6 +6,8 @@ var active_tab = String(""),
 moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
 var startDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
 var endDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
+var uat_type_custom = $('#custom-uat-type > select').val();
+
 function setStartDate(datetime) {
     startDatetime = moment.tz(moment(datetime*1000), 'America/Chicago');
 //    startDatetime = moment(datetime*1000);
@@ -17,7 +19,7 @@ function setEndDate(datetime) {
 }
 
 function loadRecords() {
-    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X');
+    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type=" + uat_type_custom;
 }
 
 function attachDateRangePicker() {
@@ -44,6 +46,11 @@ function attachDateRangePicker() {
             loadRecords();
         });
     $('#report-range span').html(moment.tz(startDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(endDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
+}
+
+function attachUatType(){
+    uat_type_custom = $('#custom-uat-type > select').val();
+    loadRecords();
 }
 
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
