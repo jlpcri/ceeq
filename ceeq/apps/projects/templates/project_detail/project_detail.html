@@ -223,6 +223,7 @@
         var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
         var data_custom = {{ dd_pie_data_custom | safe }};
+        var last_tab = '{{ last_tab }}';
 
         {% include 'project_detail/project_detail.js' %}
 

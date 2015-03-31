@@ -97,7 +97,9 @@ def project_detail(request, project_id):
         start = date.fromtimestamp(float(request.GET.get('start')))
     except (TypeError, ValueError):
         start = end - timedelta(days=29)
+
     uat_type_custom = request.GET.get('uat_type_custom', 'exclude_uat')
+    last_tab = request.GET.get('last_tab', '')
     #print start, end, uat_type_custom
 
     version_data_custom = []
@@ -243,6 +245,7 @@ def project_detail(request, project_id):
         'start': float(request.GET.get('start', time.mktime(start.timetuple()))),
         'end': time.mktime(end.timetuple()),
         'uat_type_custom': uat_type_custom,
+        'last_tab': last_tab,
 
         'superuser': request.user.is_superuser,
         'version_names': version_names,

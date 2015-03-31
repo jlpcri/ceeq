@@ -19,7 +19,7 @@ function setEndDate(datetime) {
 }
 
 function loadRecords() {
-    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type_custom=" + uat_type_custom;
+    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type_custom=" + uat_type_custom + "&last_tab=custom";
 }
 
 function attachDateRangePicker() {
@@ -59,7 +59,11 @@ $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
 });
 
 $(document).ready(function(){
-    $('#subnav-tabs').find('a[href="#exclude_uat"]').tab('show');
+    if (last_tab == 'custom') {
+        $('#subnav-tabs').find('a[href="#custom"]').tab('show');
+    } else {
+        $('#subnav-tabs').find('a[href="#exclude_uat"]').tab('show');
+    }
 
     moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
 
