@@ -27,7 +27,7 @@
 
 {% block footer %}
     <script>
-        var title = 'Application';
+        var title = '{{ component_type }}';
         $.getJSON("{% url 'fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}&start={{ start }}&end={{ end }}&uat_type_custom={{ uat_type_custom }}").done(function(data){
             draw_pie_chart_graph(data, '{{ uat_type }}');
         });

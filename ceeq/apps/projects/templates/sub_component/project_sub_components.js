@@ -225,6 +225,8 @@ function draw_pie_chart_graph(data, uat_type){
         pie_title = title + ' - Subcomponent - Internal Testing';
     } else if (uat_type == 'only_uat') {
         pie_title = title + ' - Subcomponent - UAT';
+    } else if (uat_type == 'custom') {
+        pie_title = title + ' - Subcomponent - Custom'
     }
 
     $('#apps_subcomponent_percentage_pie_chart').highcharts({
