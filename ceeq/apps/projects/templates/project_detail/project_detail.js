@@ -452,7 +452,7 @@ function displayPieChart(data, uat_type) {
                                 //if (e.point.name=='Application' && data[3][0]=='VISI' && data[3][1]==true){
                                 //if (e.point.name != 'Voice Slots') {
                                     //location.href = e.point.name;
-                                    location.href = 'sub/' +'?component_type=' + e.point.name +'&uat_type='+ uat_type;
+                                    location.href = 'sub/' +'?component_type=' + e.point.name +'&uat_type='+ uat_type + '&start=' + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type_custom=" + uat_type_custom;
                                     e.preventDefault();
                                 //}
                             }
