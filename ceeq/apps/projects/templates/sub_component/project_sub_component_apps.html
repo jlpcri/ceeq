@@ -27,7 +27,14 @@
 
 {% block footer %}
     <script>
-        var title = '{{ component_type }}';
+        var title_custom,
+            title = '{{ component_type }}';
+        if ('{{ uat_type_custom }}' == 'exclude_uat') {
+            title_custom = 'Internal Testing';
+        } else {
+            title_custom = 'UAT';
+        }
+
         $.getJSON("{% url 'fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}&start={{ start }}&end={{ end }}&uat_type_custom={{ uat_type_custom }}").done(function(data){
             draw_pie_chart_graph(data, '{{ uat_type }}');
         });
