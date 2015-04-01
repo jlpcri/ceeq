@@ -104,7 +104,7 @@ def project_detail(request, project_id):
 
     version_data_custom = []
     for item in version_data:
-        if start.strftime("%Y-%m-%d") <= item['fields']['created'] <= end.strftime("%Y-%m-%d"):
+        if start.strftime("%Y-%m-%d") <= item['fields']['created'] <= (end + timedelta(days=1)).strftime("%Y-%m-%d"):
             version_data_custom.append(item)
 
     # Try get pie chart data
