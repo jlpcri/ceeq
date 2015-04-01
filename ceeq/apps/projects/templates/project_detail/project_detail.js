@@ -19,6 +19,8 @@ function setEndDate(datetime) {
 }
 
 function loadRecords() {
+    $('#custom_pie_chart_loading').show();
+    $('#custom_pie_chart_contents').hide();
     window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type_custom=" + uat_type_custom + "&last_tab=custom";
 }
 

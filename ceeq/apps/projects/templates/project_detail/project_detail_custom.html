@@ -13,35 +13,46 @@
         </select>
     </div>
 </div>
+
 <br><br>
-<div id="component_percentage_pie_chart_custom" style="width: 700px; height: 600px; margin: 0 auto;">
+
+<div id="custom_pie_chart_loading" hidden style="width: 400px; height: 200px; margin: 0 auto;">
     <div class="loading" style="text-align:center; margin-top: 100px;">
-        <i class="fa fa-spinner fa-2x fa-spin"></i>
-        Loading data from JIRA Database...
+        <i class="fa fa-cog fa-5x fa-spin"></i><br>
+        <h3>Loading data from JIRA Database...</h3>
     </div>
 </div>
 
-<div id="qei_log_custom" style="width: 500px; height: 300px; margin: 0 auto;" hidden></div>
+<div id="custom_pie_chart_contents">
+    <div id="component_percentage_pie_chart_custom" style="width: 700px; height: 600px; margin: 0 auto;">
+        <div class="loading" style="text-align:center; margin-top: 100px;">
+            <i class="fa fa-spinner fa-2x fa-spin"></i>
+            Loading data from JIRA Database...
+        </div>
+    </div>
 
-{% if weight_factor_custom %}
-    <div class="row">
-        <p style="text-align: center" id="export_data_custom">
-            Export Graph to:
-            <button id="png_custom">PNG</button>
-            <button id="jpeg_custom">JPEG</button>
-            <button id="pdf_custom">PDF</button>
-        </p>
-    </div>
-{% else %}
-    <div class="row">
-        <p style="text-align: center" id="export_qei_log_custom">
-            Export Graph to:
-            <button id="png_qei_log_custom">PNG</button>
-            <button id="jpeg_qei_log_custom">JPEG</button>
-            <button id="pdf_qei_log_custom">PDF</button>
-        </p>
-    </div>
-{% endif %}
+    <div id="qei_log_custom" style="width: 500px; height: 300px; margin: 0 auto;" hidden></div>
+
+    {% if weight_factor_custom %}
+        <div class="row">
+            <p style="text-align: center" id="export_data_custom">
+                Export Graph to:
+                <button id="png_custom">PNG</button>
+                <button id="jpeg_custom">JPEG</button>
+                <button id="pdf_custom">PDF</button>
+            </p>
+        </div>
+    {% else %}
+        <div class="row">
+            <p style="text-align: center" id="export_qei_log_custom">
+                Export Graph to:
+                <button id="png_qei_log_custom">PNG</button>
+                <button id="jpeg_qei_log_custom">JPEG</button>
+                <button id="pdf_qei_log_custom">PDF</button>
+            </p>
+        </div>
+    {% endif %}
+</div>
 
 <br>
 <div class="row">
