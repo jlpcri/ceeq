@@ -6,7 +6,7 @@
     <div class="container">
         <br>
         <div class="row">
-            <legend>Sub Components Percentage to Application - {{ project.name }}</legend>
+            <legend>Sub Components Percentage to {{ component_type }} - {{ project.name }}</legend>
         </div>
         <div id="apps_subcomponent_percentage_pie_chart" style="width: 800px; height: 600px; margin: 0 auto;">
             <div class="loading" style="text-align: center; margin-top: 10px;">
@@ -27,8 +27,15 @@
 
 {% block footer %}
     <script>
-        var title = 'Application';
-        $.getJSON("{% url 'fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}").done(function(data){
+        var title_custom,
+            title = '{{ component_type }}';
+        if ('{{ uat_type_custom }}' == 'exclude_uat') {
+            title_custom = 'Internal Testing';
+        } else {
+            title_custom = 'UAT';
+        }
+
+        $.getJSON("{% url 'fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}&start={{ start }}&end={{ end }}&uat_type_custom={{ uat_type_custom }}").done(function(data){
             draw_pie_chart_graph(data, '{{ uat_type }}');
         });
         {% include 'sub_component/project_sub_components.js' %}

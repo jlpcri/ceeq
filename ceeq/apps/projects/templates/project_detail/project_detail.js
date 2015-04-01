@@ -3,13 +3,70 @@ var active_tab = String(""),
     today = new Date(),
     export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
 
+moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
+var startDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
+var endDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
+var uat_type_custom = $('#custom-uat-type > select').val();
+
+function setStartDate(datetime) {
+    startDatetime = moment.tz(moment(datetime*1000), 'America/Chicago');
+//    startDatetime = moment(datetime*1000);
+}
+
+function setEndDate(datetime) {
+    endDatetime = moment.tz(moment(datetime*1000), 'America/Chicago');
+//    endDatetime = moment(datetime*1000);
+}
+
+function loadRecords() {
+    window.location.href = "{% url 'project_detail' project.id %}?start=" + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type_custom=" + uat_type_custom + "&last_tab=custom";
+}
+
+function attachDateRangePicker() {
+    $('#report-range').daterangepicker(
+        {
+            ranges: {
+                'Today': [moment.tz(moment().valueOf(), 'America/Chicago').startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').endOf('day')],
+                'Yesterday': [moment.tz(moment().valueOf(), 'America/Chicago').subtract('days', 1).startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').subtract('days', 1).endOf('day')],
+                'Last 7 Days': [moment.tz(moment().valueOf(), 'America/Chicago').subtract('days', 6).startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').endOf('day')],
+                'Last 30 Days': [moment.tz(moment().valueOf(), 'America/Chicago').subtract('days', 29).startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').endOf('day')],
+                'This Month': [moment.tz(moment().valueOf(), 'America/Chicago').startOf('month').startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').endOf('month').endOf('day')],
+                'Last Month': [moment.tz(moment().valueOf(), 'America/Chicago').subtract('month', 1).startOf('month').startOf('day'), moment.tz(moment().valueOf(), 'America/Chicago').subtract('month', 1).endOf('month').endOf('day')]
+            },
+            startDate: moment.tz(startDatetime.valueOf(), 'America/Chicago'),
+            endDate: moment.tz(endDatetime.valueOf(), 'America/Chicago'),
+            maxDate: moment.tz(moment().valueOf(), 'America/Chicago').endOf('day'),
+            timePicker: true,
+            timePickerIncrement: 1
+        },
+        function (start, end) {
+            $('#report-range span').html(moment.tz(start.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(end.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
+            startDatetime = moment.tz(start.valueOf(), 'America/Chicago');
+            endDatetime = moment.tz(end.valueOf(), 'America/Chicago');
+            loadRecords();
+        });
+    $('#report-range span').html(moment.tz(startDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(endDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
+}
+
+function attachUatType(){
+    uat_type_custom = $('#custom-uat-type > select').val();
+    loadRecords();
+}
+
 $('#subnav-tabs').find('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
     active_tab = e.target.hash;
     loadUatActiveDataTab();
 });
 
 $(document).ready(function(){
-    $('#subnav-tabs').find('a[href="#exclude_uat"]').tab('show');
+    if (last_tab == 'custom') {
+        $('#subnav-tabs').find('a[href="#custom"]').tab('show');
+    } else {
+        $('#subnav-tabs').find('a[href="#exclude_uat"]').tab('show');
+    }
+
+    moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
+
 });
 
 
@@ -18,15 +75,17 @@ function loadUatActiveDataTab() {
         donut_pie = 'include_uat';
         displayPieChart(data_include_uat, donut_pie);
         displayQEIlogo(donut_pie);
-    }
-    else if (active_tab == '#exclude_uat') {
+    } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
         displayPieChart(data_exclude_uat, donut_pie);
         displayQEIlogo(donut_pie);
-    }
-    else if (active_tab == '#only_uat') {
+    } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
         displayPieChart(data_only_uat, donut_pie);
+        displayQEIlogo(donut_pie);
+    } else if (active_tab == '#custom') {
+        donut_pie = 'custom';
+        displayPieChart(data_custom, donut_pie);
         displayQEIlogo(donut_pie);
     }
 }
@@ -59,7 +118,6 @@ function displayPieChart(data, uat_type) {
 
             // draw components lables
             $.each(data[1], function (i, item) {
-                //console.log(item);
                 renderer.text(
                     item[0],
                         cellLeft + cellPadding,
@@ -270,6 +328,12 @@ function displayPieChart(data, uat_type) {
             uat_title = 'Internal Testing';
         } else if (uat_type == 'only_uat') {
             uat_title = 'UAT';
+        } else if (uat_type == 'custom') {
+            if (uat_type_custom == 'exclude_uat') {
+                uat_title = 'Custom Internal Testing';
+            } else {
+                uat_title = 'Custom UAT';
+            }
         }
         if ( parseFloat(data[3]) > 10) {
             if (parseFloat(data[3]) == 103 ){
@@ -294,8 +358,6 @@ function displayPieChart(data, uat_type) {
             color_title = '#000000';
         }
 
-        //console.log(data[0][0]);
-        //console.log(data[0][1]);
         var
         //colors = ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600'],
         //scheme #5
@@ -314,7 +376,6 @@ function displayPieChart(data, uat_type) {
             drillDataLen,
             brightness;
 
-        //console.log(innerData);
         // Build the data arrays
 
         for (i = 0; i < dataLen; i += 1) {
@@ -336,9 +397,6 @@ function displayPieChart(data, uat_type) {
                 });
             }
         }
-
-        //console.log(componentData);
-        //console.log(subcomData);
 
         $('#component_percentage_pie_chart_' + uat_type).highcharts({
             chart: {
@@ -391,7 +449,7 @@ function displayPieChart(data, uat_type) {
                                 //if (e.point.name=='Application' && data[3][0]=='VISI' && data[3][1]==true){
                                 //if (e.point.name != 'Voice Slots') {
                                     //location.href = e.point.name;
-                                    location.href = 'sub/' +'?component_type=' + e.point.name +'&uat_type='+ uat_type;
+                                    location.href = 'sub/' +'?component_type=' + e.point.name +'&uat_type='+ uat_type + '&start=' + startDatetime.format('X') + "&end=" + endDatetime.format('X') + "&uat_type_custom=" + uat_type_custom;
                                     e.preventDefault();
                                 //}
                             }
@@ -475,6 +533,12 @@ function displayQEIlogo(uat_type) {
         uat_title = 'Internal Testing';
     } else if (uat_type == 'only_uat') {
         uat_title = 'UAT';
+    } else if (uat_type == 'custom') {
+        if (uat_type_custom == 'exclude_uat') {
+            uat_title = 'Custom Internal Testing';
+        } else {
+            uat_title = 'Custom UAT';
+        }
     }
     pie_title = '<b>{{project.name}} - </b>' + uat_title + ': 10 / 10';
 

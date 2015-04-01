@@ -1,5 +1,6 @@
 
 import json
+import datetime
 
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -19,24 +20,16 @@ def project_sub_piechart(request, project_id):
     uat_type = request.GET.get('uat_type')
     component_type = request.GET.get('component_type')
 
-    if component_type == 'Application':
-        sub_component_template = 'sub_component/project_sub_component_apps.html'
-    elif component_type == 'CXP':
-        sub_component_template = 'sub_component/project_sub_component_cxp.html'
-    elif component_type == 'Platform':
-        sub_component_template = 'sub_component/project_sub_component_platform.html'
-    elif component_type == 'Reports':
-        sub_component_template = 'sub_component/project_sub_component_reports.html'
-    elif component_type == 'Voice Prompts':
-        sub_component_template = 'sub_component/project_sub_component_voiceslots.html'
-    else:
-        sub_component_template = ''
+    sub_component_template = 'sub_component/project_sub_component_apps.html'
 
     project = get_object_or_404(Project, pk=project_id)
     context = RequestContext(request, {
         'project': project,
         'uat_type': uat_type,
-        'component_type': component_type
+        'component_type': component_type,
+        'start': request.GET.get('start', ''),
+        'end': request.GET.get('end', ''),
+        'uat_type_custom': request.GET.get('uat_type_custom', '')
     })
     return render(request, sub_component_template, context)
 
@@ -45,14 +38,18 @@ def fetch_subcomponents_pie_component(request, project_id):
     uat_type = request.GET.get('uat_type')
     component_type = request.GET.get('component_type')
 
+    start = request.GET.get('start', '')
+    end = request.GET.get('end', '')
+    uat_type_custom = request.GET.get('uat_type_custom', '')
+
     component_name = [component_type]
 
-    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type)
+    sub_pie_data = fetch_subcomponents_pie(request, project_id, component_name, uat_type, start, end, uat_type_custom)
 
     return HttpResponse(json.dumps(sub_pie_data), content_type='application/json')
 
 
-def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
+def fetch_subcomponents_pie(request, project_id, component_name, uat_type, start, end, uat_type_custom):
     """
     Used for pie chart along with drawing data table of Subcomponents of Applications
     :param request:
@@ -63,20 +60,18 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
     project = get_object_or_404(Project, pk=project_id)
 
     jira_data = project.fetch_jira_data
-    if project.jira_version == 'All Versions':
-        version_data = jira_data['issues']
-    else:
-        version_data = []
-        for item in jira_data['issues']:
-            try:
-                name = str(item['fields']['versions'][0]['name'])
-            except UnicodeEncodeError:
-                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
-                name = name.decode('utf-8')
-            except IndexError:
-                continue
-            if name == project.jira_version:
-                version_data.append(item)
+
+    version_data = jira_data['issues']
+
+    version_data_custom = []
+    if uat_type == 'custom':
+        start_date = datetime.datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d')
+        end_date = datetime.datetime.fromtimestamp(int(end)).strftime('%Y-%m-%d')
+
+        for item in version_data:
+            if start_date <= item['fields']['created'] <= end_date:
+                version_data_custom.append(item)
+        version_data = version_data_custom
 
     #component_name = ['Application']
     sub_component_names = []
@@ -96,11 +91,18 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
     if component_name[0] in sub_component_names:
         return 'component configuration issue'
 
-    data = issue_counts_compute(request,
-                                sub_component_names,
-                                component_name, version_data,
-                                'sub_components',
-                                uat_type)
+    if uat_type == 'custom':
+        data = issue_counts_compute(request,
+                                    sub_component_names,
+                                    component_name, version_data,
+                                    'sub_components',
+                                    uat_type_custom)
+    else:
+        data = issue_counts_compute(request,
+                                    sub_component_names,
+                                    component_name, version_data,
+                                    'sub_components',
+                                    uat_type)
 
     weight_factor = get_sub_component_weight_factor(data, component_name[0], 1)
     #for item in weight_factor:
@@ -152,8 +154,6 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type):
     sub_pie_data.append(sub_pie_graph)
     sub_pie_data.append(sub_pie_table)
     sub_pie_data.append(temp_table)
-
-    #print sub_pie_data
 
     return sub_pie_data
 

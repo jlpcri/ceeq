@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime, timedelta
+import time
 from decimal import Decimal
 import json
 
@@ -58,6 +59,8 @@ def project_detail(request, project_id):
 
     component_names = []
     component_names_without_slash = []
+    component_names_custom = []
+    component_names_without_slash_custom = []
 
     try:
         jira_data = project.fetch_jira_data
@@ -77,10 +80,32 @@ def project_detail(request, project_id):
         })
         return render(request, 'project_detail/project_detail.html', context)
 
+
+
     #List for choice of jira verion per project
     version_names = project.fectch_jira_versions
 
     version_data = jira_data['issues']
+
+    # Filter version_data for input created date range
+    try:
+        end = date.fromtimestamp(float(request.GET.get('end')))
+    except (TypeError, ValueError):
+        end = datetime.now().date()
+
+    try:
+        start = date.fromtimestamp(float(request.GET.get('start')))
+    except (TypeError, ValueError):
+        start = end - timedelta(days=29)
+
+    uat_type_custom = request.GET.get('uat_type_custom', 'exclude_uat')
+    last_tab = request.GET.get('last_tab', '')
+    #print start, end, uat_type_custom
+
+    version_data_custom = []
+    for item in version_data:
+        if start.strftime("%Y-%m-%d") <= item['fields']['created'] <= end.strftime("%Y-%m-%d"):
+            version_data_custom.append(item)
 
     # Try get pie chart data
     dd_pie_data_include_uat = fetch_defects_density_score_pie(request,
@@ -95,10 +120,14 @@ def project_detail(request, project_id):
                                                            project.jira_name,
                                                            version_data,
                                                            'only_uat')
-    #print dd_pie_data_exclude_uat
+    dd_pie_data_custom = fetch_defects_density_score_pie(request,
+                                                         project.jira_name,
+                                                         version_data_custom,
+                                                         uat_type_custom)
+    #print dd_pie_data_custom
 
+    # get component_names and component_names_without_slash for version_data
     for item in version_data:
-
         # if first item-component is not in framework, then check next, until end
         component_len = len(item['fields']['components'])
         if component_len == 0:
@@ -112,6 +141,23 @@ def project_detail(request, project_id):
 
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
+
+    # get component_names and component_names_without_slash for version_data_custom
+    for item in version_data_custom:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
+            continue
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        if name:
+            component_names_custom.append(name)
+            component_names_without_slash_custom.append(truncate_after_slash(name))
+
+    component_names_custom = list(OrderedDict.fromkeys(component_names_custom))
+    component_names_without_slash_custom = list(OrderedDict.fromkeys(component_names_without_slash_custom))
+
 
     # Calculate issue counts
     data_include_uat = issue_counts_compute(request,
@@ -132,13 +178,23 @@ def project_detail(request, project_id):
                                          version_data,
                                          'components',
                                          'only_uat')
-    #print data
+    data_custom = issue_counts_compute(request,
+                                       component_names_custom,
+                                       component_names_without_slash_custom,
+                                       version_data_custom,
+                                       'components',
+                                       uat_type_custom)
+
+    #print data_custom
+
     weight_factor_include_uat = get_weight_factor(data_include_uat,
                                                   component_names_without_slash)
     weight_factor_exclude_uat = get_weight_factor(data_exclude_uat,
                                                   component_names_without_slash)
     weight_factor_only_uat = get_weight_factor(data_only_uat,
                                                component_names_without_slash)
+    weight_factor_custom = get_weight_factor(data_custom,
+                                             component_names_without_slash_custom)
 
     for item in weight_factor_include_uat:
         # total number of JIRAs of Voice Prompts should not beyond 6
@@ -160,10 +216,12 @@ def project_detail(request, project_id):
     priority_total_include_uat = get_priority_total(weight_factor_include_uat)
     priority_total_exclude_uat = get_priority_total(weight_factor_exclude_uat)
     priority_total_only_uat = get_priority_total(weight_factor_only_uat)
+    priority_total_custom = get_priority_total(weight_factor_custom)
 
     component_names_exist_include_uat = get_component_names(weight_factor_include_uat)
     component_names_exist_exclude_uat = get_component_names(weight_factor_exclude_uat)
     component_names_exist_only_uat = get_component_names(weight_factor_only_uat)
+    component_names_exist_custom = get_component_names(weight_factor_custom)
 
     context = RequestContext(request, {
         'form': form,
@@ -171,18 +229,30 @@ def project_detail(request, project_id):
         'weight_factor_include_uat': weight_factor_include_uat,
         'weight_factor_exclude_uat': weight_factor_exclude_uat,
         'weight_factor_only_uat': weight_factor_only_uat,
+        'weight_factor_custom': weight_factor_custom,
+
         'priority_total_include_uat': priority_total_include_uat,
         'priority_total_exclude_uat': priority_total_exclude_uat,
         'priority_total_only_uat': priority_total_only_uat,
+        'priority_total_custom': priority_total_custom,
+
         'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
         'component_names_include_uat': component_names_exist_include_uat,
         'component_names_exclude_uat': component_names_exist_exclude_uat,
         'component_names_only_uat': component_names_exist_only_uat,
+        'component_names_custom': component_names_exist_custom,
+
+        'start': float(request.GET.get('start', time.mktime(start.timetuple()))),
+        'end': time.mktime(end.timetuple()),
+        'uat_type_custom': uat_type_custom,
+        'last_tab': last_tab,
+
         'superuser': request.user.is_superuser,
         'version_names': version_names,
         'dd_pie_data_include_uat': json.dumps(dd_pie_data_include_uat),
         'dd_pie_data_exclude_uat': json.dumps(dd_pie_data_exclude_uat),
-        'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat)
+        'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat),
+        'dd_pie_data_custom': json.dumps(dd_pie_data_custom)
     })
     return render(request, 'project_detail/project_detail.html', context)
 
