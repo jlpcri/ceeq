@@ -37,7 +37,7 @@ function attachDateRangePicker() {
             },
             startDate: moment.tz(startDatetime.valueOf(), 'America/Chicago'),
             endDate: moment.tz(endDatetime.valueOf(), 'America/Chicago'),
-            //maxDate: moment.tz(moment().valueOf(), 'America/Chicago').endOf('day'),
+            maxDate: moment.tz(moment().valueOf(), 'America/Chicago').endOf('day'),
             timePicker: true,
             timePickerIncrement: 1
         },
