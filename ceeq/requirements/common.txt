@@ -1,7 +1,0 @@
-Django==1.6.2
-mimeparse==0.1.3
-django_auth_ldap==1.2.1
-requests==2.4.0
-django-tastypie==0.11.1
-south==1.0
-psycopg2==2.5.4

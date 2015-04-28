@@ -1,8 +1,7 @@
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
 from ceeq.apps.projects.models import FrameworkParameter
-
 from django.conf import settings
 
 """
@@ -45,18 +44,20 @@ def version_name_from_jira_data(jira_data):
 
 
 def truncate_after_slash(string):
-    if '/' in string:
+    if string and '/' in string:
         index = string.index('/')
         return string[:index]
     else:
         return string
 
 
-def remove_period_space(str):
-    tmp = str.replace('.', '_')
-    tmp = tmp.replace(' ', '_')
-    tmp = tmp.replace(',', '_')
-    return tmp
+def remove_period_space(string):
+    special_chars = [' ', '.', ',', '/']
+    for ch in special_chars:
+        if ch in string:
+            string = string.replace(ch, '_')
+
+    return string
 
 
 def get_weight_factor(data, component_names_without_slash_all):
@@ -147,20 +148,20 @@ def get_weight_factor(data, component_names_without_slash_all):
                 continue
         if subcomponent_length == 0:
             # component which does not have sub component
-            for status in settings.ISSUE_STATUS_COUNT.keys():
-                # total number of jiras per sub component
-                data[component]['total'][status] = data[component]['blocker'][status] \
-                                    + data[component]['critical'][status] \
-                                    + data[component]['major'][status] \
-                                    + data[component]['minor'][status] \
-                                    + data[component]['trivial'][status]
-
-                # defects density per sub component
-                data[component]['ceeq'][status] = data[component]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker']\
-                                    + data[component]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical']\
-                                    + data[component]['major'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['major']\
-                                    + data[component]['minor'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['minor']\
-                                    + data[component]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial']
+            # for status in settings.ISSUE_STATUS_COUNT.keys():
+            #     # total number of jiras per sub component
+            #     data[component]['total'][status] = data[component]['blocker'][status] \
+            #                         + data[component]['critical'][status] \
+            #                         + data[component]['major'][status] \
+            #                         + data[component]['minor'][status] \
+            #                         + data[component]['trivial'][status]
+            #
+            #     # defects density per sub component
+            #     data[component]['ceeq'][status] = data[component]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker']\
+            #                         + data[component]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical']\
+            #                         + data[component]['major'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['major']\
+            #                         + data[component]['minor'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['minor']\
+            #                         + data[component]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial']
 
             continue
         else:
@@ -209,7 +210,7 @@ def get_weight_factor(data, component_names_without_slash_all):
     return weight_factor
 
 
-def issue_counts_compute(request, component_names, component_names_without_slash, jira_data, component_type):
+def issue_counts_compute(request, component_names, component_names_without_slash, jira_data, component_type, uat_type):
     """
     Compute number of issues Component, SubComponent, Priority, Status
     :param request:
@@ -230,6 +231,8 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         'trivial': settings.ISSUE_STATUS_COUNT.copy()
     }
 
+    #print 'aaa: ', component_names
+    #print 'bbb: ', component_names_without_slash
     for item in component_names:
         data[item] = copy.deepcopy(issue_counts)  # copy the dict object
 
@@ -255,6 +258,17 @@ def issue_counts_compute(request, component_names, component_names_without_slash
             issue_types.append('17')
 
     for item in jira_data:
+        if uat_type == 'include_uat':
+            pass
+        elif uat_type == 'exclude_uat':
+            # UAT workflow metatype not counted
+            if item['fields']['customfield_13286']:
+                continue
+        elif uat_type == 'only_uat':
+            # Only workflow metatype counted
+            if item['fields']['customfield_13286'] is None:
+                continue
+
         # Closed type: Works as Designed not counted
         if item['fields']['resolution'] \
                 and item['fields']['resolution']['id'] in settings.ISSUE_RESOLUTION_NOT_COUNT\
@@ -271,14 +285,17 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         except (KeyError, TypeError):
             continue
 
-        try:
-            component = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            component = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
+            continue
+        else:
+            component = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        # if return component is None, then continue to next
+        if not component:
             continue
 
-        #print 'a', component
         if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
             continue
 
@@ -324,15 +341,13 @@ def issue_counts_compute(request, component_names, component_names_without_slash
                 elif item['fields']['priority']['id'] == '5':
                     data[component]['trivial']['closed'] += 1
 
-
-
     #for i in data:
     #    print i, data[i]
 
     return data
 
 
-def get_subcomponent_defects_density(request, component_name, version_data):
+def get_subcomponent_defects_density(request, component_name, version_data, uat_type):
     sub_component_names = []
     component_name_list = []
     sub_pie_graph = []
@@ -341,32 +356,35 @@ def get_subcomponent_defects_density(request, component_name, version_data):
     component_name_list.append(component_name)
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
-        if name.startswith(component_name):
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        if name and name.startswith(component_name):
             sub_component_names.append(name)
 
     sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
     sub_component_names_length = Decimal(len(sub_component_names))
 
-    data = issue_counts_compute(request, sub_component_names, component_name_list, version_data, 'sub_components')
+    data = issue_counts_compute(request,
+                                sub_component_names,
+                                component_name_list,
+                                version_data,
+                                'sub_components',
+                                uat_type)
 
     weight_factor = get_sub_component_weight_factor(data, component_name, component_name_weight)
 
     for item in data:
         temp_graph = []
 
-        if item == component_name and item != 'Voice Slots':
+        if item == component_name:
             continue
 
-        if item != 'Voice Slots':
-            temp_graph.append(item[len(component_name) + 1:])
-        else:
-            temp_graph.append(item)
+        temp_graph.append(item[len(component_name) + 1:])
         temp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
         #print temp_graph
 
@@ -389,16 +407,18 @@ def get_sub_component_weight_factor(data, component_name, component_name_weight)
 
     sub_component_names_length = 0
     for item in data:
-        if item == 'Voice Slots' and sum(data[item]['total'].itervalues()) > 0:
-            sub_component_names_length = 1
-            break
-        elif item.startswith(component_name+'/') and sum(data[item]['total'].itervalues()) > 0:
+        #if item == 'Voice Prompts' and sum(data[item]['total'].itervalues()) > 0:
+        #    sub_component_names_length = 1
+        #    break
+        if item.startswith(component_name+'/') and sum(data[item]['total'].itervalues()) > 0:
             sub_component_names_length += 1
         else:
             continue
 
     for item in data:
         for status in settings.ISSUE_STATUS_COUNT.keys():
+            if sub_component_names_length == 0:
+                continue
             # defects density per sub component
             data[item]['ceeq'][status] = data[item]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['blocker'] / sub_component_names_length * component_name_weight \
                                 + data[item]['critical'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['critical'] / sub_component_names_length * component_name_weight \
@@ -407,3 +427,40 @@ def get_sub_component_weight_factor(data, component_name, component_name_weight)
                                 + data[item]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial'] / sub_component_names_length * component_name_weight
 
     return data
+
+
+def get_priority_total(weight_factor):
+    priority_total = defaultdict(int)
+
+    for item in weight_factor:
+        #print item
+        priority_total['total'] += item[3]
+        for status in settings.ISSUE_STATUS_FIELDS:
+            priority_total[status[0]] += sum(item[i] for i in status[1])
+
+    return priority_total
+
+
+def get_component_names(weight_factor):
+    try:
+        component_names_exist = list(zip(*weight_factor)[0])
+    except IndexError:
+        component_names_exist = None
+
+    return component_names_exist
+
+
+def get_component_names_from_jira_data(component_len, components):
+    # if first item-component is not in framework, then check next, until end
+    for i in range(component_len):
+        try:
+            component = str(components[i]['name'])
+        except UnicodeEncodeError:
+            component = ''.join(components[i]['name']).encode('utf-8').strip()
+            component = component.decode('utf-8')
+        if component.startswith(tuple(settings.COMPONENT_NAMES_STANDARD.keys())):
+            return component
+        else:
+            continue
+
+    return None

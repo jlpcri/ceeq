@@ -33,7 +33,7 @@
                         <td style="text-align: center"><strong>Platform</strong></td>
                         <td style="text-align: center"><strong>Reports</strong></td>
                         <td style="text-align: center"><strong>Application</strong></td>
-                        <td style="text-align: center"><strong>Voice Slots</strong></td>
+                        <td style="text-align: center"><strong>Prompts</strong></td>
                         <td style="text-align: center"><strong>Del</strong></td>
                     </tr>
                 </thead>
@@ -41,7 +41,7 @@
                     {% for dd in project_dds %}
                         <tr>
                             <td class="col-sm-2" style="text-align: center">{{ dd.version }}</td>
-                            <td class="col-sm-2" style="text-align: center">{{ dd.created }}</td>
+                            <td class="col-sm-2" style="text-align: center">{{ dd.created | date:"M d, Y"}}</td>
                             <td class="col-sm-2" style="text-align: center">{{ dd.ceeq|floatformat:3 }}</td>
                             <td class="col-sm-1" style="text-align: center">{{ dd.cxp|floatformat:3 }}</td>
                             <td class="col-sm-1" style="text-align: center">{{ dd.platform|floatformat:3 }}</td>

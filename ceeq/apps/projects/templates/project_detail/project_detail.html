@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}ProjectDetail{% endblock %}
+
+{% block extrahead %}
+    <link href="{% static 'common/bootstrap-daterangepicker/1.2/daterangepicker-bs3.css' %}" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        .query-field {
+            background: #ffffff;
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .25), inset 0 -1px 0 rgba(0, 0, 0, .1);
+            -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .25), inset 0 -1px 0 rgba(0, 0, 0, .1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .25), inset 0 -1px 0 rgba(0, 0, 0, .1);
+            color: #333333;
+            padding: 8px;
+            line-height: 18px;
+            cursor: pointer;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <form action="{% url 'project_edit' project.id %}" method="post">
+            <div class="row">
+                <legend>Project Information</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">Project Name</div>
+                <div class="col-md-8">{{ form.name }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA URL</div>
+                <div class="col-md-8">{{ form.jira_name }}</div>
+            </div>
+            {% if superuser %}
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size: 18px;">JIRA Version</div>
+                    <div class="col-md-8">
+                        <select name="jira_version" class="form-control" id="jira_version">
+                            {% for item in version_names %}
+                                {% if item == project.jira_version %}
+                                    <option value="{{ item }}" selected>{{ item }}</option>
+                                {% else %}
+                                    <option value="{{ item }}">{{ item }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Project Action</div>
+                    <div class="col-md-2">
+                        {% if project.active %}
+                            <label for="id_active"></label><input id="id_active" name="active" type="checkbox" checked hidden>
+                            <a href="{% url 'project_track' project.id %}" title="UnTrack JIRA Project"><b> UnTrack JIRA Project</b></a>
+                        {% else %}
+                            <label for="id_active"></label><input id="id_active" name="active" type="checkbox" hidden>
+                            <a href="{% url 'project_track' project.id %}" title="Track JIRA Project"><b> Track JIRA Project</b></a>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        {% if project.complete %}
+                            <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" checked hidden>
+                            <a href="{% url 'project_archive' project.id %}" title="Reactivate Project"><b> Reactivate JIRA Project</b></a>
+                        {% else %}
+                            <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" hidden>
+                            <a href="{% url 'project_archive' project.id %}" title="Archive Project"><b> Archive JIRA Project</b></a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Version</div>
+                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.jira_version }}</div>
+                </div>
+            {% endif %}
+
+            <!--
+            <div class="row">
+                <legend>Testing Characteristics (Scales: 0-5)</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Accuracy</div>
+                <div class="col-md-3">{{ form.accuracy }}</div>
+                <div class="col-md-2">Technical Security</div>
+                <div class="col-md-3">{{ form.technical_security }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Suitability</div>
+                <div class="col-md-3">{{ form.suitability }}</div>
+                <div class="col-md-2">Reliability</div>
+                <div class="col-md-3">{{ form.reliability }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Interoperability</div>
+                <div class="col-md-3">{{ form.interoperability }}</div>
+                <div class="col-md-2">Efficiency</div>
+                <div class="col-md-3">{{ form.efficiency }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Functional Security</div>
+                <div class="col-md-3">{{ form.functional_security }}</div>
+                <div class="col-md-2">Maintainability</div>
+                <div class="col-md-3">{{ form.maintainability }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Usability</div>
+                <div class="col-md-3">{{ form.usability }}</div>
+                <div class="col-md-2">Portability</div>
+                <div class="col-md-3">{{ form.portability }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Accessibility</div>
+                <div class="col-md-3">{{ form.accessibility }}</div>
+                <div class="col-md-2"></div>
+                <div class="col-md-3"></div>
+            </div>
+            -->
+
+            {% csrf_token %}
+            <div class="row" style="margin-top: 30px; margin-bottom: 50px;">
+                <div class="col-md-4">
+                </div>
+                {% if superuser %}
+                <div class="col-md-2">
+                    <input id="project_save" class="btn btn-primary" type="submit" value="Save" style="width: 100%">
+                </div>
+                <div class="col-md-2">
+                    <a href="#deleteModal"  data-toggle="modal" role="button" class="btn btn-default" id="project_delete" style="width: 100%;">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+
+        {% if project.score == 101 %}
+            <h4>No JIRA Data fetched.</h4>
+            No created issues
+{#        {% elif project.score == 103 %}#}
+{#            No open issues#}
+        {% elif project.score == 104 %}
+            <h4>No JIRA Data fetched.</h4>
+            No JIRA Data
+        {% elif project.score == 109 %}
+            <h4>No JIRA Data fetched.</h4>
+            No evaluate
+        {% else %}
+            <div class="row">
+                <legend>Components Percentage to CEEQ Score</legend>
+                <ul id="subnav-tabs" class="nav nav-tabs">
+                    <li><a href="#include_uat" data-toggle="tab">Overall</a> </li>
+                    <li><a href="#exclude_uat" data-toggle="tab">Internal Testing</a> </li>
+                    <li><a href="#only_uat" data-toggle="tab">UAT</a> </li>
+                    <li><a href="#custom" data-toggle="tab">Custom</a> </li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane" id="include_uat">
+                    {% include 'project_detail/project_detail_include_uat.html' %}
+                </div>
+
+                <div class="tab-pane" id="exclude_uat">
+                    {% include 'project_detail/project_detail_exclude_uat.html' %}
+                </div>
+
+                <div class="tab-pane" id="only_uat">
+                    {% include 'project_detail/project_detail_only_uat.html' %}
+                </div>
+
+                <div class="tab-pane" id="custom">
+                    {% include 'project_detail/project_detail_custom.html' %}
+                </div>
+            </div>
+
+        {% endif %}
+
+        <!--Delete Project confirmatoin modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 id="myModalLabel">Delete Project "{{ project.name }}"?</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Warning! This change cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <form method="post" action="">
+                        <button class="btn btn-default" data-dismiss="modal" id="project_undelete">Abort</button>
+                        <input type="hidden" name="delete" value="True">
+                        <a href="{% url 'project_delete' project.id %}" data-toggle="modal" role="button" class="btn btn-danger" id="project_really_delete">Delete</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <script type='text/javascript' src="{% static 'common/bootstrap-daterangepicker/1.2/moment.min.js' %}"></script>
+    <script type='text/javascript' src="{% static 'common/momentjs/tz/0.2.4/moment-timezone-with-data-2010-2020.js' %}"></script>
+    <script type='text/javascript' src="{% static 'common/bootstrap-daterangepicker/1.2/daterangepicker.js' %}"></script>
+{#    <script type='text/javascript' src="{% static 'common/momentjs/moment.js' %}"></script>#}
+
+    <script type="text/javascript">
+        var score = parseFloat({{ project.score }});
+        var data_include_uat = {{ dd_pie_data_include_uat | safe }};
+        var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
+        var data_only_uat = {{ dd_pie_data_only_uat | safe }};
+        var data_custom = {{ dd_pie_data_custom | safe }};
+        var last_tab = '{{ last_tab }}';
+
+        {% include 'project_detail/project_detail.js' %}
+
+        setStartDate("{{ start }}");
+        setEndDate("{{ end }}");
+        attachDateRangePicker();
+
+        if (data_include_uat[3] == 103 ) {
+            $('#component_percentage_pie_chart_include_uat').hide();
+            $('#export_data_include_uat').hide();
+            $('#qei_log_include_uat').show();
+        }
+        if (data_exclude_uat[3] == 103 ) {
+            $('#component_percentage_pie_chart_exclude_uat').hide();
+            $('#export_data_exclude_uat').hide();
+            $('#qei_log_exclude_uat').show();
+        }
+        if (data_only_uat[3] == 103 ) {
+            $('#component_percentage_pie_chart_only_uat').hide();
+            $('#export_data_only_uat').hide();
+            $('#qei_log_only_uat').show();
+        }
+        if (data_custom[3] == 103 ) {
+            $('#component_percentage_pie_chart_custom').hide();
+            $('#export_data_custom').hide();
+            $('#qei_log_custom').show();
+        }
+    </script>
+
+{% endblock %}

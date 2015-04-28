@@ -2,10 +2,10 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.core.urlresolvers import resolve, reverse
 
-
 from ceeq.apps.projects.models import Project
 from ceeq.apps.projects.views import projects, project_new, project_detail, project_edit, project_delete, \
     project_defects_density, project_update_scores, defects_density_log
+from ceeq.apps.users.models import UserSettings
 
 
 class ProjectsViewTests(TestCase):
@@ -27,7 +27,8 @@ class ProjectsViewTests(TestCase):
     def test_projects_view_with_no_projects(self):
         response = self.client.get(reverse('projects'))
         self.assertContains(response, "No projects available", status_code=200)
-        self.assertQuerysetEqual(response.context['projects'], [])
+        self.assertQuerysetEqual(response.context['projects_active'], [])
+        self.assertQuerysetEqual(response.context['projects_archive'], [])
 
     def test_projects_view_contains_projects_list(self):
         p1 = Project(name=self.project1['name'],
@@ -359,7 +360,7 @@ class ProjectDefectsDensityTests(TestCase):
         response = self.client.get(reverse('project_update_scores',
                                            args=[self.project_exist.id, ]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Projects List')
+        self.assertContains(response, 'Projects')
         self.assertContains(response, self.project['name'])
 
     def test_project_update_scores_with_invalid_id_gives_error(self):
@@ -402,10 +403,49 @@ class ProjectDefectsDensityLogTests(TestCase):
         response = self.client.get(reverse('defects_density_log',
                                            args=[self.project_exist.id, ]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Projects List')
+        self.assertContains(response, 'Projects')
         self.assertContains(response, self.project['name'])
 
     def test_project_defects_density_log_with_invalid_id_gives_error(self):
         response = self.client.get(reverse('defects_density_log',
                                            args=[100, ]))
         self.assertEqual(response.status_code, 404)
+
+
+class ProjectUatTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.project = {
+            'name': 'Test Project',
+            'jira_name': 'tp'
+        }
+        self.project_exist = Project.objects.create(name=self.project['name'],
+                                                    jira_name=self.project['jira_name'])
+
+        self.user_account = {
+            'username': 'userName',
+            'password': 'userPassword',
+            'email': ''
+        }
+        self.user = User.objects.create_user(
+            username=self.user_account['username'],
+            password=self.user_account['password']
+        )
+        UserSettings.objects.create(
+            user=self.user
+        )
+
+        self.client.login(
+            username=self.user_account['username'],
+            password=self.user_account['password']
+        )
+
+    def test_project_detail_uat_separation(self):
+        response = self.client.get(reverse('project_detail',
+                                       args=[self.project_exist.id, ]))
+
+        self.assertContains(response, self.project['name'])
+        self.assertContains(response, self.project['jira_name'])
+        self.assertContains(response, '<a href="#include_uat" data-toggle="tab">Overall</a>')
+        self.assertContains(response, '<a href="#exclude_uat" data-toggle="tab">Internal Testing</a>')
+        self.assertContains(response, '<a href="#only_uat" data-toggle="tab">UAT</a>')

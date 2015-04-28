@@ -14,7 +14,7 @@ $(document).ready(function() {
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Affected Version:'+key,
+                    text: 'Affected Version:'+data[key]['version_name'],
                     x: -20
                 },
                 xAxis: {
@@ -23,11 +23,15 @@ $(document).ready(function() {
                     },
                     categories: data[key]['categories'],
                     labels: {
-                        rotation: -45,
+                        //only display month-day in xAxis label
+                        formatter: function (){
+                            return this.value.substring(5);
+                        },
                         style: {
                             fontSize: '10px'
                         }
-                    }
+                    },
+                    tickInterval: Math.floor(data[key]['categories'].length / 10)
                 },
                 yAxis: {
                     title: {
@@ -40,7 +44,16 @@ $(document).ready(function() {
                     }]
                 },
                 tooltip: {
-                    valueSuffix: ''
+                    //pointFormat:'{series.name}: <b>{point.y}</b><br>',
+                    formatter:function(){
+                        var s = '<b>' + this.x + '</b>';
+                        $.each(this.points, function(){
+                            s += '<br/>' + this.series.name + ': <b>' + this.y + '</b>';
+                        });
+                        return s;
+                    },
+                    valueSuffix: '',
+                    shared: true
                 },
                 legend: {
                     layout: 'vertical',
@@ -54,6 +67,9 @@ $(document).ready(function() {
                     }
                 },
                 series: [{
+                    name: 'Application',
+                    data: data[key]['application']
+                },{
                     name: 'CXP',
                     data: data[key]['cxp']
                 },{
@@ -63,10 +79,7 @@ $(document).ready(function() {
                     name: 'Reports',
                     data: data[key]['reports']
                 },{
-                    name: 'Application',
-                    data: data[key]['application']
-                },{
-                    name: 'VoiceSlots',
+                    name: 'VoicePrompts',
                     data: data[key]['voiceSlots']
                 }],
                 credits: false
@@ -78,7 +91,7 @@ $(document).ready(function() {
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Affected Version:'+key,
+                    text: 'Affected Version:'+data[key]['version_name'],
                     x: -20
                 },
                 xAxis: {
@@ -87,11 +100,15 @@ $(document).ready(function() {
                     },
                     categories: data[key]['categories'],
                     labels: {
-                        rotation: -45,
+                        //only display month-day in xAxis label
+                        formatter: function (){
+                            return this.value.substring(5);
+                        },
                         style: {
                             fontSize: '10px'
                         }
-                    }
+                    },
+                    tickInterval: Math.floor(data[key]['categories'].length / 10)
                 },
                 yAxis: {
                     title: {
@@ -104,7 +121,12 @@ $(document).ready(function() {
                     }]
                 },
                 tooltip: {
-                    valueSuffix: ''
+                    //pointFormat:'{series.name}: <b>{point.y}</b><br>',
+                    formatter: function () {
+                        var s = '<b>' + this.x + '</b><br/>';
+                        s += this.series.name +': <b>' + this.y + '</b>';
+                        return s;
+                    }
                 },
                 legend: {
                     layout: 'vertical',
@@ -138,7 +160,7 @@ $(document).ready(function() {
                 {"title": "Platform"},
                 {"title": "Reports"},
                 {"title": "Application"},
-                {"title": "Voice Slots"},
+                {"title": "Prompts"},
                 {"title": "CEEQ"}
             ],
             "language": {

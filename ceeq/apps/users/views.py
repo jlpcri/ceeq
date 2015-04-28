@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import RequestContext
 
@@ -49,15 +50,39 @@ def home(request):
 
 @user_passes_test(user_is_superuser)
 def user_management(request):
-    users = User.objects.all().order_by('username')
-    current_user_id = request.user.id
+    if request.method == 'GET':
 
-    context = RequestContext(request, {
-        'users': users,
-        'current_user_id': current_user_id
-    })
+        sort_types = [
+            'username',
+            '-username',
+            'last_login',
+            '-last_login'
+        ]
+        users = ''
+        sort = request.GET.get('sort', '')
+        sort = sort if sort else 'username'
 
-    return render(request, 'user_management.html', context)
+        if sort in sort_types:
+            if sort == 'username':
+                users = User.objects.all().order_by('username')
+            elif sort == '-username':
+                users = User.objects.all().order_by('-username')
+            elif sort == 'last_login':
+                users = User.objects.all().order_by('last_login')
+            elif sort == '-last_login':
+                users = User.objects.all().order_by('-last_login')
+
+        current_user_id = request.user.id
+
+        context = RequestContext(request, {
+            'users': users,
+            'sort': sort,
+            'current_user_id': current_user_id
+        })
+
+        return render(request, 'user_management.html', context)
+
+    return HttpResponseNotFound()
 
 
 @user_passes_test(user_is_superuser)

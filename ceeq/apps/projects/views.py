@@ -1,7 +1,7 @@
-from datetime import date
+from datetime import date, datetime, timedelta
+import time
 from decimal import Decimal
 import json
-import copy
 
 from django.contrib import messages
 from django.http import HttpResponse
@@ -10,8 +10,11 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from collections import OrderedDict, defaultdict
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.mail import send_mail
+
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
-    project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute
+    project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute, \
+    get_priority_total, get_component_names, get_component_names_from_jira_data
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
@@ -21,11 +24,13 @@ from django.conf import settings
 
 
 def projects(request):
-    projects = Project.objects.all().order_by('name')
+    projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
     context = RequestContext(request, {
-        'projects': projects,
+        'projects_active': projects_active,
+        'projects_archive': projects_archive,
         'dds': project_dds,
         'framework_parameters': framework_parameters,
         'framework_parameters_items': ['jira_issue_weight_sum',
@@ -34,7 +39,7 @@ def projects(request):
         'superuser': request.user.is_superuser
 
     })
-    return render(request, 'projects_start.html', context)
+    return render(request, 'projects/projects_start.html', context)
 
 
 @login_required
@@ -46,10 +51,16 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
+    if project.complete and not request.user.is_superuser:
+        messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
+        return redirect(projects)
+
     form = ProjectForm(instance=project)
 
     component_names = []
     component_names_without_slash = []
+    component_names_custom = []
+    component_names_without_slash_custom = []
 
     try:
         jira_data = project.fetch_jira_data
@@ -67,80 +78,183 @@ def project_detail(request, project_id):
             'no_jira_data': jira_data,
             'version_names': ['All Versions']
         })
-        return render(request, 'project_detail.html', context)
+        return render(request, 'project_detail/project_detail.html', context)
+
+
 
     #List for choice of jira verion per project
     version_names = project.fectch_jira_versions
-    #version_names = version_name_from_jira_data(jira_data)
-    #version_names.append('All Versions')
 
-    # get jira_data based on version
-    if project.jira_version == 'All Versions':
-        version_data = jira_data['issues']
-    else:
-        version_data = []
-        for item in jira_data['issues']:
-            try:
-                name = str(item['fields']['versions'][0]['name'])
-            except UnicodeEncodeError:
-                name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
-            except IndexError:
-                continue
-            if name.decode('utf-8') == project.jira_version:
-                version_data.append(item)
+    version_data = jira_data['issues']
+
+    # Filter version_data for input created date range
+    try:
+        end = date.fromtimestamp(float(request.GET.get('end')))
+    except (TypeError, ValueError):
+        end = datetime.now().date()
+
+    try:
+        start = date.fromtimestamp(float(request.GET.get('start')))
+    except (TypeError, ValueError):
+        start = end - timedelta(days=29)
+
+    uat_type_custom = request.GET.get('uat_type_custom', 'exclude_uat')
+    last_tab = request.GET.get('last_tab', '')
+    #print start, end, uat_type_custom
+
+    version_data_custom = []
+    for item in version_data:
+        if start.strftime("%Y-%m-%d") <= item['fields']['created'] <= (end + timedelta(days=1)).strftime("%Y-%m-%d"):
+            version_data_custom.append(item)
 
     # Try get pie chart data
-    dd_pie_data = fetch_defects_density_score_pie(request, project.jira_name, version_data)
-    #print dd_pie_data
+    dd_pie_data_include_uat = fetch_defects_density_score_pie(request,
+                                                              project.jira_name,
+                                                              version_data,
+                                                              'include_uat')
+    dd_pie_data_exclude_uat = fetch_defects_density_score_pie(request,
+                                                              project.jira_name,
+                                                              version_data,
+                                                              'exclude_uat')
+    dd_pie_data_only_uat = fetch_defects_density_score_pie(request,
+                                                           project.jira_name,
+                                                           version_data,
+                                                           'only_uat')
+    dd_pie_data_custom = fetch_defects_density_score_pie(request,
+                                                         project.jira_name,
+                                                         version_data_custom,
+                                                         uat_type_custom)
+    #print dd_pie_data_custom
 
+    # get component_names and component_names_without_slash for version_data
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
-        component_names.append(name)
-        component_names_without_slash.append(truncate_after_slash(name))
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        if name:
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
 
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    #print component_names_without_slash
-    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
-    #print data
-    weight_factor = get_weight_factor(data, component_names_without_slash)
+    # get component_names and component_names_without_slash for version_data_custom
+    for item in version_data_custom:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
+            continue
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        if name:
+            component_names_custom.append(name)
+            component_names_without_slash_custom.append(truncate_after_slash(name))
+
+    component_names_custom = list(OrderedDict.fromkeys(component_names_custom))
+    component_names_without_slash_custom = list(OrderedDict.fromkeys(component_names_without_slash_custom))
+
+
+    # Calculate issue counts
+    data_include_uat = issue_counts_compute(request,
+                                            component_names,
+                                            component_names_without_slash,
+                                            version_data,
+                                            'components',
+                                            'include_uat')
+    data_exclude_uat = issue_counts_compute(request,
+                                            component_names,
+                                            component_names_without_slash,
+                                            version_data,
+                                            'components',
+                                            'exclude_uat')
+    data_only_uat = issue_counts_compute(request,
+                                         component_names,
+                                         component_names_without_slash,
+                                         version_data,
+                                         'components',
+                                         'only_uat')
+    data_custom = issue_counts_compute(request,
+                                       component_names_custom,
+                                       component_names_without_slash_custom,
+                                       version_data_custom,
+                                       'components',
+                                       uat_type_custom)
+
+    #print data_custom
+
+    weight_factor_include_uat = get_weight_factor(data_include_uat,
+                                                  component_names_without_slash)
+    weight_factor_exclude_uat = get_weight_factor(data_exclude_uat,
+                                                  component_names_without_slash)
+    weight_factor_only_uat = get_weight_factor(data_only_uat,
+                                               component_names_without_slash)
+    weight_factor_custom = get_weight_factor(data_custom,
+                                             component_names_without_slash_custom)
+
+    for item in weight_factor_include_uat:
+        # total number of JIRAs of Voice Prompts should not beyond 6
+        if item[0] == 'Voice Prompts' and item[3] > 6000:  # effective after Voice Prompts from Pheme
+            #messages.warning(request, 'Need send email to QEI')
+            send_mail('Number of Project \"{0}\" Voice Prompts exceed limitation - 6'.format(project.name),
+                      'Please check the number of JIRAs of component Voice Prompts \nProject: {0},\nAffected Version: {1}'.format(project.name, project.jira_version),
+                      'ceeqwic@gmail.com',  # sender
+                      ['sliu@west.com', ],  # receiver list
+                      #['QEIInnovation@west.com',],  # receiver list
+                      fail_silently=False
+            )
 
     #update ceeq score
-    project.score = project_detail_calculate_score(weight_factor)
+    project.score = project_detail_calculate_score(weight_factor_include_uat)
     project.save()
 
     # calculate total number of issues based on priority
-    priority_total = defaultdict(int)
+    priority_total_include_uat = get_priority_total(weight_factor_include_uat)
+    priority_total_exclude_uat = get_priority_total(weight_factor_exclude_uat)
+    priority_total_only_uat = get_priority_total(weight_factor_only_uat)
+    priority_total_custom = get_priority_total(weight_factor_custom)
 
-    for item in weight_factor:
-        #print item
-        priority_total['total'] += item[3]
-        for status in settings.ISSUE_STATUS_FIELDS:
-            priority_total[status[0]] += sum(item[i] for i in status[1])
-
-    try:
-        component_names_exist = list(zip(*weight_factor)[0])
-    except IndexError:
-        component_names_exist = None
+    component_names_exist_include_uat = get_component_names(weight_factor_include_uat)
+    component_names_exist_exclude_uat = get_component_names(weight_factor_exclude_uat)
+    component_names_exist_only_uat = get_component_names(weight_factor_only_uat)
+    component_names_exist_custom = get_component_names(weight_factor_custom)
 
     context = RequestContext(request, {
         'form': form,
         'project': project,
-        'weight_factor': weight_factor,
-        'priority_total': priority_total,
+        'weight_factor_include_uat': weight_factor_include_uat,
+        'weight_factor_exclude_uat': weight_factor_exclude_uat,
+        'weight_factor_only_uat': weight_factor_only_uat,
+        'weight_factor_custom': weight_factor_custom,
+
+        'priority_total_include_uat': priority_total_include_uat,
+        'priority_total_exclude_uat': priority_total_exclude_uat,
+        'priority_total_only_uat': priority_total_only_uat,
+        'priority_total_custom': priority_total_custom,
+
         'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
-        'component_names': component_names_exist,
+        'component_names_include_uat': component_names_exist_include_uat,
+        'component_names_exclude_uat': component_names_exist_exclude_uat,
+        'component_names_only_uat': component_names_exist_only_uat,
+        'component_names_custom': component_names_exist_custom,
+
+        'start': float(request.GET.get('start', time.mktime(start.timetuple()))),
+        'end': time.mktime(end.timetuple()),
+        'uat_type_custom': uat_type_custom,
+        'last_tab': last_tab,
+
         'superuser': request.user.is_superuser,
         'version_names': version_names,
-        'dd_pie_data': json.dumps(dd_pie_data)
+        'dd_pie_data_include_uat': json.dumps(dd_pie_data_include_uat),
+        'dd_pie_data_exclude_uat': json.dumps(dd_pie_data_exclude_uat),
+        'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat),
+        'dd_pie_data_custom': json.dumps(dd_pie_data_custom)
     })
-    return render(request, 'project_detail.html', context)
+    return render(request, 'project_detail/project_detail.html', context)
 
 
 @login_required
@@ -153,27 +267,28 @@ def project_defects_density(request, project_id):
     """
     project = get_object_or_404(Project, pk=project_id)
     if project.jira_version == 'All Versions':
-        project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version', 'created')
+        project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version', '-created')
     else:
-        project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project, version=project.jira_version).order_by('created')
+        project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project, version=project.jira_version).order_by('-created')
 
     version_names = []
     for project_dd in project_dds:
         version_names.append(project_dd.version)
     version_names = list(OrderedDict.fromkeys(version_names))
 
-    #change '.' and ' ' to '_' from version names
+    #change '.', ' ' and '/' to '_' from version names
     version_names_removed = []
     for version_name in version_names:
-        version_names_removed.append(remove_period_space(version_name))
+        version_names_removed.append({
+            'original_name': version_name,
+            'js_name': remove_period_space(version_name),
+        })
 
     try:
         jira_data = project.fetch_jira_data
     except ValueError:
         messages.warning(request, 'Cannot Access to JIRA')
         return render(request, 'home.html')
-
-    #check whether fetch the data from jira or not
 
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
@@ -182,9 +297,27 @@ def project_defects_density(request, project_id):
         'superuser': request.user.is_superuser,
         'no_jira_data': jira_data,
         })
-        return render(request, 'projects_dd_start.html', context)
+        return render(request, 'defects_density/projects_dd_start.html', context)
     else:
         weight_factor_versions = get_component_defects_density(request, jira_data)
+
+    #check whether fetch the data from jira or not
+    if not jira_data['issues']:
+        messages.warning(request, 'No JIRA data fetched!')
+        return render(request, 'home.html')
+
+    priority_total = defaultdict(int)
+    if project.jira_version != 'All Versions':
+        project.score = project_detail_calculate_score(weight_factor_versions[project.jira_version])
+        project.save()
+
+        # calculate total number of issues based on priority
+        for item in weight_factor_versions[project.jira_version]:
+            priority_total['total'] += item[3]
+            for status in settings.ISSUE_STATUS_FIELDS:
+                priority_total[status[0]] += sum(item[i] for i in status[1])
+    else:
+        priority_total = None
 
     context = RequestContext(request, {
         'project': project,
@@ -192,9 +325,10 @@ def project_defects_density(request, project_id):
         'version_names': version_names_removed,
         'weight_factor_versions': weight_factor_versions,
         'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
+        'priority_total': priority_total,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'projects_dd_start.html', context)
+    return render(request, 'defects_density/projects_dd_start.html', context)
 
 
 def get_component_defects_density(request, jira_data):
@@ -215,9 +349,10 @@ def get_component_defects_density(request, jira_data):
                 name = str(item['fields']['versions'][0]['name'])
             except UnicodeEncodeError:
                 name = u''.join(item['fields']['versions'][0]['name']).encode('utf-8').strip()
+                name = name.decode('utf-8')
             except IndexError:
                 continue
-            if name.decode('utf-8') == version_name:
+            if name == version_name:
                 temp_data.append(item)
 
         version_data[version_name] = temp_data
@@ -234,19 +369,26 @@ def get_component_defects_density(request, jira_data):
             jira_issue_weight_sum = Decimal(1.00)
 
         for item in version_data[key]:
-            try:
-                name = str(item['fields']['components'][0]['name'])
-            except UnicodeEncodeError:
-                name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-            except IndexError:
+            # if first item-component is not in framework, then check next, until end
+            component_len = len(item['fields']['components'])
+            if component_len == 0:
                 continue
-            component_names.append(name)
-            component_names_without_slash.append(truncate_after_slash(name))
+            else:
+                name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+            if name:
+                component_names.append(name)
+                component_names_without_slash.append(truncate_after_slash(name))
 
         component_names = list(OrderedDict.fromkeys(component_names))
         component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-        data = issue_counts_compute(request, component_names, component_names_without_slash, version_data[key], 'components')
+        data = issue_counts_compute(request,
+                                    component_names,
+                                    component_names_without_slash,
+                                    version_data[key],
+                                    'components',
+                                    'include_uat')
 
         #calculate issues number of components and sub-components
         weight_factor_versions[key] = get_weight_factor(data, component_names_without_slash)
@@ -273,7 +415,7 @@ def project_edit(request, project_id):
                 'superuser': request.user.is_superuser,
                 'version_names': ['All Versions']
             })
-            return render(request, 'project_detail.html', context)
+            return render(request, 'project_detail/project_detail.html', context)
     else:
         return redirect(projects)
 
@@ -291,13 +433,13 @@ def project_new(request):
             context = RequestContext(request, {
                 'form': form,
             })
-            return render(request, 'project_new.html', context)
+            return render(request, 'projects/project_new.html', context)
     else:
         form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
         })
-        return render(request, 'project_new.html', context)
+        return render(request, 'projects/project_new.html', context)
 
 
 @user_passes_test(user_is_superuser)
@@ -317,21 +459,25 @@ def project_update_scores(request, project_id):
     :param project_id:
     :return:
     """
-    projects = Project.objects.all().order_by('name')
+    projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
-        for project in projects:
-            calculate_score(request, project)
+        for project in projects_active:
+            if not project.complete:
+                calculate_score(request, project)
     else:
         project = get_object_or_404(Project, pk=project_id)
-        calculate_score(request, project)
+        if not project.complete:
+            calculate_score(request, project)
 
     context = RequestContext(request, {
-        'projects': projects,
+        'projects_active': projects_active,
+        'projects_archive': projects_archive,
         'framework_parameters': framework_parameters,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'projects_start.html', context)
+    return render(request, 'projects/projects_start.html', context)
 
 
 def calculate_score(request, project):
@@ -358,6 +504,7 @@ def calculate_score(request, project):
         return
 
     #get jira data based on version
+    """
     if project.jira_version == 'All Versions':
         version_data = jira_data['issues']
     else:
@@ -371,22 +518,32 @@ def calculate_score(request, project):
                 continue
             if name.decode('utf-8') == project.jira_version:
                 version_data.append(item)
+    """
+
+    version_data = jira_data['issues']
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
-        component_names.append(name)
-        component_names_without_slash.append(truncate_after_slash(name))
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        if name:
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
 
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
     # Construct # of different priority issues dict from jira_data
-    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
+    data = issue_counts_compute(request,
+                                component_names,
+                                component_names_without_slash,
+                                version_data,
+                                'components',
+                                'include_uat')
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
 
@@ -427,12 +584,21 @@ def fetch_projects_score(request):
             score: X axis value
             id: project id for hyperlink of project detail
     """
-    projects = Project.objects.all().order_by('name')
+    #projects = Project.objects.filter(complete=False).order_by('name')
+    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     data = {}
 
     data['categories'] = [project.name for project in projects]
     # score = 102 represents it is below zero
-    data['score'] = [str(project.score) if project.score < 10 else str(0) for project in projects]
+    #data['score'] = [str(project.score) if project.score < 10 else str(0) for project in projects]
+    data['score'] = []
+    for project in projects:
+        if project.score < 10:
+            data['score'].append(str(project.score))
+        elif project.score == 103:
+            data['score'].append(str(10.00))
+        else:
+            data['score'].append(str(0))
     data['id'] = [str(project.id) for project in projects]
 
     return HttpResponse(json.dumps(data), content_type="application/json")
@@ -481,7 +647,8 @@ def fetch_defects_density_score(request, project_id):
                 else:
                     tmp_day = str(item.created.day)
                 #print tmp_month + '-' + tmp_day
-                tmp_categories.append(tmp_month + '-' + tmp_day)
+                tmp_year = str(item.created.year)
+                tmp_categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
                 tmp_data_voiceSlots.append(float(item.voiceSlots))
                 tmp_data_cxp.append(float(item.cxp))
@@ -504,13 +671,14 @@ def fetch_defects_density_score(request, project_id):
         data['ceeq'] = tmp_data_ceeq
         data['ceeq_average'] = round(float(tmp_data_ceeq_sum / tmp_data_ceeq_count), 2)
 
+        data['version_name'] = version_name
         #change '.' and ' ' to '_' from version names
         dd_trend_data[remove_period_space(version_name)] = data
 
     return HttpResponse(json.dumps(dd_trend_data), content_type="application/json")
 
 
-def fetch_defects_density_score_pie(request, jira_name, version_data):
+def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
     """
     Used for pie chart along with drawing data table
     :param request:
@@ -522,22 +690,32 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
     component_names_without_slash = []
 
     for item in version_data:
-        try:
-            name = str(item['fields']['components'][0]['name'])
-        except UnicodeEncodeError:
-            name = ''.join(item['fields']['components'][0]['name']).encode('utf-8').strip()
-        except IndexError:
+        # if first item-component is not in framework, then check next, until end
+        component_len = len(item['fields']['components'])
+        if component_len == 0:
             continue
-        component_names.append(name)
-        component_names_without_slash.append(truncate_after_slash(name))
+        else:
+            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+
+        if name:
+            component_names.append(name)
+            component_names_without_slash.append(truncate_after_slash(name))
 
     component_names = list(OrderedDict.fromkeys(component_names))
     component_names_without_slash = list(OrderedDict.fromkeys(component_names_without_slash))
 
-    data = issue_counts_compute(request, component_names, component_names_without_slash, version_data, 'components')
+    data = issue_counts_compute(request,
+                                component_names,
+                                component_names_without_slash,
+                                version_data,
+                                'components',
+                                uat_type)
 
     weight_factor = get_weight_factor(data, component_names_without_slash)
     #print weight_factor
+
+    project_score_uat = project_detail_calculate_score(weight_factor)
+    #print uat_type, ':', project_score_uat
 
     # calculate total number of issues based on priority
     priority_total = defaultdict(int)
@@ -558,7 +736,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
         # for color index
         temp_graph.append(sorted(settings.COMPONENT_NAMES_STANDARD.keys()).index(item[0]))
 
-        temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data)
+        temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data, uat_type)
 
         priority_total['total'] += item[3]  # Total of all issues of pie chart table
         temp_table.append(item[0])  # Component name
@@ -609,6 +787,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data):
     dd_pie_data.append(dd_pie_graph)
     dd_pie_data.append(dd_pie_table)
     dd_pie_data.append(temp_table)
+    dd_pie_data.append(project_score_uat)
     #dd_pie_data.append((jira_name, request.user.is_superuser))
 
     return dd_pie_data
@@ -621,23 +800,27 @@ def defects_density_log(request, project_id):
     :param project_id:
     :return:
     """
-    projects = Project.objects.all().order_by('name')
+    projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     framework_parameters = FrameworkParameter.objects.all()
     if project_id == '1000000':
-        for project in projects:
-            defects_density_single_log(request, project)
+        for project in projects_active:
+            if not project.complete:
+                defects_density_single_log(request, project)
     else:
         #project = Project.objects.get(pk=project_id)
         project = get_object_or_404(Project, pk=project_id)
-        defects_density_single_log(request, project)
+        if not project.complete:
+            defects_density_single_log(request, project)
 
     context = RequestContext(request, {
-        'projects': projects,
+        'projects_active': projects_active,
+        'projects_archive': projects_archive,
         'framework_parameters': framework_parameters,
         'superuser': request.user.is_superuser
     })
 
-    return render(request, 'projects_start.html', context)
+    return render(request, 'projects/projects_start.html', context)
 
 
 def defects_density_single_log(request, project):
@@ -656,13 +839,13 @@ def defects_density_single_log(request, project):
     #check whether fetch the data from jira or not
 
     if jira_data == 'No JIRA Data':
-        #messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
         context = RequestContext(request, {
         'project': project,
         'superuser': request.user.is_superuser,
         'no_jira_data': jira_data,
         })
-        return render(request, 'projects_dd_start.html', context)
+        return render(request, 'defects_density/projects_dd_start.html', context)
     else:
         weight_factor_versions = get_component_defects_density(request, jira_data)
 
@@ -679,6 +862,7 @@ def defects_density_single_log(request, project):
 
         # use ceeq field to store ceeq score
         component_defects_density.ceeq = (1 - ceeq_raw) * 10
+
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
             if component[0] == 'CXP':
@@ -689,10 +873,34 @@ def defects_density_single_log(request, project):
                 component_defects_density.reports = component[2]
             elif component[0] == 'Application':
                 component_defects_density.application = component[2]
-            elif component[0] == 'Voice Slots':
+            elif component[0] == 'Voice Prompts':
                 component_defects_density.voiceSlots = component[2]
         component_defects_density.save()
 
     return
 
 
+def project_archive(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        if project.complete:
+            project.complete = False
+        elif not project.complete:
+            project.complete = True
+
+        project.save()
+
+    return redirect(projects)
+
+
+def project_track(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        if project.active:
+            project.active = False
+        elif not project.active:
+            project.active = True
+
+        project.save()
+
+    return redirect(projects)

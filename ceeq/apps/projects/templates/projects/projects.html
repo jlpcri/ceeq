@@ -1,0 +1,166 @@
+<ul class="nav nav-pills" id="projects-pills">
+    <li><a href="#projects-active" data-toggle="pill">Projects</a> </li>
+    <li><a href="#projects-archive" data-toggle="pill">Archives</a> </li>
+</ul>
+
+
+<div class="tab-content" id="projects-content">
+    <div class="tab-pane" id="projects-active">
+        <br>
+            {% if projects_active %}
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-md-8">
+                    <small>
+                        {% if superuser %}
+                            <i class="fa fa-pencil fa=lg"></i> Create a <a href="{% url 'project_new' %}"> New Project </a> &nbsp; | &nbsp;
+                        {% endif %}
+                        <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'defects_density_log' 1000000 %}" id="dd_log_all"> Log All DDs</a> &nbsp; | &nbsp;
+                        <i class="fa fa-refresh fa-lg"></i><a href="{% url 'project_update_scores' 1000000 %}" id="update_all"> Update All Scores</a>
+                    </small>
+                </div>
+                <div class="col-md-2">
+                    <p id="throbber" hidden><i class="fa fa-spinner fa-2x fa-spin"></i> </p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-condensed table-bordered" style="text-transform: capitalize;">
+                    <thead>
+                        <tr>
+                            <td class="col-md-3"><strong>Name</strong></td>
+                            <td class="col-md-3"><strong>JIRA Version</strong></td>
+                            <td class="col-md-2"><strong>JIRA URL</strong></td>
+                            <td class="col-md-4"><strong>Evaluation</strong></td>
+                            <td class="col-md-2"><strong>Update</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in projects_active %}
+                            <tr>
+                                <td><a href='{% url 'project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
+                                <td>
+                                    {% if project.jira_version == 'All Versions' %}
+                                        <a href="http://jira.west.com/issues/?jql=project = {{ project.jira_name }}" target="_blank">
+                                    {% else %}
+                                        <a href='http://jira.west.com/issues/?jql=project = {{ project.jira_name }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                    {% endif %}
+                                    {{ project.jira_version }}</a>
+                                </td>
+                                <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
+                                <td>
+                                    {% if project.score == 101 %}
+                                        No created issues
+                                    {% elif project.score == 102 %}
+                                        <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
+                                    {% elif project.score == 103 %}
+                                        {# No open issues#}
+                                        <a href="{% url 'project_defects_density' project.id %}"> 10.0</a>
+                                        {% if superuser %}
+                                            <i class="fa fa-indent"></i>
+                                            <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>
+                                        {% endif %}
+
+                                    {% elif project.score == 104 %}
+                                        No JIRA Data
+                                    {% elif project.score == 109 %}
+                                        No evaluation
+                                    {% else %}
+                                        <a href="{% url 'project_defects_density' project.id %}">
+                                            {% if project.score < 0 %}
+                                                <font color="red">{{ project.score |floatformat:2 }}</font>
+                                            {% else %}
+                                                {{ project.score |floatformat:2 }}
+                                            {% endif %}
+                                        </a>
+                                        {% if superuser %}
+                                            <i class="fa fa-indent"></i>
+                                            <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td><a href="{% url 'project_update_scores' project.id %}"
+                                       id="update_single_{{ project.id }}" onclick="$('#throbber').show();"
+                                       style="color: green; padding-left: 25%; cursor: pointer; cursor: hand;"><i class="fa fa-refresh"></i></a> </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+        <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'project_new' %}"> New Project </a>
+        </small>
+        <p>No projects available</p>
+        {% endif %}
+    </div>
+
+    <div class="tab-pane" id="projects-archive">
+        <br>
+            {% if projects_archive %}
+
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-condensed table-bordered" style="text-transform: capitalize;">
+                    <thead>
+                        <tr>
+                            <td class="col-md-3"><strong>Name</strong></td>
+                            <td class="col-md-3"><strong>JIRA Version</strong></td>
+                            <td class="col-md-2"><strong>JIRA URL</strong></td>
+                            <td class="col-md-4"><strong>Evaluation</strong></td>
+                            <td class="col-md-2"><strong>Update</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in projects_archive %}
+                            <tr>
+                                <td><a href='{% url 'project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
+                                <td>
+                                    {% if project.jira_version == 'All Versions' %}
+                                        <a href="http://jira.west.com/issues/?jql=project = {{ project.jira_name }}" target="_blank">
+                                    {% else %}
+                                        <a href='http://jira.west.com/issues/?jql=project = {{ project.jira_name }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                    {% endif %}
+                                    {{ project.jira_version }}</a>
+                                </td>
+                                <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
+                                <td>
+                                    {% if project.score == 101 %}
+                                        No created issues
+                                    {% elif project.score == 102 %}
+                                        <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
+                                    {% elif project.score == 103 %}
+                                        <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
+
+                                    {% elif project.score == 104 %}
+                                        No JIRA Data
+                                    {% elif project.score == 109 %}
+                                        No evaluation
+                                    {% else %}
+                                        <a href="{% url 'project_defects_density' project.id %}">
+                                            {% if project.score < 0 %}
+                                                <font color="red">{{ project.score |floatformat:2 }}</font>
+                                            {% else %}
+                                                {{ project.score |floatformat:2 }}
+                                            {% endif %}
+                                        </a>
+                                        {% if superuser %}
+                                            <i class="fa fa-indent"></i>
+                                            <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td> N/A </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No archived projects available</p>
+        {% endif %}
+    </div>
+</div>
+
+
+{% block footer %}
+
+{% endblock %}
