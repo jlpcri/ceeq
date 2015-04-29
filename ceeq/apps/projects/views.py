@@ -555,13 +555,23 @@ def calculate_score(request, project):
     #print round(raw_score, 2)
 
     #Calculate VAF(Value Adjustment Factor)
-    #test_character = project.accuracy + project.suitability + project.interoperability \
-    #+ project.functional_security + project.usability + project.accessibility \
-    #+ project.technical_security + project.reliability + project.efficiency \
-    #+ project.maintainability + project.portability
+    test_character = project.accuracy + project.suitability + project.interoperability \
+    + project.functional_security + project.usability + project.accessibility \
+    + project.technical_security + project.reliability + project.efficiency \
+    + project.maintainability + project.portability
 
-    #vaf = vaf_ratio * test_character + vaf_exp   # VAF value
+    framework_parameters = FrameworkParameter.objects.all()
+    for parameter in framework_parameters:
+        if parameter.parameter == 'vaf_ratio':
+            vaf_ratio = parameter.value
+        elif parameter.parameter == 'vaf_exp':
+            vaf_exp = parameter.value
+    vaf = vaf_ratio * test_character + vaf_exp   # VAF value
+    print vaf, (1 - raw_score / vaf) * 10
+
     score = (1 - raw_score) * 10  # projects score = 10 - defect score
+
+    print 'VAF Score: ', "%.2f" % ((1-raw_score/vaf) * 10), ' vs CEEQ Score: ', "%.2f" % score
 
     if score < 0:  # projects score out of range (0-10)
         #project.score = 20

@@ -26,8 +26,8 @@ class ProjectForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_name', 'jira_version', 'active', 'complete']
-        #exclude = ('created', 'score')
+        #fields = ['name', 'jira_name', 'jira_version', 'active', 'complete']
+        exclude = ('created', 'modified', 'score')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'jira_name': forms.TextInput(attrs={'class': 'form-control'}),
