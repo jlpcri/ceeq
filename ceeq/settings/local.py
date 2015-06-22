@@ -14,6 +14,10 @@ elif socket.gethostname() == 'OM1960L1':
     STATICFILES_DIRS = ('c:/static/',)
     JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=100&jql=project=' % (JIRA_API_FIELDS)
 
+INSTALLED_APPS += ('debug_toolbar',)
+MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+INTERNAL_IPS = ('127.0.0.1', '10.6.20.127')
+
 
 # DATABASES = {
 #     'default': {
