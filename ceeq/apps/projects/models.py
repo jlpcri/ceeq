@@ -32,7 +32,7 @@ class Project(models.Model):
     portability = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
 
     def __unicode__(self):
-        return unicode(self.name)
+        return '{0}: {1}'.format(self.name, self.score)
 
     @property
     def fetch_jira_data(self):
@@ -109,7 +109,7 @@ class ProjectComponentsDefectsDensity(models.Model):
     voiceSlots = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
     def __unicode__(self):
-        return unicode(self.project.name)
+        return '{0}: {1}'.format(self.project.name, self.version)
 
     class Meta:
         #unique_together = (("project", "created", "version"),)
@@ -120,5 +120,8 @@ class FrameworkParameter(models.Model):
     #Store framework parameters: jira_issue_weight_sum, vaf_ratio, vaf_exp
     parameter = models.CharField(max_length=200, unique=True)
     value = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.parameter, self.value)
 
 

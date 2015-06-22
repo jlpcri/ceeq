@@ -360,8 +360,8 @@ function loadActiveDataTab() {
                     {"title": "CEEQ"}
                 ],
                 "language": {
-                    "decimal": ",",
-                    "thousands": "."
+                    "decimal": ".",
+                    "thousands": ","
                 }
             });
         });
