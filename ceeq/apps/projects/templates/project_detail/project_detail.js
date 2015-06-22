@@ -42,12 +42,12 @@ function attachDateRangePicker() {
             timePickerIncrement: 1
         },
         function (start, end) {
-            $('#report-range span').html(moment.tz(start.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(end.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
+            $('#report-range span').html(moment.tz(start.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(end.valueOf(), 'America/Chicago').endOf('day').format('MMMM D, YYYY HH:mm'));
             startDatetime = moment.tz(start.valueOf(), 'America/Chicago');
             endDatetime = moment.tz(end.valueOf(), 'America/Chicago');
             loadRecords();
         });
-    $('#report-range span').html(moment.tz(startDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(endDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm'));
+    $('#report-range span').html(moment.tz(startDatetime.valueOf(), 'America/Chicago').format('MMMM D, YYYY HH:mm') + ' - ' + moment.tz(endDatetime.valueOf(), 'America/Chicago').endOf('day').format('MMMM D, YYYY HH:mm'));
 }
 
 function attachUatType(){

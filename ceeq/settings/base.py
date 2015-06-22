@@ -208,9 +208,9 @@ ISSUE_PRIORITY_WEIGHT = {
  10668-Pending,
  10669-Research
 """
-ISSUE_STATUS_OPEN = ['1', '3', '4', '10001', '10003', '10062', '10668', '10669']
+ISSUE_STATUS_OPEN = ['1', '3', '4', '10003', '10062', '10668', '10669']
 #issue_status_in_progress = '3'
-ISSUE_STATUS_RESOLVED = ['5']
+ISSUE_STATUS_RESOLVED = ['5', '10001']
 ISSUE_STATUS_CLOSED = ['6']
 #issue_status_uat_testing = '10001'
 #issue_status_discovery = '10003'
