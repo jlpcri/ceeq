@@ -754,8 +754,11 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
         donut_pie_inner.append(temp_graph)
         donut_pie_outer.append(temp_graph_subcomponent)
 
+    dd_pie_table_subcomponent = []   # calculate issues count per sub-component
+
     for item in sorted(settings.COMPONENT_NAMES_STANDARD.keys()):
         temp_table = []
+
         try:
             if item not in list(zip(*weight_factor)[0]):
                 temp_table.append(item)
@@ -768,6 +771,25 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
                 dd_pie_table.append(temp_table)
         except IndexError:
             continue
+
+        for each in data:
+            temp_table_subcomponent = []
+            sub_total = 0
+
+            if each.startswith(item + '/'):
+                temp_table_subcomponent.append(each)
+                for status in settings.ISSUE_STATUS_FIELDS:
+                    temp_table_subcomponent.append(float(data[each][status[0]]['open']))
+                    temp_table_subcomponent.append(float(data[each][status[0]]['resolved']))
+                    temp_table_subcomponent.append(float(data[each][status[0]]['closed']))
+                    sub_total += sum(data[each][status[0]].itervalues())
+            else:
+                continue
+
+            temp_table_subcomponent.append(None)
+            temp_table_subcomponent.append(sub_total)
+
+            dd_pie_table_subcomponent.append(temp_table_subcomponent)
 
     temp_table = []
     temp_table.append('Total')
@@ -789,6 +811,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
     dd_pie_data.append(temp_table)
     dd_pie_data.append(project_score_uat)
     #dd_pie_data.append((jira_name, request.user.is_superuser))
+    dd_pie_data.append(dd_pie_table_subcomponent)
 
     return dd_pie_data
 

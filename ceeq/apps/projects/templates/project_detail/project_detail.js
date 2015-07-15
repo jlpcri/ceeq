@@ -94,6 +94,7 @@ function loadUatActiveDataTab() {
 
 function displayPieChart(data, uat_type) {
 
+    console.log(data);
     if (score < 10) {
         //Create the data table
         Highcharts.drawTable = function () {
@@ -119,7 +120,7 @@ function displayPieChart(data, uat_type) {
                 cellLeft = tableLeft;
 
             // draw components lables
-            $.each(data[1], function (i, item) {
+            $.each(data[4], function (i, item) {
                 renderer.text(
                     item[0],
                         cellLeft + cellPadding,
@@ -185,7 +186,7 @@ function displayPieChart(data, uat_type) {
                     .add();
             });
 
-            $.each(data[1], function (row, item) {
+            $.each(data[4], function (row, item) {
                 cellLeft = tableLeft + colWidth * 2;
 
                 // apply number of jiras
@@ -222,9 +223,9 @@ function displayPieChart(data, uat_type) {
                         Highcharts.tableLine( // bottom - 1
                             renderer,
                             tableLeft,
-                                tableTop + (data[1].length + i) * rowHeight + cellPadding,
+                                tableTop + (data[4].length + i) * rowHeight + cellPadding,
                                 cellLeft + colWidth * 1.5,
-                                tableTop + (data[1].length + i) * rowHeight + cellPadding
+                                tableTop + (data[4].length + i) * rowHeight + cellPadding
                         );
                     }
 
@@ -246,7 +247,7 @@ function displayPieChart(data, uat_type) {
                     renderer.text(
                         priority_total,
                             cellLeft - cellPadding,
-                            tableTop + (data[1].length + 3) * rowHeight - cellPadding
+                            tableTop + (data[4].length + 3) * rowHeight - cellPadding
                     )
                         .attr({
                             align: 'center'
@@ -262,7 +263,7 @@ function displayPieChart(data, uat_type) {
                     renderer.text(
                         priority_total,
                             tableLeft + cellPadding,
-                            tableTop + (data[1].length + 3) * rowHeight - cellPadding
+                            tableTop + (data[4].length + 3) * rowHeight - cellPadding
                     )
                         .css({
                             //fontWeight: 'bold',
@@ -284,7 +285,7 @@ function displayPieChart(data, uat_type) {
              tableLeft,
              tableTop + cellPadding,
              tableLeft,
-             tableTop + (data[1].length + 1) * rowHeight + cellPadding
+             tableTop + (data[4].length + 1) * rowHeight + cellPadding
              );
              }
 
@@ -293,7 +294,7 @@ function displayPieChart(data, uat_type) {
              cellLeft,
              tableTop + cellPadding,
              cellLeft,
-             tableTop + (data[1].length + 1) * rowHeight + cellPadding
+             tableTop + (data[4].length + 1) * rowHeight + cellPadding
              );
 
              if (i == row_label.length - 1) { // right table border
@@ -303,7 +304,7 @@ function displayPieChart(data, uat_type) {
              cellLeft + colWidth + 35,
              tableTop + cellPadding,
              cellLeft + colWidth + 35,
-             tableTop + (data[1].length + 1) * rowHeight + cellPadding
+             tableTop + (data[4].length + 1) * rowHeight + cellPadding
              );
              }
              })
