@@ -2,6 +2,7 @@ from datetime import date, datetime, timedelta
 import time
 from decimal import Decimal
 import json
+from operator import itemgetter
 
 from django.contrib import messages
 from django.http import HttpResponse
@@ -396,7 +397,6 @@ def get_component_defects_density(request, jira_data):
     return weight_factor_versions
 
 
-
 @user_passes_test(user_is_superuser)
 def project_edit(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
@@ -777,7 +777,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
             sub_total = 0
 
             if each.startswith(item + '/'):
-                temp_table_subcomponent.append(each)
+                temp_table_subcomponent.append(each[len(item) + 1:])
                 for status in settings.ISSUE_STATUS_FIELDS:
                     temp_table_subcomponent.append(float(data[each][status[0]]['open']))
                     temp_table_subcomponent.append(float(data[each][status[0]]['resolved']))
@@ -786,8 +786,11 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
             else:
                 continue
 
-            temp_table_subcomponent.append(None)
-            temp_table_subcomponent.append(sub_total)
+            if sub_total == 0:
+                continue
+            else:
+                temp_table_subcomponent.append(None)
+                temp_table_subcomponent.append(sub_total)
 
             dd_pie_table_subcomponent.append(temp_table_subcomponent)
 
@@ -811,7 +814,9 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
     dd_pie_data.append(temp_table)
     dd_pie_data.append(project_score_uat)
     #dd_pie_data.append((jira_name, request.user.is_superuser))
-    dd_pie_data.append(dd_pie_table_subcomponent)
+
+    # sub components issue counts sorted by subtotal
+    dd_pie_data.append(sorted(dd_pie_table_subcomponent, key=itemgetter(17), reverse=True))
 
     return dd_pie_data
 

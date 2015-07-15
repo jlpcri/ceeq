@@ -94,7 +94,6 @@ function loadUatActiveDataTab() {
 
 function displayPieChart(data, uat_type) {
 
-    console.log(data);
     if (score < 10) {
         //Create the data table
         Highcharts.drawTable = function () {
@@ -160,7 +159,7 @@ function displayPieChart(data, uat_type) {
                         cellLeft - cellPadding * 6,
                         tableTop + rowHeight + cellPadding,
                         cellLeft - cellPadding * 6,
-                        tableTop + (data[1].length + 3) * rowHeight + cellPadding
+                        tableTop + (data[4].length + 3) * rowHeight + cellPadding
                 );
             });
 
