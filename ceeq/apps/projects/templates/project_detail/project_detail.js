@@ -73,19 +73,32 @@ $(document).ready(function(){
 
 
 function loadUatActiveDataTab() {
+    var div_pie_height;
     if (active_tab == '#include_uat') {
+        div_pie_height = data_include_uat[4].length * 25 + 450;
+        $('#component_percentage_pie_chart_include_uat').height(div_pie_height);
+
         donut_pie = 'include_uat';
         displayPieChart(data_include_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#exclude_uat') {
+        div_pie_height = data_exclude_uat[4].length * 25 + 450;
+        $('#component_percentage_pie_chart_exclude_uat').height(div_pie_height);
+
         donut_pie = 'exclude_uat';
         displayPieChart(data_exclude_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#only_uat') {
+        div_pie_height = data_only_uat[4].length * 25 + 450;
+        $('#component_percentage_pie_chart_only_uat').height(div_pie_height);
+
         donut_pie = 'only_uat';
         displayPieChart(data_only_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#custom') {
+        div_pie_height = data_custom[4].length * 25 + 450;
+        $('#component_percentage_pie_chart_custom').height(div_pie_height);
+
         donut_pie = 'custom';
         displayPieChart(data_custom, donut_pie);
         displayQEIlogo(donut_pie);
