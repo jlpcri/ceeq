@@ -79,7 +79,7 @@ INSTALLED_APPS = (
     'ceeq.apps.users',
     'ceeq.apps.search',
     'ceeq.api',
-    #'south',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (

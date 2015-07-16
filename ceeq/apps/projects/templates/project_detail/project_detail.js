@@ -73,19 +73,32 @@ $(document).ready(function(){
 
 
 function loadUatActiveDataTab() {
+    var div_pie_height;
     if (active_tab == '#include_uat') {
+        div_pie_height = data_include_uat[1].length * 25 + 450;
+        $('#component_percentage_pie_chart_include_uat').height(div_pie_height);
+
         donut_pie = 'include_uat';
         displayPieChart(data_include_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#exclude_uat') {
+        div_pie_height = data_exclude_uat[1].length * 25 + 450;
+        $('#component_percentage_pie_chart_exclude_uat').height(div_pie_height);
+
         donut_pie = 'exclude_uat';
         displayPieChart(data_exclude_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#only_uat') {
+        div_pie_height = data_only_uat[1].length * 25 + 450;
+        $('#component_percentage_pie_chart_only_uat').height(div_pie_height);
+
         donut_pie = 'only_uat';
         displayPieChart(data_only_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#custom') {
+        div_pie_height = data_custom[1].length * 25 + 450;
+        $('#component_percentage_pie_chart_custom').height(div_pie_height);
+
         donut_pie = 'custom';
         displayPieChart(data_custom, donut_pie);
         displayQEIlogo(donut_pie);
@@ -400,6 +413,7 @@ function displayPieChart(data, uat_type) {
             }
         }
 
+        var pie_size = 210;
         $('#component_percentage_pie_chart_' + uat_type).highcharts({
             chart: {
                 //plotBackgroundColor: null,
@@ -436,8 +450,8 @@ function displayPieChart(data, uat_type) {
                 pie: {
                     //allowPointSelect: true,
                     cursor: 'pointer',
-                    center: ['50%', 100]
-                    //size: '40%'
+                    center: ['50%', 100],
+                    size: pie_size
                 }
             },
             series: [
@@ -457,7 +471,7 @@ function displayPieChart(data, uat_type) {
                             }
                         }
                     },
-                    size: '33%',
+                    size: pie_size * 0.85,
                     dataLabels: {
                         formatter: function () {
                             return this.point.percentage > 0 ? this.point.name : null;
@@ -473,8 +487,8 @@ function displayPieChart(data, uat_type) {
                 {
                     name: 'Sub component',
                     data: subcomData,
-                    size: '38%',
-                    innerSize: '33%',
+                    size: pie_size,
+                    innerSize: pie_size * 0.78,
                     dataLabels: {
                         formatter: function () {
                             //display only if large than XXX
