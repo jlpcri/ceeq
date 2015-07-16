@@ -15,9 +15,7 @@
                             <li><a href="#components_weight">Components Weights</a> </li>
                             <li><a href="#jira_issue_weight">JIRA Issues Weights</a> </li>
                             <li><a href="#jira_issue_scope">CEEQ Framework Scope</a> </li>
-                            {% if superuser %}
-                                <li><a href="#voice_slots_percentage_range">Voice Slots Range</a> </li>
-                            {% endif %}
+                            <li><a href="#voice_slots_percentage_range">Voice Slots Range</a> </li>
                             <li><a href="#testing_character">Testing Characteristics</a> </li>
                         </ul>
                     </div>
@@ -100,53 +98,54 @@
                     <div id="components_weight">
                         <h4 style="padding-top: 75px; margin-top: -75px;">Components Weight Factor&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
                         <p>During the procedure of West developed solutions testing, the ration of following components
-                        are considered as <strong>(8 : 2 : 4 : 3 : 3)</strong> - (alphabet order)</p>
+                        are considered as <strong>(8 : 2 : 3 : 3 : 4)</strong> - (alphabet order)</p>
                         <ul>
                             <li>Application - 0.40</li>
                                 <ul>
+                                    <li>Code</li>
+                                    <ul>
+                                        <li>Code</li>
+                                        <li>KVPs</li>
+                                    </ul>
                                     <li>Design</li>
                                     <ul>
                                         <li>Feature</li>
                                         <li>VUI</li>
                                     </ul>
-                                    <li>App Code</li>
-                                    <ul>
-                                        <li>Code</li>
-                                        <li>KVPs</li>
-                                    </ul>
-                                    <li>Web Service</li>
                                     <li>Grammars</li>
+                                    <li>Web Service</li>
                                 </ul>
                             <li>CXP - Customer Experience Portal - 0.10</li>
                                 <ul>
-                                    <li>Real Feed</li>
-                                    <li>ODP - On Demand Portal</li>
                                     <li>HCCP - Host Customer Contact Portal</li>
+                                    <li>ODP - On Demand Portal</li>
+                                    <li>Real Feed</li>
                                     <li>User Portal</li>
                                 </ul>
-                            <li>Infrastructure Platform - 0.20</li>
+                            <li>Platform - 0.15</li>
                                 <ul>
+                                    <li>Components</li>
+                                    <li>Database</li>
                                     <li>Host</li>
                                     <ul>
                                         <li>WSSI</li>
                                         <li>WSO2</li>
                                     </ul>
                                     <li>Voice Browser</li>
-                                    <li>Database</li>
                                 </ul>
 
                             <li>Reports - 0.15</li>
                                 <ul>
-                                    <li>TXL/BHV Logs</li>
-                                    <li>Standard Reports</li>
-                                    <li>Custom Reports</li>
                                     <li>CDR Feeds - Client Detail Reports</li>
+                                    <li>Custom Reports</li>
+                                    <li>Standard Reports</li>
+                                    <li>TXL/BHV Logs</li>
                                 </ul>
-                            <li>Voice Slots - 0.15</li>
+                            <li>Voice Prompts - 0.20</li>
                                 <ul>
                                     <li>English</li>
                                     <li>Spanish</li>
-                                    <li>Others</li>
+                                    <li>Other</li>
                                 </ul>
                         </ul>
 
@@ -198,14 +197,20 @@
                                             <li>Open</li>
                                             <li>In Progress</li>
                                             <li>Reopen</li>
-                                            <li>UAT Testing</li>
                                             <li>Discovery</li>
                                             <li>Review</li>
                                             <li>Pending</li>
                                             <li>Research</li>
                                         </ul>
                                     <li>Resolved</li>
+                                        <ul>
+                                            <li>Resolved</li>
+                                            <li>UAT Testing</li>
+                                        </ul>
                                     <li>Closed</li>
+                                        <ul>
+                                            <li>Closed</li>
+                                        </ul>
                                 </ul>
                             <li>Issue Resolution: </li>
                                 <ul>
@@ -221,14 +226,48 @@
                                     <li>TFCC IS Root Cause: Test Data</li>
                                     <li>Issue is closed</li>
                                 </ul>
+                            <li>Workflow Metatype</li>
+                                We also provide different scope of JIRAs based on Workflow Metatype property as follow:
+                                <ul>
+                                    <li>Include UAT: JIRAs with Workflow Metatype as UAT are counted</li>
+                                    <li>Exclude UAT: JIRAs with Workflow Metatype as UAT are not counted</li>
+                                    <li>Only UAT: JIRAs with Workflow Metatype as UAT are only counted</li>
+                                </ul>
+                            <li>Multiple Components</li>
+                                If a ticket has more than one components, we take first component which is under our framework:
+                                <ul>
+                                    <li>If the first component is under our framework, then take the first component</li>
+                                    <li>If the first component is not under our framework, then check next one</li>
+                                        <ul>
+                                            <li>If the second component is under our framework, then take the second component</li>
+                                            <li>If the second component is not under our framework, then check next one</li>
+                                            <li>Until check the last component</li>
+                                        </ul>
+                                    <li>If none component is under our framework, then no component is selected for this ticket</li>
+                                </ul>
+                            <li>Custom Date Range</li>
+                                We provide specific user the ability to select their own date range to track JIRA tickets.
+                                <ul>
+                                    <li>The default date range is last 30 days up to today.</li>
+                                    <li>System gives user several shortcuts of date range:</li>
+                                        <ul>
+                                            <li>Today</li>
+                                            <li>Yesterday</li>
+                                            <li>Last 7 Days</li>
+                                            <li>Last 30 Days</li>
+                                            <li>This Month</li>
+                                            <li>Last Month</li>
+                                        </ul>
+                                    <li>User could select any date range from Custom Range</li>
+                                    <li>For custom date range, we track Internal Testing and UAT tickets only.</li>
+                                </ul>
                         </ul>
                     </div>
 
-                    {% if superuser%}
                     <div id="voice_slots_percentage_range">
-                        <h4 style="padding-top: 75px; margin-top: -75px;">Voice Slots Percentage Range - Planning&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
-                        <p>Voice Slots has three sub components, each sub component only has 1 ‘Missing’ and 1 ‘Wrong’ issues.
-                            Issue is Open when percentage of ‘Missing’ or ‘Wrong’ reaches following range.
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Voice Slots Percentage Range - New approach&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>Voice Slots has three sub components: <b>English, Spanish, Other</b>, each sub component only has 1 ‘Missing’ and 1 ‘Defective’ issues.
+                            Issue is Open when percentage of ‘Missing’ or ‘Defective’ reaches following range.
                             Issue will be changed from ‘Open’ to ‘Resolved’  as ‘Trivial’ until all verbiages are cleared. </p>
                         <table class="table table-striped">
                             <thead>
@@ -244,26 +283,25 @@
                             <tbody>
                                 <tr>
                                     <td>Missing</td>
-                                    <td>0-5</td>
-                                    <td>6-20</td>
-                                    <td>21-40</td>
-                                    <td>41-70</td>
-                                    <td>71-100</td>
+                                    <td>0.00 - 3.00</td>
+                                    <td>3.10 - 6.00</td>
+                                    <td>6.10 - 12.00</td>
+                                    <td>12.10 - 24.00</td>
+                                    <td>24.10 - 100.00</td>
                                 </tr>
                                 <tr>
-                                    <td>Wrong</td>
-                                    <td>0-5</td>
-                                    <td>6-20</td>
-                                    <td>21-40</td>
-                                    <td>41-70</td>
-                                    <td>71-100</td>
+                                    <td>Defective</td>
+                                    <td>0.00 - 3.00</td>
+                                    <td>3.10 - 6.00</td>
+                                    <td>6.10 - 12.00</td>
+                                    <td>12.10 - 24.00</td>
+                                    <td>24.10 - 100.00</td>
                                 </tr>
                             </tbody>
                         </table>
                     Weight factor of ‘Voice Slots’ changed from 0.15 to 0.20 while ‘Platform’ changed from
                         0.20 to 0.15.</p>
                     </div>
-                    {% endif %}
 
                     <div id="testing_character">
                         <h4 style="padding-top: 75px; margin-top: -75px;">Software Testing Characteristics&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>

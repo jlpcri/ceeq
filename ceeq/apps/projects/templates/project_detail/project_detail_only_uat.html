@@ -6,8 +6,10 @@
     </div>
 </div>
 
-{% if project.score < 10 %}
-    <div class="row">
+<div id="qei_log_only_uat" style="width: 350px; height: 300px; margin: 0 auto;" hidden></div>
+
+{% if weight_factor_only_uat %}
+    <div class="row" >
         <p style="text-align: center" id="export_data_only_uat">
             Export Graph to:
             <button id="png_only_uat">PNG</button>
@@ -15,7 +17,17 @@
             <button id="pdf_only_uat">PDF</button>
         </p>
     </div>
+{% else %}
+    <div class="row" >
+        <p style="text-align: center" id="export_qei_log_only_uat">
+            Export Graph to:
+            <button id="png_qei_log_only_uat">PNG</button>
+            <button id="jpeg_qei_log_only_uat">JPEG</button>
+            <button id="pdf_qei_log_only_uat">PDF</button>
+        </p>
+    </div>
 {% endif %}
+
 
 <br>
 <div class="row">

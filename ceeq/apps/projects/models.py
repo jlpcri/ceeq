@@ -32,18 +32,18 @@ class Project(models.Model):
     portability = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
 
     def __unicode__(self):
-        return unicode(self.name)
+        return '{0}: {1}'.format(self.name, self.score)
 
     @property
     def fetch_jira_data(self):
         if self.jira_version == 'All Versions':
             data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
                                 proxies=settings.JIRA_PROXY,
-                                auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
         else:
             data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name + '%20AND%20affectedversion=\'' + self.jira_version + '\'',
                                 proxies=settings.JIRA_PROXY,
-                                auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
         #print 'total: ', data['total']
         if len(data) == 2:
             if data['errorMessages']:
@@ -56,12 +56,12 @@ class Project(models.Model):
                     if self.jira_version == 'All Versions':
                         data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '&expand=names',
                                                    proxies=settings.JIRA_PROXY,
-                                                   auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                                   auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
 
                     else:
                         data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '%20AND%20affectedversion=\'' + self.jira_version +'\'&expand=names',
                                                    proxies=settings.JIRA_PROXY,
-                                                   auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                                                   auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
                     que.put(data_single)
                     #data_total.append(data_single['issues'])
                 jobs = []
@@ -86,7 +86,7 @@ class Project(models.Model):
         versions = []
         data = requests.get(settings.JIRA_API_URL_VERSIONS % self.jira_name.upper(),
                             proxies=settings.JIRA_PROXY,
-                            auth=('readonly_sliu_api_user', 'qualityengineering')).json()
+                            auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
         for item in data:
             versions.append(item['name'])
 
@@ -109,7 +109,7 @@ class ProjectComponentsDefectsDensity(models.Model):
     voiceSlots = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
     def __unicode__(self):
-        return unicode(self.project.name)
+        return '{0}: {1}'.format(self.project.name, self.version)
 
     class Meta:
         #unique_together = (("project", "created", "version"),)
@@ -120,5 +120,8 @@ class FrameworkParameter(models.Model):
     #Store framework parameters: jira_issue_weight_sum, vaf_ratio, vaf_exp
     parameter = models.CharField(max_length=200, unique=True)
     value = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.parameter, self.value)
 
 

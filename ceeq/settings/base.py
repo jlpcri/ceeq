@@ -157,15 +157,21 @@ MESSAGE_TAGS = {
 
 #JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,created,resolutiondate'
 #                                                                              workflow UAT   TFCC Is Root Cause
-JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,customfield_13286,customfield_10092'
+JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,created,customfield_13286,customfield_10092'
 JIRA_API_MAX = 50
 JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=5&jql=project=' % (JIRA_API_FIELDS)
 JIRA_API_URL = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=%d&startAt=%d&jql=project=%s'
 JIRA_API_URL_VERSIONS = 'http://jira.west.com/rest/api/2/project/%s/versions'
+JIRA_API_USERNAME = 'readonly_sliu_api_user'
+JIRA_API_PASSWORD = 'qualityengineering'
 
 JIRA_PROXY = None
 
 SESSION_COOKIE_NAME = 'ceeqSessionId'
+# Age of session cookies, in seconds
+SESSION_COOKIE_AGE = 43200  # 12 hours
+# Save the session data on every request
+SESSION_SAVE_EVERY_REQUEST = True
 
 # ---------------------Pre Define Section --------------------
 
@@ -177,7 +183,7 @@ COMPONENT_NAMES_STANDARD = {
     'Platform': 4,
     'Reports': 3,
     'Application': 8,
-    'Voice Slots': 3,
+    'Voice Prompts': 3
 }
 
 # Priority Weight of Issues in JIRA
@@ -202,9 +208,9 @@ ISSUE_PRIORITY_WEIGHT = {
  10668-Pending,
  10669-Research
 """
-ISSUE_STATUS_OPEN = ['1', '3', '4', '10001', '10003', '10062', '10668', '10669']
+ISSUE_STATUS_OPEN = ['1', '3', '4', '10003', '10062', '10668', '10669']
 #issue_status_in_progress = '3'
-ISSUE_STATUS_RESOLVED = ['5']
+ISSUE_STATUS_RESOLVED = ['5', '10001']
 ISSUE_STATUS_CLOSED = ['6']
 #issue_status_uat_testing = '10001'
 #issue_status_discovery = '10003'
@@ -248,3 +254,10 @@ ISSUE_STATUS_FIELDS = [
         ('minor', [14, 15, 13]),
         ('trivial', [17, 18, 16])
     ]
+
+#----------------EMAIL Backend----------------
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ceeqwic@gmail.com'
+EMAIL_HOST_PASSWORD = '^S=+c3gyYu6F74D'
+EMAIL_PORT = 587

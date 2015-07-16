@@ -11,3 +11,6 @@ class UserSettings(models.Model):
     improvement = models.BooleanField(default=False)  # 4
     suggested_improvement = models.BooleanField(default=False)  # 15
     environment = models.BooleanField(default=False)  # 17
+
+    def __unicode__(self):
+        return "{0}, {1}".format(self.user.first_name, self.user.last_name)

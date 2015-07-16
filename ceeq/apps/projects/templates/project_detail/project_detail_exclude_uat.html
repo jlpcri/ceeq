@@ -1,0 +1,159 @@
+<div id="component_percentage_pie_chart_exclude_uat" style="width: 700px; height: 600px; margin: 0 auto;">
+    <div class="loading" style="text-align:center; margin-top: 100px;">
+        <i class="fa fa-spinner fa-2x fa-spin"></i>
+        Loading data from JIRA Database...
+    </div>
+</div>
+
+<div id="qei_log_exclude_uat" style="width: 500px; height: 300px; margin: 0 auto;" hidden></div>
+
+{% if weight_factor_exclude_uat %}
+    <div class="row">
+        <p style="text-align: center" id="export_data_exclude_uat">
+            Export Graph to:
+            <button id="png_exclude_uat">PNG</button>
+            <button id="jpeg_exclude_uat">JPEG</button>
+            <button id="pdf_exclude_uat">PDF</button>
+        </p>
+    </div>
+{% else %}
+    <div class="row">
+        <p style="text-align: center" id="export_qei_log_exclude_uat">
+            Export Graph to:
+            <button id="png_qei_log_exclude_uat">PNG</button>
+            <button id="jpeg_qei_log_exclude_uat">JPEG</button>
+            <button id="pdf_qei_log_exclude_uat">PDF</button>
+        </p>
+    </div>
+{% endif %}
+
+<br>
+<div class="row">
+    <legend>Components Weighted Factors (Scales: 0 -1)</legend>
+    <p>
+        Project CEEQ Score:
+        {% if project.score > 10 %}
+            Out of Range
+        {% else %}
+            <strong>{{ project.score|floatformat:2 }}</strong>
+        {% endif %}
+    </p>
+    <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
+    <p>Exist Components Names: <strong>{{ component_names_exclude_uat }}</strong></p>
+</div>
+
+{% if weight_factor_exclude_uat %}
+   <table class="table table-hover table-striped" id="factor_table" >
+    <thead>
+        <tr>
+            <th colspan="3" style="text-align: center; color: brown">Weighted Factor</th>
+            <th colspan="16" style="text-align: center; color: brown">Number of Issues</th>
+        </tr>
+        <tr>
+            <th style="background-color: lightcyan">Component Name</th>
+            <th style="background-color: lightcyan">Weight</th>
+            <th style="background-color: lightcyan">Defect Impact</th>
+
+            <th colspan="3" style="background-color: lavender; text-align: center">Blocker</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Critical</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Major</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Minor</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Trivial</th>
+            <th style="background-color: lavender; text-align: center">SubTotal</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+
+
+            <th style="background-color: cadetblue">O</th>
+            <th style="background-color: cadetblue">R</th>
+            <th style="background-color: cadetblue">C</th>
+
+            <th style="background-color: antiquewhite">O</th>
+            <th style="background-color: antiquewhite">R</th>
+            <th style="background-color: antiquewhite">C</th>
+
+            <th style="background-color: cadetblue">O</th>
+            <th style="background-color: cadetblue">R</th>
+            <th style="background-color: cadetblue">C</th>
+
+            <th style="background-color: antiquewhite">O</th>
+            <th style="background-color: antiquewhite">R</th>
+            <th style="background-color: antiquewhite">C</th>
+
+            <th style="background-color: cadetblue">O</th>
+            <th style="background-color: cadetblue">R</th>
+            <th style="background-color: cadetblue">C</th>
+
+            <th style="background-color: antiquewhite"></th>
+
+  </tr>
+    </thead>
+    <tbody>
+        {% for component,weight,dd, total, b_c, b_o, b_r, c_c, c_o, c_r, m_c, m_o, m_r, mi_c, mi_o, mi_r, t_c, t_o, t_r in weight_factor_exclude_uat %}
+            <tr>
+                <td>{{ component }}</td>
+                <td>{{ weight|floatformat:3 }}</td>
+                <td>{{ dd|floatformat:3 }}</td>
+
+
+                <td>{{ b_o }}</td>
+                <td>{{ b_r }}</td>
+                <td>{{ b_c }}</td>
+
+                <td>{{ c_o }}</td>
+                <td>{{ c_r }}</td>
+                <td>{{ c_c }}</td>
+
+                <td>{{ m_o }}</td>
+                <td>{{ m_r }}</td>
+                <td>{{ m_c }}</td>
+
+                <td>{{ mi_o }}</td>
+                <td>{{ mi_r }}</td>
+                <td>{{ mi_c }}</td>
+
+                <td>{{ t_o }}</td>
+                <td>{{ t_r }}</td>
+                <td>{{ t_c }}</td>
+
+                <td style="text-align: center;">{{ total }}</td>
+            </tr>
+        {% endfor %}
+    <tr>
+        <td>&nbsp;</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><strong>Total</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_exclude_uat.blocker }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_exclude_uat.critical }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_exclude_uat.major }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_exclude_uat.minor }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_exclude_uat.trivial }}</td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_exclude_uat.total }}</td>
+    </tr>
+    </tbody>
+    </table>
+{% endif %}

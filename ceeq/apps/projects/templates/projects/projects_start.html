@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Projects {% endblock %}
 
-{% block body %}
+{% block subnav %}
     <br><br>
     <div class="container">
         <ul id="subnav-tabs" class="nav nav-tabs">
@@ -13,11 +13,13 @@
             {% endif %}
         </ul>
     </div>
+{% endblock %}
 
+{% block body %}
     <div class="container">
         <div class="tab-content">
             <div class="tab-pane" id="projects">
-                {% include 'projects.html' %}
+                {% include 'projects/projects.html' %}
             </div>
 
             <div class="tab-pane" id="score_overall">
@@ -38,6 +40,6 @@
 
 {% block footer %}
     <script>
-        {% include 'project.js' %}
+        {% include 'projects/project.js' %}
     </script>
 {% endblock %}
