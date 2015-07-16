@@ -413,6 +413,7 @@ function displayPieChart(data, uat_type) {
             }
         }
 
+        var pie_size = 210;
         $('#component_percentage_pie_chart_' + uat_type).highcharts({
             chart: {
                 //plotBackgroundColor: null,
@@ -449,8 +450,8 @@ function displayPieChart(data, uat_type) {
                 pie: {
                     //allowPointSelect: true,
                     cursor: 'pointer',
-                    center: ['50%', 100]
-                    //size: '40%'
+                    center: ['50%', 100],
+                    size: pie_size
                 }
             },
             series: [
@@ -470,7 +471,7 @@ function displayPieChart(data, uat_type) {
                             }
                         }
                     },
-                    size: '33%',
+                    size: pie_size * 0.85,
                     dataLabels: {
                         formatter: function () {
                             return this.point.percentage > 0 ? this.point.name : null;
@@ -486,8 +487,8 @@ function displayPieChart(data, uat_type) {
                 {
                     name: 'Sub component',
                     data: subcomData,
-                    size: '38%',
-                    innerSize: '33%',
+                    size: pie_size,
+                    innerSize: pie_size * 0.78,
                     dataLabels: {
                         formatter: function () {
                             //display only if large than XXX
