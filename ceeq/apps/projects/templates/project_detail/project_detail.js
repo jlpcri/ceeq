@@ -75,28 +75,28 @@ $(document).ready(function(){
 function loadUatActiveDataTab() {
     var div_pie_height;
     if (active_tab == '#include_uat') {
-        div_pie_height = data_include_uat[4].length * 25 + 450;
+        div_pie_height = data_include_uat[1].length * 25 + 450;
         $('#component_percentage_pie_chart_include_uat').height(div_pie_height);
 
         donut_pie = 'include_uat';
         displayPieChart(data_include_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#exclude_uat') {
-        div_pie_height = data_exclude_uat[4].length * 25 + 450;
+        div_pie_height = data_exclude_uat[1].length * 25 + 450;
         $('#component_percentage_pie_chart_exclude_uat').height(div_pie_height);
 
         donut_pie = 'exclude_uat';
         displayPieChart(data_exclude_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#only_uat') {
-        div_pie_height = data_only_uat[4].length * 25 + 450;
+        div_pie_height = data_only_uat[1].length * 25 + 450;
         $('#component_percentage_pie_chart_only_uat').height(div_pie_height);
 
         donut_pie = 'only_uat';
         displayPieChart(data_only_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#custom') {
-        div_pie_height = data_custom[4].length * 25 + 450;
+        div_pie_height = data_custom[1].length * 25 + 450;
         $('#component_percentage_pie_chart_custom').height(div_pie_height);
 
         donut_pie = 'custom';
@@ -132,7 +132,7 @@ function displayPieChart(data, uat_type) {
                 cellLeft = tableLeft;
 
             // draw components lables
-            $.each(data[4], function (i, item) {
+            $.each(data[1], function (i, item) {
                 renderer.text(
                     item[0],
                         cellLeft + cellPadding,
@@ -172,7 +172,7 @@ function displayPieChart(data, uat_type) {
                         cellLeft - cellPadding * 6,
                         tableTop + rowHeight + cellPadding,
                         cellLeft - cellPadding * 6,
-                        tableTop + (data[4].length + 3) * rowHeight + cellPadding
+                        tableTop + (data[1].length + 3) * rowHeight + cellPadding
                 );
             });
 
@@ -198,7 +198,7 @@ function displayPieChart(data, uat_type) {
                     .add();
             });
 
-            $.each(data[4], function (row, item) {
+            $.each(data[1], function (row, item) {
                 cellLeft = tableLeft + colWidth * 2;
 
                 // apply number of jiras
@@ -235,9 +235,9 @@ function displayPieChart(data, uat_type) {
                         Highcharts.tableLine( // bottom - 1
                             renderer,
                             tableLeft,
-                                tableTop + (data[4].length + i) * rowHeight + cellPadding,
+                                tableTop + (data[1].length + i) * rowHeight + cellPadding,
                                 cellLeft + colWidth * 1.5,
-                                tableTop + (data[4].length + i) * rowHeight + cellPadding
+                                tableTop + (data[1].length + i) * rowHeight + cellPadding
                         );
                     }
 
@@ -259,7 +259,7 @@ function displayPieChart(data, uat_type) {
                     renderer.text(
                         priority_total,
                             cellLeft - cellPadding,
-                            tableTop + (data[4].length + 3) * rowHeight - cellPadding
+                            tableTop + (data[1].length + 3) * rowHeight - cellPadding
                     )
                         .attr({
                             align: 'center'
@@ -275,7 +275,7 @@ function displayPieChart(data, uat_type) {
                     renderer.text(
                         priority_total,
                             tableLeft + cellPadding,
-                            tableTop + (data[4].length + 3) * rowHeight - cellPadding
+                            tableTop + (data[1].length + 3) * rowHeight - cellPadding
                     )
                         .css({
                             //fontWeight: 'bold',
@@ -297,7 +297,7 @@ function displayPieChart(data, uat_type) {
              tableLeft,
              tableTop + cellPadding,
              tableLeft,
-             tableTop + (data[4].length + 1) * rowHeight + cellPadding
+             tableTop + (data[1].length + 1) * rowHeight + cellPadding
              );
              }
 
@@ -306,7 +306,7 @@ function displayPieChart(data, uat_type) {
              cellLeft,
              tableTop + cellPadding,
              cellLeft,
-             tableTop + (data[4].length + 1) * rowHeight + cellPadding
+             tableTop + (data[1].length + 1) * rowHeight + cellPadding
              );
 
              if (i == row_label.length - 1) { // right table border
@@ -316,7 +316,7 @@ function displayPieChart(data, uat_type) {
              cellLeft + colWidth + 35,
              tableTop + cellPadding,
              cellLeft + colWidth + 35,
-             tableTop + (data[4].length + 1) * rowHeight + cellPadding
+             tableTop + (data[1].length + 1) * rowHeight + cellPadding
              );
              }
              })

@@ -803,20 +803,19 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
         temp_table.append(None)
     temp_table.append(priority_total['total'])
 
-    #print 'old: ', dd_pie_graph
-
     dd_pie_graph.append(donut_pie_inner)
     dd_pie_graph.append(donut_pie_outer)
-    #print 'new: ', dd_pie_graph_new
 
     dd_pie_data.append(dd_pie_graph)
-    dd_pie_data.append(dd_pie_table)
-    dd_pie_data.append(temp_table)
-    dd_pie_data.append(project_score_uat)
-    #dd_pie_data.append((jira_name, request.user.is_superuser))
 
     # sub components issue counts sorted by subtotal
     dd_pie_data.append(sorted(dd_pie_table_subcomponent, key=itemgetter(17), reverse=True))
+
+    # Data for draw table of Components level
+    # dd_pie_data.append(dd_pie_table)
+
+    dd_pie_data.append(temp_table)
+    dd_pie_data.append(project_score_uat)
 
     return dd_pie_data
 
