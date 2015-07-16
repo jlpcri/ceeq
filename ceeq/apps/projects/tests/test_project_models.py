@@ -16,7 +16,7 @@ class ProjectModelTests(TestCase):
     def test_project_with_name(self):
         project = self.create_project()
         self.assertTrue(isinstance(project, Project))
-        self.assertEqual(project.__unicode__(), project.name)
+        self.assertEqual(project.__unicode__(), project.name + ': ' + str(project.score))
 
 
 class ProjectComponentsDefectsDensityModelTests(TestCase):
@@ -37,4 +37,4 @@ class ProjectComponentsDefectsDensityModelTests(TestCase):
     def test_pcdd_with_project_name(self):
         pcdd = self.create_pcdd()
         self.assertTrue(isinstance(pcdd, ProjectComponentsDefectsDensity))
-        self.assertEqual(pcdd.__unicode__(), pcdd.project.name)
+        self.assertEqual(pcdd.__unicode__(), pcdd.project.name + ': ' + pcdd.version)
