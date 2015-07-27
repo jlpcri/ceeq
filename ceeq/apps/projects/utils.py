@@ -115,6 +115,13 @@ def get_weight_factor(data, component_names_without_slash_all):
                                         + data[item]['minor'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['minor'] * jira_issue_weight_sum\
                                         + data[item]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT[status] * settings.ISSUE_PRIORITY_WEIGHT['trivial'] * jira_issue_weight_sum
 
+                    # defects density per sub component if all closed
+                    data[item]['ceeq_closed'][status] = data[item]['blocker'][status] * settings.ISSUE_STATUS_WEIGHT['closed'] * settings.ISSUE_PRIORITY_WEIGHT['blocker'] * jira_issue_weight_sum\
+                                        + data[item]['critical'][status] * settings.ISSUE_STATUS_WEIGHT['closed'] * settings.ISSUE_PRIORITY_WEIGHT['critical'] * jira_issue_weight_sum\
+                                        + data[item]['major'][status] * settings.ISSUE_STATUS_WEIGHT['closed'] * settings.ISSUE_PRIORITY_WEIGHT['major'] * jira_issue_weight_sum\
+                                        + data[item]['minor'][status] * settings.ISSUE_STATUS_WEIGHT['closed'] * settings.ISSUE_PRIORITY_WEIGHT['minor'] * jira_issue_weight_sum\
+                                        + data[item]['trivial'][status] * settings.ISSUE_STATUS_WEIGHT['closed'] * settings.ISSUE_PRIORITY_WEIGHT['trivial'] * jira_issue_weight_sum
+
                     data[component]['blocker'][status] += data[item]['blocker'][status]
                     data[component]['critical'][status] += data[item]['critical'][status]
                     data[component]['major'][status] += data[item]['major'][status]
@@ -123,7 +130,8 @@ def get_weight_factor(data, component_names_without_slash_all):
 
                     data[component]['total'][status] += data[item]['total'][status]
 
-    #issue_status_weight_base = 10
+    # for i in data:
+    #     print i, data[i]['ceeq'], data[i]['ceeq_closed']
 
     #calculate defect density of each component
     for component in component_names_without_slash:
@@ -137,6 +145,7 @@ def get_weight_factor(data, component_names_without_slash_all):
             if item.startswith(component + '/'):
                 for status in settings.ISSUE_STATUS_COUNT.keys():
                     data[component]['ceeq'][status] += data[item]['ceeq'][status]
+                    data[component]['ceeq_closed'][status] += data[item]['ceeq_closed'][status]
 
     #formalize total sum of each component by divided by number of sub-components
     for component in component_names_without_slash:
@@ -168,6 +177,7 @@ def get_weight_factor(data, component_names_without_slash_all):
         else:
             for status in settings.ISSUE_STATUS_WEIGHT.keys():
                 data[component]['ceeq'][status] /= subcomponent_length
+                data[component]['ceeq_closed'][status] /= subcomponent_length
 
     weight_factor = []
     weight_factor_base = 20
@@ -206,8 +216,10 @@ def get_weight_factor(data, component_names_without_slash_all):
                 except KeyError:
                     continue
 
+        temp.append(sum(data[item]['ceeq_closed'].itervalues()))
         weight_factor.append(temp)
 
+    # print weight_factor
     return weight_factor
 
 
@@ -229,7 +241,8 @@ def issue_counts_compute(request, component_names, component_names_without_slash
         'critical': settings.ISSUE_STATUS_COUNT.copy(),
         'major': settings.ISSUE_STATUS_COUNT.copy(),
         'minor': settings.ISSUE_STATUS_COUNT.copy(),
-        'trivial': settings.ISSUE_STATUS_COUNT.copy()
+        'trivial': settings.ISSUE_STATUS_COUNT.copy(),
+        'ceeq_closed': settings.ISSUE_STATUS_COUNT.copy()  # for if all JIRAs are closed
     }
 
     #print 'aaa: ', component_names

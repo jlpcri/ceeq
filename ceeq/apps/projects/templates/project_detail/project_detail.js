@@ -614,7 +614,7 @@ function displayQEIlogo(uat_type) {
 }
 
 function displayCeeqTrend(data) {
-    console.log(data);
+    //console.log(data);
     $('#ceeq_trend_graph_exclude_uat').highcharts({
         title: {
             text: 'CEEQ Score Trend Graph',
@@ -648,7 +648,9 @@ function displayCeeqTrend(data) {
                 value: 0,
                 width: 1,
                 color: '#808080'
-            }]
+            }],
+            //max: 10,
+            //min: 0
         },
         tooltip: {
             formatter: function(){
@@ -668,10 +670,16 @@ function displayCeeqTrend(data) {
                 enabled: false
             }
         },
-        series: [{
-            name: 'CEEQ',
-            data: data['ceeq']
-        }],
+        series: [
+            {
+                name: 'CEEQ',
+                data: data['ceeq']
+            },
+            {
+                name: 'CEEQ_Closed',
+                data: data['ceeq_closed']
+            }
+        ],
         credits: false
     })
 }

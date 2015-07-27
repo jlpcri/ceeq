@@ -103,7 +103,7 @@ class ProjectComponentsDefectsDensity(models.Model):
     # log ceeq score per day per version
     ceeq = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     # ceeq score disregard JIRA status
-    ceeq_closed = models.DecimalField(max_digits=5, decimal_places=3, default=0)
+    ceeq_closed = models.DecimalField(max_digits=5, decimal_places=3, default=10)
 
     cxp = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     platform = models.DecimalField(max_digits=5, decimal_places=3, default=0)
