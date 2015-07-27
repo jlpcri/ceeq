@@ -626,7 +626,7 @@ def fetch_defects_density_score(request, project_id):
 
         tmp_categories = []
 
-        tmp_data_voiceSlots = []
+        tmp_data_voice_slots = []
         tmp_data_cxp = []
         tmp_data_platform = []
         tmp_data_reports = []
@@ -650,7 +650,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_year = str(item.created.year)
                 tmp_categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
-                tmp_data_voiceSlots.append(float(item.voiceSlots))
+                tmp_data_voice_slots.append(float(item.voice_slots))
                 tmp_data_cxp.append(float(item.cxp))
                 tmp_data_platform.append(float(item.platform))
                 tmp_data_reports.append(float(item.reports))
@@ -662,7 +662,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_data_ceeq_sum += item.ceeq
 
         data['categories'] = tmp_categories
-        data['voiceSlots'] = tmp_data_voiceSlots
+        data['voice_slots'] = tmp_data_voice_slots
         data['cxp'] = tmp_data_cxp
         data['platform'] = tmp_data_platform
         data['reports'] = tmp_data_reports
@@ -901,7 +901,7 @@ def defects_density_single_log(request, project):
             elif component[0] == 'Application':
                 component_defects_density.application = component[2]
             elif component[0] == 'Voice Prompts':
-                component_defects_density.voiceSlots = component[2]
+                component_defects_density.voice_slots = component[2]
         component_defects_density.save()
 
     return
