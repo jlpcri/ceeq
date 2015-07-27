@@ -883,9 +883,11 @@ def defects_density_single_log(request, project):
     today = date.today()
     for item in weight_factor_versions:
         ceeq_raw = 0  # calculate ceeq score per version
+        ceeq_closed_raw = 0   # calculate score if all closed
         for com in weight_factor_versions[item]:
             ceeq_raw += round(com[1] * float(com[2]), 3)
-        #print ceeq_version
+            ceeq_closed_raw += round(com[1] * float(com[-1]), 3)
+
         try:
             component_defects_density = ProjectComponentsDefectsDensity.objects.get(project=project, version=item, created=today)
         except ProjectComponentsDefectsDensity.DoesNotExist:
@@ -893,6 +895,7 @@ def defects_density_single_log(request, project):
 
         # use ceeq field to store ceeq score
         component_defects_density.ceeq = (1 - ceeq_raw) * 10
+        component_defects_density.ceeq_closed = (1 - ceeq_closed_raw) * 10
 
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
