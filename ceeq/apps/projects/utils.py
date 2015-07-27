@@ -1,7 +1,8 @@
 from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
-from ceeq.apps.projects.models import FrameworkParameter
+from django.shortcuts import get_object_or_404
+from ceeq.apps.projects.models import FrameworkParameter, Project, ProjectComponentsDefectsDensity
 from django.conf import settings
 
 """
@@ -464,3 +465,37 @@ def get_component_names_from_jira_data(component_len, components):
             continue
 
     return None
+
+
+def fetch_ceeq_trend_graph(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project)
+
+    data = {}
+    categories = []
+    data_ceeq = []
+    data_ceeq_closed = []
+
+    for item in project_dds:
+        if item.version == project.jira_version:
+            if item.created.month < 10:
+                tmp_month = '0' + str(item.created.month)
+            else:
+                tmp_month = str(item.created.month)
+
+            if item.created.day < 10:
+                tmp_day = '0' + str(item.created.day)
+            else:
+                tmp_day = str(item.created.day)
+
+            tmp_year = str(item.created.year)
+
+            categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
+            data_ceeq.append(float(item.ceeq))
+            data_ceeq_closed.append(float(item.ceeq_closed))
+
+    data['categories'] = categories
+    data['ceeq'] = data_ceeq
+    data['ceeq_closed'] = data_ceeq_closed
+
+    return data

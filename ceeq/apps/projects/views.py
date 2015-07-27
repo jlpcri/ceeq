@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
     project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute, \
-    get_priority_total, get_component_names, get_component_names_from_jira_data
+    get_priority_total, get_component_names, get_component_names_from_jira_data, fetch_ceeq_trend_graph
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
@@ -125,7 +125,9 @@ def project_detail(request, project_id):
                                                          project.jira_name,
                                                          version_data_custom,
                                                          uat_type_custom)
-    #print dd_pie_data_custom
+
+    # Try get ceeq trend graph data
+    ceeq_trend_graph = fetch_ceeq_trend_graph(request, project.id)
 
     # get component_names and component_names_without_slash for version_data
     for item in version_data:
@@ -253,7 +255,9 @@ def project_detail(request, project_id):
         'dd_pie_data_include_uat': json.dumps(dd_pie_data_include_uat),
         'dd_pie_data_exclude_uat': json.dumps(dd_pie_data_exclude_uat),
         'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat),
-        'dd_pie_data_custom': json.dumps(dd_pie_data_custom)
+        'dd_pie_data_custom': json.dumps(dd_pie_data_custom),
+
+        'ceeq_trend_graph': ceeq_trend_graph
     })
     return render(request, 'project_detail/project_detail.html', context)
 

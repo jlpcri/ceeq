@@ -82,6 +82,7 @@ function loadUatActiveDataTab() {
         displayPieChart(data_include_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#exclude_uat') {
+        displayCeeqTrend(data_ceeq_trend_graph);
         div_pie_height = data_exclude_uat[1].length * 25 + 450;
         $('#component_percentage_pie_chart_exclude_uat').height(div_pie_height);
 
@@ -610,4 +611,67 @@ function displayQEIlogo(uat_type) {
             filename: export_filename
         });
     });
+}
+
+function displayCeeqTrend(data) {
+    console.log(data);
+    $('#ceeq_trend_graph_exclude_uat').highcharts({
+        title: {
+            text: 'CEEQ Score Trend Graph',
+            x: -20  //center
+        },
+        subtitle: {
+            text: 'Affected Version: ' + '{{project.jira_version}}',
+            x: -20
+        },
+        xAxis: {
+            title: {
+                text: 'Timeline'
+            },
+            categories: data['categories'],
+            labels: {
+                //only display month-day in xAxis label
+                formatter: function(){
+                    return this.value.substring(5);
+                },
+                style: {
+                    fontSize: '10px'
+                }
+            },
+            tickInterval: Math.floor(data['categories'].length / 10)
+        },
+        yAxis: {
+            title: {
+                text: 'CEEQ Score'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            formatter: function(){
+                var s = '<b>' + this.x + '</b><br/>';
+                s += this.series.name + ': <b>' + this.y + '</b>';
+                return s;
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        navigation: {
+            buttonOptions: {
+                enabled: false
+            }
+        },
+        series: [{
+            name: 'CEEQ',
+            data: data['ceeq']
+        }],
+        credits: false
+    })
 }
