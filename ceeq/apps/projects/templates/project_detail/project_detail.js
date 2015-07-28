@@ -668,7 +668,7 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
                 width: 1,
                 color: '#808080'
             }],
-            //max: 10,
+            max: 10,
             //min: 0
         },
         tooltip: {
@@ -691,12 +691,14 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
         },
         series: [
             {
-                name: 'CEEQ',
-                data: data['ceeq']
+                name: 'Projected',
+                data: data['ceeq_closed'],
+                color: '#434348'
             },
             {
-                name: 'CEEQ_Closed',
-                data: data['ceeq_closed']
+                name: 'CEEQ',
+                data: data['ceeq'],
+                color: '#7cb5ec'
             }
         ],
         credits: false
