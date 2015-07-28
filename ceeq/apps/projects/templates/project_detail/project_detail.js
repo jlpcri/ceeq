@@ -82,7 +82,11 @@ function loadUatActiveDataTab() {
         displayPieChart(data_include_uat, donut_pie);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#exclude_uat') {
-        displayCeeqTrend(data_ceeq_trend_graph);
+        if (data_ceeq_trend_graph['ceeq'].length > 0) {
+            displayCeeqTrend(data_ceeq_trend_graph);
+        } else {
+            $('#ceeq_trend_graph_exclude_uat').hide();
+        }
         div_pie_height = data_exclude_uat[1].length * 25 + 450;
         $('#component_percentage_pie_chart_exclude_uat').height(div_pie_height);
 
@@ -614,7 +618,6 @@ function displayQEIlogo(uat_type) {
 }
 
 function displayCeeqTrend(data) {
-    //console.log(data);
     $('#ceeq_trend_graph_exclude_uat').highcharts({
         title: {
             text: 'CEEQ Score Trend Graph',
