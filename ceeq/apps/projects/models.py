@@ -88,8 +88,11 @@ class Project(models.Model):
                             proxies=settings.JIRA_PROXY,
                             auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
 
-        if len(data) == 2:
-            return 'No JIRA Project'
+        try:
+            if data['errorMessages']:
+                return 'No JIRA Project'
+        except TypeError:
+            pass
 
         for item in data:
             versions.append(item['name'])
