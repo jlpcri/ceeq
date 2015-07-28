@@ -1,7 +1,8 @@
 var active_tab = String(""),
     donut_pie,
     today = new Date(),
-    export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
+    export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString(),
+    export_trend_filename = '{{ project.name}}' + '-trend-' + today.toLocaleDateString();
 
 moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
 var startDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
@@ -73,44 +74,59 @@ $(document).ready(function(){
 
 
 function loadUatActiveDataTab() {
-    var div_pie_height;
+    var pie_chart_id = '#component_percentage_pie_chart_',
+        trend_chart_id = '#ceeq_trend_chart_',
+        div_pie_height;
     if (active_tab == '#include_uat') {
-        div_pie_height = data_include_uat[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_include_uat').height(div_pie_height);
-
         donut_pie = 'include_uat';
-        displayPieChart(data_include_uat, donut_pie);
+
+        if (data_ceeq_trend_graph['ceeq'].length > 0) {
+            displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+        } else {
+            $(trend_chart_id + donut_pie).hide();
+            $(trend_chart_id + donut_pie + '_export').hide();
+        }
+
+        div_pie_height = data_include_uat[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+
+        displayPieChart(data_include_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#exclude_uat') {
-        if (data_ceeq_trend_graph['ceeq'].length > 0) {
-            displayCeeqTrend(data_ceeq_trend_graph);
-        } else {
-            $('#ceeq_trend_graph_exclude_uat').hide();
-        }
-        div_pie_height = data_exclude_uat[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_exclude_uat').height(div_pie_height);
-
         donut_pie = 'exclude_uat';
-        displayPieChart(data_exclude_uat, donut_pie);
-        displayQEIlogo(donut_pie);
-    } else if (active_tab == '#only_uat') {
-        div_pie_height = data_only_uat[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_only_uat').height(div_pie_height);
 
+        if (data_ceeq_trend_graph['ceeq'].length > 0) {
+            displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+        } else {
+            $(trend_chart_id + donut_pie).hide();
+            $(trend_chart_id + donut_pie + '_export').hide();
+        }
+
+        div_pie_height = data_exclude_uat[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+        displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
+        displayQEIlogo(donut_pie);
+
+    } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
-        displayPieChart(data_only_uat, donut_pie);
+
+        div_pie_height = data_only_uat[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+
+        displayPieChart(data_only_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#custom') {
-        div_pie_height = data_custom[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_custom').height(div_pie_height);
-
         donut_pie = 'custom';
-        displayPieChart(data_custom, donut_pie);
+
+        div_pie_height = data_custom[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+
+        displayPieChart(data_custom, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
     }
 }
 
-function displayPieChart(data, uat_type) {
+function displayPieChart(data, uat_type, pie_chart_id) {
 
     if (score < 10) {
         //Create the data table
@@ -419,7 +435,7 @@ function displayPieChart(data, uat_type) {
         }
 
         var pie_size = 210;
-        $('#component_percentage_pie_chart_' + uat_type).highcharts({
+        $(pie_chart_id + uat_type).highcharts({
             chart: {
                 //plotBackgroundColor: null,
                 //plotBorderWidth: null,
@@ -516,7 +532,7 @@ function displayPieChart(data, uat_type) {
         //button handler
 
         $('#pdf_' + uat_type).click(function () {
-            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
+            var chart = $(pie_chart_id + uat_type).highcharts();
             chart.exportChart({
                 type: 'application/pdf',
                 scale: 1,
@@ -525,7 +541,7 @@ function displayPieChart(data, uat_type) {
             });
         });
         $('#jpeg_' + uat_type).click(function () {
-            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
+            var chart = $(pie_chart_id + uat_type).highcharts();
             chart.exportChart({
                 type: 'image/jpeg',
                 scale: 1,
@@ -533,7 +549,7 @@ function displayPieChart(data, uat_type) {
             });
         });
         $('#png_' + uat_type).click(function () {
-            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
+            var chart = $(pie_chart_id + uat_type).highcharts();
             chart.exportChart({
                 type: 'image/png',
                 scale: 1,
@@ -617,8 +633,8 @@ function displayQEIlogo(uat_type) {
     });
 }
 
-function displayCeeqTrend(data) {
-    $('#ceeq_trend_graph_exclude_uat').highcharts({
+function displayCeeqTrend(data, uat_type, trend_chart_id) {
+    $(trend_chart_id + uat_type).highcharts({
         title: {
             text: 'CEEQ Score Trend Graph',
             x: -20  //center
@@ -684,5 +700,32 @@ function displayCeeqTrend(data) {
             }
         ],
         credits: false
-    })
+    });
+
+    // export button handler
+    $('#pdf_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+        var chart = $(trend_chart_id + uat_type).highcharts();
+        chart.exportChart({
+            type: 'application/pdf',
+            scale: 1,
+            width: 550,
+            filename: export_trend_filename
+        })
+    });
+    $('#jpeg_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+        var chart = $(trend_chart_id + uat_type).highcharts();
+        chart.exportChart({
+            type: 'image/jpeg',
+            scale: 1,
+            filename: export_trend_filename
+        })
+    });
+    $('#png_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+        var chart = $(trend_chart_id + uat_type).highcharts();
+        chart.exportChart({
+            type: 'image/png',
+            scale: 1,
+            filename: export_trend_filename
+        })
+    });
 }
