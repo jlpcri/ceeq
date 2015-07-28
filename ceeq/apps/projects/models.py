@@ -87,6 +87,10 @@ class Project(models.Model):
         data = requests.get(settings.JIRA_API_URL_VERSIONS % self.jira_name.upper(),
                             proxies=settings.JIRA_PROXY,
                             auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
+
+        if len(data) == 2:
+            return 'No JIRA Project'
+
         for item in data:
             versions.append(item['name'])
 

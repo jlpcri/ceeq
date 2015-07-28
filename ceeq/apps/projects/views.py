@@ -85,6 +85,16 @@ def project_detail(request, project_id):
 
     #List for choice of jira verion per project
     version_names = project.fectch_jira_versions
+    if version_names == 'No JIRA Project':
+        messages.warning(request, 'No project could be found with key \"{0}\" '.format(project.jira_name))
+        context = RequestContext(request, {
+            'form': form,
+            'project': project,
+            'superuser': request.user.is_superuser,
+            'no_jira_data': jira_data,
+            'version_names': ['All Versions']
+        })
+        return render(request, 'project_detail/project_detail.html', context)
 
     version_data = jira_data['issues']
 
