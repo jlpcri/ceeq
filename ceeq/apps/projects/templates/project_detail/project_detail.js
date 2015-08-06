@@ -818,11 +818,26 @@ Highcharts.exportCharts = function(charts, options) {
 
 
 function exportAllCharts(chart1, chart2, donut_pie){
-    var options = {
-        'filename': export_filename
-    };
+    var options_png = {
+        'filename': export_filename,
+        'type': 'image/png'
+        },
+        options_jpeg = {
+        'filename': export_filename,
+        'type': 'image/jpeg'
+        },
+        options_pdf = {
+        'filename': export_filename,
+        'type': 'application/pdf'
+        };
 
-    $('#export_all_' + donut_pie).click(function(){
-        Highcharts.exportCharts([chart1, chart2], options);
+    $('#png_export_all_' + donut_pie).click(function(){
+        Highcharts.exportCharts([chart1, chart2], options_png);
+    });
+    $('#jpeg_export_all_' + donut_pie).click(function(){
+        Highcharts.exportCharts([chart1, chart2], options_jpeg);
+    });
+    $('#pdf_export_all_' + donut_pie).click(function(){
+        Highcharts.exportCharts([chart1, chart2], options_pdf);
     });
 }
