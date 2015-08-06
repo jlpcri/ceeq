@@ -76,7 +76,12 @@ $(document).ready(function(){
 function loadUatActiveDataTab() {
     var pie_chart_id = '#component_percentage_pie_chart_',
         trend_chart_id = '#ceeq_trend_chart_',
-        div_pie_height;
+        div_pie_height,
+        chart_pie_exclude_uat,
+        chart_pie_include_uat,
+        chart_line_exclude_uat,
+        chart_line_include_uat;
+
     if (active_tab == '#include_uat') {
         donut_pie = 'include_uat';
 
@@ -96,7 +101,7 @@ function loadUatActiveDataTab() {
         donut_pie = 'exclude_uat';
 
         if (data_ceeq_trend_graph['ceeq'].length > 0) {
-            displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+            chart_line_exclude_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
         } else {
             $(trend_chart_id + donut_pie).hide();
             $(trend_chart_id + donut_pie + '_export').hide();
@@ -104,8 +109,12 @@ function loadUatActiveDataTab() {
 
         div_pie_height = data_exclude_uat[1].length * 25 + 450;
         $(pie_chart_id + donut_pie).height(div_pie_height);
-        displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
+        chart_pie_exclude_uat = displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
+
+        $('#export_all_exclude_uat').click(function(){
+            Highcharts.exportCharts([chart_pie_exclude_uat, chart_line_exclude_uat]);
+        })
 
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
@@ -127,6 +136,7 @@ function loadUatActiveDataTab() {
 }
 
 function displayPieChart(data, uat_type, pie_chart_id) {
+    pie_chart_id = pie_chart_id.substring(1, pie_chart_id.length);
 
     if (score < 10) {
         //Create the data table
@@ -435,11 +445,12 @@ function displayPieChart(data, uat_type, pie_chart_id) {
         }
 
         var pie_size = 210;
-        $(pie_chart_id + uat_type).highcharts({
+        var chart_export = new Highcharts.Chart({
             chart: {
                 //plotBackgroundColor: null,
                 //plotBorderWidth: null,
                 //plotShadow: false,
+                renderTo: pie_chart_id + uat_type,
                 type: 'pie',
                 events: {
                     load: Highcharts.drawTable
@@ -558,6 +569,9 @@ function displayPieChart(data, uat_type, pie_chart_id) {
                 filename: export_filename
             });
         });
+
+        return chart_export;
+
     }
 }
 
@@ -634,7 +648,12 @@ function displayQEIlogo(uat_type) {
 }
 
 function displayCeeqTrend(data, uat_type, trend_chart_id) {
-    $(trend_chart_id + uat_type).highcharts({
+    trend_chart_id = trend_chart_id.substring(1, trend_chart_id.length);
+
+    var chart_export = new Highcharts.Chart({
+        chart: {
+            renderTo: trend_chart_id + uat_type
+        },
         title: {
             text: 'CEEQ Score Trend Graph',
             x: -20  //center
@@ -730,4 +749,68 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
             filename: export_trend_filename
         })
     });
+
+    return chart_export;
 }
+
+/**
+ * Create a global getSVG method that takes an array of charts as an argument
+ */
+Highcharts.getSVG = function(charts) {
+    var svgArr = [],
+        top = 0,
+        width = 0;
+
+    $.each(charts, function(i, chart) {
+        var svg = chart.getSVG();
+        svg = svg.replace('<svg', '<g transform="translate(0,' + top + ')" ');
+        svg = svg.replace('</svg>', '</g>');
+
+        top += chart.chartHeight;
+        width = Math.max(width, chart.chartWidth);
+
+        svgArr.push(svg);
+    });
+
+    return '<svg height="'+ top +'" width="' + width + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' + svgArr.join('') + '</svg>';
+};
+
+/**
+ * Create a global exportCharts method that takes an array of charts as an argument,
+ * and exporting options as the second argument
+ */
+Highcharts.exportCharts = function(charts, options) {
+    var form,
+        svg = Highcharts.getSVG(charts);
+
+    // merge the options
+    options = Highcharts.merge(Highcharts.getOptions().exporting, options);
+
+    // create the form
+    form = Highcharts.createElement('form', {
+        method: 'post',
+        action: options.url
+    }, {
+        display: 'none'
+    }, document.body);
+
+    // add the values
+    Highcharts.each(['filename', 'type', 'width', 'svg'], function(name) {
+        Highcharts.createElement('input', {
+            type: 'hidden',
+            name: name,
+            value: {
+                filename: options.filename || 'chart',
+                type: options.type,
+                width: options.width,
+                svg: svg
+            }[name]
+        }, null, form);
+    });
+    //console.log(svg); return;
+    // submit
+    form.submit();
+
+    // clean up
+    form.parentNode.removeChild(form);
+};
