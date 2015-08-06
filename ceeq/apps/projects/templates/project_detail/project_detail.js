@@ -86,7 +86,7 @@ function loadUatActiveDataTab() {
         donut_pie = 'include_uat';
 
         if (data_ceeq_trend_graph['ceeq'].length > 0) {
-            displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+            chart_line_include_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
         } else {
             $(trend_chart_id + donut_pie).hide();
             $(trend_chart_id + donut_pie + '_export').hide();
@@ -95,8 +95,11 @@ function loadUatActiveDataTab() {
         div_pie_height = data_include_uat[1].length * 25 + 450;
         $(pie_chart_id + donut_pie).height(div_pie_height);
 
-        displayPieChart(data_include_uat, donut_pie, pie_chart_id);
+        chart_pie_include_uat = displayPieChart(data_include_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
+
+        exportAllCharts(chart_pie_include_uat, chart_line_include_uat, donut_pie);
+
     } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
 
@@ -112,9 +115,7 @@ function loadUatActiveDataTab() {
         chart_pie_exclude_uat = displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
 
-        $('#export_all_exclude_uat').click(function(){
-            Highcharts.exportCharts([chart_pie_exclude_uat, chart_line_exclude_uat]);
-        })
+        exportAllCharts(chart_pie_exclude_uat, chart_line_exclude_uat, donut_pie);
 
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
@@ -814,3 +815,14 @@ Highcharts.exportCharts = function(charts, options) {
     // clean up
     form.parentNode.removeChild(form);
 };
+
+
+function exportAllCharts(chart1, chart2, donut_pie){
+    var options = {
+        'filename': export_filename
+    };
+
+    $('#export_all_' + donut_pie).click(function(){
+        Highcharts.exportCharts([chart1, chart2], options);
+    });
+}
