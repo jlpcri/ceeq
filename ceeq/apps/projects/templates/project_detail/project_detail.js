@@ -98,7 +98,7 @@ function loadUatActiveDataTab() {
         chart_pie_include_uat = displayPieChart(data_include_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
 
-        exportAllCharts(chart_pie_include_uat, chart_line_include_uat, donut_pie);
+        exportAllCharts(chart_line_include_uat, chart_pie_include_uat, donut_pie);
 
     } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
@@ -115,7 +115,7 @@ function loadUatActiveDataTab() {
         chart_pie_exclude_uat = displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
 
-        exportAllCharts(chart_pie_exclude_uat, chart_line_exclude_uat, donut_pie);
+        exportAllCharts(chart_line_exclude_uat, chart_pie_exclude_uat, donut_pie);
 
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
