@@ -719,7 +719,7 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
             {
                 name: 'Actual',
                 data: data['ceeq'],
-                color: '#397fdb'
+                color: '#27ae60'
             }
         ],
         credits: false
