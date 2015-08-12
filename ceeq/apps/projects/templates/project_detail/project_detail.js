@@ -713,12 +713,13 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
             {
                 name: 'Projected',
                 data: data['ceeq_closed'],
-                color: '#434348'
+                // maroon: 993232, green: 27ae60, blue: 397fdb
+                color: '#993232'
             },
             {
-                name: 'CEEQ',
+                name: 'Actual',
                 data: data['ceeq'],
-                color: '#7cb5ec'
+                color: '#397fdb'
             }
         ],
         credits: false
