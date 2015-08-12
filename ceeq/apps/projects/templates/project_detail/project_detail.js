@@ -692,11 +692,22 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
             //min: 0
         },
         tooltip: {
-            formatter: function(){
-                var s = '<b>' + this.x + '</b><br/>';
-                s += this.series.name + ': <b>' + this.y + '</b>';
+            //formatter: function(){
+            //    var s = '<b>' + this.x + '</b><br/>';
+            //    s += this.series.name + ': <b>' + this.y + '</b>';
+            //    return s;
+            //}
+
+            //pointFormat:'{series.name}: <b>{point.y}</b><br>',
+            formatter:function(){
+                var s = '<b>' + this.x + '</b>';
+                $.each(this.points, function(){
+                    s += '<br/>' + this.series.name + ': <b>' + this.y + '</b>';
+                });
                 return s;
-            }
+            },
+            valueSuffix: '',
+            shared: true
         },
         legend: {
             layout: 'vertical',
