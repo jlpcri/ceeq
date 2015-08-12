@@ -543,33 +543,33 @@ function displayPieChart(data, uat_type, pie_chart_id) {
 
         //button handler
 
-        $('#pdf_' + uat_type).click(function () {
-            var chart = $(pie_chart_id + uat_type).highcharts();
-            chart.exportChart({
-                type: 'application/pdf',
-                scale: 1,
-                width: 550,
-                filename: export_filename
-            });
-        });
-        $('#jpeg_' + uat_type).click(function () {
-            var chart = $(pie_chart_id + uat_type).highcharts();
-            chart.exportChart({
-                type: 'image/jpeg',
-                scale: 1,
-                filename: export_filename
-            });
-        });
-        $('#png_' + uat_type).click(function () {
-            var chart = $(pie_chart_id + uat_type).highcharts();
-            chart.exportChart({
-                type: 'image/png',
-                scale: 1,
-                //sourceWidth: 1000,
-                //sourceHeight: 300,
-                filename: export_filename
-            });
-        });
+        //$('#pdf_' + uat_type).click(function () {
+        //    var chart = $(pie_chart_id + uat_type).highcharts();
+        //    chart.exportChart({
+        //        type: 'application/pdf',
+        //        scale: 1,
+        //        width: 550,
+        //        filename: export_filename
+        //    });
+        //});
+        //$('#jpeg_' + uat_type).click(function () {
+        //    var chart = $(pie_chart_id + uat_type).highcharts();
+        //    chart.exportChart({
+        //        type: 'image/jpeg',
+        //        scale: 1,
+        //        filename: export_filename
+        //    });
+        //});
+        //$('#png_' + uat_type).click(function () {
+        //    var chart = $(pie_chart_id + uat_type).highcharts();
+        //    chart.exportChart({
+        //        type: 'image/png',
+        //        scale: 1,
+        //        //sourceWidth: 1000,
+        //        //sourceHeight: 300,
+        //        filename: export_filename
+        //    });
+        //});
 
         return chart_export;
 
@@ -737,31 +737,31 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
     });
 
     // export button handler
-    $('#pdf_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
-        var chart = $(trend_chart_id + uat_type).highcharts();
-        chart.exportChart({
-            type: 'application/pdf',
-            scale: 1,
-            width: 550,
-            filename: export_trend_filename
-        })
-    });
-    $('#jpeg_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
-        var chart = $(trend_chart_id + uat_type).highcharts();
-        chart.exportChart({
-            type: 'image/jpeg',
-            scale: 1,
-            filename: export_trend_filename
-        })
-    });
-    $('#png_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
-        var chart = $(trend_chart_id + uat_type).highcharts();
-        chart.exportChart({
-            type: 'image/png',
-            scale: 1,
-            filename: export_trend_filename
-        })
-    });
+    //$('#pdf_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+    //    var chart = $(trend_chart_id + uat_type).highcharts();
+    //    chart.exportChart({
+    //        type: 'application/pdf',
+    //        scale: 1,
+    //        width: 550,
+    //        filename: export_trend_filename
+    //    })
+    //});
+    //$('#jpeg_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+    //    var chart = $(trend_chart_id + uat_type).highcharts();
+    //    chart.exportChart({
+    //        type: 'image/jpeg',
+    //        scale: 1,
+    //        filename: export_trend_filename
+    //    })
+    //});
+    //$('#png_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+    //    var chart = $(trend_chart_id + uat_type).highcharts();
+    //    chart.exportChart({
+    //        type: 'image/png',
+    //        scale: 1,
+    //        filename: export_trend_filename
+    //    })
+    //});
 
     return chart_export;
 }
