@@ -764,6 +764,11 @@ Highcharts.getSVG = function(charts) {
         width = 0;
 
     $.each(charts, function(i, chart) {
+        // check if chart is not undefined
+        if ( null == chart) {
+            return true;
+        }
+
         var svg = chart.getSVG();
         svg = svg.replace('<svg', '<g transform="translate(0,' + top + ')" ');
         svg = svg.replace('</svg>', '</g>');
