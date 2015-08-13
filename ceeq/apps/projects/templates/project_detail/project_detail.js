@@ -1,8 +1,8 @@
 var active_tab = String(""),
     donut_pie,
     today = new Date(),
-    export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString(),
-    export_trend_filename = '{{ project.name}}' + '-trend-' + today.toLocaleDateString();
+    export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
+    //export_trend_filename = '{{ project.name}}' + '-trend-' + today.toLocaleDateString();
 
 moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
 var startDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
@@ -98,7 +98,7 @@ function loadUatActiveDataTab() {
         chart_pie_include_uat = displayPieChart(data_include_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
 
-        exportAllCharts(chart_line_include_uat, chart_pie_include_uat, donut_pie);
+        exportAllCharts([chart_line_include_uat, chart_pie_include_uat], donut_pie);
 
     } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
@@ -115,7 +115,7 @@ function loadUatActiveDataTab() {
         chart_pie_exclude_uat = displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
 
-        exportAllCharts(chart_line_exclude_uat, chart_pie_exclude_uat, donut_pie);
+        exportAllCharts([chart_line_exclude_uat, chart_pie_exclude_uat], donut_pie);
 
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
@@ -834,7 +834,7 @@ Highcharts.exportCharts = function(charts, options) {
 };
 
 
-function exportAllCharts(chart1, chart2, donut_pie){
+function exportAllCharts(charts, donut_pie){
     var options_png = {
         'filename': export_filename,
         'type': 'image/png'
@@ -849,12 +849,12 @@ function exportAllCharts(chart1, chart2, donut_pie){
         };
 
     $('#png_export_all_' + donut_pie).click(function(){
-        Highcharts.exportCharts([chart1, chart2], options_png);
+        Highcharts.exportCharts(charts, options_png);
     });
     $('#jpeg_export_all_' + donut_pie).click(function(){
-        Highcharts.exportCharts([chart1, chart2], options_jpeg);
+        Highcharts.exportCharts(charts, options_jpeg);
     });
     $('#pdf_export_all_' + donut_pie).click(function(){
-        Highcharts.exportCharts([chart1, chart2], options_pdf);
+        Highcharts.exportCharts(charts, options_pdf);
     });
 }
