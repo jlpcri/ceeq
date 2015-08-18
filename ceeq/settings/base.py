@@ -179,9 +179,8 @@ SESSION_SAVE_EVERY_REQUEST = True
 from decimal import Decimal
 
 COMPONENT_NAMES_STANDARD = {
-    'CXP': 2,
     'Client': 0,
-    'Client Access': 0,
+    'CXP': 2,
     'Platform': 4,
     'Reports': 3,
     'Application': 8,
