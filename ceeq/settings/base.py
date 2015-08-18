@@ -189,6 +189,8 @@ COMPONENT_NAMES_STANDARD_OLD = {
 
 COMPONENT_NAMES_STANDARD_NEW = {
     'CXP': 2,
+    'Client': 0,
+    'Client Access': 0,
     'Platform': 4,
     'Reports': 3,
     'Application': 8,
