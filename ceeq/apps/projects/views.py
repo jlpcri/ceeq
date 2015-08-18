@@ -52,6 +52,13 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
+
+    # Using new framework of CEEQ ('Voice' instead of 'Voice Prompts') for 'COMED'
+    if project.jira_name == 'comed':
+        settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_NEW
+    else:
+        settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_OLD
+
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
         return redirect(projects)
@@ -277,6 +284,13 @@ def project_defects_density(request, project_id):
     :return: component weight, dds, priority-status, trending graph
     """
     project = get_object_or_404(Project, pk=project_id)
+
+    # Using new framework of CEEQ ('Voice' instead of 'Voice Prompts') for 'COMED'
+    if project.jira_name == 'comed':
+        settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_NEW
+    else:
+        settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_OLD
+
     if project.jira_version == 'All Versions':
         project_dds = ProjectComponentsDefectsDensity.objects.filter(project=project).order_by('version', '-created')
     else:
@@ -478,6 +492,13 @@ def project_update_scores(request, project_id):
                 calculate_score(request, project)
     else:
         project = get_object_or_404(Project, pk=project_id)
+
+        # Using new framework of CEEQ ('Voice' instead of 'Voice Prompts') for 'COMED'
+        if project.jira_name == 'comed':
+            settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_NEW
+        else:
+            settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_OLD
+
         if not project.complete:
             calculate_score(request, project)
 
@@ -847,6 +868,13 @@ def defects_density_log(request, project_id):
     else:
         #project = Project.objects.get(pk=project_id)
         project = get_object_or_404(Project, pk=project_id)
+
+        # Using new framework of CEEQ ('Voice' instead of 'Voice Prompts') for 'COMED'
+        if project.jira_name == 'comed':
+            settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_NEW
+        else:
+            settings.COMPONENT_NAMES_STANDARD = settings.COMPONENT_NAMES_STANDARD_OLD
+
         if not project.complete:
             defects_density_single_log(request, project)
 

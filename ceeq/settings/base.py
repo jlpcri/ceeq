@@ -178,12 +178,21 @@ SESSION_SAVE_EVERY_REQUEST = True
 # Standard Component Name and its comparison ratio
 from decimal import Decimal
 
-COMPONENT_NAMES_STANDARD = {
+COMPONENT_NAMES_STANDARD = {}
+COMPONENT_NAMES_STANDARD_OLD = {
     'CXP': 2,
     'Platform': 4,
     'Reports': 3,
     'Application': 8,
     'Voice Prompts': 3
+}
+
+COMPONENT_NAMES_STANDARD_NEW = {
+    'CXP': 2,
+    'Platform': 4,
+    'Reports': 3,
+    'Application': 8,
+    'Voice': 3
 }
 
 # Priority Weight of Issues in JIRA
