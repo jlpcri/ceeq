@@ -6,6 +6,16 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
+# COMPONENT_NAMES_STANDARD['Client'] = 0
+
+# ISSUE_PRIORITY_WEIGHT = {
+#     'blocker': Decimal(15) / 32,
+#     'critical': Decimal(9) / 32,
+#     'major': Decimal(5) / 32,
+#     'minor': Decimal(2) / 32,
+#     'trivial': Decimal(1) / 32
+# }
+
 if socket.gethostname() == 'sliu-OptiPlex-GX520':  # desktop
     #STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
     STATICFILES_DIRS = ('/opt/static/',)

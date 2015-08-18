@@ -106,14 +106,17 @@ class ProjectComponentsDefectsDensity(models.Model):
     project = models.ForeignKey(Project)
     version = models.CharField(max_length=200)
     created = models.DateField(auto_now_add=True)
+
     # log ceeq score per day per version
     ceeq = models.DecimalField(max_digits=5, decimal_places=3, default=0)
+    # ceeq score disregard JIRA status
+    ceeq_closed = models.DecimalField(max_digits=5, decimal_places=3, default=10)
 
     cxp = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     platform = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     reports = models.DecimalField(max_digits=5, decimal_places=3, default=0)
     application = models.DecimalField(max_digits=5, decimal_places=3, default=0)
-    voiceSlots = models.DecimalField(max_digits=5, decimal_places=3, default=0)
+    voice_slots = models.DecimalField(max_digits=5, decimal_places=3, default=0)
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.project.name, self.version)

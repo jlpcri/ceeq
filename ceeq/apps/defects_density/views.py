@@ -97,7 +97,7 @@ def fetch_dds_json(request, project_id):
         temp.append(float(dd.platform))
         temp.append(float(dd.reports))
         temp.append(float(dd.application))
-        temp.append(float(dd.voiceSlots))
+        temp.append(float(dd.voice_slots))
         temp.append(float(dd.ceeq))  # ceeq as ceeq score
 
         dds_json.append(temp)

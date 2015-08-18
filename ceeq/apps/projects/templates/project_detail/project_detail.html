@@ -219,10 +219,14 @@
 
     <script type="text/javascript">
         var score = parseFloat({{ project.score }});
+
         var data_include_uat = {{ dd_pie_data_include_uat | safe }};
         var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
         var data_custom = {{ dd_pie_data_custom | safe }};
+
+        var data_ceeq_trend_graph = {{ ceeq_trend_graph |safe }};
+
         var last_tab = '{{ last_tab }}';
 
         {% include 'project_detail/project_detail.js' %}

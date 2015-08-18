@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
     project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute, \
-    get_priority_total, get_component_names, get_component_names_from_jira_data
+    get_priority_total, get_component_names, get_component_names_from_jira_data, fetch_ceeq_trend_graph
 from ceeq.apps.users.views import user_is_superuser
 
 from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
@@ -135,7 +135,9 @@ def project_detail(request, project_id):
                                                          project.jira_name,
                                                          version_data_custom,
                                                          uat_type_custom)
-    #print dd_pie_data_custom
+
+    # Try get ceeq trend graph data
+    ceeq_trend_graph = fetch_ceeq_trend_graph(request, project.id)
 
     # get component_names and component_names_without_slash for version_data
     for item in version_data:
@@ -263,7 +265,9 @@ def project_detail(request, project_id):
         'dd_pie_data_include_uat': json.dumps(dd_pie_data_include_uat),
         'dd_pie_data_exclude_uat': json.dumps(dd_pie_data_exclude_uat),
         'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat),
-        'dd_pie_data_custom': json.dumps(dd_pie_data_custom)
+        'dd_pie_data_custom': json.dumps(dd_pie_data_custom),
+
+        'ceeq_trend_graph': ceeq_trend_graph
     })
     return render(request, 'project_detail/project_detail.html', context)
 
@@ -636,7 +640,7 @@ def fetch_defects_density_score(request, project_id):
 
         tmp_categories = []
 
-        tmp_data_voiceSlots = []
+        tmp_data_voice_slots = []
         tmp_data_cxp = []
         tmp_data_platform = []
         tmp_data_reports = []
@@ -660,7 +664,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_year = str(item.created.year)
                 tmp_categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
-                tmp_data_voiceSlots.append(float(item.voiceSlots))
+                tmp_data_voice_slots.append(float(item.voice_slots))
                 tmp_data_cxp.append(float(item.cxp))
                 tmp_data_platform.append(float(item.platform))
                 tmp_data_reports.append(float(item.reports))
@@ -672,7 +676,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_data_ceeq_sum += item.ceeq
 
         data['categories'] = tmp_categories
-        data['voiceSlots'] = tmp_data_voiceSlots
+        data['voice_slots'] = tmp_data_voice_slots
         data['cxp'] = tmp_data_cxp
         data['platform'] = tmp_data_platform
         data['reports'] = tmp_data_reports
@@ -889,9 +893,11 @@ def defects_density_single_log(request, project):
     today = date.today()
     for item in weight_factor_versions:
         ceeq_raw = 0  # calculate ceeq score per version
+        ceeq_closed_raw = 0   # calculate score if all closed
         for com in weight_factor_versions[item]:
             ceeq_raw += round(com[1] * float(com[2]), 3)
-        #print ceeq_version
+            ceeq_closed_raw += round(com[1] * float(com[-1]), 3)
+
         try:
             component_defects_density = ProjectComponentsDefectsDensity.objects.get(project=project, version=item, created=today)
         except ProjectComponentsDefectsDensity.DoesNotExist:
@@ -899,6 +905,7 @@ def defects_density_single_log(request, project):
 
         # use ceeq field to store ceeq score
         component_defects_density.ceeq = (1 - ceeq_raw) * 10
+        component_defects_density.ceeq_closed = (1 - ceeq_closed_raw) * 10
 
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
@@ -911,7 +918,7 @@ def defects_density_single_log(request, project):
             elif component[0] == 'Application':
                 component_defects_density.application = component[2]
             elif component[0] == 'Voice Prompts':
-                component_defects_density.voiceSlots = component[2]
+                component_defects_density.voice_slots = component[2]
         component_defects_density.save()
 
     return

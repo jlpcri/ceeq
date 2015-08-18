@@ -2,6 +2,7 @@ var active_tab = String(""),
     donut_pie,
     today = new Date(),
     export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
+    //export_trend_filename = '{{ project.name}}' + '-trend-' + today.toLocaleDateString();
 
 moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
 var startDatetime = moment.tz(moment().valueOf(), 'America/Chicago');
@@ -73,39 +74,70 @@ $(document).ready(function(){
 
 
 function loadUatActiveDataTab() {
-    var div_pie_height;
+    var pie_chart_id = '#component_percentage_pie_chart_',
+        trend_chart_id = '#ceeq_trend_chart_',
+        div_pie_height,
+        chart_pie_exclude_uat,
+        chart_pie_include_uat,
+        chart_line_exclude_uat,
+        chart_line_include_uat;
+
     if (active_tab == '#include_uat') {
-        div_pie_height = data_include_uat[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_include_uat').height(div_pie_height);
-
         donut_pie = 'include_uat';
-        displayPieChart(data_include_uat, donut_pie);
+
+        if (data_ceeq_trend_graph['ceeq'].length > 0) {
+            chart_line_include_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+        } else {
+            $(trend_chart_id + donut_pie).hide();
+            $(trend_chart_id + donut_pie + '_export').hide();
+        }
+
+        div_pie_height = data_include_uat[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+
+        chart_pie_include_uat = displayPieChart(data_include_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
+
+        exportAllCharts([chart_line_include_uat, chart_pie_include_uat], donut_pie);
+
     } else if (active_tab == '#exclude_uat') {
-        div_pie_height = data_exclude_uat[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_exclude_uat').height(div_pie_height);
-
         donut_pie = 'exclude_uat';
-        displayPieChart(data_exclude_uat, donut_pie);
-        displayQEIlogo(donut_pie);
-    } else if (active_tab == '#only_uat') {
-        div_pie_height = data_only_uat[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_only_uat').height(div_pie_height);
 
+        if (data_ceeq_trend_graph['ceeq'].length > 0) {
+            chart_line_exclude_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+        } else {
+            $(trend_chart_id + donut_pie).hide();
+            $(trend_chart_id + donut_pie + '_export').hide();
+        }
+
+        div_pie_height = data_exclude_uat[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+        chart_pie_exclude_uat = displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
+        displayQEIlogo(donut_pie);
+
+        exportAllCharts([chart_line_exclude_uat, chart_pie_exclude_uat], donut_pie);
+
+    } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
-        displayPieChart(data_only_uat, donut_pie);
+
+        div_pie_height = data_only_uat[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+
+        displayPieChart(data_only_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
     } else if (active_tab == '#custom') {
-        div_pie_height = data_custom[1].length * 25 + 450;
-        $('#component_percentage_pie_chart_custom').height(div_pie_height);
-
         donut_pie = 'custom';
-        displayPieChart(data_custom, donut_pie);
+
+        div_pie_height = data_custom[1].length * 25 + 450;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
+
+        displayPieChart(data_custom, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
     }
 }
 
-function displayPieChart(data, uat_type) {
+function displayPieChart(data, uat_type, pie_chart_id) {
+    pie_chart_id = pie_chart_id.substring(1, pie_chart_id.length);
 
     if (score < 10) {
         //Create the data table
@@ -414,11 +446,12 @@ function displayPieChart(data, uat_type) {
         }
 
         var pie_size = 210;
-        $('#component_percentage_pie_chart_' + uat_type).highcharts({
+        var chart_export = new Highcharts.Chart({
             chart: {
                 //plotBackgroundColor: null,
                 //plotBorderWidth: null,
                 //plotShadow: false,
+                renderTo: pie_chart_id + uat_type,
                 type: 'pie',
                 events: {
                     load: Highcharts.drawTable
@@ -510,33 +543,36 @@ function displayPieChart(data, uat_type) {
 
         //button handler
 
-        $('#pdf_' + uat_type).click(function () {
-            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
-            chart.exportChart({
-                type: 'application/pdf',
-                scale: 1,
-                width: 550,
-                filename: export_filename
-            });
-        });
-        $('#jpeg_' + uat_type).click(function () {
-            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
-            chart.exportChart({
-                type: 'image/jpeg',
-                scale: 1,
-                filename: export_filename
-            });
-        });
-        $('#png_' + uat_type).click(function () {
-            var chart = $('#component_percentage_pie_chart_' + uat_type).highcharts();
-            chart.exportChart({
-                type: 'image/png',
-                scale: 1,
-                //sourceWidth: 1000,
-                //sourceHeight: 300,
-                filename: export_filename
-            });
-        });
+        //$('#pdf_' + uat_type).click(function () {
+        //    var chart = $(pie_chart_id + uat_type).highcharts();
+        //    chart.exportChart({
+        //        type: 'application/pdf',
+        //        scale: 1,
+        //        width: 550,
+        //        filename: export_filename
+        //    });
+        //});
+        //$('#jpeg_' + uat_type).click(function () {
+        //    var chart = $(pie_chart_id + uat_type).highcharts();
+        //    chart.exportChart({
+        //        type: 'image/jpeg',
+        //        scale: 1,
+        //        filename: export_filename
+        //    });
+        //});
+        //$('#png_' + uat_type).click(function () {
+        //    var chart = $(pie_chart_id + uat_type).highcharts();
+        //    chart.exportChart({
+        //        type: 'image/png',
+        //        scale: 1,
+        //        //sourceWidth: 1000,
+        //        //sourceHeight: 300,
+        //        filename: export_filename
+        //    });
+        //});
+
+        return chart_export;
+
     }
 }
 
@@ -609,5 +645,216 @@ function displayQEIlogo(uat_type) {
             //sourceHeight: 300,
             filename: export_filename
         });
+    });
+}
+
+function displayCeeqTrend(data, uat_type, trend_chart_id) {
+    trend_chart_id = trend_chart_id.substring(1, trend_chart_id.length);
+
+    var chart_export = new Highcharts.Chart({
+        chart: {
+            renderTo: trend_chart_id + uat_type
+        },
+        title: {
+            text: 'CEEQ Score Trend Graph',
+            x: -20  //center
+        },
+        subtitle: {
+            text: 'Affected Version: ' + '{{project.jira_version}}',
+            x: -20
+        },
+        xAxis: {
+            title: {
+                text: 'Timeline'
+            },
+            categories: data['categories'],
+            labels: {
+                //only display month-day in xAxis label
+                formatter: function(){
+                    return this.value.substring(5);
+                },
+                style: {
+                    fontSize: '10px'
+                }
+            },
+            tickInterval: Math.floor(data['categories'].length / 10)
+        },
+        yAxis: {
+            title: {
+                text: 'CEEQ Score'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }],
+            max: 10,
+            //min: 0
+        },
+        tooltip: {
+            //formatter: function(){
+            //    var s = '<b>' + this.x + '</b><br/>';
+            //    s += this.series.name + ': <b>' + this.y + '</b>';
+            //    return s;
+            //}
+
+            //pointFormat:'{series.name}: <b>{point.y}</b><br>',
+            formatter:function(){
+                var s = '<b>' + this.x + '</b>';
+                $.each(this.points, function(){
+                    s += '<br/>' + this.series.name + ': <b>' + this.y + '</b>';
+                });
+                return s;
+            },
+            valueSuffix: '',
+            shared: true
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        navigation: {
+            buttonOptions: {
+                enabled: false
+            }
+        },
+        series: [
+            {
+                name: 'Projected',
+                data: data['ceeq_closed'],
+                // maroon: 993232, green: 27ae60, blue: 397fdb
+                color: '#993232'
+            },
+            {
+                name: 'Actual',
+                data: data['ceeq'],
+                color: '#27ae60'
+            }
+        ],
+        credits: false
+    });
+
+    // export button handler
+    //$('#pdf_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+    //    var chart = $(trend_chart_id + uat_type).highcharts();
+    //    chart.exportChart({
+    //        type: 'application/pdf',
+    //        scale: 1,
+    //        width: 550,
+    //        filename: export_trend_filename
+    //    })
+    //});
+    //$('#jpeg_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+    //    var chart = $(trend_chart_id + uat_type).highcharts();
+    //    chart.exportChart({
+    //        type: 'image/jpeg',
+    //        scale: 1,
+    //        filename: export_trend_filename
+    //    })
+    //});
+    //$('#png_' + trend_chart_id.substring(1, 12) + uat_type).click(function(){
+    //    var chart = $(trend_chart_id + uat_type).highcharts();
+    //    chart.exportChart({
+    //        type: 'image/png',
+    //        scale: 1,
+    //        filename: export_trend_filename
+    //    })
+    //});
+
+    return chart_export;
+}
+
+/**
+ * Create a global getSVG method that takes an array of charts as an argument
+ */
+Highcharts.getSVG = function(charts) {
+    var svgArr = [],
+        top = 0,
+        width = 0;
+
+    $.each(charts, function(i, chart) {
+        // check if chart is not undefined
+        if ( null == chart) {
+            return true;
+        }
+
+        var svg = chart.getSVG();
+        svg = svg.replace('<svg', '<g transform="translate(0,' + top + ')" ');
+        svg = svg.replace('</svg>', '</g>');
+
+        top += chart.chartHeight;
+        width = Math.max(width, chart.chartWidth);
+
+        svgArr.push(svg);
+    });
+
+    return '<svg height="'+ top +'" width="' + width + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' + svgArr.join('') + '</svg>';
+};
+
+/**
+ * Create a global exportCharts method that takes an array of charts as an argument,
+ * and exporting options as the second argument
+ */
+Highcharts.exportCharts = function(charts, options) {
+    var form,
+        svg = Highcharts.getSVG(charts);
+
+    // merge the options
+    options = Highcharts.merge(Highcharts.getOptions().exporting, options);
+
+    // create the form
+    form = Highcharts.createElement('form', {
+        method: 'post',
+        action: options.url
+    }, {
+        display: 'none'
+    }, document.body);
+
+    // add the values
+    Highcharts.each(['filename', 'type', 'width', 'svg'], function(name) {
+        Highcharts.createElement('input', {
+            type: 'hidden',
+            name: name,
+            value: {
+                filename: options.filename || 'chart',
+                type: options.type,
+                width: options.width,
+                svg: svg
+            }[name]
+        }, null, form);
+    });
+    //console.log(svg); return;
+    // submit
+    form.submit();
+
+    // clean up
+    form.parentNode.removeChild(form);
+};
+
+
+function exportAllCharts(charts, donut_pie){
+    var options_png = {
+        'filename': export_filename,
+        'type': 'image/png'
+        },
+        options_jpeg = {
+        'filename': export_filename,
+        'type': 'image/jpeg'
+        },
+        options_pdf = {
+        'filename': export_filename,
+        'type': 'application/pdf'
+        };
+
+    $('#png_export_all_' + donut_pie).click(function(){
+        Highcharts.exportCharts(charts, options_png);
+    });
+    $('#jpeg_export_all_' + donut_pie).click(function(){
+        Highcharts.exportCharts(charts, options_jpeg);
+    });
+    $('#pdf_export_all_' + donut_pie).click(function(){
+        Highcharts.exportCharts(charts, options_pdf);
     });
 }
