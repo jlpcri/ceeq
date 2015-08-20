@@ -18,10 +18,19 @@ from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, 
     get_priority_total, get_component_names, get_component_names_from_jira_data, fetch_ceeq_trend_graph
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
+from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity, ProjectType
 from forms import ProjectForm, ProjectNewForm
 
 from django.conf import settings
+
+#  define global variable of project types
+project_types = []
+for item in ProjectType.objects.all():
+    temp = {
+        'name': item.name,
+        'value': item.pk
+    }
+    project_types.append(temp)
 
 
 def projects(request):
@@ -267,7 +276,8 @@ def project_detail(request, project_id):
         'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat),
         'dd_pie_data_custom': json.dumps(dd_pie_data_custom),
 
-        'ceeq_trend_graph': ceeq_trend_graph
+        'ceeq_trend_graph': ceeq_trend_graph,
+        'project_types': project_types
     })
     return render(request, 'project_detail/project_detail.html', context)
 
@@ -452,6 +462,7 @@ def project_new(request):
         form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
+            'project_types': project_types
         })
         return render(request, 'projects/project_new.html', context)
 
