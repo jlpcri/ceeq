@@ -12,6 +12,9 @@ class ProjectType(models.Model):
     """
     name = models.CharField(max_length=50, unique=True, default='')
 
+    def __unicode__(self):
+        return u"{0}".format(self.name)
+
 
 class ProjectComponent(models.Model):
     """
@@ -24,6 +27,9 @@ class ProjectComponent(models.Model):
     class Meta:
         unique_together = (("project_type", "name", "weight"), )
 
+    def __unicode__(self):
+        return u"{0}:{1}".format(self.project_type.name, self.name)
+
 
 class Project(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -35,7 +41,7 @@ class Project(models.Model):
     active = models.BooleanField(default=True)  # tracking JIRA projects or not
     complete = models.BooleanField(default=False)  # CEEQ projects complete or not
 
-    project_type = models.ForeignKey(ProjectType)  # type of project
+    project_type = models.ForeignKey(ProjectType, default=1)  # type of project
 
     #  Domain Testing Characteristics 0-5
     accuracy = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
