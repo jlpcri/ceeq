@@ -6,6 +6,25 @@ from django.conf import settings
 import requests
 
 
+class ProjectType(models.Model):
+    """
+    Define the type of project as inbound, outbound, or others
+    """
+    name = models.CharField(max_length=50, unique=True, default='')
+
+
+class ProjectComponent(models.Model):
+    """
+    Define standard components and its weight factor for different ProjectType
+    """
+    project_type = models.ForeignKey(ProjectType)
+    name = models.CharField(max_length=50, default='')
+    weight = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+
+    class Meta:
+        unique_together = (("project_type", "name", "weight"), )
+
+
 class Project(models.Model):
     name = models.CharField(max_length=200, unique=True)
     jira_name = models.CharField(max_length=200)  # name of the related project in JIRA
@@ -16,7 +35,9 @@ class Project(models.Model):
     active = models.BooleanField(default=True)  # tracking JIRA projects or not
     complete = models.BooleanField(default=False)  # CEEQ projects complete or not
 
-     #Domain Testing Characteristics 0-5
+    project_type = models.ForeignKey(ProjectType)  # type of project
+
+    #  Domain Testing Characteristics 0-5
     accuracy = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
     suitability = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
     interoperability = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
@@ -24,7 +45,7 @@ class Project(models.Model):
     usability = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
     accessibility = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
 
-    #Technical Testing Characteristics 0-5
+    #  Technical Testing Characteristics 0-5
     technical_security = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
     reliability = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
     efficiency = models.IntegerField(default=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
@@ -127,7 +148,7 @@ class ProjectComponentsDefectsDensity(models.Model):
 
 
 class FrameworkParameter(models.Model):
-    #Store framework parameters: jira_issue_weight_sum, vaf_ratio, vaf_exp
+    #  Store framework parameters: jira_issue_weight_sum, vaf_ratio, vaf_exp
     parameter = models.CharField(max_length=200, unique=True)
     value = models.DecimalField(max_digits=3, decimal_places=2, default=0)
 
