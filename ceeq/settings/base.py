@@ -179,11 +179,12 @@ SESSION_SAVE_EVERY_REQUEST = True
 from decimal import Decimal
 
 COMPONENT_NAMES_STANDARD = {
+    'Client': 0,
     'CXP': 2,
     'Platform': 4,
     'Reports': 3,
     'Application': 8,
-    'Voice Prompts': 3
+    'Voice': 3
 }
 
 # Priority Weight of Issues in JIRA

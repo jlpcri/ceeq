@@ -656,7 +656,7 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
             renderTo: trend_chart_id + uat_type
         },
         title: {
-            text: 'CEEQ Score Trend Graph',
+            text: 'CEEQ Score Trend Graph (Overall)',
             x: -20  //center
         },
         subtitle: {
