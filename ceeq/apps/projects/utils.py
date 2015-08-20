@@ -2,7 +2,7 @@ from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
 from django.shortcuts import get_object_or_404
-from ceeq.apps.projects.models import FrameworkParameter, Project, ProjectComponentsDefectsDensity
+from ceeq.apps.projects.models import FrameworkParameter, Project, ProjectComponentsDefectsDensity, ProjectType
 from django.conf import settings
 
 """
@@ -512,3 +512,16 @@ def fetch_ceeq_trend_graph(request, project_id):
     data['ceeq_closed'] = data_ceeq_closed
 
     return data
+
+
+#  define global variable of project types
+def get_project_types():
+    project_types = []
+    for item in ProjectType.objects.all():
+        temp = {
+            'name': item.name,
+            'value': item.pk
+        }
+        project_types.append(temp)
+
+    return project_types

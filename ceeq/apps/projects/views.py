@@ -15,22 +15,13 @@ from django.core.mail import send_mail
 
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
     project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute, \
-    get_priority_total, get_component_names, get_component_names_from_jira_data, fetch_ceeq_trend_graph
+    get_priority_total, get_component_names, get_component_names_from_jira_data, fetch_ceeq_trend_graph, get_project_types
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity, ProjectType
+from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
 from forms import ProjectForm, ProjectNewForm
 
 from django.conf import settings
-
-#  define global variable of project types
-project_types = []
-for item in ProjectType.objects.all():
-    temp = {
-        'name': item.name,
-        'value': item.pk
-    }
-    project_types.append(temp)
 
 
 def projects(request):
@@ -61,7 +52,6 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
-    print project.frame_components
 
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
@@ -279,7 +269,7 @@ def project_detail(request, project_id):
         'dd_pie_data_custom': json.dumps(dd_pie_data_custom),
 
         'ceeq_trend_graph': ceeq_trend_graph,
-        'project_types': project_types
+        'project_types': get_project_types()
     })
     return render(request, 'project_detail/project_detail.html', context)
 
@@ -464,7 +454,7 @@ def project_new(request):
         form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
-            'project_types': project_types
+            'project_types': get_project_types()
         })
         return render(request, 'projects/project_new.html', context)
 
