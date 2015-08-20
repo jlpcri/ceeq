@@ -128,6 +128,15 @@ class Project(models.Model):
 
         return versions
 
+    @property
+    def frame_components(self):
+        frame_components = {}
+        components = ProjectComponent.objects.filter(project_type=self.project_type)
+        for component in components:
+            frame_components[component.name] = component.weight
+
+        return frame_components
+
 
 class ProjectComponentsDefectsDensity(models.Model):
     project = models.ForeignKey(Project)

@@ -61,6 +61,8 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
+    print project.frame_components
+
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
         return redirect(projects)
