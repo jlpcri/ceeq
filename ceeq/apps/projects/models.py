@@ -133,10 +133,8 @@ class Project(models.Model):
         frame_components = {}
         components = ProjectComponent.objects.filter(project_type=self.project_type)
         for component in components:
-            frame_components[component.name] = component.weight
+            frame_components[str(component.name)] = component.weight
 
-        print frame_components
-        print settings.COMPONENT_NAMES_STANDARD
         return frame_components
 
 
