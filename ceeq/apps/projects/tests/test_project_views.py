@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.core.urlresolvers import resolve, reverse
 
-from ceeq.apps.projects.models import Project
+from ceeq.apps.projects.models import Project, ProjectType
 from ceeq.apps.projects.views import projects, project_new, project_detail, project_edit, project_delete, \
     project_defects_density, project_update_scores, defects_density_log
 from ceeq.apps.users.models import UserSettings
@@ -49,9 +49,11 @@ class ProjectNewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.url = reverse('project_new')
+        self.project_type = ProjectType.objects.create(name='Apps')
         self.new_project_valid = {
             'name': 'New Project',
             'jira_name': 'New Jira Name',
+            'project_type': 1
         }
         self.new_project_invalid_without_name = {
             'name': '',
@@ -165,12 +167,16 @@ class ProjectEditTests(TestCase):
             'name': 'Existing Project',
             'jira_name': 'Existing Jira Name'
         }
+        self.project_type = ProjectType.objects.create(name='Apps')
         self.project_exist = Project.objects.create(name=self.project['name'],
-                                                    jira_name=self.project['jira_name'])
+                                                    jira_name=self.project['jira_name'],
+                                                    project_type=self.project_type)
+
         self.project_edit = {
             'name': 'Editing Project',
             'jira_name': 'Editing Jira Name',
-            'jira_version': 'Editing Versions'
+            'jira_version': 'Editing Versions',
+            'project_type': 1
         }
         self.project_edit_empty_name = {
             'name': '',
@@ -419,6 +425,7 @@ class ProjectUatTests(TestCase):
             'name': 'Test Project',
             'jira_name': 'tp'
         }
+        self.project_type = ProjectType.objects.create(name='Apps')
         self.project_exist = Project.objects.create(name=self.project['name'],
                                                     jira_name=self.project['jira_name'])
 

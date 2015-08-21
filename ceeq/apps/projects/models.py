@@ -28,7 +28,7 @@ class ProjectComponent(models.Model):
         unique_together = (("project_type", "name", "weight"), )
 
     def __unicode__(self):
-        return u"{0}:{1}".format(self.project_type.name, self.name)
+        return u"{0}:{1}: {2}".format(self.project_type.name, self.name, self.weight)
 
 
 class Project(models.Model):
