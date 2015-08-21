@@ -22,7 +22,7 @@ class ProjectComponent(models.Model):
     """
     project_type = models.ForeignKey(ProjectType)
     name = models.CharField(max_length=50, default='')
-    weight = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    weight = models.IntegerField(default=0)
 
     class Meta:
         unique_together = (("project_type", "name", "weight"), )
