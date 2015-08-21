@@ -135,6 +135,8 @@ class Project(models.Model):
         for component in components:
             frame_components[component.name] = component.weight
 
+        print frame_components
+        print settings.COMPONENT_NAMES_STANDARD
         return frame_components
 
 

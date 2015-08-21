@@ -250,7 +250,7 @@ def project_detail(request, project_id):
         'priority_total_only_uat': priority_total_only_uat,
         'priority_total_custom': priority_total_custom,
 
-        'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
+        'component_names_standard': sorted(project.frame_components.keys()),
         'component_names_include_uat': component_names_exist_include_uat,
         'component_names_exclude_uat': component_names_exist_exclude_uat,
         'component_names_only_uat': component_names_exist_only_uat,
@@ -341,7 +341,7 @@ def project_defects_density(request, project_id):
         'project_dds': project_dds,
         'version_names': version_names_removed,
         'weight_factor_versions': weight_factor_versions,
-        'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
+        'component_names_standard': sorted(project.frame_components.keys()),
         'priority_total': priority_total,
         'superuser': request.user.is_superuser
     })

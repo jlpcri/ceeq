@@ -64,8 +64,14 @@
             <strong>{{ project.score|floatformat:2 }}</strong>
         {% endif %}
     </p>
-    <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
-    <p>Exist Components Names: <strong>{{ component_names_exclude_uat }}</strong></p>
+    <p>Standard Component Names: <strong>{{ component_names_standard|safeseq|join:', ' }}</strong></p>
+    <p>Exist Components Names: <strong>
+        {% if component_names_exclude_uat %}
+            {{ component_names_exclude_uat|join:', ' }}
+        {% else %}
+            None
+        {% endif %}
+    </strong></p>
 </div>
 
 {% if weight_factor_exclude_uat %}
