@@ -6,8 +6,6 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
-# COMPONENT_NAMES_STANDARD['Client'] = 0
-
 # ISSUE_PRIORITY_WEIGHT = {
 #     'blocker': Decimal(15) / 32,
 #     'critical': Decimal(9) / 32,
