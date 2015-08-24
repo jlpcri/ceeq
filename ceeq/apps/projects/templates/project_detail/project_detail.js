@@ -86,7 +86,7 @@ function loadUatActiveDataTab() {
         donut_pie = 'include_uat';
 
         if (data_ceeq_trend_graph['ceeq'].length > 0) {
-            chart_line_include_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+            chart_line_include_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id, data_include_uat[3]);
         } else {
             $(trend_chart_id + donut_pie).hide();
             $(trend_chart_id + donut_pie + '_export').hide();
@@ -104,7 +104,7 @@ function loadUatActiveDataTab() {
         donut_pie = 'exclude_uat';
 
         if (data_ceeq_trend_graph['ceeq'].length > 0) {
-            chart_line_exclude_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id);
+            chart_line_exclude_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id, data_exclude_uat[3]);
         } else {
             $(trend_chart_id + donut_pie).hide();
             $(trend_chart_id + donut_pie + '_export').hide();
@@ -368,42 +368,42 @@ function displayPieChart(data, uat_type, pie_chart_id) {
         Highcharts.setOptions({
             //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
         });
-        var pie_title, color_title, uat_title;
-        if (uat_type == 'include_uat') {
-            uat_title = 'Overall';
-        } else if (uat_type == 'exclude_uat') {
-            uat_title = 'Internal Testing';
-        } else if (uat_type == 'only_uat') {
-            uat_title = 'UAT';
-        } else if (uat_type == 'custom') {
-            if (uat_type_custom == 'exclude_uat') {
-                uat_title = 'Custom Internal Testing';
-            } else {
-                uat_title = 'Custom UAT';
-            }
-        }
-        if ( parseFloat(data[3]) > 10) {
-            if (parseFloat(data[3]) == 103 ){
-                pie_title = 'No Open Issues';
-            } else {
-                pie_title = 'CEEQ Score: ' + 'Out of Range';
-            }
-        }
-        else {
-            pie_title = '<b>{{ project.name }} - </b>'
-                //+ 'CEEQ Score - '
-                + uat_title
-                + ': '
-                + parseFloat(data[3]).toFixed(2)
-                + ' / 10';
-        }
-
-        if ( parseFloat(data[3]) < 0) {
-            color_title = '#FF0000';
-        }
-        else {
-            color_title = '#000000';
-        }
+        //var pie_title, color_title, uat_title;
+        //if (uat_type == 'include_uat') {
+        //    uat_title = 'Overall';
+        //} else if (uat_type == 'exclude_uat') {
+        //    uat_title = 'Internal Testing';
+        //} else if (uat_type == 'only_uat') {
+        //    uat_title = 'UAT';
+        //} else if (uat_type == 'custom') {
+        //    if (uat_type_custom == 'exclude_uat') {
+        //        uat_title = 'Custom Internal Testing';
+        //    } else {
+        //        uat_title = 'Custom UAT';
+        //    }
+        //}
+        //if ( parseFloat(data[3]) > 10) {
+        //    if (parseFloat(data[3]) == 103 ){
+        //        pie_title = 'No Open Issues';
+        //    } else {
+        //        pie_title = 'CEEQ Score: ' + 'Out of Range';
+        //    }
+        //}
+        //else {
+        //    pie_title = '<b>{{ project.name }} - </b>'
+        //        //+ 'CEEQ Score - '
+        //        + uat_title
+        //        + ': '
+        //        + parseFloat(data[3]).toFixed(2)
+        //        + ' / 10';
+        //}
+        //
+        //if ( parseFloat(data[3]) < 0) {
+        //    color_title = '#FF0000';
+        //}
+        //else {
+        //    color_title = '#000000';
+        //}
 
         var
         //colors = ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600'],
@@ -462,11 +462,11 @@ function displayPieChart(data, uat_type, pie_chart_id) {
                 borderWidth: 0
             },
             title: {
-                text: pie_title,
+                text: 'CEEQ Component Distribution',
                 style: {
                     //fontSize: '18pt',
-                    color: color_title,
-                    font: '18pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                    //color: color_title,
+                    font: '15pt "Lucida Grande", Helvetica, Arial, sans-serif'
                 },
                 align: 'left'
             },
@@ -648,7 +648,35 @@ function displayQEIlogo(uat_type) {
     });
 }
 
-function displayCeeqTrend(data, uat_type, trend_chart_id) {
+function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
+    var pie_title, uat_title, color_title;
+    if (uat_type == 'include_uat') {
+        uat_title = 'Overall';
+    } else if (uat_type == 'exclude_uat') {
+        uat_title = 'Internal Testing';
+    } else if (uat_type == 'only_uat') {
+        uat_title = 'UAT';
+    } else if (uat_type == 'custom') {
+        if (uat_type_custom == 'exclude_uat') {
+            uat_title = 'Custom Internal Testing';
+        } else {
+            uat_title = 'Custom UAT';
+        }
+    }
+    pie_title = '<b>{{ project.name }} - </b>'
+                //+ 'CEEQ Score - '
+                + uat_title
+                + ': '
+                + parseFloat(title_score).toFixed(2)
+                + ' / 10';
+
+    if ( parseFloat(title_score) < 0) {
+        color_title = '#FF0000';
+    }
+    else {
+        color_title = '#000000';
+    }
+
     trend_chart_id = trend_chart_id.substring(1, trend_chart_id.length);
 
     var chart_export = new Highcharts.Chart({
@@ -656,11 +684,15 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
             renderTo: trend_chart_id + uat_type
         },
         title: {
-            text: 'CEEQ Score Trend Graph (Overall)',
-            x: -20  //center
+            text: pie_title,
+            style: {
+                color: color_title,
+                font: '18pt "Lucida Grande", Helvetica, Arial, sans-serif'
+            },
+            align: 'left'
         },
         subtitle: {
-            text: 'Affected Version: ' + '{{project.jira_version}}',
+            text: 'CEEQ Score Trend Graph (Overall), ' + 'Affected Version: ' + '{{project.jira_version}}',
             x: -20
         },
         xAxis: {
@@ -718,6 +750,13 @@ function displayCeeqTrend(data, uat_type, trend_chart_id) {
         navigation: {
             buttonOptions: {
                 enabled: false
+            }
+        },
+        plotOptions: {
+            series: {
+                marker: {
+                    enabled: false
+                }
             }
         },
         series: [
