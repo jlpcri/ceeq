@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from ceeq.apps.projects.models import Project, ProjectComponentsDefectsDensity
+from ceeq.apps.projects.models import Project, ProjectComponentsDefectsDensity, ProjectType, ProjectComponent
 
 
 class ProjectModelTests(TestCase):
@@ -38,3 +38,36 @@ class ProjectComponentsDefectsDensityModelTests(TestCase):
         pcdd = self.create_pcdd()
         self.assertTrue(isinstance(pcdd, ProjectComponentsDefectsDensity))
         self.assertEqual(pcdd.__unicode__(), pcdd.project.name + ': ' + pcdd.version)
+
+
+class ProjectTypeModelTests(TestCase):
+    def setUp(self):
+        self.project_type = {
+            'name': 'Test Project Type'
+        }
+
+    def test_project_type_with_name(self):
+        project_type = ProjectType.objects.create(
+            name=self.project_type['name']
+        )
+        self.assertTrue(isinstance(project_type, ProjectType))
+        self.assertEqual(project_type.__unicode__(), self.project_type['name'])
+
+
+class ProjectComponentTests(TestCase):
+    def setUp(self):
+        self.project_type = ProjectType.objects.create(
+            name='Test Project Type'
+        )
+        self.project_component = {
+            'project_type': self.project_type,
+            'name': 'Test Project Component'
+        }
+
+    def test_project_component_with_name(self):
+        project_component = ProjectComponent.objects.create(
+            project_type=self.project_component['project_type'],
+            name=self.project_component['name']
+        )
+        self.assertTrue(isinstance(project_component, ProjectComponent))
+        self.assertEqual(project_component.__unicode__(), self.project_type.name + ': '+self.project_component['name'] + ': ' + str(project_component.weight))

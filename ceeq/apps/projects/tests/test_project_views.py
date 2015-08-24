@@ -58,14 +58,22 @@ class ProjectNewTests(TestCase):
         self.new_project_invalid_without_name = {
             'name': '',
             'jira_name': 'New Jira Name',
+            'project_type': 1
         }
         self.new_project_invalid_without_jira_name = {
             'name': 'New Project',
             'jira_name': '',
+            'project_type': 1
         }
         self.new_project_invalid_with_duplicate_name = {
             'name': 'New Project',
             'jira_name': 'Not Duplicate Jira Name',
+            'project_type': 1
+        }
+        self.new_project_invalid_without_project_type = {
+            'name': 'New Project',
+            'jira_name': 'New Jira Name',
+            'project_type': ''
         }
         self.superuser_account_correct = {
             'username': 'superUserName',
@@ -115,6 +123,11 @@ class ProjectNewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.post(self.url, self.new_project_invalid_with_duplicate_name, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Correct errors in the form.')
+
+    def test_project_new_without_project_type_gives_required_error(self):
+        response = self.client.post(self.url, self.new_project_invalid_without_project_type)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Correct errors in the form.')
 
@@ -181,17 +194,26 @@ class ProjectEditTests(TestCase):
         self.project_edit_empty_name = {
             'name': '',
             'jira_name': 'Editing Jira Name',
-            'jira_version': 'Editing Versions'
+            'jira_version': 'Editing Versions',
+            'project_type': 1
         }
         self.project_edit_empty_jira_name = {
             'name': 'Editing Project',
             'jira_name': '',
-            'jira_version': 'Editing Versions'
+            'jira_version': 'Editing Versions',
+            'project_type': 1
         }
         self.project_edit_empty_jira_version = {
             'name': 'Editing Project',
             'jira_name': 'Editing Jira Name',
             'jira_version': '',
+            'project_type': 1
+        }
+        self.project_edit_empty_project_type = {
+            'name': 'Editing Project',
+            'jira_name': 'Editing Jira Name',
+            'jira_version': 'Editing Versions',
+            'project_type': ''
         }
 
         self.superuser_account_correct = {
@@ -258,6 +280,13 @@ class ProjectEditTests(TestCase):
         response = self.client.post(reverse('project_edit',
                                             args=[self.project_exist.id, ]),
                                     self.project_edit_empty_jira_version)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Correct errors in the form.')
+
+    def test_project_edit_with_empty_project_type_gives_error(self):
+        response = self.client.post(reverse('project_edit',
+                                            args=[self.project_exist.id, ]),
+                                    self.project_edit_empty_project_type)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Correct errors in the form.')
 
