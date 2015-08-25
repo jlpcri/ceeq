@@ -18,7 +18,7 @@ from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, 
     get_priority_total, get_component_names, get_component_names_from_jira_data, fetch_ceeq_trend_graph, get_project_types
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
+from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity, ProjectType, ProjectComponent
 from forms import ProjectForm, ProjectNewForm
 
 from django.conf import settings
@@ -29,6 +29,15 @@ def projects(request):
     projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
+
+    ceeq_components = {}
+    for project_type in ProjectType.objects.all():
+        temp_components = {}
+        components = ProjectComponent.objects.filter(project_type=project_type)
+        for component in components:
+            temp_components[component.name] = Decimal(component.weight) / 20
+        ceeq_components[project_type.name] = sorted(temp_components.iteritems())
+
     context = RequestContext(request, {
         'projects_active': projects_active,
         'projects_archive': projects_archive,
@@ -37,9 +46,11 @@ def projects(request):
         'framework_parameters_items': ['jira_issue_weight_sum',
                                        'vaf_ratio',
                                        'vaf_exp'],
-        'superuser': request.user.is_superuser
+        'superuser': request.user.is_superuser,
+        'ceeq_components': sorted(ceeq_components.iteritems())
 
     })
+
     return render(request, 'projects/projects_start.html', context)
 
 

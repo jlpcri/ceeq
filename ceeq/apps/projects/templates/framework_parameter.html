@@ -1,6 +1,30 @@
 
 {% block body %}
     <div class="container">
+        <div class="row" >
+            <legend>CEEQ Components Weight</legend>
+        </div>
+
+        <div class="col-md-6">
+            {% for k,v in ceeq_components %}
+                <table class="table table-condensed table-hover" >
+                    <thead>
+                        <tr>
+                            <th class="col-md-2">Project Type</th>
+                            <th class="col-md-4">{{ k }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k1, v1 in v %}
+                            <tr>
+                                <td>{{ k1 }}</td>
+                                <td>{{ v1|floatformat:2}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
 
         <div class="row">
             <legend>Following Parameters will affect our framework to evaluate CEEQ in JIRA</legend>
