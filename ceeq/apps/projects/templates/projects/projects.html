@@ -30,7 +30,8 @@
                             <td class="col-md-3"><strong>Name</strong></td>
                             <td class="col-md-3"><strong>JIRA Version</strong></td>
                             <td class="col-md-2"><strong>JIRA URL</strong></td>
-                            <td class="col-md-4"><strong>Evaluation</strong></td>
+                            <td class="col-md-2"><strong>Type</strong></td>
+                            <td class="col-md-2"><strong>Evaluation</strong></td>
                             <td class="col-md-2"><strong>Update</strong></td>
                         </tr>
                     </thead>
@@ -47,6 +48,7 @@
                                     {{ project.jira_version }}</a>
                                 </td>
                                 <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
+                                <td>{{ project.project_type.name|slice:':8' }}</td>
                                 <td>
                                     {% if project.score == 101 %}
                                         No created issues
@@ -105,6 +107,7 @@
                             <td class="col-md-3"><strong>Name</strong></td>
                             <td class="col-md-3"><strong>JIRA Version</strong></td>
                             <td class="col-md-2"><strong>JIRA URL</strong></td>
+                            <td class="col-md-2"><strong>Type</strong></td>
                             <td class="col-md-4"><strong>Evaluation</strong></td>
                             <td class="col-md-2"><strong>Update</strong></td>
                         </tr>
@@ -122,6 +125,7 @@
                                     {{ project.jira_version }}</a>
                                 </td>
                                 <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
+                                <td>{{ project.project_type.name|slice:':8' }}</td>
                                 <td>
                                     {% if project.score == 101 %}
                                         No created issues
