@@ -48,7 +48,7 @@
                                     {{ project.jira_version }}</a>
                                 </td>
                                 <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
-                                <td>{{ project.project_type.name|slice:':8' }}</td>
+                                <td><a href="#framework_parameter" data-toggle="tab" id="project_type_{{ project.pk }}"> {{ project.project_type.name|slice:':8' }}</a></td>
                                 <td>
                                     {% if project.score == 101 %}
                                         No created issues

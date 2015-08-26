@@ -39,6 +39,12 @@ function loadActiveDataTab() {
         $('#dd_log_all').click(function () {
             showThrobber();
         });
+        $('*[id*=project_type]').each(function(){
+            $(this).click(function(e){
+                e.preventDefault();
+                $('a[href="' + $(this).attr('href') + '"]').tab('show');
+            });
+        });
 
     }
     else if (active_tab == '#score_overall') {
