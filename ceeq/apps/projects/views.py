@@ -635,10 +635,10 @@ def fetch_projects_score(request):
             id: project id for hyperlink of project detail
     """
     #projects = Project.objects.filter(complete=False).order_by('name')
-    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(jira_name)'}).order_by('lower_name')
     data = {}
 
-    data['categories'] = [project.name for project in projects]
+    data['categories'] = [project.jira_name.upper() + '-' + project.jira_version for project in projects]
     # score = 102 represents it is below zero
     #data['score'] = [str(project.score) if project.score < 10 else str(0) for project in projects]
     data['score'] = []
