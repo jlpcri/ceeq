@@ -9,8 +9,6 @@ ALLOWED_HOSTS = [
     'apps.qaci01'
 ]
 
-COMPONENT_NAMES_STANDARD['Client'] = 0
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
