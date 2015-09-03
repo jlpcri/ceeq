@@ -1,10 +1,5 @@
 from base import *
 
-#Use QACI01 as proxy server for staging server
-JIRA_PROXY = {
-    'http': 'http://qaci01.wic.west.com:3128',
-}
-
 DEBUG = False
 
 ALLOWED_HOSTS = [

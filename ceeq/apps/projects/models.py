@@ -1,9 +1,7 @@
-from multiprocessing import Process, Queue
-import socket
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.conf import settings
-import requests
+from jira import JIRA, JIRAError
 
 
 class ProjectType(models.Model):
@@ -63,66 +61,59 @@ class Project(models.Model):
 
     @property
     def fetch_jira_data(self):
-        if self.jira_version == 'All Versions':
-            data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name,
-                                proxies=settings.JIRA_PROXY,
-                                auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
-        else:
-            data = requests.get(settings.JIRA_API_URL_TOTAL_JIRAS + self.jira_name + '%20AND%20affectedversion=\'' + self.jira_version + '\'',
-                                proxies=settings.JIRA_PROXY,
-                                auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
-        #print 'total: ', data['total']
-        if len(data) == 2:
-            if data['errorMessages']:
-                return 'No JIRA Data'
-        else:
-            if socket.gethostname() == 'OM1960L1':
-                return data
+        jira = self.open_jira_connection()
+
+        try:
+            if self.jira_version == 'All Versions':
+                data = jira.search_issues('project={0}'.format(self.jira_name))
             else:
-                def worker(start, que):
-                    if self.jira_version == 'All Versions':
-                        data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '&expand=names',
-                                                   proxies=settings.JIRA_PROXY,
-                                                   auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
+                data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_name, self.jira_version),)
+        except JIRAError:
+            return 'No JIRA Data'
 
-                    else:
-                        data_single = requests.get(settings.JIRA_API_URL % (settings.JIRA_API_FIELDS, 50, start, self.jira_name) + '%20AND%20affectedversion=\'' + self.jira_version +'\'&expand=names',
-                                                   proxies=settings.JIRA_PROXY,
-                                                   auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
-                    que.put(data_single)
-                    #data_total.append(data_single['issues'])
-                jobs = []
-                queue = Queue()
-                processes = data['total'] / 50 + 1
-                issues = []
-                results = {}
+        total = data.total
+        # jira.west.com limited to fetch 1000 tickets per time
+        if total > 1000:
+            data = {'issues': []}
+            for i in range(total / 1000 + 1):
+                if self.jira_version == 'All Versions':
+                    temp = jira.search_issues('project={0}'.format(self.jira_name),
+                                              startAt=1000 * i,
+                                              maxResults=1000,
+                                              fields=settings.JIRA_API_FIELDS,
+                                              json_result=True)
+                    for item in temp['issues']:
+                        data['issues'].append(item)
+                else:
+                    temp = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_name, self.jira_version),
+                                              startAt=1000 * i,
+                                              maxResults=1000,
+                                              fields=settings.JIRA_API_FIELDS,
+                                              json_result=True)
+                    for item in temp['issues']:
+                        data['issues'].append(item)
+        else:
+            if self.jira_version == 'All Versions':
+                data = jira.search_issues('project={0}'.format(self.jira_name),
+                                          maxResults=total,
+                                          fields=settings.JIRA_API_FIELDS,
+                                          json_result=True)
+            else:
+                data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_name, self.jira_version),
+                                          maxResults=total,
+                                          fields=settings.JIRA_API_FIELDS,
+                                          json_result=True)
 
-                for i in range(processes):
-                    process = Process(target=worker, args=(i * 50, queue,))
-                    jobs.append(processes)
-                    process.start()
-                    for item in queue.get()['issues']:
-                        issues.append(item)
-                    process.join()
-
-                results['issues'] = issues
-                return results
+        return data
 
     @property
     def fectch_jira_versions(self):
         versions = []
-        data = requests.get(settings.JIRA_API_URL_VERSIONS % self.jira_name.upper(),
-                            proxies=settings.JIRA_PROXY,
-                            auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD)).json()
 
-        try:
-            if data['errorMessages']:
-                return 'No JIRA Project'
-        except TypeError:
-            pass
-
-        for item in data:
-            versions.append(item['name'])
+        jira = self.open_jira_connection()
+        v = jira.project_versions(self.jira_name.upper())
+        for item in v:
+            versions.append(item.name)
 
         versions.append('All Versions')
 
@@ -136,6 +127,10 @@ class Project(models.Model):
             frame_components[str(component.name)] = component.weight
 
         return frame_components
+
+    def open_jira_connection(self):
+        return JIRA(options={'server': 'http://jira.west.com'},
+                    basic_auth=(settings.JIRA_API_USERNAME, settings.JIRA_API_PASSWORD))
 
 
 class ProjectComponentsDefectsDensity(models.Model):
