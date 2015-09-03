@@ -165,8 +165,6 @@ JIRA_API_FIELDS = 'components,status,priority,versions,issuetype,resolution,crea
 JIRA_API_USERNAME = 'readonly_sliu_api_user'
 JIRA_API_PASSWORD = 'qualityengineering'
 
-JIRA_PROXY = None
-
 SESSION_COOKIE_NAME = 'ceeqSessionId'
 # Age of session cookies, in seconds
 SESSION_COOKIE_AGE = 43200  # 12 hours

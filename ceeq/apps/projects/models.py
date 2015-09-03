@@ -2,7 +2,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.conf import settings
 from jira import JIRA, JIRAError
-import requests
 
 
 class ProjectType(models.Model):
