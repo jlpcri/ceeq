@@ -89,7 +89,8 @@ def project_detail(request, project_id):
             'project': project,
             'superuser': request.user.is_superuser,
             'no_jira_data': jira_data,
-            'version_names': ['All Versions']
+            'version_names': ['All Versions'],
+            'project_types': get_project_types()
         })
         return render(request, 'project_detail/project_detail.html', context)
 
