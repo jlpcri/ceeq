@@ -84,6 +84,8 @@ def project_detail(request, project_id):
     #check whether fetch the data from jira or not
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        project.score = 109
+        project.save()
         context = RequestContext(request, {
             'form': form,
             'project': project,
