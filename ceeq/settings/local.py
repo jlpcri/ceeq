@@ -6,6 +6,12 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
+INSTALLED_APPS += (
+    'ceeq.apps.calculator',
+    'ceeq.apps.formatter',
+    'ceeq.apps.queries'
+)
+
 # ISSUE_PRIORITY_WEIGHT = {
 #     'blocker': Decimal(15) / 32,
 #     'critical': Decimal(9) / 32,
