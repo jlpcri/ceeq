@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.db.models import get_models, get_app
+from models import Project, ProjectComponentsDefectsDensity, FrameworkParameter
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -13,6 +13,4 @@ class ProjectComponentsDefectsDensityAdmin(admin.ModelAdmin):
 class FrameworkParameterAdmin(admin.ModelAdmin):
     list_display = ('parameter', 'value')
 
-for model in get_models(get_app('projects')):
-    model_admin = locals().get(model.__name__ + 'Admin')
-    admin.site.register(model, model_admin)
+admin.site.register([Project, ProjectComponentsDefectsDensity, FrameworkParameter])
