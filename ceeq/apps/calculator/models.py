@@ -1,13 +1,14 @@
 from django.db import models
 
-from ceeq.apps.projects.models import Project
-
 
 class ImpactMap(models.Model):
     """
     Human friendly name for a set of component impacts: Apps, Inbound, Outbound
     """
     name = models.TextField(unique=True)
+
+
+from ceeq.apps.queries.models import Project
 
 
 class ComponentImpact(models.Model):
