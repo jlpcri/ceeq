@@ -7,6 +7,7 @@ TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS += (
+    'django.contrib.postgres',
     'ceeq.apps.calculator',
     'ceeq.apps.formatter',
     'ceeq.apps.queries'
