@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import HStoreField, ArrayField
 
 
 class ImpactMap(models.Model):
@@ -51,6 +52,9 @@ class ComponentComplexity(models.Model):
 
 class ResultTable(models.Model):
     name = models.TextField()
+    data = ArrayField(
+        ArrayField(models.IntegerField()), null=True
+    )
 
 
 class ResultHistory(models.Model):
@@ -60,12 +64,12 @@ class ResultHistory(models.Model):
     project = models.ForeignKey(Project)
     created = models.DateTimeField(auto_now=True, db_index=True)
     confirmed = models.DateTimeField(db_index=True)
-    # query_results = models.ForeignKey()
+    query_results = ArrayField(HStoreField(), null=True)
     scored = models.BooleanField(default=False)
     internal_testing_table = models.ForeignKey(ResultTable, related_name='internal_testing')
     uat_testing_table = models.ForeignKey(ResultTable, related_name='uat_testing')
     combined_testing_table = models.ForeignKey(ResultTable, related_name='combined_testing')
-    # score_by_component = HStoreField()
+    score_by_component = HStoreField(null=True)
     internal_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     uat_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     overall_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
