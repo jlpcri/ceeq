@@ -10,6 +10,9 @@ class Instance(models.Model):
     password = models.TextField()
     indicator_field = models.TextField()  # The custom field ID for the CEEQ indicator
 
+    def __unicode__(self):
+        return self.url
+
 
 class Project(models.Model):
     name = models.TextField(unique=True)  # Human-friendly name
@@ -20,3 +23,6 @@ class Project(models.Model):
     resolution_blacklist = ArrayField(models.CharField(max_length=50, blank=True))
     component_field = models.IntegerField()  # Choice between compoent and Indicator
     impact_map = models.ForeignKey(ImpactMap)
+
+    def __unicode__(self):
+        return '{0}: {1}: {2}'.format(self.name, self.jira_key, self.jira_version)

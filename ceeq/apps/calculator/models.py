@@ -8,6 +8,9 @@ class ImpactMap(models.Model):
     """
     name = models.TextField(unique=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 from ceeq.apps.queries.models import Project
 
@@ -24,6 +27,9 @@ class ComponentImpact(models.Model):
         unique_together = (('impact_map', 'component_name'), )
         ordering = ['impact_map', 'component_name']
 
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.impact_map.name, self.component_name)
+
 
 class SeverityMap(models.Model):
     """
@@ -35,6 +41,9 @@ class SeverityMap(models.Model):
     major = models.IntegerField(default=0)
     minor = models.IntegerField(default=0)
     trivial = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return self.name
 
 
 class ComponentComplexity(models.Model):
@@ -49,9 +58,11 @@ class ComponentComplexity(models.Model):
         unique_together = (("project", "component_name"), )
         ordering = ['project', 'component_name']
 
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.project.name, self.component_name)
+
 
 class ResultTable(models.Model):
-    name = models.TextField()
     data = ArrayField(
         ArrayField(models.IntegerField()), null=True
     )
@@ -73,6 +84,9 @@ class ResultHistory(models.Model):
     internal_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     uat_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     overall_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.project.name, self.created)
 
 
 class LiveSettings(models.Model):
