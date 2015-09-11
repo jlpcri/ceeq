@@ -73,9 +73,9 @@ class ResultHistory(models.Model):
     Store results fetched from JIRA through Celery
     """
     project = models.ForeignKey(Project)
-    created = models.DateTimeField(auto_now=True, db_index=True)
-    confirmed = models.DateTimeField(db_index=True)
-    query_results = ArrayField(HStoreField(), null=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    confirmed = models.DateTimeField(auto_now=True, db_index=True)
+    query_results = HStoreField()
     scored = models.BooleanField(default=False)
     internal_testing_table = models.ForeignKey(ResultTable, related_name='internal_testing')
     uat_testing_table = models.ForeignKey(ResultTable, related_name='uat_testing')

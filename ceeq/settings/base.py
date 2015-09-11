@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import socket
 import ldap
 from django_auth_ldap.config import LDAPSearch
+import pytz
 
 LOGIN_URL = '/ceeq/'
 
@@ -259,3 +260,11 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'ceeqwic@gmail.com'
 EMAIL_HOST_PASSWORD = '^S=+c3gyYu6F74D'
 EMAIL_PORT = 587
+
+
+# Celery config
+CELERY_ACCEPT_CONTENT = ['pickle', 'json', ]
+CELERY_TIMEZONE = pytz.timezone('US/Central')
+CELERY_ENABLE_UTC = False
+CELERY_RESULT_BACKEND = 'amqp'
+CELERY_RESULT_SERIALIZER = 'pickle'
