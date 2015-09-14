@@ -75,7 +75,7 @@ class ResultHistory(models.Model):
     project = models.ForeignKey(Project)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     confirmed = models.DateTimeField(auto_now=True, db_index=True)
-    query_results = HStoreField()
+    query_results = ArrayField(HStoreField(), blank=True)
     scored = models.BooleanField(default=False)
     internal_testing_table = models.ForeignKey(ResultTable, related_name='internal_testing')
     uat_testing_table = models.ForeignKey(ResultTable, related_name='uat_testing')
