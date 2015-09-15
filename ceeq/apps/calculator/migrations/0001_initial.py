@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import django.contrib.postgres.fields
 import django.contrib.postgres.fields.hstore
+from django.contrib.postgres.operations import HStoreExtension
 
 
 class Migration(migrations.Migration):
@@ -12,6 +13,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        HStoreExtension(),
+
         migrations.CreateModel(
             name='ComponentComplexity',
             fields=[
