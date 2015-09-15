@@ -62,12 +62,6 @@ class ComponentComplexity(models.Model):
         return '{0}: {1}'.format(self.project.name, self.component_name)
 
 
-class ResultTable(models.Model):
-    data = ArrayField(
-        ArrayField(models.IntegerField()), null=True
-    )
-
-
 class ResultHistory(models.Model):
     """
     Store results fetched from JIRA through Celery
@@ -75,12 +69,22 @@ class ResultHistory(models.Model):
     project = models.ForeignKey(Project)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     confirmed = models.DateTimeField(auto_now=True, db_index=True)
-    query_results = ArrayField(HStoreField(), blank=True)
+
+    # query results from JIRA through celery
+    query_results = ArrayField(HStoreField(), null=True)
+
+    # if ceeq score is calculated or not
     scored = models.BooleanField(default=False)
-    internal_testing_table = models.ForeignKey(ResultTable, related_name='internal_testing')
-    uat_testing_table = models.ForeignKey(ResultTable, related_name='uat_testing')
-    combined_testing_table = models.ForeignKey(ResultTable, related_name='combined_testing')
-    score_by_component = HStoreField(null=True)
+
+    # Data table under pie chart
+    internal_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, null=True)))
+    uat_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, null=True)))
+    combined_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, null=True)))
+
+    # component weighted factor
+    score_by_component = ArrayField(ArrayField(models.CharField(max_length=20, null=True)), null=True)
+
+    # ceeq score
     internal_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     uat_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     overall_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)

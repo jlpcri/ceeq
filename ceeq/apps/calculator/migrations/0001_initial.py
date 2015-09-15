@@ -2,12 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.contrib.postgres.fields
+import django.contrib.postgres.fields.hstore
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0001_initial'),
     ]
 
     operations = [
@@ -17,7 +18,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('component_name', models.TextField()),
                 ('complexity', models.IntegerField(default=0)),
-                ('project', models.ForeignKey(to='projects.Project')),
             ],
             options={
                 'ordering': ['project', 'component_name'],
@@ -53,19 +53,17 @@ class Migration(migrations.Migration):
             name='ResultHistory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('created', models.DateTimeField(auto_now=True, db_index=True)),
-                ('confirmed', models.DateTimeField(db_index=True)),
+                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
+                ('confirmed', models.DateTimeField(auto_now=True, db_index=True)),
+                ('query_results', django.contrib.postgres.fields.ArrayField(null=True, base_field=django.contrib.postgres.fields.hstore.HStoreField(), size=None)),
                 ('scored', models.BooleanField(default=False)),
+                ('internal_testing_table', django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=20, null=True), size=None), size=None)),
+                ('uat_testing_table', django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=20, null=True), size=None), size=None)),
+                ('combined_testing_table', django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=20, null=True), size=None), size=None)),
+                ('score_by_component', django.contrib.postgres.fields.ArrayField(null=True, base_field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=20, null=True), size=None), size=None)),
                 ('internal_score', models.DecimalField(default=0, max_digits=10, decimal_places=2)),
                 ('uat_score', models.DecimalField(default=0, max_digits=10, decimal_places=2)),
                 ('overall_score', models.DecimalField(default=0, max_digits=10, decimal_places=2)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='ResultTable',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField()),
             ],
         ),
         migrations.CreateModel(
@@ -79,38 +77,5 @@ class Migration(migrations.Migration):
                 ('minor', models.IntegerField(default=0)),
                 ('trivial', models.IntegerField(default=0)),
             ],
-        ),
-        migrations.AddField(
-            model_name='resulthistory',
-            name='combined_testing_table',
-            field=models.ForeignKey(related_name='combined_testing', to='calculator.ResultTable'),
-        ),
-        migrations.AddField(
-            model_name='resulthistory',
-            name='internal_testing_table',
-            field=models.ForeignKey(related_name='internal_testing', to='calculator.ResultTable'),
-        ),
-        migrations.AddField(
-            model_name='resulthistory',
-            name='project',
-            field=models.ForeignKey(to='projects.Project'),
-        ),
-        migrations.AddField(
-            model_name='resulthistory',
-            name='uat_testing_table',
-            field=models.ForeignKey(related_name='uat_testing', to='calculator.ResultTable'),
-        ),
-        migrations.AddField(
-            model_name='componentimpact',
-            name='impact_map',
-            field=models.ForeignKey(to='calculator.ImpactMap'),
-        ),
-        migrations.AlterUniqueTogether(
-            name='componentimpact',
-            unique_together=set([('impact_map', 'component_name')]),
-        ),
-        migrations.AlterUniqueTogether(
-            name='componentcomplexity',
-            unique_together=set([('project', 'component_name')]),
         ),
     ]
