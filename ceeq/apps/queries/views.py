@@ -127,6 +127,15 @@ def project_new(request):
         return render(request, 'q_projects/project_new.html', context)
 
 
+@user_passes_test(user_is_superuser)
+def project_delete(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    project.delete()
+    messages.success(request, "Project \"{0}\" has been deleted.".format(project.name))
+
+    return redirect(projects)
+
+
 def project_archive(request, project_id):
     if request.method == 'GET':
         project = get_object_or_404(Project, pk=project_id)

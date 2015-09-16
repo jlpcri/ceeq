@@ -192,7 +192,7 @@
                         <form method="post" action="">
                         <button class="btn btn-default" data-dismiss="modal" id="project_undelete">Abort</button>
                         <input type="hidden" name="delete" value="True">
-                        <a href="{% url 'project_delete' project.id %}" data-toggle="modal" role="button" class="btn btn-danger" id="project_really_delete">Delete</a>
+                        <a href="{% url 'q_project_delete' project.id %}" data-toggle="modal" role="button" class="btn btn-danger" id="project_really_delete">Delete</a>
                         </form>
                     </div>
                 </div>
