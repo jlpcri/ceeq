@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %} New Project {% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <form action="" method="post">
+            <div class="row">
+                <legend>Project new</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">Project Name</div>
+                <div class="col-md-8">{{ form.name }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA URL</div>
+                <div class="col-md-8">{{ form.jira_key }}</div>
+            </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Project Type</div>
+                <div class="col-md-8">
+                    <select name="project_type" class="form-control" id="project_type">
+                        {% for item in project_types %}
+                            {% if item.name == project.project_type.name %}
+                                <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                            {% else %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">Active</div>
+                <div class="col-md-1">{{ form.active }}</div>
+                <div class="col-md-7">Flag to track JIRA Project.</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">Complete</div>
+                <div class="col-md-1">{{ form.complete }}</div>
+                <div class="col-md-7">Flag to show CEEQ Project completed.</div>
+            </div>
+
+            <!--
+            <div class="row">
+                <legend>Testing Characteristics</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Accuracy</div>
+                <div class="col-md-3">{{ form.accuracy }}</div>
+                <div class="col-md-2">Technical Security</div>
+                <div class="col-md-3">{{ form.technical_security }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Suitability</div>
+                <div class="col-md-3">{{ form.suitability }}</div>
+                <div class="col-md-2">Reliability</div>
+                <div class="col-md-3">{{ form.reliability }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Interoperability</div>
+                <div class="col-md-3">{{ form.interoperability }}</div>
+                <div class="col-md-2">Efficiency</div>
+                <div class="col-md-3">{{ form.efficiency }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Functional Security</div>
+                <div class="col-md-3">{{ form.functional_security }}</div>
+                <div class="col-md-2">Maintainability</div>
+                <div class="col-md-3">{{ form.maintainability }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Usability</div>
+                <div class="col-md-3">{{ form.usability }}</div>
+                <div class="col-md-2">Portability</div>
+                <div class="col-md-3">{{ form.portability }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Accessibility</div>
+                <div class="col-md-3">{{ form.accessibility }}</div>
+                <div class="col-md-2"></div>
+                <div class="col-md-3"></div>
+            </div>
+            -->
+
+            {% csrf_token %}
+            <div class="row" style="margin-top: 30px; margin-bottom: 50px;">
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <input id="project_new" class="btn btn-primary" type="submit" value="Create New Project">
+                </div>
+                <div class="col-md-2">
+                    <a href="{% url 'projects' %}" class="btn btn-default" style="width: 100%;">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
