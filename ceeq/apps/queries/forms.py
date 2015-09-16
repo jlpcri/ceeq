@@ -8,10 +8,11 @@ class ProjectForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_key', 'jira_version', 'active', 'complete', 'impact_map']
+        fields = ['name', 'jira_key', 'jira_version', 'instance', 'active', 'complete', 'impact_map']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'jira_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'jira_key': forms.TextInput(attrs={'class': 'form-control'}),
             'jira_version': forms.Select(attrs={'class': 'form-control'})
         }
 

@@ -22,7 +22,7 @@
 {% block body %}
     <div class="container">
 
-        <form action="{% url 'project_edit' project.id %}" method="post">
+        <form action="{% url 'q_project_edit' project.id %}" method="post">
             <div class="row">
                 <legend>Project Information</legend>
             </div>
@@ -33,15 +33,15 @@
             </div>
             <div class="row" style="margin-bottom: 10px;">
                 <div class="col-md-1"></div>
-                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA URL</div>
-                <div class="col-md-8">{{ form.jira_name }}</div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Key</div>
+                <div class="col-md-8">{{ form.jira_key }}</div>
             </div>
             {% if superuser %}
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>
                     <div class="col-md-2" style="text-align: left;font-size: 18px;">JIRA Version</div>
                     <div class="col-md-8">
-                        <select name="jira_version" class="form-control" id="jira_version">
+                        <select name="jira_version" class="form-control" id="id_jira_version">
                             {% for item in version_names %}
                                 {% if item == project.jira_version %}
                                     <option value="{{ item }}" selected>{{ item }}</option>
@@ -54,12 +54,28 @@
                 </div>
 
                 <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Project Type</div>
+                <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Instance</div>
                     <div class="col-md-8">
-                        <select name="project_type" class="form-control" id="project_type">
-                            {% for item in project_types %}
-                                {% if item.name == project.project_type.name %}
+                        <select name="instance" class="form-control" id="id_instance">
+                            {% for item in instances %}
+                                {% if item.url == project.instance.url %}
+                                    <option value="{{ item.value }}" selected>{{ item.url }}</option>
+                                {% else %}
+                                    <option value="{{ item.value }}">{{ item.url }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Impact Map</div>
+                    <div class="col-md-8">
+                        <select name="impact_map" class="form-control" id="id_impact_map">
+                            {% for item in impact_maps %}
+                                {% if item.name == project.impact_map.name %}
                                     <option value="{{ item.value }}" selected>{{ item.name }}</option>
                                 {% else %}
                                     <option value="{{ item.value }}">{{ item.name }}</option>
@@ -75,19 +91,19 @@
                     <div class="col-md-2">
                         {% if project.active %}
                             <label for="id_active"></label><input id="id_active" name="active" type="checkbox" checked hidden>
-                            <a href="{% url 'project_track' project.id %}" title="UnTrack JIRA Project"><b> UnTrack JIRA Project</b></a>
+                            <a href="{% url 'q_project_track' project.id %}" title="UnTrack JIRA Project"><b> UnTrack JIRA Project</b></a>
                         {% else %}
                             <label for="id_active"></label><input id="id_active" name="active" type="checkbox" hidden>
-                            <a href="{% url 'project_track' project.id %}" title="Track JIRA Project"><b> Track JIRA Project</b></a>
+                            <a href="{% url 'q_project_track' project.id %}" title="Track JIRA Project"><b> Track JIRA Project</b></a>
                         {% endif %}
                     </div>
                     <div class="col-md-2">
                         {% if project.complete %}
                             <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" checked hidden>
-                            <a href="{% url 'project_archive' project.id %}" title="Reactivate Project"><b> Reactivate JIRA Project</b></a>
+                            <a href="{% url 'q_project_archive' project.id %}" title="Reactivate Project"><b> Reactivate JIRA Project</b></a>
                         {% else %}
                             <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" hidden>
-                            <a href="{% url 'project_archive' project.id %}" title="Archive Project"><b> Archive JIRA Project</b></a>
+                            <a href="{% url 'q_project_archive' project.id %}" title="Archive Project"><b> Archive JIRA Project</b></a>
                         {% endif %}
                     </div>
                 </div>
@@ -99,58 +115,11 @@
                 </div>
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">Project Type</div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Impact Map</div>
                     <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.project_type }}</div>
                 </div>
             {% endif %}
 
-            <!--
-            <div class="row">
-                <legend>Testing Characteristics (Scales: 0-5)</legend>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2">Accuracy</div>
-                <div class="col-md-3">{{ form.accuracy }}</div>
-                <div class="col-md-2">Technical Security</div>
-                <div class="col-md-3">{{ form.technical_security }}</div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2">Suitability</div>
-                <div class="col-md-3">{{ form.suitability }}</div>
-                <div class="col-md-2">Reliability</div>
-                <div class="col-md-3">{{ form.reliability }}</div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2">Interoperability</div>
-                <div class="col-md-3">{{ form.interoperability }}</div>
-                <div class="col-md-2">Efficiency</div>
-                <div class="col-md-3">{{ form.efficiency }}</div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2">Functional Security</div>
-                <div class="col-md-3">{{ form.functional_security }}</div>
-                <div class="col-md-2">Maintainability</div>
-                <div class="col-md-3">{{ form.maintainability }}</div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2">Usability</div>
-                <div class="col-md-3">{{ form.usability }}</div>
-                <div class="col-md-2">Portability</div>
-                <div class="col-md-3">{{ form.portability }}</div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2">Accessibility</div>
-                <div class="col-md-3">{{ form.accessibility }}</div>
-                <div class="col-md-2"></div>
-                <div class="col-md-3"></div>
-            </div>
-            -->
 
             {% csrf_token %}
             <div class="row" style="margin-top: 30px; margin-bottom: 50px;">
@@ -190,19 +159,19 @@
             </div>
             <div class="tab-content">
                 <div class="tab-pane" id="include_uat">
-                    {% include 'project_detail/project_detail_include_uat.html' %}
+                    {% include 'q_project_detail/project_detail_include_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="exclude_uat">
-                    {% include 'project_detail/project_detail_exclude_uat.html' %}
+                    {% include 'q_project_detail/project_detail_exclude_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="only_uat">
-                    {% include 'project_detail/project_detail_only_uat.html' %}
+                    {% include 'q_project_detail/project_detail_only_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="custom">
-                    {% include 'project_detail/project_detail_custom.html' %}
+                    {% include 'q_project_detail/project_detail_custom.html' %}
                 </div>
             </div>
 
@@ -251,7 +220,7 @@
 
         var last_tab = '{{ last_tab }}';
 
-        {% include 'project_detail/project_detail.js' %}
+        {% include 'q_project_detail/project_detail.js' %}
 
         setStartDate("{{ start }}");
         setEndDate("{{ end }}");

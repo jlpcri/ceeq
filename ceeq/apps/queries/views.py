@@ -67,12 +67,17 @@ def project_detail(request, project_id):
 
     # jira_data = project.resulthistory_set.latest('confirmed')
 
-
     context = RequestContext(request, {
-        'form': form
+        'form': form,
+        'project': project,
+        'version_names': project.fetch_jira_versions,
+        'impact_maps': get_impact_maps(),
+        'instances': get_instances(),
+        'superuser': request.user.is_superuser
     })
-    # return render(request, 'q_project_detail/project_detail.html', context)
-    return HttpResponse(project.fetch_jira_versions)
+    return render(request, 'q_project_detail/project_detail.html', context)
+    # return HttpResponse(project.fetch_jira_versions)
+
 
 @user_passes_test(user_is_superuser)
 def project_edit(request, project_id):
