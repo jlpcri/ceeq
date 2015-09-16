@@ -100,25 +100,25 @@
                         <tr>
                             <td class="col-md-3"><strong>Name</strong></td>
                             <td class="col-md-3"><strong>JIRA Version</strong></td>
-                            <td class="col-md-2"><strong>JIRA URL</strong></td>
-                            <td class="col-md-2"><strong>Type</strong></td>
+                            <td class="col-md-2"><strong>JIRA Key</strong></td>
+                            <td class="col-md-2"><strong>Impact Map</strong></td>
                             <td class="col-md-4"><strong>Evaluation</strong></td>
-                            <td class="col-md-2"><strong>Update</strong></td>
+                            <td class="col-md-2"><strong>Instance</strong></td>
                         </tr>
                     </thead>
                     <tbody>
                         {% for project in projects_archive %}
                             <tr>
-                                <td><a href='{% url 'project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
+                                <td><a href='{% url 'q_project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
                                 <td>
                                     {% if project.jira_version == 'All Versions' %}
-                                        <a href="http://jira.west.com/issues/?jql=project = {{ project.jira_name }}" target="_blank">
+                                        <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
                                     {% else %}
-                                        <a href='http://jira.west.com/issues/?jql=project = {{ project.jira_name }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
                                     {% endif %}
                                     {{ project.jira_version }}</a>
                                 </td>
-                                <td><a href='http://jira.west.com/browse/{{ project.jira_name }}' target="_blank">{{ project.jira_name }}</a></td>
+                                <td><a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a></td>
                                 <td>{{ project.impact_map.name}}</td>
                                 <td>
                                     {% if project.internal_score == 101 %}
@@ -140,10 +140,6 @@
                                                 {{ project.internal_score |floatformat}}
                                             {% endif %}
                                         </a>
-                                        {% if superuser %}
-                                            <i class="fa fa-indent"></i>
-                                            <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>
-                                        {% endif %}
                                     {% endif %}
                                 </td>
                                 <td> N/A </td>
