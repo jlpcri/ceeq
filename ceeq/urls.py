@@ -6,14 +6,14 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-from ceeq.api.api import ProjectResource, ComponentsDefectsDensityResource,\
-    SearchAutoCompleteResource, FrameworkParameterResource
-
-v1_api = Api(api_name='v1')
-v1_api.register(ProjectResource())
-v1_api.register(ComponentsDefectsDensityResource())
-v1_api.register(SearchAutoCompleteResource())
-v1_api.register(FrameworkParameterResource())
+# from ceeq.api.api import ProjectResource, ComponentsDefectsDensityResource,\
+#     SearchAutoCompleteResource, FrameworkParameterResource
+#
+# v1_api = Api(api_name='v1')
+# v1_api.register(ProjectResource())
+# v1_api.register(ComponentsDefectsDensityResource())
+# v1_api.register(SearchAutoCompleteResource())
+# v1_api.register(FrameworkParameterResource())
 
 urlpatterns = patterns('',
     # Examples:
@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     url(r'^ceeq/queries/', include('ceeq.apps.queries.urls')),
 
     url(r'^ceeq/admin/', include(admin.site.urls)),
-    url(r'^ceeq/api/', include(v1_api.urls)),
+    # url(r'^ceeq/api/', include(v1_api.urls)),
 )
 
 if settings.DEBUG:
