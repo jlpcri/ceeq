@@ -25,7 +25,7 @@ class Project(models.Model):
     issue_types = ArrayField(models.CharField(max_length=50, blank=True), default=['Bug'])
     resolution_blacklist = ArrayField(models.CharField(max_length=50, blank=True),
                                       default=['Duplicate', 'Works as Design'])
-    component_field = models.IntegerField()  # Choice between compoent and Indicator
+    component_field = models.IntegerField(default=1)  # Choice between compoent and Indicator
     impact_map = models.ForeignKey(ImpactMap)
     active = models.BooleanField(default=True)  # tracking JIRA projects or not
     complete = models.BooleanField(default=False)  # CEEQ projects complete or not

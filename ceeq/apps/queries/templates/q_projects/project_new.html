@@ -15,17 +15,33 @@
             </div>
             <div class="row" style="margin-bottom: 10px;">
                 <div class="col-md-1"></div>
-                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA URL</div>
+                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Key</div>
                 <div class="col-md-8">{{ form.jira_key }}</div>
             </div>
 
             <div class="row" style="margin-bottom: 10px;">
                 <div class="col-md-1"></div>
-                <div class="col-md-2" style="text-align: left;font-size: 18px;">Project Type</div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Instance</div>
                 <div class="col-md-8">
-                    <select name="project_type" class="form-control" id="project_type">
-                        {% for item in project_types %}
-                            {% if item.name == project.project_type.name %}
+                    <select name="instance" class="form-control" id="id_instance">
+                        {% for item in instances %}
+                            {% if item.url == project.instance.url %}
+                                <option value="{{ item.value }}" selected>{{ item.url }}</option>
+                            {% else %}
+                                <option value="{{ item.value }}">{{ item.url }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Impact Map</div>
+                <div class="col-md-8">
+                    <select name="impact_map" class="form-control" id="id_impact_map">
+                        {% for item in impact_maps %}
+                            {% if item.name == project.impact_map.name %}
                                 <option value="{{ item.value }}" selected>{{ item.name }}</option>
                             {% else %}
                                 <option value="{{ item.value }}">{{ item.name }}</option>
@@ -33,7 +49,7 @@
                         {% endfor %}
                     </select>
                 </div>
-                </div>
+            </div>
 
             <div class="row" style="margin-bottom: 10px;">
                 <div class="col-md-1"></div>
@@ -103,7 +119,7 @@
                     <input id="project_new" class="btn btn-primary" type="submit" value="Create New Project">
                 </div>
                 <div class="col-md-2">
-                    <a href="{% url 'projects' %}" class="btn btn-default" style="width: 100%;">Cancel</a>
+                    <a href="{% url 'q_projects' %}" class="btn btn-default" style="width: 100%;">Cancel</a>
                 </div>
             </div>
         </form>

@@ -20,7 +20,7 @@ class ProjectNewForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_key', 'active', 'complete', 'impact_map']
+        fields = ['name', 'jira_key', 'instance', 'active', 'complete', 'impact_map']
         #exclude = ('created', 'score')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),

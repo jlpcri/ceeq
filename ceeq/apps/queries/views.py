@@ -1,3 +1,4 @@
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
@@ -8,6 +9,7 @@ from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, Framework
 
 from ceeq.apps.queries.models import Project
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
+from ceeq.apps.queries.utils import get_impact_maps, get_instances
 from ceeq.apps.users.views import user_is_superuser
 
 
@@ -45,10 +47,32 @@ def projects(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    data = project.fetch_jira_versions
 
-    return HttpResponse(data)
+    if project.complete and not request.user.is_superuser:
+        messages.warning(request, 'The project \"{0}\" is archived.'.format(project.name))
+        return redirect(projects)
 
+    form = ProjectForm(instance=project)
+
+    # Filter query results for input created date range
+    try:
+        end = date.fromtimestamp(float(request.GET.get('end')))
+    except (TypeError, ValueError):
+        end = datetime.now().date()
+
+    try:
+        start = date.fromtimestamp(float(request.GET.get('start')))
+    except (TypeError, ValueError):
+        start = end - timedelta(days=29)
+
+    # jira_data = project.resulthistory_set.latest('confirmed')
+
+
+    context = RequestContext(request, {
+        'form': form
+    })
+    # return render(request, 'q_project_detail/project_detail.html', context)
+    return HttpResponse(project.fetch_jira_versions)
 
 @user_passes_test(user_is_superuser)
 def project_edit(request, project_id):
@@ -84,12 +108,41 @@ def project_new(request):
             messages.error(request, "Correct errors in the form.")
             context = RequestContext(request, {
                 'form': form,
+                'instances': get_instances(),
+                'impact_maps': get_impact_maps()
             })
             return render(request, 'q_projects/project_new.html', context)
     else:
         form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
-            'project_types': ''
+            'instances': get_instances(),
+            'impact_maps': get_impact_maps()
         })
         return render(request, 'q_projects/project_new.html', context)
+
+
+def project_archive(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        if project.complete:
+            project.complete = False
+        elif not project.complete:
+            project.complete = True
+
+        project.save()
+
+    return redirect(projects)
+
+
+def project_track(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        if project.active:
+            project.active = False
+        elif not project.active:
+            project.active = True
+
+        project.save()
+
+    return redirect(projects)
