@@ -7,4 +7,4 @@ source ~/.virtualenvs/ceeq_new/bin/activate
 
 cd ~/Projects/ceeq_new
 
-~/.virtualenvs/ceeq_new/bin/celery -A echo worker -l info
+~/.virtualenvs/ceeq_new/bin/celery -A ceeq worker -l info

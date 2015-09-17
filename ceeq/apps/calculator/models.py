@@ -71,18 +71,18 @@ class ResultHistory(models.Model):
     confirmed = models.DateTimeField(auto_now=True, db_index=True)
 
     # query results from JIRA through celery
-    query_results = ArrayField(HStoreField(), null=True)
+    query_results = ArrayField(HStoreField(), blank=True)
 
     # if ceeq score is calculated or not
     scored = models.BooleanField(default=False)
 
     # Data table under pie chart
-    internal_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, null=True)))
-    uat_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, null=True)))
-    combined_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, null=True)))
+    internal_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, blank=True)), blank=True, null=True)
+    uat_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, blank=True)), blank=True, null=True)
+    combined_testing_table = ArrayField(ArrayField(models.CharField(max_length=20, blank=True)), blank=True, null=True)
 
     # component weighted factor
-    score_by_component = ArrayField(ArrayField(models.CharField(max_length=20, null=True)), null=True)
+    score_by_component = ArrayField(ArrayField(models.CharField(max_length=20, blank=True)), blank=True, null=True)
 
     # ceeq score
     internal_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)

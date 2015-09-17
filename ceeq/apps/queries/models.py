@@ -54,7 +54,7 @@ class Project(models.Model):
                     temp = jira.search_issues('project={0}'.format(self.jira_key),
                                               startAt=1000 * i,
                                               maxResults=1000,
-                                              fields=self.instance.jira_fields[0],
+                                              fields=self.instance.jira_fields,
                                               json_result=True)
                     for item in temp['issues']:
                         data['issues'].append(item)
@@ -62,7 +62,7 @@ class Project(models.Model):
                     temp = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),
                                               startAt=1000 * i,
                                               maxResults=1000,
-                                              fields=self.instance.jira_fields[0],
+                                              fields=self.instance.jira_fields,
                                               json_result=True)
                     for item in temp['issues']:
                         data['issues'].append(item)
@@ -70,12 +70,12 @@ class Project(models.Model):
             if self.jira_version == 'All Versions':
                 data = jira.search_issues('project={0}'.format(self.jira_key),
                                           maxResults=total,
-                                          fields=self.instance.jira_fields[0],
+                                          fields=self.instance.jira_fields,
                                           json_result=True)
             else:
                 data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),
                                           maxResults=total,
-                                          fields=self.instance.jira_fields[0],
+                                          fields=self.instance.jira_fields,
                                           json_result=True)
 
         return data
