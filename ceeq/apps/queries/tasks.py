@@ -5,6 +5,7 @@ from celery import group
 
 from ceeq import celery_app
 from ceeq.apps.calculator.models import ResultHistory, LiveSettings
+from ceeq.apps.queries.utils import parse_jira_data
 from models import Project
 
 
@@ -26,35 +27,29 @@ def fetch_jira_data_run():
                                     current_delay=current_delay)
 
     time.sleep(10)
-    fetch_jira_data_run.delay()
+    # fetch_jira_data_run.delay()
 
 
 @celery_app.task
 def query_jira_data(project_id):
     project = get_object_or_404(Project, pk=project_id)
-    jira_data = project.fetch_jira_data
+    jira_data = parse_jira_data(project.fetch_jira_data['issues'])
 
     try:
         result = project.resulthistory_set.latest('confirmed')
-        if result.query_results == jira_data['issues']:
+        if result.query_results == jira_data:
             result.confirmed = datetime.now()
             result.save()
         else:
             result = ResultHistory.objects.create(
                 project=project,
                 # confirmed=datetime.now(),
-                query_results=jira_data['issues'],
+                query_results=jira_data,
             )
     except ResultHistory.DoesNotExist:
         result = ResultHistory.objects.create(
             project=project,
             # confirmed=datetime.now(),
-            query_results=[{
-                'a': 'aa',
-                'b': 'bb'
-            }, {
-                'c': 'cc',
-                'd': 'dd'
-            }],
+            query_results=jira_data,
         )
 

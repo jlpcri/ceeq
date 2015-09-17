@@ -25,3 +25,26 @@ def get_instances():
         instances.append(temp)
 
     return instances
+
+
+def parse_jira_data(data):
+    results = []
+    for issue in data:
+        temp = {}
+        temp['key'] = issue['key']
+        for item in issue['fields']:
+            if issue['fields'][item]:
+                if item == 'created':
+                    temp[item] = issue['fields'][item]
+                elif item in ['customfield_13286', 'customfield_10092']:
+                    temp[item] = issue['fields'][item]['value']
+                elif item in ['components', 'versions']:
+                    temp[item] = issue['fields'][item][0]['name']
+                else:
+                    temp[item] = issue['fields'][item]['name']
+            else:
+                temp[item] = ''
+
+        results.append(temp)
+
+    return results
