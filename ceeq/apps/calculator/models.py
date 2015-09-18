@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import HStoreField, ArrayField
+from django.utils.timezone import localtime
 
 
 class ImpactMap(models.Model):
@@ -90,7 +91,7 @@ class ResultHistory(models.Model):
     overall_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __unicode__(self):
-        return '{0}: {1}'.format(self.project.name, self.confirmed)
+        return '{0}: {1}'.format(self.project.name, localtime(self.confirmed))
 
 
 class LiveSettings(models.Model):
