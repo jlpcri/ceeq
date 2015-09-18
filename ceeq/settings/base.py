@@ -80,6 +80,10 @@ INSTALLED_APPS = (
     'ceeq.apps.users',
     'ceeq.apps.search',
     'ceeq.api',
+    'django.contrib.postgres',
+    'ceeq.apps.calculator',
+    'ceeq.apps.formatter',
+    'ceeq.apps.queries'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -9,6 +9,7 @@ from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, Framework
 
 from ceeq.apps.queries.models import Project
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
+from ceeq.apps.queries.tasks import fetch_jira_data_run
 from ceeq.apps.queries.utils import get_impact_maps, get_instances
 from ceeq.apps.users.views import user_is_superuser
 
@@ -46,6 +47,7 @@ def projects(request):
 
 @login_required
 def project_detail(request, project_id):
+    fetch_jira_data_run()
     project = get_object_or_404(Project, pk=project_id)
 
     if project.complete and not request.user.is_superuser:

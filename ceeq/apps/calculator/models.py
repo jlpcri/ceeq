@@ -90,7 +90,7 @@ class ResultHistory(models.Model):
     overall_score = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __unicode__(self):
-        return '{0}: {1}'.format(self.project.name, self.created)
+        return '{0}: {1}'.format(self.project.name, self.confirmed)
 
 
 class LiveSettings(models.Model):
