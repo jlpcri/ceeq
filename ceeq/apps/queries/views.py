@@ -47,7 +47,6 @@ def projects(request):
 
 @login_required
 def project_detail(request, project_id):
-    fetch_jira_data_run()
     project = get_object_or_404(Project, pk=project_id)
 
     if project.complete and not request.user.is_superuser:

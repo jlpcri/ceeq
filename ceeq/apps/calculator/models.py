@@ -97,5 +97,8 @@ class LiveSettings(models.Model):
     score_scalar = models.IntegerField(default=0)
     current_delay = models.IntegerField(default=0)  # minutes of dealy between CEEQ and live data
 
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.score_scalar, self.current_delay)
+
 
 

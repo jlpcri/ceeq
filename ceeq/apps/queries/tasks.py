@@ -16,18 +16,30 @@ def fetch_jira_data_run():
     """
     projects = Project.objects.filter(complete=False)
     start = datetime.now()
-    group(query_jira_data.delay(project.id) for project in projects)()
-    end = datetime.now()
+    current_delay = 0
+    job = group(query_jira_data.delay(project.id) for project in projects)
+    job_result = job.apply_async()
 
-    current_delay = int((end - start).total_seconds())
+    # while True:
+    #     if job_result.successful():
+    #         print 'done'
+    #         end = datetime.now()
+    #         current_delay = int((end - start).total_seconds())
+    #         break
+    #     print 'running'
+    #
+    # print current_delay
+
     try:
-        LiveSettings.objects.get(pk=1).current_delay = current_delay
+        ls = LiveSettings.objects.get(pk=1)
+        ls.current_delay = current_delay
+        ls.save()
     except LiveSettings.DoesNotExist:
         LiveSettings.objects.create(score_scalar=20,
                                     current_delay=current_delay)
 
     time.sleep(10)
-    # fetch_jira_data_run.delay()
+    # fetch_jira_data_run()
 
 
 @celery_app.task
