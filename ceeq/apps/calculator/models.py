@@ -29,7 +29,7 @@ class ComponentImpact(models.Model):
         ordering = ['impact_map', 'component_name']
 
     def __unicode__(self):
-        return '{0}: {1}'.format(self.impact_map.name, self.component_name)
+        return '{0}: {1}: {2}'.format(self.impact_map.name, self.component_name, self.impact)
 
 
 class SeverityMap(models.Model):
