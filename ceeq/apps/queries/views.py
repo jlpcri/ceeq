@@ -6,9 +6,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from ceeq.apps.calculator.tasks import calculate_score
-from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter, ProjectType, ProjectComponent
+from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter
 
-from ceeq.apps.queries.models import Project
+from ceeq.apps.queries.models import Project, ImpactMap
+from ceeq.apps.calculator.models import ComponentImpact, LiveSettings
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
 from ceeq.apps.queries.tasks import fetch_jira_data_run
 from ceeq.apps.queries.utils import get_impact_maps, get_instances
@@ -22,13 +23,18 @@ def projects(request):
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
 
+    try:
+        ls = LiveSettings.objects.all()[0]
+        score_scalar = ls.score_scalar
+    except LiveSettings.DoesNotExist:
+        score_scalar = 10
     ceeq_components = {}
-    for project_type in ProjectType.objects.all():
+    for impact_map in ImpactMap.objects.all():
         temp_components = {}
-        components = ProjectComponent.objects.filter(project_type=project_type)
+        components = ComponentImpact.objects.filter(impact_map=impact_map)
         for component in components:
-            temp_components[component.name] = Decimal(component.weight) / 20
-        ceeq_components[project_type.name] = sorted(temp_components.iteritems())
+            temp_components[component.component_name] = Decimal(component.impact) / score_scalar
+        ceeq_components[impact_map.name] = sorted(temp_components.iteritems())
 
     context = RequestContext(request, {
         'projects_active': projects_active,
