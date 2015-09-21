@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
+from ceeq.apps.calculator.tasks import calculate_score
 from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter, ProjectType, ProjectComponent
 
 from ceeq.apps.queries.models import Project
@@ -48,6 +49,7 @@ def projects(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    calculate_score(project.id)
 
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \"{0}\" is archived.'.format(project.name))

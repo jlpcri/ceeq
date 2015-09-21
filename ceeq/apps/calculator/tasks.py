@@ -20,5 +20,5 @@ def calculate_score(project_id):
     uat_score = get_score_data(query_results, 'uat')
     overall_score = get_score_data(query_results, 'overall')
 
-    score_by_component = get_score_by_component(query_results, 'overall')
+    # score_by_component = get_score_by_component(query_results, 'overall')
 
