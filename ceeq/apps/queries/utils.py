@@ -27,7 +27,7 @@ def get_instances():
     return instances
 
 
-def parse_jira_data(data):
+def parse_jira_data(data, component_names_standard):
     results = []
     for issue in data:
         temp = {}
@@ -38,8 +38,17 @@ def parse_jira_data(data):
                     temp[item] = issue['fields'][item]
                 elif item in ['customfield_13286', 'customfield_10092']:
                     temp[item] = issue['fields'][item]['value']
-                elif item in ['components', 'versions']:
+                elif item == 'versions':
                     temp[item] = issue['fields'][item][0]['name']
+                elif item == 'components':
+                    components = issue['fields'][item]
+                    component_len = len(components)
+                    if component_len == 1:
+                        temp[item] = components[0]['name']
+                    else:
+                        name = get_component_names_per_ticket(component_len, components, component_names_standard)
+                        if name:
+                            temp[item] = name
                 else:
                     temp[item] = issue['fields'][item]['name']
             else:
@@ -48,3 +57,20 @@ def parse_jira_data(data):
         results.append(temp)
 
     return results
+
+
+def get_component_names_per_ticket(component_len, components, component_names_standard):
+
+    # if first item-component is not in framework, then check next, until end
+    for i in range(component_len):
+        try:
+            component = (components[i]['name'])
+        except UnicodeEncodeError:
+            component = ''.join(components[i]['name']).encode('utf-8').strip()
+            component = component.decode('utf-8')
+        if component.startswith(tuple(component_names_standard)):
+            return component
+        else:
+            continue
+
+    return None

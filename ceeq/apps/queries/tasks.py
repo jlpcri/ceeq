@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from celery import group
 
 from ceeq import celery_app
-from ceeq.apps.calculator.models import ResultHistory, LiveSettings
+from ceeq.apps.calculator.models import ResultHistory, LiveSettings, ComponentImpact
 from ceeq.apps.queries.utils import parse_jira_data
 from models import Project
 
@@ -45,7 +45,12 @@ def fetch_jira_data_run():
 @celery_app.task
 def query_jira_data(project_id):
     project = get_object_or_404(Project, pk=project_id)
-    jira_data = parse_jira_data(project.fetch_jira_data['issues'])
+    component_impacts = ComponentImpact.objects.filter(impact_map=project.impact_map)
+    component_names = []
+    for impact in component_impacts:
+        component_names.append(impact.component_name)
+
+    jira_data = parse_jira_data(project.fetch_jira_data['issues'], component_names)
 
     try:
         result = project.resulthistory_set.latest('confirmed')

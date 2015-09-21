@@ -12,13 +12,18 @@ def calculate_score(project_id):
     result_latest = project.resulthistory_set.latest('confirmed')
     query_results = result_latest.query_results
 
-    internal_table = get_table_data(query_results, 'internal')
-    uat_table = get_table_data(query_results, 'uat')
-    combined_table = get_table_data(query_results, 'overall')
+    component_impacts = ComponentImpact.objects.filter(impact_map=project.impact_map)
+    component_names = []
+    for impact in component_impacts:
+        component_names.append(impact.component_name)
 
-    internal_score = get_score_data(query_results, 'internal')
-    uat_score = get_score_data(query_results, 'uat')
-    overall_score = get_score_data(query_results, 'overall')
+    # internal_table = get_table_data(query_results, 'internal')
+    # uat_table = get_table_data(query_results, 'uat')
+    # combined_table = get_table_data(query_results, 'overall')
+
+    internal_score = get_score_data(query_results, component_names, 'internal')
+    uat_score = get_score_data(query_results, component_names, 'uat')
+    overall_score = get_score_data(query_results, component_names, 'overall')
 
     # score_by_component = get_score_by_component(query_results, 'overall')
 
