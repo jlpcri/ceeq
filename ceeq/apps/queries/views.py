@@ -22,6 +22,7 @@ def projects(request):
     projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
+
     try:
         ls = LiveSettings.objects.all()[0]
         score_scalar = ls.score_scalar
@@ -34,6 +35,7 @@ def projects(request):
         for component in components:
             temp_components[component.component_name] = Decimal(component.impact) / score_scalar
         ceeq_components[impact_map.name] = sorted(temp_components.iteritems())
+
     context = RequestContext(request, {
         'projects_active': projects_active,
         'projects_archive': projects_archive,
