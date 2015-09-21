@@ -26,7 +26,7 @@ elif socket.gethostname() == 'QAIMint':  # Alex's desktop
     STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
     DEBUG_TOOLBAR_PATCH_SETTINGS = False
     INSTALLED_APPS += ('debug_toolbar',)
-    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    MIDDLEWARE_CLASSES = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE_CLASSES
     INTERNAL_IPS = ['127.0.0.1', '10.6.20.90', '10.6.20.91', '::1']
 
 # INSTALLED_APPS += ('debug_toolbar',)
