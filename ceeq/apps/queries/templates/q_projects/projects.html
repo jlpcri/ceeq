@@ -50,11 +50,12 @@
                                 <td><a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a></td>
                                 <td><a href="#framework_parameter" data-toggle="tab" id="project_type_{{ project.pk }}"> {{ project.impact_map.name }}</a></td>
                                 <td>
-                                    {% if project.internal_score == 101 %}
+                                {% with score=project.internal_score %}
+                                    {% if score == 101 %}
                                         No created issues
-                                    {% elif project.internal_score == 102 %}
+                                    {% elif score == 102 %}
                                         <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
-                                    {% elif project.internal_score == 103 %}
+                                    {% elif score == 103 %}
                                         {# No open issues#}
                                         <a href="{% url 'project_defects_density' project.id %}"> 10.0</a>
                                         {% if superuser %}
@@ -62,19 +63,20 @@
                                             <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>
                                         {% endif %}
 
-                                    {% elif project.internal_score == 104 %}
+                                    {% elif score == 104 %}
                                         No JIRA Data
-                                    {% elif project.internal_score == 109 %}
+                                    {% elif score == 109 %}
                                         No evaluation
                                     {% else %}
                                         <a href="{% url 'project_defects_density' project.id %}">
-                                            {% if project.internal_score < 0 %}
-                                                <font color="red">{{ project.internal_score }}</font>
+                                            {% if score < 0 %}
+                                                <font color="red">{{ score }}</font>
                                             {% else %}
-                                                {{ project.internal_score }}
+                                                {{ score }}
                                             {% endif %}
                                         </a>
                                     {% endif %}
+                                {% endwith %}
                                 </td>
                                 <td>{{ project.instance.url }}</td>
                             </tr>

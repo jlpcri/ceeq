@@ -39,3 +39,8 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
+
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^ceeq/__debug__/', include(debug_toolbar.urls)),
+    )
