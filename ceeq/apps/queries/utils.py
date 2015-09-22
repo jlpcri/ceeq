@@ -53,7 +53,7 @@ def parse_jira_data(data, component_names_standard):
             else:
                 temp[item] = ''
 
-        if len(temp) == 1:  # no contents
+        if len(temp) == 1 or temp['components'] == '':  # no contents Or value of components is empty
             continue
 
         results.append(temp)
