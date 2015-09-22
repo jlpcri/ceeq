@@ -82,7 +82,6 @@ def parse_jira_data(project, component_names_standard):
 
         results.append(temp)
 
-    print len(results)
     return results
 
 
