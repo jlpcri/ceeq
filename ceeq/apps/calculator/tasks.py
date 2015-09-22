@@ -21,9 +21,9 @@ def calculate_score(project_id):
     # uat_table = get_table_data(query_results, 'uat')
     # combined_table = get_table_data(query_results, 'overall')
 
-    internal_score = get_score_data(query_results, component_names, 'internal')
-    uat_score = get_score_data(query_results, component_names, 'uat')
-    overall_score = get_score_data(query_results, component_names, 'overall')
+    internal_data = get_score_data(project, query_results, component_names, 'internal')
+    # uat_data = get_score_data(project, query_results, component_names, 'uat')
+    # overall_data = get_score_data(project, query_results, component_names, 'overall')
 
     # score_by_component = get_score_by_component(query_results, 'overall')
 

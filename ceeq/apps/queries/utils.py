@@ -27,20 +27,44 @@ def get_instances():
     return instances
 
 
-def parse_jira_data(data, component_names_standard):
+def parse_jira_data(project, component_names_standard):
     results = []
-    for issue in data:
+    for issue in project.fetch_jira_data['issues']:
         temp = {}
         temp['key'] = issue['key']
         for item in issue['fields']:
+            # check component not in framework continue
             components = issue['fields']['components']
-            if len(components) == 1 and not components[0]['name'].startswith(tuple(component_names_standard)):
+            if len(components) == 1 \
+                    and not components[0]['name'].startswith(tuple(component_names_standard)):
                 continue
-            if len(components) > 1 and not get_component_names_per_ticket(len(components), components, component_names_standard):
+            if len(components) > 1 \
+                    and not get_component_names_per_ticket(len(components), components, component_names_standard):
                 continue
-            if len(components) > 1 and not get_component_names_per_ticket(len(components), components, component_names_standard).startswith(tuple(component_names_standard)):
+            if len(components) > 1 \
+                    and not get_component_names_per_ticket(len(components), components, component_names_standard).startswith(tuple(component_names_standard)):
                 continue
 
+            # Closed and Resolution Blacklist not counted
+            if issue['fields']['resolution'] \
+                    and issue['fields']['resolution']['name'] in project.resolution_blacklist\
+                    and issue['fields']['status']['name'] == 'Closed':
+                continue
+
+            # Only track issue_types
+            if issue['fields']['issuetype']['name'] not in project.issue_types:
+                continue
+
+            # TFCC Is Root Cause - customfield_10092 not counted
+            try:
+                if issue['fields']['resolution'] \
+                        and issue['fields']['resolution']['id'] in ['11']\
+                        and issue['fields']['customfield_10092']['id'] in ['13499']:
+                    continue
+            except (KeyError, TypeError):
+                continue
+
+            # collect data
             if issue['fields'][item]:
                 if item == 'created':
                     temp[item] = issue['fields'][item]
@@ -58,6 +82,7 @@ def parse_jira_data(data, component_names_standard):
 
         results.append(temp)
 
+    print len(results)
     return results
 
 

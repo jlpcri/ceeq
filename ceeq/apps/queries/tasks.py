@@ -17,18 +17,7 @@ def fetch_jira_data_run():
     projects = Project.objects.filter(complete=False)
     start = datetime.now()
     current_delay = 0
-    job = group(query_jira_data.delay(project.id) for project in projects)
-    job_result = job.apply_async()
-
-    # while True:
-    #     if job_result.successful():
-    #         print 'done'
-    #         end = datetime.now()
-    #         current_delay = int((end - start).total_seconds())
-    #         break
-    #     print 'running'
-    #
-    # print current_delay
+    job = group(query_jira_data.delay(project.id) for project in projects)()
 
     try:
         ls = LiveSettings.objects.get(pk=1)
@@ -50,7 +39,7 @@ def query_jira_data(project_id):
     for impact in component_impacts:
         component_names.append(impact.component_name + '/')
 
-    jira_data = parse_jira_data(project.fetch_jira_data['issues'], component_names)
+    jira_data = parse_jira_data(project, component_names)
 
     try:
         result = project.resulthistory_set.latest('confirmed')
