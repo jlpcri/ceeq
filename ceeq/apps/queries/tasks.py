@@ -48,7 +48,7 @@ def query_jira_data(project_id):
     component_impacts = ComponentImpact.objects.filter(impact_map=project.impact_map)
     component_names = []
     for impact in component_impacts:
-        component_names.append(impact.component_name)
+        component_names.append(impact.component_name + '/')
 
     jira_data = parse_jira_data(project.fetch_jira_data['issues'], component_names)
 

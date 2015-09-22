@@ -33,26 +33,28 @@ def parse_jira_data(data, component_names_standard):
         temp = {}
         temp['key'] = issue['key']
         for item in issue['fields']:
+            components = issue['fields']['components']
+            if len(components) == 1 and not components[0]['name'].startswith(tuple(component_names_standard)):
+                continue
+            if len(components) > 1 and not get_component_names_per_ticket(len(components), components, component_names_standard):
+                continue
+            if len(components) > 1 and not get_component_names_per_ticket(len(components), components, component_names_standard).startswith(tuple(component_names_standard)):
+                continue
+
             if issue['fields'][item]:
                 if item == 'created':
                     temp[item] = issue['fields'][item]
                 elif item in ['customfield_13286', 'customfield_10092']:
                     temp[item] = issue['fields'][item]['value']
-                elif item == 'versions':
+                elif item in ['versions', 'components']:
                     temp[item] = issue['fields'][item][0]['name']
-                elif item == 'components':
-                    components = issue['fields'][item]
-                    component_len = len(components)
-                    if component_len == 1:
-                        temp[item] = components[0]['name']
-                    else:
-                        name = get_component_names_per_ticket(component_len, components, component_names_standard)
-                        if name:
-                            temp[item] = name
                 else:
                     temp[item] = issue['fields'][item]['name']
             else:
                 temp[item] = ''
+
+        if len(temp) == 1:  # no contents
+            continue
 
         results.append(temp)
 
