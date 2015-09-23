@@ -136,15 +136,15 @@
             </div>
         </form>
 
-        {% if project.score == 101 %}
+        {% if project.overall_score == 101 %}
             <h4>No JIRA Data fetched.</h4>
             No created issues
 {#        {% elif project.score == 103 %}#}
 {#            No open issues#}
-        {% elif project.score == 104 %}
+        {% elif project.overall_score == 104 %}
             <h4>No JIRA Data fetched.</h4>
             No JIRA Data
-        {% elif project.score == 109 %}
+        {% elif project.overall_score == 109 %}
             <h4>No JIRA Data fetched.</h4>
             No evaluate
         {% else %}

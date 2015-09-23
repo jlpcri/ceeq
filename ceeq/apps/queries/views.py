@@ -73,7 +73,7 @@ def project_detail(request, project_id):
     except (TypeError, ValueError):
         start = end - timedelta(days=29)
 
-    # jira_data = project.resulthistory_set.latest('confirmed')
+    last_tab = request.GET.get('last_tab', '')
 
     context = RequestContext(request, {
         'form': form,
@@ -81,7 +81,9 @@ def project_detail(request, project_id):
         'version_names': project.fetch_jira_versions,
         'impact_maps': get_impact_maps(),
         'instances': get_instances(),
-        'superuser': request.user.is_superuser
+        'superuser': request.user.is_superuser,
+
+        'last_tab': last_tab
     })
     return render(request, 'q_project_detail/project_detail.html', context)
     # return HttpResponse(project.fetch_jira_versions)

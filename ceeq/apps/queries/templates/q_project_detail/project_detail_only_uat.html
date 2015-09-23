@@ -34,10 +34,10 @@
     <legend>Components Weighted Factors (Scales: 0 -1)</legend>
     <p>
         Project CEEQ Score:
-        {% if project.score > 10 %}
+        {% if project.uat_score > 10 %}
             Out of Range
         {% else %}
-            <strong>{{ project.score|floatformat:2 }}</strong>
+            <strong>{{ project.uat_score|floatformat:2 }}</strong>
         {% endif %}
     </p>
     <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>

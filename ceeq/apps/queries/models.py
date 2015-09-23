@@ -99,15 +99,15 @@ class Project(models.Model):
 
     @property
     def internal_score(self):
-        result = self.resulthistory_set.all().latest('confirmed')
+        result = self.resulthistory_set.all().latest('created')
         return result.internal_score
 
     @property
     def uat_score(self):
-        result = self.resulthistory_set.all().latest('confirmed')
+        result = self.resulthistory_set.all().latest('created')
         return result.uat_score
 
     @property
     def overall_score(self):
-        result = self.resulthistory_set.all().latest('confirmed')
+        result = self.resulthistory_set.all().latest('created')
         return result.overall_score

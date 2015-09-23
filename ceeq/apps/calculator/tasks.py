@@ -25,9 +25,12 @@ def calculate_score(project_id):
     uat_data = get_score_data(project, query_results, 'only_uat')
     overall_data = get_score_data(project, query_results, 'include_uat')
 
-    result_latest.overall_score = overall_data
-    result_latest.internal_score = internal_data
-    result_latest.uat_score = uat_data
+    result_latest.overall_score = overall_data['score']
+    result_latest.internal_score = internal_data['score']
+    result_latest.uat_score = uat_data['score']
+
+    result_latest.internal_testing_table = internal_data['weight_factor']
+
     result_latest.save()
 
     # score_by_component = get_score_by_component(query_results, 'overall')

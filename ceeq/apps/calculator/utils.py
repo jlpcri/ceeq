@@ -59,6 +59,7 @@ def get_table_data(query_results, uat_type):
 
 
 def get_score_data(project, query_results, uat_type):
+    data = {}
     component_names = []
     component_names_without_slash = []
 
@@ -86,8 +87,13 @@ def get_score_data(project, query_results, uat_type):
                                       component_names_without_slash,
                                       frame_components)
 
+    # calculate CEEQ score
     score = calculate_ceeq_score(weight_factor)
-    return score
+    data['score'] = score
+    data['weight_factor'] = weight_factor
+
+
+    return data
 
 
 def get_score_by_component(query_results, uat_type):
@@ -269,7 +275,7 @@ def get_weight_factor(data, component_names_without_slash, frame_components):
         except KeyError:
             continue
 
-        temp.append(sum(data[item]['ceeq'].itervalues()))  # defect density, decimal
+        temp.append(round(sum(data[item]['ceeq'].itervalues()), 3))  # defect density, decimal
         temp.append(sum(data[item]['total'].itervalues()))  # total number per component
 
         for priority in sorted(ISSUE_PRIORITY_WEIGHT.keys()):
@@ -279,7 +285,7 @@ def get_weight_factor(data, component_names_without_slash, frame_components):
                 except KeyError:
                     continue
 
-        temp.append(sum(data[item]['ceeq_closed'].itervalues()))  # defect density if all closed, decimal
+        temp.append(round(sum(data[item]['ceeq_closed'].itervalues()), 3))  # defect density if all closed, decimal
 
         weight_factor.append(temp)
 
@@ -298,7 +304,7 @@ def get_framework_components_weight(project):
 def calculate_ceeq_score(weight_factor):
     raw_score = 0
     for item in weight_factor:
-        raw_score += Decimal(item[1]) * item[2]  # item[1]: component weight, float, item[2]: defects density, decimal
+        raw_score += Decimal(item[1] * item[2])  # item[1]: component weight, float, item[2]: defects density, decimal
     raw_score = (1 - raw_score) * 10
 
     if raw_score == 10:  # no open issues in JIRA
