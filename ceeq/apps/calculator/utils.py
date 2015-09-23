@@ -86,9 +86,8 @@ def get_score_data(project, query_results, uat_type):
                                       component_names_without_slash,
                                       frame_components)
 
-    print uat_type
-    for item in weight_factor:
-        print item
+    score = calculate_ceeq_score(weight_factor)
+    return score
 
 
 def get_score_by_component(query_results, uat_type):
@@ -294,3 +293,18 @@ def get_framework_components_weight(project):
         frame_components[item.component_name] = item.impact
 
     return frame_components
+
+
+def calculate_ceeq_score(weight_factor):
+    raw_score = 0
+    for item in weight_factor:
+        raw_score += Decimal(item[1]) * item[2]  # item[1]: component weight, float, item[2]: defects density, decimal
+    raw_score = (1 - raw_score) * 10
+
+    if raw_score == 10:  # no open issues in JIRA
+        score = 103
+    else:
+        score = round(raw_score, 2)
+
+    return score
+

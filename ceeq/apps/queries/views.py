@@ -54,7 +54,7 @@ def projects(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    calculate_score(project.id)
+    # calculate_score(project.id)
 
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \"{0}\" is archived.'.format(project.name))
