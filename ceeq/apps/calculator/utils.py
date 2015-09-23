@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
 
@@ -20,6 +20,15 @@ ISSUE_PRIORITY_CRITICAL = 'Critical'
 ISSUE_PRIORITY_MAJOR = 'Major'
 ISSUE_PRIORITY_MINOR = 'Minor'
 ISSUE_PRIORITY_TRIVIAL = 'Trivial'
+
+# index of Open Resolved Closed issues per priority
+ISSUE_STATUS_FIELDS = [
+        ('blocker', [5, 6, 4]),
+        ('critical', [8, 9, 7]),
+        ('major', [11, 12, 10]),
+        ('minor', [14, 15, 13]),
+        ('trivial', [17, 18, 16])
+    ]
 
 # Priority Weight of Issues in JIRA
 try:
@@ -89,9 +98,24 @@ def get_score_data(project, query_results, uat_type):
 
     # calculate CEEQ score
     score = calculate_ceeq_score(weight_factor)
+
+    # get exist component name
+    try:
+        component_names_exist = list(zip(*weight_factor)[0])
+    except IndexError:
+        component_names_exist = None
+
+    # get priority total number of JIRA from weight_factor
+    priority_total = defaultdict(int)
+    for item in weight_factor:
+        priority_total['total'] += item[3]
+        for status in ISSUE_STATUS_FIELDS:
+            priority_total[status[0]] += sum(item[i] for i in status[1])
+
     data['score'] = score
     data['weight_factor'] = weight_factor
-
+    data['components_exist'] = component_names_exist
+    data['priority_total'] = priority_total
 
     return data
 

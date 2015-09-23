@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from ceeq.apps.calculator.tasks import calculate_score
+from ceeq.apps.calculator.utils import get_score_data
 from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter
 
 from ceeq.apps.queries.models import Project, ImpactMap
@@ -54,7 +55,6 @@ def projects(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    # calculate_score(project.id)
 
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \"{0}\" is archived.'.format(project.name))
@@ -75,6 +75,24 @@ def project_detail(request, project_id):
 
     last_tab = request.GET.get('last_tab', '')
 
+    # get standard component names
+    component_impacts = ComponentImpact.objects.filter(impact_map=project.impact_map)
+    component_names_standard = []
+    for impact in component_impacts:
+        component_names_standard.append(impact.component_name)
+
+    # Calculate weight factor, exist components etc.
+    t_start = datetime.now()
+    result_latest = project.resulthistory_set.latest('confirmed')
+    query_results = result_latest.query_results
+
+    internal_data = get_score_data(project, query_results, 'exclude_uat')
+    uat_data = get_score_data(project, query_results, 'only_uat')
+    overall_data = get_score_data(project, query_results, 'include_uat')
+    t_end = datetime.now()
+
+    print (t_end - t_start).total_seconds()
+
     context = RequestContext(request, {
         'form': form,
         'project': project,
@@ -83,10 +101,23 @@ def project_detail(request, project_id):
         'instances': get_instances(),
         'superuser': request.user.is_superuser,
 
-        'last_tab': last_tab
+        'last_tab': last_tab,
+
+        'weight_factor_include_uat': overall_data['weight_factor'],
+        'weight_factor_exclude_uat': internal_data['weight_factor'],
+        'weight_factor_only_uat': uat_data['weight_factor'],
+
+        'component_names_standard': component_names_standard,
+        'component_names_include_uat': overall_data['components_exist'],
+        'component_names_exclude_uat': internal_data['components_exist'],
+        'component_names_only_uat': uat_data['components_exist'],
+
+        'priority_total_include_uat': overall_data['priority_total'],
+        'priority_total_exclude_uat': internal_data['priority_total'],
+        'priority_total_only_uat': uat_data['priority_total'],
+
     })
     return render(request, 'q_project_detail/project_detail.html', context)
-    # return HttpResponse(project.fetch_jira_versions)
 
 
 @user_passes_test(user_is_superuser)

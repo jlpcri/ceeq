@@ -12,11 +12,6 @@ def calculate_score(project_id):
     result_latest = project.resulthistory_set.latest('confirmed')
     query_results = result_latest.query_results
 
-    component_impacts = ComponentImpact.objects.filter(impact_map=project.impact_map)
-    component_names = []
-    for impact in component_impacts:
-        component_names.append(impact.component_name)
-
     # internal_table = get_table_data(query_results, 'internal')
     # uat_table = get_table_data(query_results, 'uat')
     # combined_table = get_table_data(query_results, 'overall')
@@ -29,7 +24,7 @@ def calculate_score(project_id):
     result_latest.internal_score = internal_data['score']
     result_latest.uat_score = uat_data['score']
 
-    result_latest.internal_testing_table = internal_data['weight_factor']
+    # result_latest.internal_testing_table = internal_data['weight_factor']
 
     result_latest.save()
 
