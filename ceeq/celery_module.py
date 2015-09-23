@@ -6,7 +6,7 @@ from celery import Celery
 from django.conf import settings
 
 
-if socket.gethostname() == "sliu-OptiPlex-GX520":
+if socket.gethostname() in ("sliu-OptiPlex-GX520", "QAIMint"):
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ceeq.settings.local")
 elif socket.gethostname() == "qaci01":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ceeq.settings.dev")

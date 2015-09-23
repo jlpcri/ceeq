@@ -17,18 +17,20 @@ def fetch_jira_data_run():
     projects = Project.objects.filter(complete=False)
     start = datetime.now()
     current_delay = 0
-    job = group(query_jira_data.delay(project.id) for project in projects)
-    job_result = job.apply_async()
+    job = group(query_jira_data.s(project.id) for project in projects).delay()
+    print "Job", job
 
-    # while True:
-    #     if job_result.successful():
-    #         print 'done'
-    #         end = datetime.now()
-    #         current_delay = int((end - start).total_seconds())
-    #         break
-    #     print 'running'
-    #
-    # print current_delay
+    while True:
+        if job.successful():
+            print 'done'
+            end = datetime.now()
+            current_delay = int((end - start).total_seconds())
+            print current_delay
+            break
+        print 'running'
+        time.sleep(1)
+
+    print current_delay
 
     try:
         ls = LiveSettings.objects.get(pk=1)
@@ -38,7 +40,8 @@ def fetch_jira_data_run():
         LiveSettings.objects.create(score_scalar=20,
                                     current_delay=current_delay)
 
-    time.sleep(10)
+    print "Start sleep"
+    time.sleep(1)
     # fetch_jira_data_run()
 
 
