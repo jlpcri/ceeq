@@ -21,9 +21,9 @@ def calculate_score(project_id):
     # uat_table = get_table_data(query_results, 'uat')
     # combined_table = get_table_data(query_results, 'overall')
 
-    internal_data = get_score_data(project, query_results, 'internal')
-    # uat_data = get_score_data(project, query_results, 'uat')
-    # overall_data = get_score_data(project, query_results, 'overall')
+    internal_data = get_score_data(project, query_results, 'exclude_uat')
+    uat_data = get_score_data(project, query_results, 'only_uat')
+    overall_data = get_score_data(project, query_results, 'include_uat')
 
     # score_by_component = get_score_by_component(query_results, 'overall')
 

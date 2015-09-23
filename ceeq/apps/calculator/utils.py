@@ -2,7 +2,7 @@ from collections import OrderedDict
 import copy
 from decimal import Decimal
 
-from ceeq.apps.calculator.models import SeverityMap
+from ceeq.apps.calculator.models import SeverityMap, LiveSettings, ComponentImpact
 
 # define globe variables
 ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research']
@@ -79,7 +79,16 @@ def get_score_data(project, query_results, uat_type):
                                              'components',  # calculation for Components or Sub Components
                                              uat_type)
 
-    weight_factor = get_weight_factor(data_issue_counts, component_names_without_slash)
+    # Framework of Apps/Inbound/Outbound etc component:weight
+    frame_components = get_framework_components_weight(project)
+
+    weight_factor = get_weight_factor(data_issue_counts,
+                                      component_names_without_slash,
+                                      frame_components)
+
+    print uat_type
+    for item in weight_factor:
+        print item
 
 
 def get_score_by_component(query_results, uat_type):
@@ -139,8 +148,8 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
             if item['customfield_13286']:
                 continue
         elif uat_type == 'only_uat':
-            # Only workflow metatye counted
-            if item['customfield_13286'] is None:
+            # Only workflow metatype counted
+            if not item['customfield_13286']:
                 continue
 
         component = item['components']
@@ -181,7 +190,7 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
     return data
 
 
-def get_weight_factor(data, component_names_without_slash):
+def get_weight_factor(data, component_names_without_slash, frame_components):
     for component in component_names_without_slash:
         for item in data:
             if item.startswith(component + '/'):
@@ -213,8 +222,10 @@ def get_weight_factor(data, component_names_without_slash):
                     data[component]['minor'][status] += data[item]['minor'][status]
                     data[component]['trivial'][status] += data[item]['trivial'][status]
 
+                    data[component]['total'][status] += data[item]['total'][status]
+
     # for i in data:
-    #     print i, data[i]['ceeq'], data[i]['ceeq_closed']
+    #     print i, data[i]
 
     # calculate defect density of each component
     for component in component_names_without_slash:
@@ -239,3 +250,47 @@ def get_weight_factor(data, component_names_without_slash):
             for status in ISSUE_STATUS_WEIGHT.keys():
                 data[component]['ceeq'][status] /= subcomponent_length
                 data[component]['ceeq_closed'][status] /= subcomponent_length
+
+    weight_factor = []
+    try:
+        ls = LiveSettings.objects.get(pk=1)
+        score_scalar = ls.score_scalar
+    except LiveSettings.DoesNotExist:
+        score_scalar = 20
+
+    for item in sorted(component_names_without_slash):
+        temp = []
+        # Skip the component with zero issues
+        if sum(data[item]['total'].itervalues()) == 0:
+            continue
+        temp.append(item)
+        try:
+            # dynamically component weight, float
+            temp.append(round(frame_components[item] / score_scalar, 3))
+        except KeyError:
+            continue
+
+        temp.append(sum(data[item]['ceeq'].itervalues()))  # defect density, decimal
+        temp.append(sum(data[item]['total'].itervalues()))  # total number per component
+
+        for priority in sorted(ISSUE_PRIORITY_WEIGHT.keys()):
+            for status in sorted(ISSUE_STATUS_COUNT.keys()):
+                try:
+                    temp.append(data[item][priority][status])
+                except KeyError:
+                    continue
+
+        temp.append(sum(data[item]['ceeq_closed'].itervalues()))  # defect density if all closed, decimal
+
+        weight_factor.append(temp)
+
+    return weight_factor
+
+
+def get_framework_components_weight(project):
+    frame_components = {}
+    components = ComponentImpact.objects.filter(impact_map=project.impact_map)
+    for item in components:
+        frame_components[item.component_name] = item.impact
+
+    return frame_components
