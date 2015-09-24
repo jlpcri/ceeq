@@ -94,9 +94,6 @@ def project_detail(request, project_id):
 
     print (t_end - t_start).total_seconds()
 
-    for item in internal_data['pie_chart_data']:
-        print item
-
     context = RequestContext(request, {
         'form': form,
         'project': project,

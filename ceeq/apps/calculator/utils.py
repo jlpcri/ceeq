@@ -119,7 +119,7 @@ def get_score_data(project, query_results, uat_type):
                                         query_results,
                                         uat_type,
                                         frame_components,
-                                        score)
+                                        score[0])
 
     data['score'] = score
     data['weight_factor'] = weight_factor
@@ -339,17 +339,25 @@ def get_framework_components_weight(project):
 
 
 def calculate_ceeq_score(weight_factor):
-    raw_score = 0
+    ceeq_raw = 0
+    ceeq_closed_raw = 0
     for item in weight_factor:
-        raw_score += Decimal(item[1] * item[2])  # item[1]: component weight, float, item[2]: defects density, decimal
-    raw_score = (1 - raw_score) * 10
+        ceeq_raw += Decimal(item[1] * item[2])  # item[1]: component weight, float, item[2]: defects density, decimal
+        ceeq_closed_raw += Decimal(item[1] * item[19])  # item[1]: component weight, item[19]: defects density if all closed
+    ceeq_raw = (1 - ceeq_raw) * 10
+    ceeq_closed_raw = (1 - ceeq_closed_raw) * 10
 
-    if raw_score == 10:  # no open issues in JIRA
+    if ceeq_raw == 10:  # no open issues in JIRA
         score = 103
+        score_closed = 103
     else:
-        score = round(raw_score, 2)
+        score = round(ceeq_raw, 2)
+        score_closed = round(ceeq_closed_raw, 2)
 
-    return score
+    data = []
+    data.append(score)
+    data.append(score_closed)
+    return data
 
 
 def get_pie_chart_data(data_issue_counts, weight_factor, query_results, uat_type, frame_components, uat_score):
