@@ -1,6 +1,7 @@
 from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
+from operator import itemgetter
 
 from ceeq.apps.calculator.models import SeverityMap, LiveSettings, ComponentImpact
 
@@ -112,10 +113,19 @@ def get_score_data(project, query_results, uat_type):
         for status in ISSUE_STATUS_FIELDS:
             priority_total[status[0]] += sum(item[i] for i in status[1])
 
+    # get pie chart data
+    pie_chart_data = get_pie_chart_data(data_issue_counts,
+                                        weight_factor,
+                                        query_results,
+                                        uat_type,
+                                        frame_components,
+                                        score)
+
     data['score'] = score
     data['weight_factor'] = weight_factor
     data['components_exist'] = component_names_exist
     data['priority_total'] = priority_total
+    data['pie_chart_data'] = pie_chart_data
 
     return data
 
@@ -338,3 +348,108 @@ def calculate_ceeq_score(weight_factor):
 
     return score
 
+
+def get_pie_chart_data(data_issue_counts, weight_factor, query_results, uat_type, frame_components, uat_score):
+    # calculate total number of issues based on priority
+    priority_total = defaultdict(int)
+
+    dd_pie_data = []
+    dd_pie_table = []
+    dd_pie_graph = []
+    donut_pie_inner = []
+    donut_pie_outer = []
+
+    for item in weight_factor:
+        temp_graph = []  # data for Component as outer ring
+        temp_table = []
+
+        temp_graph.append(item[0])
+        temp_graph.append(item[1] * item[2])
+        temp_graph.append(sorted(frame_components.keys()).index(item[0]))
+        temp_graph_subcomponent = get_subcomponent_outer_ring(item[0],
+                                                              query_results,
+                                                              uat_type,
+                                                              frame_components)
+        priority_total['total'] += item[3]  # Total number of all issues of pie chart table
+        temp_table.append(item[0])
+
+        # Number of issues Open, Resolved, Closed
+        for status in ISSUE_STATUS_FIELDS:
+            for i in status[1]:
+                priority_total[status[0]] += item[i]
+                temp_table.append(float(item[i]))
+
+        temp_table.append(None)
+        temp_table.append(float(item[3])) # SubTotal of pie chart table
+
+        dd_pie_table.append(temp_table)
+        donut_pie_inner.append(temp_graph)
+        donut_pie_outer.append(temp_graph_subcomponent)
+
+    dd_pie_table_subcomponent = []  # calculate issues count per sub component
+
+    for item in sorted(frame_components.keys()):
+        temp_table = []
+
+        try:
+            if item not in list(zip(*weight_factor)[0]):
+                temp_table.append(item)
+                for status in ISSUE_STATUS_FIELDS:
+                    for i in status[1]:
+                        temp_table.append(0)
+                temp_table.append(None)
+                temp_table.append(0)
+
+                dd_pie_table.append(temp_table)
+
+        except IndexError:
+            continue
+
+        for each in data_issue_counts:
+            temp_table_subcomponent = []
+            sub_total = 0
+
+            if each.startswith(item + '/'):
+                temp_table_subcomponent.append(each[len(item) + 1:])
+                for status in ISSUE_STATUS_FIELDS:
+                    temp_table_subcomponent.append(float(data_issue_counts[each][status[0]]['open']))
+                    temp_table_subcomponent.append(float(data_issue_counts[each][status[0]]['resolved']))
+                    temp_table_subcomponent.append(float(data_issue_counts[each][status[0]]['closed']))
+                    sub_total += sum(data_issue_counts[each][status[0]].itervalues())
+            else:
+                continue
+
+            if sub_total == 0:
+                continue
+            else:
+                temp_table_subcomponent.append(None)
+                temp_table_subcomponent.append(sub_total)
+
+            dd_pie_table_subcomponent.append(temp_table_subcomponent)
+
+    temp_table = []
+    temp_table.append('Total')
+    temp_table.append(None)
+    for status in ISSUE_STATUS_FIELDS:  #  total number per priority
+        temp_table.append(priority_total[status[0]])
+        temp_table.append(None)
+        temp_table.append(None)
+    temp_table.append(priority_total['total'])
+
+    dd_pie_graph.append(donut_pie_inner)
+    dd_pie_graph.append(donut_pie_outer)
+
+    dd_pie_data.append(dd_pie_graph)
+
+    # Sub components issue counts sorted by subtotal
+    dd_pie_data.append(sorted(dd_pie_table_subcomponent, key=itemgetter(17), reverse=True))
+
+    dd_pie_data.append(temp_table)
+    dd_pie_data.append(uat_score)
+
+    print dd_pie_data
+    return dd_pie_data
+
+
+def get_subcomponent_outer_ring(component_name, query_results, uat_type, frame_components):
+    return ''
