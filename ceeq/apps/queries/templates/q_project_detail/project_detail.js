@@ -85,12 +85,12 @@ function loadUatActiveDataTab() {
     if (active_tab == '#include_uat') {
         donut_pie = 'include_uat';
 
-        if (data_ceeq_trend_graph['ceeq'].length > 0) {
-            chart_line_include_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id, data_include_uat[3]);
-        } else {
-            $(trend_chart_id + donut_pie).hide();
-            $(trend_chart_id + donut_pie + '_export').hide();
-        }
+        //if (data_ceeq_trend_graph['ceeq'].length > 0) {
+        //    chart_line_include_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id, data_include_uat[3]);
+        //} else {
+        //    $(trend_chart_id + donut_pie).hide();
+        //    $(trend_chart_id + donut_pie + '_export').hide();
+        //}
 
         div_pie_height = data_include_uat[1].length * 25 + 450;
         $(pie_chart_id + donut_pie).height(div_pie_height);
@@ -103,12 +103,12 @@ function loadUatActiveDataTab() {
     } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
 
-        if (data_ceeq_trend_graph['ceeq'].length > 0) {
-            chart_line_exclude_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id, data_exclude_uat[3]);
-        } else {
-            $(trend_chart_id + donut_pie).hide();
-            $(trend_chart_id + donut_pie + '_export').hide();
-        }
+        //if (data_ceeq_trend_graph['ceeq'].length > 0) {
+        //    chart_line_exclude_uat = displayCeeqTrend(data_ceeq_trend_graph, donut_pie, trend_chart_id, data_exclude_uat[3]);
+        //} else {
+        //    $(trend_chart_id + donut_pie).hide();
+        //    $(trend_chart_id + donut_pie + '_export').hide();
+        //}
 
         div_pie_height = data_exclude_uat[1].length * 25 + 450;
         $(pie_chart_id + donut_pie).height(div_pie_height);
@@ -138,6 +138,7 @@ function loadUatActiveDataTab() {
 
 function displayPieChart(data, uat_type, pie_chart_id) {
     pie_chart_id = pie_chart_id.substring(1, pie_chart_id.length);
+    var score = data[3];
 
     if (score < 10) {
         //Create the data table

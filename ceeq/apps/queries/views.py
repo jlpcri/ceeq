@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
+import json
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import HttpResponse
@@ -93,6 +94,9 @@ def project_detail(request, project_id):
 
     print (t_end - t_start).total_seconds()
 
+    for item in internal_data['pie_chart_data']:
+        print item
+
     context = RequestContext(request, {
         'form': form,
         'project': project,
@@ -106,15 +110,25 @@ def project_detail(request, project_id):
         'weight_factor_include_uat': overall_data['weight_factor'],
         'weight_factor_exclude_uat': internal_data['weight_factor'],
         'weight_factor_only_uat': uat_data['weight_factor'],
+        'weight_factor_custom': '',
 
         'component_names_standard': component_names_standard,
         'component_names_include_uat': overall_data['components_exist'],
         'component_names_exclude_uat': internal_data['components_exist'],
         'component_names_only_uat': uat_data['components_exist'],
+        'component_names_custom': '',
 
         'priority_total_include_uat': overall_data['priority_total'],
         'priority_total_exclude_uat': internal_data['priority_total'],
         'priority_total_only_uat': uat_data['priority_total'],
+        'priority_total_custom': '',
+
+        'dd_pie_data_include_uat': json.dumps(overall_data['pie_chart_data']),
+        'dd_pie_data_exclude_uat': json.dumps(internal_data['pie_chart_data']),
+        'dd_pie_data_only_uat': json.dumps(uat_data['pie_chart_data']),
+        'dd_pie_data_custom': '',
+
+        'ceeq_trend_graph': ''
 
     })
     return render(request, 'q_project_detail/project_detail.html', context)

@@ -192,6 +192,9 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
                 continue
 
         component = item['components']
+        if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
+            continue
+
         if item['status'] in ISSUE_STATUS_OPEN:
             if item['priority'] == ISSUE_PRIORITY_BLOCKER:
                 data[component]['blocker']['open'] += 1
@@ -365,7 +368,9 @@ def get_pie_chart_data(data_issue_counts, weight_factor, query_results, uat_type
 
         temp_graph.append(item[0])
         temp_graph.append(item[1] * item[2])
+        # for color index
         temp_graph.append(sorted(frame_components.keys()).index(item[0]))
+
         temp_graph_subcomponent = get_subcomponent_outer_ring(item[0],
                                                               query_results,
                                                               uat_type,
@@ -380,7 +385,7 @@ def get_pie_chart_data(data_issue_counts, weight_factor, query_results, uat_type
                 temp_table.append(float(item[i]))
 
         temp_table.append(None)
-        temp_table.append(float(item[3])) # SubTotal of pie chart table
+        temp_table.append(float(item[3]))  # SubTotal of pie chart table
 
         dd_pie_table.append(temp_table)
         donut_pie_inner.append(temp_graph)
@@ -447,9 +452,67 @@ def get_pie_chart_data(data_issue_counts, weight_factor, query_results, uat_type
     dd_pie_data.append(temp_table)
     dd_pie_data.append(uat_score)
 
-    print dd_pie_data
     return dd_pie_data
 
 
 def get_subcomponent_outer_ring(component_name, query_results, uat_type, frame_components):
-    return ''
+    sub_component_names = []
+    component_name_list = []
+    sub_pie_graph = []
+
+    component_name_weight = Decimal(round(frame_components[component_name] / Decimal(20), 3))
+    component_name_list.append(component_name)
+
+    for item in query_results:
+        if item['components'] and item['components'].startswith(component_name):
+            sub_component_names.append(item['components'])
+
+    sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
+    sub_component_names_length = Decimal(len(sub_component_names))
+
+    data = issue_counts_compute(sub_component_names,
+                                component_name_list,
+                                query_results,
+                                'sub_components',
+                                uat_type)
+    weight_factor = get_subcomponent_weight_factor(data, component_name, component_name_weight)
+
+    for item in data:
+        temp_graph = []
+        if item == component_name:
+            continue
+
+        temp_graph.append(item[len(component_name) + 1:])
+        temp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
+
+        sub_pie_graph.append(temp_graph)
+
+    return sub_pie_graph
+
+
+def get_subcomponent_weight_factor(data, component_name, component_name_weight):
+    for item in data:
+        for status in ISSUE_STATUS_COUNT.keys():
+            data[item]['total'][status] = data[item]['blocker'][status] \
+                                          + data[item]['critical'][status]\
+                                          + data[item]['major'][status]\
+                                          + data[item]['minor'][status]\
+                                          + data[item]['trivial'][status]
+    sub_component_names_length = 0
+    for item in data:
+        if item.startswith(component_name + '/') and sum(data[item]['total'].itervalues()) > 0:
+            sub_component_names_length += 1
+        else:
+            continue
+
+    for item in data:
+        for status in ISSUE_STATUS_COUNT.keys():
+            if sub_component_names_length == 0:
+                continue
+            data[item]['ceeq'][status] = data[item]['blocker'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['blocker'] / sub_component_names_length * component_name_weight \
+                                         + data[item]['critical'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['critical'] / sub_component_names_length * component_name_weight \
+                                         + data[item]['major'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['major'] / sub_component_names_length * component_name_weight \
+                                         + data[item]['minor'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['minor'] / sub_component_names_length * component_name_weight \
+                                         + data[item]['trivial'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['trivial'] / sub_component_names_length * component_name_weight
+
+    return data
