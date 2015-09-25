@@ -223,3 +223,12 @@ def project_track(request, project_id):
         project.save()
 
     return redirect(projects)
+
+
+def query_jira_data_all(request):
+    projects = Project.objects.filter(complete=False)
+    for project in projects:
+        query_jira_data(project.id)
+
+    return redirect(projects)
+

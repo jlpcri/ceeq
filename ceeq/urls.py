@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     url(r'^ceeq/', include('ceeq.apps.search.urls')),
     url(r'^ceeq/', include('ceeq.apps.defects_density.urls')),
 
-    # url(r'^ceeq/', include('ceeq.apps.calculator.urls')),
+    url(r'^ceeq/calcuate/', include('ceeq.apps.calculator.urls')),
     # url(r'^ceeq/', include('ceeq.apps.formatter.urls')),
     url(r'^ceeq/queries/', include('ceeq.apps.queries.urls')),
 

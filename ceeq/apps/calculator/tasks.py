@@ -24,9 +24,9 @@ def calculate_score(project_id):
     result_latest.internal_score = internal_data['score'][0]
     result_latest.uat_score = uat_data['score'][0]
 
-    result_latest.overall_score = overall_data['score']
+    result_latest.combined_testing_table = overall_data['score']
     result_latest.internal_testing_table = internal_data['score']
-    result_latest.uat_score = uat_data['score']
+    result_latest.uat_testing_table = uat_data['score']
 
     result_latest.save()
 
