@@ -2,9 +2,10 @@ from datetime import datetime
 import time
 from django.shortcuts import get_object_or_404
 from celery import group
+from django.utils.timezone import utc
 
 from ceeq import celery_app
-from ceeq.apps.calculator.models import ResultHistory, LiveSettings
+from ceeq.apps.calculator.models import ResultHistory, LiveSettings, ComponentImpact
 from ceeq.apps.queries.utils import parse_jira_data
 from models import Project
 
@@ -19,7 +20,6 @@ def fetch_jira_data_run():
     current_delay = 0
     job = group(query_jira_data.s(project.id) for project in projects).delay()
     print "Job", job
-
     while True:
         if job.successful():
             print 'done'
@@ -48,11 +48,17 @@ def fetch_jira_data_run():
 @celery_app.task
 def query_jira_data(project_id):
     project = get_object_or_404(Project, pk=project_id)
-    jira_data = parse_jira_data(project.fetch_jira_data['issues'])
+    component_impacts = ComponentImpact.objects.filter(impact_map=project.impact_map)
+    component_names = []
+    for impact in component_impacts:
+        component_names.append(impact.component_name + '/')
+
+    jira_data = parse_jira_data(project, component_names)
 
     try:
         result = project.resulthistory_set.latest('confirmed')
-        if result.query_results == jira_data:
+        time_difference = (datetime.utcnow().replace(tzinfo=utc) - result.confirmed).total_seconds() / (60 * 60)
+        if result.query_results == jira_data and time_difference < 24:  # at least one record per day
             result.confirmed = datetime.now()
             result.save()
         else:

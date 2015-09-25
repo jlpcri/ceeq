@@ -24,7 +24,7 @@ class Project(models.Model):
     instance = models.ForeignKey(Instance)
     issue_types = ArrayField(models.CharField(max_length=50, blank=True), default=['Bug'])
     resolution_blacklist = ArrayField(models.CharField(max_length=50, blank=True),
-                                      default=['Duplicate', 'Works as Design'])
+                                      default=['Duplicate', 'Works as Designed'])
     component_field = models.IntegerField(default=1)  # Choice between compoent and Indicator
     impact_map = models.ForeignKey(ImpactMap)
     active = models.BooleanField(default=True)  # tracking JIRA projects or not
@@ -99,15 +99,15 @@ class Project(models.Model):
 
     @property
     def internal_score(self):
-        result = self.resulthistory_set.all().latest('confirmed')
+        result = self.resulthistory_set.all().latest('created')
         return result.internal_score
 
     @property
     def uat_score(self):
-        result = self.resulthistory_set.all().latest('confirmed')
+        result = self.resulthistory_set.all().latest('created')
         return result.uat_score
 
     @property
     def overall_score(self):
-        result = self.resulthistory_set.all().latest('confirmed')
+        result = self.resulthistory_set.all().latest('created')
         return result.overall_score

@@ -14,8 +14,8 @@
                         {% if superuser %}
                             <i class="fa fa-pencil fa=lg"></i> Create a <a href="{% url 'q_project_new' %}"> New Project </a> &nbsp; | &nbsp;
                         {% endif %}
-                        <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'defects_density_log' 1000000 %}" id="dd_log_all"> Log All DDs</a> &nbsp; | &nbsp;
-                        <i class="fa fa-refresh fa-lg"></i><a href="{% url 'project_update_scores' 1000000 %}" id="update_all"> Update All Scores</a>
+                        <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
+                        <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
                     </small>
                 </div>
                 <div class="col-md-2">
@@ -72,7 +72,7 @@
                                             {% if score < 0 %}
                                                 <font color="red">{{ score }}</font>
                                             {% else %}
-                                                {{ score }}
+                                                {{ score | floatformat:2 }}
                                             {% endif %}
                                         </a>
                                     {% endif %}
@@ -85,7 +85,7 @@
                 </table>
             </div>
         {% else %}
-        <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'project_new' %}"> New Project </a>
+        <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'q_project_new' %}"> New Project </a>
         </small>
         <p>No projects available</p>
         {% endif %}
@@ -123,26 +123,28 @@
                                 <td><a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a></td>
                                 <td>{{ project.impact_map.name}}</td>
                                 <td>
-                                    {% if project.internal_score == 101 %}
-                                        No created issues
-                                    {% elif project.internal_score == 102 %}
-                                        <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
-                                    {% elif project.internal_score == 103 %}
-                                        <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
+                                    {% with score=project.internal_score %}
+                                        {% if score == 101 %}
+                                            No created issues
+                                        {% elif score == 102 %}
+                                            <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
+                                        {% elif score == 103 %}
+                                            <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
 
-                                    {% elif project.internal_score == 104 %}
-                                        No JIRA Data
-                                    {% elif project.internal_score == 109 %}
-                                        No evaluation
-                                    {% else %}
-                                        <a href="{% url 'project_defects_density' project.id %}">
-                                            {% if project.internal_score < 0 %}
-                                                <font color="red">{{ project.internal_score |floatformat:2 }}</font>
-                                            {% else %}
-                                                {{ project.internal_score |floatformat}}
-                                            {% endif %}
-                                        </a>
-                                    {% endif %}
+                                        {% elif score == 104 %}
+                                            No JIRA Data
+                                        {% elif score == 109 %}
+                                            No evaluation
+                                        {% else %}
+                                            <a href="{% url 'project_defects_density' project.id %}">
+                                                {% if score < 0 %}
+                                                    <font color="red">{{ score |floatformat:2 }}</font>
+                                                {% else %}
+                                                    {{ score |floatformat}}
+                                                {% endif %}
+                                            </a>
+                                        {% endif %}
+                                    {% endwith %}
                                 </td>
                                 <td> {{ project.instance.url }} </td>
                             </tr>
