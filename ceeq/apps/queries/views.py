@@ -28,8 +28,8 @@ def projects(request):
     try:
         ls = LiveSettings.objects.all()[0]
         score_scalar = ls.score_scalar
-    except LiveSettings.DoesNotExist:
-        score_scalar = 10
+    except (LiveSettings.DoesNotExist, IndexError):
+        score_scalar = 20
     ceeq_components = {}
     for impact_map in ImpactMap.objects.all():
         temp_components = {}
