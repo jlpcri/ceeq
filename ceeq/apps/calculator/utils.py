@@ -2,8 +2,9 @@ from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
 from operator import itemgetter
+from django.db.models import Max
 
-from ceeq.apps.calculator.models import SeverityMap, LiveSettings, ComponentImpact
+from ceeq.apps.calculator.models import SeverityMap, LiveSettings, ComponentImpact, ResultHistory
 
 # define globe variables
 ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research']
@@ -121,11 +122,15 @@ def get_score_data(project, query_results, uat_type):
                                         frame_components,
                                         score[0])
 
+    # get ceeq trend graph
+    ceeq_trend_graph = get_ceeq_trend_graph(project, uat_type)
+
     data['score'] = score
     data['weight_factor'] = weight_factor
     data['components_exist'] = component_names_exist
     data['priority_total'] = priority_total
     data['pie_chart_data'] = pie_chart_data
+    data['ceeq_trend_graph'] = ceeq_trend_graph
 
     return data
 
@@ -522,5 +527,47 @@ def get_subcomponent_weight_factor(data, component_name, component_name_weight):
                                          + data[item]['major'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['major'] / sub_component_names_length * component_name_weight \
                                          + data[item]['minor'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['minor'] / sub_component_names_length * component_name_weight \
                                          + data[item]['trivial'][status] * ISSUE_STATUS_WEIGHT[status] * ISSUE_PRIORITY_WEIGHT['trivial'] / sub_component_names_length * component_name_weight
+
+    return data
+
+
+def get_ceeq_trend_graph(project, uat_type):
+    results = project.resulthistory_set.all()
+    last_per_day = results.extra(select={'the_date': 'date(confirmed)'}).values_list('the_date').annotate(max_date=Max('confirmed'))
+    max_dates = [item[1] for item in last_per_day]
+    results_per_day = ResultHistory.objects.filter(confirmed__in=max_dates)
+
+    data = {}
+    categories = []
+    data_ceeq = []
+    data_ceeq_closed = []
+    for item in results_per_day:
+        temp = []
+        if item.confirmed.month < 10:
+            tmp_month = '0' + str(item.confirmed.month)
+        else:
+            tmp_month = str(item.confirmed.month)
+
+        if item.confirmed.day < 10:
+            tmp_day = '0' + str(item.confirmed.day)
+        else:
+            tmp_day = str(item.confirmed.day)
+        tmp_year = str(item.confirmed.year)
+
+        categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
+
+        if uat_type == 'include_uat':
+            data_ceeq.append(float(item.combined_testing_table[0]))
+            data_ceeq_closed.append(float(item.combined_testing_table[1]))
+        elif uat_type == 'exclude_uat':
+            data_ceeq.append(float(item.internal_testing_table[0]))
+            data_ceeq_closed.append(float(item.internal_testing_table[1]))
+        elif uat_type == 'only_uat':
+            data_ceeq.append(float(item.uat_testing_table[0]))
+            data_ceeq_closed.append(float(item.uat_testing_table[1]))
+
+    data['categories'] = categories
+    data['ceeq'] = data_ceeq
+    data['ceeq_closed'] = data_ceeq_closed
 
     return data

@@ -135,7 +135,8 @@ def project_detail(request, project_id):
         'internal_score': internal_data['score'][0],
         'uat_score': uat_data['score'][0],
 
-        'ceeq_trend_graph': ''
+        'ceeq_trend_graph_include_uat': overall_data['ceeq_trend_graph'],
+        'ceeq_trend_graph_exclude_uat': internal_data['ceeq_trend_graph'],
 
     })
     return render(request, 'q_project_detail/project_detail.html', context)
