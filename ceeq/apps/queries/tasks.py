@@ -2,6 +2,7 @@ from datetime import datetime
 import time
 from django.shortcuts import get_object_or_404
 from celery import group
+from django.utils.timezone import utc
 
 from ceeq import celery_app
 from ceeq.apps.calculator.models import ResultHistory, LiveSettings, ComponentImpact
@@ -43,7 +44,8 @@ def query_jira_data(project_id):
 
     try:
         result = project.resulthistory_set.latest('confirmed')
-        if result.query_results == jira_data:
+        time_difference = (datetime.utcnow().replace(tzinfo=utc) - result.confirmed).total_seconds() / (60 * 60)
+        if result.query_results == jira_data and time_difference < 24:  # at least one record per day
             result.confirmed = datetime.now()
             result.save()
         else:
