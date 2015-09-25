@@ -78,9 +78,9 @@ class ResultHistory(models.Model):
     scored = models.BooleanField(default=False)
 
     # Data table under pie chart
-    internal_testing_table = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0))
-    uat_testing_table = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0))
-    combined_testing_table = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0))
+    internal_testing_table = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0), null=True)
+    uat_testing_table = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0), null=True)
+    combined_testing_table = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0), null=True)
 
     # component weighted factor
     score_by_component = ArrayField(ArrayField(models.CharField(max_length=20, blank=True)), blank=True, null=True)

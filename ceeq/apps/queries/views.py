@@ -11,9 +11,9 @@ from ceeq.apps.calculator.utils import get_score_data
 from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter
 
 from ceeq.apps.queries.models import Project, ImpactMap
-from ceeq.apps.calculator.models import ComponentImpact, LiveSettings
+from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHistory
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
-from ceeq.apps.queries.tasks import fetch_jira_data_run
+from ceeq.apps.queries.tasks import fetch_jira_data_run, query_jira_data
 from ceeq.apps.queries.utils import get_impact_maps, get_instances
 from ceeq.apps.users.views import user_is_superuser
 
@@ -82,14 +82,20 @@ def project_detail(request, project_id):
     for impact in component_impacts:
         component_names_standard.append(impact.component_name)
 
+    try:
+        result_latest = project.resulthistory_set.latest('confirmed')
+    except ResultHistory.DoesNotExist:
+        query_jira_data(project.id)
+        result_latest = project.resulthistory_set.latest('confirmed')
+
     # Calculate weight factor, exist components etc.
     t_start = datetime.now()
-    result_latest = project.resulthistory_set.latest('confirmed')
     query_results = result_latest.query_results
 
     internal_data = get_score_data(project, query_results, 'exclude_uat')
     uat_data = get_score_data(project, query_results, 'only_uat')
     overall_data = get_score_data(project, query_results, 'include_uat')
+
     t_end = datetime.now()
 
     print (t_end - t_start).total_seconds()
@@ -125,6 +131,10 @@ def project_detail(request, project_id):
         'dd_pie_data_only_uat': json.dumps(uat_data['pie_chart_data']),
         'dd_pie_data_custom': '',
 
+        'overall_score': overall_data['score'][0],
+        'internal_score': internal_data['score'][0],
+        'uat_score': uat_data['score'][0],
+
         'ceeq_trend_graph': ''
 
     })
@@ -139,6 +149,7 @@ def project_edit(request, project_id):
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             project = form.save()
+            query_jira_data(project.id)
             return redirect(project_detail, project.id)
         else:
             messages.error(request, 'Correct erros in the form')
