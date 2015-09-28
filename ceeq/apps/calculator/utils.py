@@ -542,6 +542,8 @@ def get_ceeq_trend_graph(project, uat_type):
     data_ceeq = []
     data_ceeq_closed = []
     for item in results_per_day:
+        if not item.combined_testing_table or not item.internal_testing_table or not item.uat_testing_table:
+            continue
         temp = []
         if item.confirmed.month < 10:
             tmp_month = '0' + str(item.confirmed.month)
