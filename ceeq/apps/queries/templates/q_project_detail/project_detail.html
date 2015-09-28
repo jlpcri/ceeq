@@ -213,7 +213,7 @@
         var data_include_uat = {{ dd_pie_data_include_uat | safe }};
         var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
-{#        var data_custom = {{ dd_pie_data_custom | safe }};#}
+        var data_custom = {{ dd_pie_data_custom | safe }};
 
         var trend_include_uat = {{ ceeq_trend_graph_include_uat |safe }};
         var trend_exclude_uat = {{ ceeq_trend_graph_exclude_uat |safe }};
@@ -241,11 +241,11 @@
             $('#export_data_only_uat').hide();
             $('#qei_log_only_uat').show();
         }
-{#        if (data_custom[3] == 103 ) {#}
-{#            $('#component_percentage_pie_chart_custom').hide();#}
-{#            $('#export_data_custom').hide();#}
-{#            $('#qei_log_custom').show();#}
-{#        }#}
+        if (data_custom[3] == 103 ) {
+            $('#component_percentage_pie_chart_custom').hide();
+            $('#export_data_custom').hide();
+            $('#qei_log_custom').show();
+        }
     </script>
 
 {% endblock %}

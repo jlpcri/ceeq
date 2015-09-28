@@ -1,12 +1,11 @@
 from datetime import date, datetime, timedelta
+import time
 from decimal import Decimal
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
-from ceeq.apps.calculator.tasks import calculate_score
 from ceeq.apps.calculator.utils import get_score_data
 from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter
 
@@ -74,6 +73,7 @@ def project_detail(request, project_id):
     except (TypeError, ValueError):
         start = end - timedelta(days=29)
 
+    uat_type_custom = request.GET.get('uat_type_custom', 'exclude_uat')
     last_tab = request.GET.get('last_tab', '')
 
     # get standard component names
@@ -88,13 +88,22 @@ def project_detail(request, project_id):
         query_jira_data(project.id)
         result_latest = project.resulthistory_set.latest('confirmed')
 
+
+
     # Calculate weight factor, exist components etc.
     t_start = datetime.now()
     query_results = result_latest.query_results
 
+    # get custom data from query results
+    query_results_custom = []
+    for item in query_results:
+        if start.strftime("%Y-%m-%d") <= item['created'] <= (end + timedelta(days=1)).strftime("%Y-%m-%d"):
+            query_results_custom.append(item)
+
     internal_data = get_score_data(project, query_results, 'exclude_uat')
     uat_data = get_score_data(project, query_results, 'only_uat')
     overall_data = get_score_data(project, query_results, 'include_uat')
+    custom_data = get_score_data(project, query_results_custom, uat_type_custom)
 
     t_end = datetime.now()
 
@@ -108,32 +117,36 @@ def project_detail(request, project_id):
         'instances': get_instances(),
         'superuser': request.user.is_superuser,
 
+        'start': float(request.GET.get('start', time.mktime(start.timetuple()))),
+        'end': time.mktime(end.timetuple()),
+        'uat_type_custom': uat_type_custom,
         'last_tab': last_tab,
 
         'weight_factor_include_uat': overall_data['weight_factor'],
         'weight_factor_exclude_uat': internal_data['weight_factor'],
         'weight_factor_only_uat': uat_data['weight_factor'],
-        'weight_factor_custom': '',
+        'weight_factor_custom': custom_data['weight_factor'],
 
         'component_names_standard': component_names_standard,
         'component_names_include_uat': overall_data['components_exist'],
         'component_names_exclude_uat': internal_data['components_exist'],
         'component_names_only_uat': uat_data['components_exist'],
-        'component_names_custom': '',
+        'component_names_custom': custom_data['components_exist'],
 
         'priority_total_include_uat': overall_data['priority_total'],
         'priority_total_exclude_uat': internal_data['priority_total'],
         'priority_total_only_uat': uat_data['priority_total'],
-        'priority_total_custom': '',
+        'priority_total_custom': custom_data['priority_total'],
 
         'dd_pie_data_include_uat': json.dumps(overall_data['pie_chart_data']),
         'dd_pie_data_exclude_uat': json.dumps(internal_data['pie_chart_data']),
         'dd_pie_data_only_uat': json.dumps(uat_data['pie_chart_data']),
-        'dd_pie_data_custom': '',
+        'dd_pie_data_custom': json.dumps(custom_data['pie_chart_data']),
 
         'overall_score': overall_data['score'][0],
         'internal_score': internal_data['score'][0],
         'uat_score': uat_data['score'][0],
+        'custom_score': custom_data['score'][0],
 
         'ceeq_trend_graph_include_uat': overall_data['ceeq_trend_graph'],
         'ceeq_trend_graph_exclude_uat': internal_data['ceeq_trend_graph'],
