@@ -12,7 +12,7 @@ from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, Framework
 from ceeq.apps.queries.models import Project, ImpactMap
 from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHistory
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
-from ceeq.apps.queries.tasks import fetch_jira_data_run, query_jira_data
+from ceeq.apps.queries.tasks import query_jira_data
 from ceeq.apps.queries.utils import get_impact_maps, get_instances
 from ceeq.apps.users.views import user_is_superuser
 

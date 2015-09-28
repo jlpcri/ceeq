@@ -64,11 +64,6 @@ ISSUE_STATUS_COUNT = {
 }
 
 
-def get_table_data(query_results, uat_type):
-    print 'table: ', uat_type
-    print query_results
-
-
 def get_score_data(project, query_results, uat_type):
     data = {}
     component_names = []

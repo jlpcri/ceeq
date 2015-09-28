@@ -1,20 +1,32 @@
 from django.shortcuts import get_object_or_404
-from ceeq import celery_app
+from celery.schedules import crontab
+from celery.task import PeriodicTask
 
-from ceeq.apps.calculator.models import ImpactMap, ComponentImpact, ComponentComplexity, ResultHistory, SeverityMap
-from ceeq.apps.calculator.utils import get_table_data, get_score_data, get_score_by_component
+from ceeq.celery_module import app
+from ceeq.apps.calculator.utils import get_score_data, get_score_by_component
 from ceeq.apps.queries.models import Project
 
 
-@celery_app.task
+class CalculateProjectScore(PeriodicTask):
+    run_every = crontab(minute='*/15')
+
+    def run(self):
+        projects = Project.objects.filter(complete=False)
+
+        if projects:
+            for project in projects:
+                calculate_score.delay(project.id)
+
+            return True
+        else:
+            return False
+
+
+@app.task
 def calculate_score(project_id):
     project = get_object_or_404(Project, pk=project_id)
     result_latest = project.resulthistory_set.latest('confirmed')
     query_results = result_latest.query_results
-
-    # internal_table = get_table_data(query_results, 'internal')
-    # uat_table = get_table_data(query_results, 'uat')
-    # combined_table = get_table_data(query_results, 'overall')
 
     internal_data = get_score_data(project, query_results, 'exclude_uat')
     uat_data = get_score_data(project, query_results, 'only_uat')
