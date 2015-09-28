@@ -44,20 +44,18 @@ def query_jira_data(project_id):
 
     try:
         result = project.resulthistory_set.latest('confirmed')
-        time_difference = (datetime.utcnow().replace(tzinfo=utc) - result.confirmed).total_seconds() / (60 * 60)
-        if result.query_results == jira_data and time_difference < 24:  # at least one record per day
+        day_difference = datetime.utcnow().replace(tzinfo=utc).day - result.created.day
+        if result.query_results == jira_data and day_difference == 0:  # at least one record per day
             result.confirmed = datetime.now()
             result.save()
         else:
             result = ResultHistory.objects.create(
                 project=project,
-                # confirmed=datetime.now(),
                 query_results=jira_data,
             )
     except ResultHistory.DoesNotExist:
         result = ResultHistory.objects.create(
             project=project,
-            # confirmed=datetime.now(),
             query_results=jira_data,
         )
 

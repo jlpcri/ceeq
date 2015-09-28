@@ -545,16 +545,16 @@ def get_ceeq_trend_graph(project, uat_type):
         if not item.combined_testing_table or not item.internal_testing_table or not item.uat_testing_table:
             continue
         temp = []
-        if item.confirmed.month < 10:
-            tmp_month = '0' + str(item.confirmed.month)
+        if item.created.month < 10:
+            tmp_month = '0' + str(item.created.month)
         else:
-            tmp_month = str(item.confirmed.month)
+            tmp_month = str(item.created.month)
 
-        if item.confirmed.day < 10:
-            tmp_day = '0' + str(item.confirmed.day)
+        if item.created.day < 10:
+            tmp_day = '0' + str(item.created.day)
         else:
-            tmp_day = str(item.confirmed.day)
-        tmp_year = str(item.confirmed.year)
+            tmp_day = str(item.created.day)
+        tmp_year = str(item.created.year)
 
         categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
