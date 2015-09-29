@@ -4,6 +4,7 @@ from decimal import Decimal
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from ceeq.apps.calculator.utils import get_score_data
@@ -246,3 +247,30 @@ def query_jira_data_all(request):
 
     return redirect(projects)
 
+
+def fetch_projects_score(request):
+    """
+    Use for ceeq score bar graph
+    :param request:
+    :return: json data
+            categories: Y axis label
+            score: X axis value
+            id: project id for hyperlink of project detail
+    """
+    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(jira_key)'}).order_by('lower_name')
+    data = {}
+
+    data['categories'] = [project.jira_key.upper() + '-' + project.jira_version for project in projects]
+    data['score'] = []
+    for project in projects:
+        rh = project.resulthistory_set.latest('confirmed')
+
+        if rh.internal_score < 10:
+            data['score'].append(str(rh.internal_score))
+        elif rh.internal_score == 103:
+            data['score'].append(str(10.00))
+        else:
+            data['score'].append(str(0))
+    data['id'] = [str(project.id) for project in projects]
+
+    return HttpResponse(json.dumps(data), content_type="application/json")

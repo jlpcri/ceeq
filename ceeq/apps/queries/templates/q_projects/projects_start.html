@@ -7,11 +7,7 @@
         <ul id="subnav-tabs" class="nav nav-tabs">
             <li><a href="#projects" data-toggle="tab">Project Lists</a> </li>
             <li><a href="#score_overall" data-toggle="tab">CEEQ Score</a> </li>
-
-                <li><a href="#framework_parameter" data-toggle="tab">Framework Parameters</a> </li>
-            {% if user.is_superuser %}
-                <li><a href="#defects_density_admin" data-toggle="tab">Defect Impact Admin</a> </li>
-            {% endif %}
+            <li><a href="#framework_parameter" data-toggle="tab">Framework Parameters</a> </li>
         </ul>
     </div>
 {% endblock %}
@@ -31,9 +27,6 @@
                 {% include 'q_framework_parameter.html' %}
             </div>
 
-            <div class="tab-pane" id="defects_density_admin">
-                {% include 'dd_list.html' %}
-            </div>
         </div>
     </div>
 

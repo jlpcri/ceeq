@@ -54,22 +54,20 @@
                                     {% if score == 101 %}
                                         No created issues
                                     {% elif score == 102 %}
-                                        <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
+                                        Out of Range
                                     {% elif score == 103 %}
                                         {# No open issues#}
-                                        <a href="{% url 'project_defects_density' project.id %}"> 10.0</a>
+                                         10.0
                                     {% elif score == 104 %}
                                         No JIRA Data
                                     {% elif score == 109 %}
                                         No evaluation
                                     {% else %}
-                                        <a href="{% url 'project_defects_density' project.id %}">
-                                            {% if score < 0 %}
-                                                <font color="red">{{ score }}</font>
-                                            {% else %}
-                                                {{ score | floatformat:2 }}
-                                            {% endif %}
-                                        </a>
+                                        {% if score < 0 %}
+                                            <font color="red">{{ score }}</font>
+                                        {% else %}
+                                            {{ score | floatformat:2 }}
+                                        {% endif %}
                                     {% endif %}
                                 {% endwith %}
                                 </td>
@@ -122,22 +120,20 @@
                                         {% if score == 101 %}
                                             No created issues
                                         {% elif score == 102 %}
-                                            <a href="{% url 'project_defects_density' project.id %}">Out of Range</a>
+                                            Out of Range
                                         {% elif score == 103 %}
-                                            <a href="{% url 'project_defects_density' project.id %}"> No open issues</a>
+                                            No open issues
 
                                         {% elif score == 104 %}
                                             No JIRA Data
                                         {% elif score == 109 %}
                                             No evaluation
                                         {% else %}
-                                            <a href="{% url 'project_defects_density' project.id %}">
-                                                {% if score < 0 %}
-                                                    <font color="red">{{ score |floatformat:2 }}</font>
-                                                {% else %}
-                                                    {{ score |floatformat}}
-                                                {% endif %}
-                                            </a>
+                                            {% if score < 0 %}
+                                                <font color="red">{{ score |floatformat:2 }}</font>
+                                            {% else %}
+                                                {{ score |floatformat}}
+                                            {% endif %}
                                         {% endif %}
                                     {% endwith %}
                                 </td>

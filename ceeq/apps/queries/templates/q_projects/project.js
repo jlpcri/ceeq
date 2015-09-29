@@ -56,7 +56,7 @@ function loadActiveDataTab() {
             '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'
         ]
         });
-        $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
+        $.getJSON("{% url 'q_fetch_projects_score' %}").done(function(data){
             var i, min_yaxis, min = data['score'][0];
             for (i = 1; i < data['score'].length; i++) {
                 if (data['score'][i] < min) {
@@ -348,30 +348,6 @@ function loadActiveDataTab() {
                 button.click();
             }
         }
-    }
-    else if (active_tab == '#defects_density_admin'){
-        $.getJSON("{% url 'fetch_dds_json' 1000000 %}").done(function(data) {
-            $('#dd_list').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dd_list_table"></table>');
-            $('#dd_list_table').dataTable({
-                "data":data,
-                "columns": [
-                    {"title": "Project"},
-                    {"title": "Version"},
-                    {"title": "Date"},
-                    {"title": "CXP"},
-                    {"title": "Platform"},
-                    {"title": "Reports"},
-                    {"title": "Application"},
-                    {"title": "Prompts"},
-                    {"title": "CEEQ"}
-                ],
-                "language": {
-                    "decimal": ".",
-                    "thousands": ","
-                }
-            });
-        });
-
     }
 }
 
