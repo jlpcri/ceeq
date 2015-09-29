@@ -227,11 +227,13 @@
         attachDateRangePicker();
 
         if (data_include_uat[3] == 103 ) {
+            $('#ceeq_trend_chart_include_uat').hide();
             $('#component_percentage_pie_chart_include_uat').hide();
             $('#export_data_include_uat').hide();
             $('#qei_log_include_uat').show();
         }
         if (data_exclude_uat[3] == 103 ) {
+            $('#ceeq_trend_chart_exclude_uat').hide();
             $('#component_percentage_pie_chart_exclude_uat').hide();
             $('#export_data_exclude_uat').hide();
             $('#qei_log_exclude_uat').show();

@@ -530,7 +530,7 @@ def get_ceeq_trend_graph(project, uat_type):
     results = project.resulthistory_set.all()
     last_per_day = results.extra(select={'the_date': 'date(confirmed)'}).values_list('the_date').annotate(max_date=Max('confirmed'))
     max_dates = [item[1] for item in last_per_day]
-    results_per_day = ResultHistory.objects.filter(confirmed__in=max_dates)
+    results_per_day = ResultHistory.objects.filter(confirmed__in=max_dates).order_by('confirmed')
 
     data = {}
     categories = []
@@ -539,17 +539,16 @@ def get_ceeq_trend_graph(project, uat_type):
     for item in results_per_day:
         if not item.combined_testing_table or not item.internal_testing_table or not item.uat_testing_table:
             continue
-        temp = []
-        if item.created.month < 10:
-            tmp_month = '0' + str(item.created.month)
+        if item.confirmed.month < 10:
+            tmp_month = '0' + str(item.confirmed.month)
         else:
-            tmp_month = str(item.created.month)
+            tmp_month = str(item.confirmed.month)
 
-        if item.created.day < 10:
-            tmp_day = '0' + str(item.created.day)
+        if item.confirmed.day < 10:
+            tmp_day = '0' + str(item.confirmed.day)
         else:
-            tmp_day = str(item.created.day)
-        tmp_year = str(item.created.year)
+            tmp_day = str(item.confirmed.day)
+        tmp_year = str(item.confirmed.year)
 
         categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 

@@ -58,11 +58,6 @@
                                     {% elif score == 103 %}
                                         {# No open issues#}
                                         <a href="{% url 'project_defects_density' project.id %}"> 10.0</a>
-                                        {% if superuser %}
-                                            <i class="fa fa-indent"></i>
-                                            <a href="{% url 'defects_density_log' project.id %}" onclick="$('#throbber').show();"> Log</a>
-                                        {% endif %}
-
                                     {% elif score == 104 %}
                                         No JIRA Data
                                     {% elif score == 109 %}
