@@ -111,3 +111,21 @@ class Project(models.Model):
     def overall_score(self):
         result = self.resulthistory_set.all().latest('created')
         return result.overall_score
+
+
+class ScoreHistory(models.Model):
+    """
+    Store Combined/Internal/UAT daily score
+    """
+    project = models.ForeignKey(Project)
+    created = models.DateTimeField(auto_now=True, db_index=True)
+    access = models.BooleanField(default=False)
+
+    # Save daily CEEQ Score
+    combined_score = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0), null=True)
+    internal_score = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0), null=True)
+    uat_score = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0), null=True)
+
+    def __unicode__(self):
+        return '{0}: {1}: {2}'.format(self.project.name, self.created, self.internal_score)
+
