@@ -268,7 +268,7 @@ EMAIL_PORT = 587
 
 # Celery config
 CELERY_ACCEPT_CONTENT = ['pickle', 'json', ]
-CELERY_TIMEZONE = pytz.timezone('US/Central')
+CELERY_TIMEZONE = 'US/Central'
 CELERY_ENABLE_UTC = False
 CELERY_RESULT_BACKEND = 'amqp'
 CELERY_RESULT_SERIALIZER = 'pickle'

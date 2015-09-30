@@ -6,9 +6,10 @@ from ceeq.celery_module import app
 from ceeq.apps.calculator.utils import get_score_data, get_score_by_component
 from ceeq.apps.queries.models import Project
 
-
+"""
+# no need running PeroidicTask for calculate_score, run calculate_score after query set is updated
 class CalculateProjectScore(PeriodicTask):
-    run_every = crontab(minute='*/15')
+    run_every = crontab(minute='*/9')
 
     def run(self):
         projects = Project.objects.filter(complete=False)
@@ -20,6 +21,7 @@ class CalculateProjectScore(PeriodicTask):
             return True
         else:
             return False
+"""
 
 
 @app.task
