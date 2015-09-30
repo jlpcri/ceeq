@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     #url(r'^admin/', include(admin.site.urls)),
 
     url(r'^ceeq/$', 'ceeq.apps.core.views.landing', name='landing'),
-    url(r'^ceeq/', include('ceeq.apps.projects.urls')),
+    # url(r'^ceeq/', include('ceeq.apps.projects.urls')),
     url(r'^ceeq/', include('ceeq.apps.help.urls')),
     url(r'^ceeq/', include('ceeq.apps.users.urls')),
     url(r'^ceeq/', include('ceeq.apps.search.urls')),

@@ -1,28 +1,34 @@
 from datetime import datetime
 import time
+# from celery import group
 from django.shortcuts import get_object_or_404
-from celery import group
 from django.utils.timezone import utc
+from celery.schedules import crontab
+from celery.task import PeriodicTask
 
-from ceeq import celery_app
+from ceeq.celery_module import app
 from ceeq.apps.calculator.models import ResultHistory, LiveSettings, ComponentImpact
 from ceeq.apps.queries.utils import parse_jira_data
 from models import Project
+from ceeq.apps.calculator.tasks import calculate_score
 
 
-@celery_app.task
-def fetch_jira_data_run():
+class FetchJiraDataRun(PeriodicTask):
     """
     Fetch jira data from jira instance and update/create ResultHistory object
     """
-    projects = Project.objects.filter(complete=False)
-    start = datetime.now()
-    current_delay = 0
-    job = group(query_jira_data.s(project.id) for project in projects).delay()
-    print "Job", job
-    while True:
-        if job.successful():
-            print 'done'
+
+    run_every = crontab(minute='*/9')
+
+    def run(self):
+        projects = Project.objects.filter(complete=False)
+        start = datetime.now()
+
+        if projects:
+            for project in projects:
+                query_jira_data.delay(project.id)
+
+            current_delay = (datetime.now() - start).total_seconds()
             end = datetime.now()
             current_delay = int((end - start).total_seconds())
             print current_delay
@@ -32,20 +38,43 @@ def fetch_jira_data_run():
 
     print current_delay
 
-    try:
-        ls = LiveSettings.objects.get(pk=1)
-        ls.current_delay = current_delay
-        ls.save()
-    except LiveSettings.DoesNotExist:
-        LiveSettings.objects.create(score_scalar=20,
-                                    current_delay=current_delay)
+            try:
+                ls = LiveSettings.objects.get(pk=1)
+                ls.current_delay = current_delay
+                ls.save()
+            except LiveSettings.DoesNotExist:
+                LiveSettings.objects.create(score_scalar=20,
+                                            current_delay=current_delay)
 
-    print "Start sleep"
-    time.sleep(1)
-    # fetch_jira_data_run()
+            return True
+        else:
+            return False
 
 
-@celery_app.task
+# @app.task
+# def fetch_jira_data_run():
+#     """
+#     Fetch jira data from jira instance and update/create ResultHistory object
+#     """
+#     projects = Project.objects.filter(complete=False)
+#     start = datetime.now()
+#     job = group(query_jira_data.delay(project.id) for project in projects)()
+#
+#     current_delay = (datetime.now() - start).total_seconds()
+#     print current_delay
+#
+#     try:
+#         ls = LiveSettings.objects.get(pk=1)
+#         ls.current_delay = current_delay
+#         ls.save()
+#     except LiveSettings.DoesNotExist:
+#         LiveSettings.objects.create(score_scalar=20,
+#                                     current_delay=current_delay)
+#
+#     # time.sleep(60)
+#     fetch_jira_data_run.apply_async(countdown=60)
+
+@app.task
 def query_jira_data(project_id):
     project = get_object_or_404(Project, pk=project_id)
     component_impacts = ComponentImpact.objects.filter(impact_map=project.impact_map)
@@ -57,20 +86,20 @@ def query_jira_data(project_id):
 
     try:
         result = project.resulthistory_set.latest('confirmed')
-        time_difference = (datetime.utcnow().replace(tzinfo=utc) - result.confirmed).total_seconds() / (60 * 60)
-        if result.query_results == jira_data and time_difference < 24:  # at least one record per day
+        day_difference = datetime.utcnow().replace(tzinfo=utc).day - result.created.day
+        if result.query_results == jira_data and day_difference == 0:  # at least one record per day
             result.confirmed = datetime.now()
             result.save()
         else:
             result = ResultHistory.objects.create(
                 project=project,
-                # confirmed=datetime.now(),
                 query_results=jira_data,
             )
+            calculate_score.delay(project.id)
     except ResultHistory.DoesNotExist:
         result = ResultHistory.objects.create(
             project=project,
-            # confirmed=datetime.now(),
             query_results=jira_data,
         )
+        calculate_score.delay(project.id)
 
