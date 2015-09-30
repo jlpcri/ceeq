@@ -29,14 +29,6 @@ class FetchJiraDataRun(PeriodicTask):
                 query_jira_data.delay(project.id)
 
             current_delay = (datetime.now() - start).total_seconds()
-            end = datetime.now()
-            current_delay = int((end - start).total_seconds())
-            print current_delay
-            break
-        print 'running'
-        time.sleep(1)
-
-    print current_delay
 
             try:
                 ls = LiveSettings.objects.get(pk=1)
