@@ -99,18 +99,18 @@ class Project(models.Model):
 
     @property
     def internal_score(self):
-        result = self.resulthistory_set.all().latest('created')
-        return result.internal_score
+        score = self.scorehistory_set.latest('created').internal_score[0]
+        return score
 
     @property
     def uat_score(self):
-        result = self.resulthistory_set.all().latest('created')
-        return result.uat_score
+        score = self.scorehistory_set.latest('created').uat_score[0]
+        return score
 
     @property
     def overall_score(self):
-        result = self.resulthistory_set.all().latest('created')
-        return result.overall_score
+        score = self.scorehistory_set.latest('created').combined_score[0]
+        return score
 
 
 class ScoreHistory(models.Model):

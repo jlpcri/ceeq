@@ -22,7 +22,6 @@ from ceeq.apps.users.views import user_is_superuser
 def projects(request):
     projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-    project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
 
     try:
@@ -41,7 +40,6 @@ def projects(request):
     context = RequestContext(request, {
         'projects_active': projects_active,
         'projects_archive': projects_archive,
-        'dds': project_dds,
         'framework_parameters': framework_parameters,
         'framework_parameters_items': ['jira_issue_weight_sum',
                                        'vaf_ratio',
@@ -266,9 +264,10 @@ def fetch_projects_score(request):
     data['categories'] = [project.jira_key.upper() + '-' + project.jira_version for project in projects]
     data['score'] = []
     for project in projects:
-        if project.internal_score < 10:
-            data['score'].append(str(project.internal_score))
-        elif project.internal_score == 103:
+        score = project.internal_score
+        if score < 10:
+            data['score'].append(str(score))
+        elif score == 103:
             data['score'].append(str(10.00))
         else:
             data['score'].append(str(0))
