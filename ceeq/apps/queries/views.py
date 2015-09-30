@@ -10,7 +10,7 @@ from django.template import RequestContext
 from ceeq.apps.calculator.utils import get_score_data
 from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter
 
-from ceeq.apps.queries.models import Project, ImpactMap
+from ceeq.apps.queries.models import Project, ImpactMap, ScoreHistory
 from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHistory
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
 from ceeq.apps.queries.tasks import query_jira_data
@@ -56,6 +56,9 @@ def projects(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+
+    # update ScoreHistory for Access field
+    update_access_history(project.id)
 
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \"{0}\" is archived.'.format(project.name))
@@ -263,14 +266,31 @@ def fetch_projects_score(request):
     data['categories'] = [project.jira_key.upper() + '-' + project.jira_version for project in projects]
     data['score'] = []
     for project in projects:
-        rh = project.resulthistory_set.latest('confirmed')
-
-        if rh.internal_score < 10:
-            data['score'].append(str(rh.internal_score))
-        elif rh.internal_score == 103:
+        if project.internal_score < 10:
+            data['score'].append(str(project.internal_score))
+        elif project.internal_score == 103:
             data['score'].append(str(10.00))
         else:
             data['score'].append(str(0))
     data['id'] = [str(project.id) for project in projects]
 
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+def update_access_history(project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    today = datetime.today().date()
+    try:
+        access = project.scorehistory_set.latest('created')
+        if access.created.today().date() == today:
+            if not access.access:
+                access.access = True
+                access.save()
+        else:
+            access = ScoreHistory.objects.create(project=project)
+            access.access = True
+            access.save()
+    except ScoreHistory.DoesNotExist:
+        access = ScoreHistory.objects.create(project=project)
+        access.access = True
+        access.save()

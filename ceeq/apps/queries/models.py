@@ -127,5 +127,8 @@ class ScoreHistory(models.Model):
     uat_score = ArrayField(models.DecimalField(max_digits=10, decimal_places=2, default=0), null=True)
 
     def __unicode__(self):
-        return '{0}: {1}: {2}'.format(self.project.name, self.created, self.internal_score)
+        return '{0}: {1}: {2}: {3}'.format(self.project.name,
+                                           self.created,
+                                           self.internal_score,
+                                           self.access)
 

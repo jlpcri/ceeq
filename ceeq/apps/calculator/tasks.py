@@ -3,7 +3,7 @@ from celery.schedules import crontab
 from celery.task import PeriodicTask
 
 from ceeq.celery_module import app
-from ceeq.apps.calculator.utils import get_score_data, get_score_by_component
+from ceeq.apps.calculator.utils import get_score_data, get_score_by_component, update_score_history
 from ceeq.apps.queries.models import Project
 
 """
@@ -43,6 +43,12 @@ def calculate_score(project_id):
     result_latest.uat_testing_table = uat_data['score']
 
     result_latest.save()
+
+    # update CEEQ score to ScoreHistory
+    update_score_history(project.id,
+                         overall_data['score'],
+                         internal_data['score'],
+                         uat_data['score'])
 
     # score_by_component = get_score_by_component(query_results, 'overall')
 

@@ -2,11 +2,16 @@ from collections import OrderedDict, defaultdict
 import copy
 from decimal import Decimal
 from operator import itemgetter
+from datetime import datetime
 from django.db.models import Max
+from django.shortcuts import get_object_or_404
 
 from ceeq.apps.calculator.models import SeverityMap, LiveSettings, ComponentImpact, ResultHistory
 
 # define globe variables
+from ceeq.apps.queries.models import Project
+from ceeq.apps.queries.models import ScoreHistory
+
 ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research']
 ISSUE_STATUS_RESOLVED = ['Resolved', 'UAT Testing']
 ISSUE_STATUS_CLOSED = ['Closed']
@@ -527,43 +532,69 @@ def get_subcomponent_weight_factor(data, component_name, component_name_weight):
 
 
 def get_ceeq_trend_graph(project, uat_type):
-    results = project.resulthistory_set.all()
-    last_per_day = results.extra(select={'the_date': 'date(confirmed)'}).values_list('the_date').annotate(max_date=Max('confirmed'))
-    max_dates = [item[1] for item in last_per_day]
-    results_per_day = ResultHistory.objects.filter(confirmed__in=max_dates).order_by('confirmed')
+    # results = project.resulthistory_set.all()
+    # last_per_day = results.extra(select={'the_date': 'date(confirmed)'}).values_list('the_date').annotate(max_date=Max('confirmed'))
+    # max_dates = [item[1] for item in last_per_day]
+    # results_per_day = ResultHistory.objects.filter(confirmed__in=max_dates).order_by('confirmed')
+
+    score_history = project.scorehistory_set.all()
 
     data = {}
     categories = []
     data_ceeq = []
     data_ceeq_closed = []
-    for item in results_per_day:
-        if not item.combined_testing_table or not item.internal_testing_table or not item.uat_testing_table:
+    for item in score_history:
+        if not item.combined_score or not item.internal_score or not item.uat_score:
             continue
-        if item.confirmed.month < 10:
-            tmp_month = '0' + str(item.confirmed.month)
+        if item.created.month < 10:
+            tmp_month = '0' + str(item.created.month)
         else:
-            tmp_month = str(item.confirmed.month)
+            tmp_month = str(item.created.month)
 
-        if item.confirmed.day < 10:
-            tmp_day = '0' + str(item.confirmed.day)
+        if item.created.day < 10:
+            tmp_day = '0' + str(item.created.day)
         else:
-            tmp_day = str(item.confirmed.day)
-        tmp_year = str(item.confirmed.year)
+            tmp_day = str(item.created.day)
+        tmp_year = str(item.created.year)
 
         categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
         if uat_type == 'include_uat':
-            data_ceeq.append(float(item.combined_testing_table[0]))
-            data_ceeq_closed.append(float(item.combined_testing_table[1]))
+            data_ceeq.append(float(item.combined_score[0]))
+            data_ceeq_closed.append(float(item.combined_score[1]))
         elif uat_type == 'exclude_uat':
-            data_ceeq.append(float(item.internal_testing_table[0]))
-            data_ceeq_closed.append(float(item.internal_testing_table[1]))
+            data_ceeq.append(float(item.internal_score[0]))
+            data_ceeq_closed.append(float(item.internal_score[1]))
         elif uat_type == 'only_uat':
-            data_ceeq.append(float(item.uat_testing_table[0]))
-            data_ceeq_closed.append(float(item.uat_testing_table[1]))
+            data_ceeq.append(float(item.uat_score[0]))
+            data_ceeq_closed.append(float(item.uat_score[1]))
 
     data['categories'] = categories
     data['ceeq'] = data_ceeq
     data['ceeq_closed'] = data_ceeq_closed
 
     return data
+
+
+def update_score_history(project_id, combined_score, internal_score, uat_score):
+    project = get_object_or_404(Project, pk=project_id)
+    today = datetime.today().date()
+    try:
+        access = project.scorehistory_set.latest('created')
+        if access.created.today().date() == today:
+            access.combined_score = combined_score
+            access.internal_score = internal_score
+            access.uat_score = uat_score
+            access.save()
+        else:
+            access = ScoreHistory.objects.create(project=project)
+            access.combined_score = combined_score
+            access.internal_score = internal_score
+            access.uat_score = uat_score
+            access.save()
+    except ScoreHistory.DoesNotExist:
+        access = ScoreHistory.objects.create(project=project)
+        access.combined_score = combined_score
+        access.internal_score = internal_score
+        access.uat_score = uat_score
+        access.save()
