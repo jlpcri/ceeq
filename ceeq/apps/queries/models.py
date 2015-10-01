@@ -94,7 +94,7 @@ class Project(models.Model):
         return versions
     
     def open_jira_connection(self):
-        return JIRA(options={'server': self.instance.url},
+        return JIRA(options={'server': self.instance.url, 'verify': False},
                     basic_auth=(self.instance.jira_user, self.instance.password))
 
     @property
