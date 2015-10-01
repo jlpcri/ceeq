@@ -18,7 +18,7 @@ class FetchJiraDataRun(PeriodicTask):
     Fetch jira data from jira instance and update/create ResultHistory object
     """
 
-    run_every = crontab(minute='*/11')
+    run_every = crontab(minute='*/10')
 
     def run(self):
         projects = Project.objects.filter(complete=False)
