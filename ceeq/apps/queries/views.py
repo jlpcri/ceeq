@@ -277,11 +277,16 @@ def fetch_projects_score(request):
 
 
 def update_access_history(project_id):
+    """
+    Update Project Access per project
+    :param project_id:
+    :return:
+    """
     project = get_object_or_404(Project, pk=project_id)
     today = datetime.today().date()
     try:
         access = project.scorehistory_set.latest('created')
-        if access.created.today().date() == today:
+        if access.created.date() == today:
             if not access.access:
                 access.access = True
                 access.save()

@@ -5,6 +5,11 @@ from models import ProjectAccess
 
 
 def update_project_access_history(request):
+    """
+    Update Project Access count per day
+    :param request:
+    :return:
+    """
     projects = Project.objects.filter(complete=False)
     total_access = 0
     today = datetime.today().date()
@@ -12,12 +17,11 @@ def update_project_access_history(request):
     for project in projects:
         score_history = project.scorehistory_set.all()
         for item in score_history:
-            if item.access and item.created.today().date() == today:
+            if item.access and item.created.date() == today:
                 total_access += 1
-
     try:
         project_access = ProjectAccess.objects.latest('created')
-        if project_access.created.today().date() == today:
+        if project_access.created.date() == today:
             project_access.total = total_access
             project_access.save()
         else:

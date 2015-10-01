@@ -18,7 +18,7 @@ class FetchJiraDataRun(PeriodicTask):
     Fetch jira data from jira instance and update/create ResultHistory object
     """
 
-    run_every = crontab(minute='*/9')
+    run_every = crontab(minute='*/11')
 
     def run(self):
         projects = Project.objects.filter(complete=False)
@@ -75,11 +75,12 @@ def query_jira_data(project_id):
         component_names.append(impact.component_name + '/')
 
     jira_data = parse_jira_data(project, component_names)
+    today = datetime.today().date()
 
     try:
         result = project.resulthistory_set.latest('confirmed')
-        day_difference = datetime.utcnow().replace(tzinfo=utc).day - result.created.day
-        if result.query_results == jira_data and day_difference == 0:  # at least one record per day
+        # day_difference = datetime.utcnow().replace(tzinfo=utc).day - result.created.day
+        if result.query_results == jira_data and result.created.date() == today:  # at least one record per day
             result.confirmed = datetime.now()
             result.save()
         else:

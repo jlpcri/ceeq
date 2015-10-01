@@ -532,6 +532,12 @@ def get_subcomponent_weight_factor(data, component_name, component_name_weight):
 
 
 def get_ceeq_trend_graph(project, uat_type):
+    """
+    Get Ceeq score history records from ScoreHistory table
+    :param project:
+    :param uat_type:
+    :return: Categories(date), Actual ceeq score, and Projected ceeq score
+    """
     # results = project.resulthistory_set.all()
     # last_per_day = results.extra(select={'the_date': 'date(confirmed)'}).values_list('the_date').annotate(max_date=Max('confirmed'))
     # max_dates = [item[1] for item in last_per_day]
@@ -577,11 +583,19 @@ def get_ceeq_trend_graph(project, uat_type):
 
 
 def update_score_history(project_id, combined_score, internal_score, uat_score):
+    """
+    Update CEEQ score per project per day
+    :param project_id:
+    :param combined_score:
+    :param internal_score:
+    :param uat_score:
+    :return: None
+    """
     project = get_object_or_404(Project, pk=project_id)
     today = datetime.today().date()
     try:
         access = project.scorehistory_set.latest('created')
-        if access.created.today().date() == today:
+        if access.created.date() == today:
             access.combined_score = combined_score
             access.internal_score = internal_score
             access.uat_score = uat_score
