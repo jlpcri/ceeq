@@ -1,8 +1,6 @@
 from datetime import datetime
-import time
 # from celery import group
 from django.shortcuts import get_object_or_404
-from django.utils.timezone import utc
 from celery.schedules import crontab
 from celery.task import PeriodicTask
 
@@ -79,7 +77,6 @@ def query_jira_data(project_id):
 
     try:
         result = project.resulthistory_set.latest('confirmed')
-        # day_difference = datetime.utcnow().replace(tzinfo=utc).day - result.created.day
         if result.query_results == jira_data and result.created.date() == today:  # at least one record per day
             result.confirmed = datetime.now()
             result.save()

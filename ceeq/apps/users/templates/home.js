@@ -183,7 +183,7 @@ $(document).ready(function() {
                     point: {
                         events: {
                             click: function(){
-                                location.href = '/ceeq/project/' + data['id'][this.x];
+                                location.href = '/ceeq/queries/' + data['id'][this.x];
                             }
                         }
                     }
