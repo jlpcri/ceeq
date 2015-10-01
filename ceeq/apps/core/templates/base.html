@@ -107,7 +107,9 @@
                     <ul class="nav navbar-nav">
                         <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> Home </a></li>
                         <li><a href="{% url 'q_projects' %}"><i class="fa fa-bar-chart-o"></i>Queries</a></li>
-                        <li><a href="#"><i class="fa fa-table fa-fw"></i>Usage</a> </li>
+                        {% if user.is_staff %}
+                            <li><a href="{% url 'usage' %}"><i class="fa fa-table fa-fw"></i>Usage</a> </li>
+                        {% endif %}
 {#                        <li><a href="{% url 'projects' %}"><i class="fa fa-bar-chart-o"></i> Projects</a> </li>#}
                         <li><a href="{% url 'help_guide' %}"><i class="fa fa-thumbs-o-up"></i> Help</a> </li>
 

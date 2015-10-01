@@ -32,6 +32,8 @@ urlpatterns = patterns('',
     url(r'^ceeq/calcuate/', include('ceeq.apps.calculator.urls')),
     # url(r'^ceeq/', include('ceeq.apps.formatter.urls')),
     url(r'^ceeq/queries/', include('ceeq.apps.queries.urls')),
+    url(r'^ceeq/usage/', include('ceeq.apps.usage.urls')),
+
 
     url(r'^ceeq/admin/', include(admin.site.urls)),
     # url(r'^ceeq/api/', include(v1_api.urls)),
