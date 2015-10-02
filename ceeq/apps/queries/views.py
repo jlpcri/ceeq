@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from ceeq.apps.calculator.utils import get_score_data
-from ceeq.apps.projects.models import ProjectComponentsDefectsDensity, FrameworkParameter
+from ceeq.apps.projects.models import FrameworkParameter
 
 from ceeq.apps.queries.models import Project, ImpactMap, ScoreHistory
 from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHistory
@@ -93,7 +93,6 @@ def project_detail(request, project_id):
 
 
     # Calculate weight factor, exist components etc.
-    t_start = datetime.now()
     query_results = result_latest.query_results
 
     # get custom data from query results
@@ -106,10 +105,6 @@ def project_detail(request, project_id):
     uat_data = get_score_data(project, query_results, 'only_uat')
     overall_data = get_score_data(project, query_results, 'include_uat')
     custom_data = get_score_data(project, query_results_custom, uat_type_custom)
-
-    t_end = datetime.now()
-
-    print (t_end - t_start).total_seconds()
 
     context = RequestContext(request, {
         'form': form,

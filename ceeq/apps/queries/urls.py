@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('ceeq.apps.queries.views',
                        url(r'^$', 'projects', name='q_projects'),
@@ -11,5 +11,7 @@ urlpatterns = patterns('ceeq.apps.queries.views',
                        url(r'^query_jira_data_all/$', 'query_jira_data_all', name='query_jira_data_all'),
 
                        url(r'^project/scores/$', 'fetch_projects_score', name='q_fetch_projects_score'),
+
+                       url(r'^', include('ceeq.apps.queries.urls_sub_components')),
 
                        )

@@ -612,3 +612,92 @@ def update_score_history(project_id, combined_score, internal_score, uat_score):
         access.internal_score = internal_score
         access.uat_score = uat_score
         access.save()
+
+
+def fetch_subcomponents_pie(project_id, component_name, uat_type, start, end, uat_type_custom):
+    project = get_object_or_404(Project, pk=project_id)
+    result_latest = project.resulthistory_set.latest('confirmed')
+    query_results = result_latest.query_results
+
+    # get custom data from query results
+    query_results_custom = []
+    if uat_type == 'custom':
+        start_date = datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d')
+        end_date = datetime.fromtimestamp(int(end)).strftime('%Y-%m-%d')
+
+        for item in query_results:
+            if start_date <= item['created'] <= end_date:
+                query_results_custom.append(item)
+
+        query_results = query_results_custom
+
+    sub_component_names = []
+    for item in query_results:
+        if item['components'].startswith(component_name[0]):
+            sub_component_names.append(item['components'])
+    sub_component_names = list(OrderedDict.fromkeys(sub_component_names))
+
+    if uat_type == 'custome':
+        data = issue_counts_compute(sub_component_names,
+                                    component_name,
+                                    query_results,
+                                    'sub_components',
+                                    uat_type_custom)
+    else:
+        data = issue_counts_compute(sub_component_names,
+                                    component_name,
+                                    query_results,
+                                    'sub_components',
+                                    uat_type)
+
+    sub_weight_factor = get_subcomponent_weight_factor(data, component_name[0], 1)
+
+    priority_total = defaultdict(int)
+    sub_pie_data = []
+    sub_pie_table = []
+    sub_pie_graph = []
+
+    for item in data:
+        if item == component_name[0] or sum(data[item]['total'].itervalues()) == 0:
+            continue
+        tmp_graph = []
+        tmp_table = []
+        sub_total = 0
+
+        priority_total['total'] += sum(data[item]['total'].itervalues())
+
+        tmp_graph.append(item[len(component_name[0]) + 1:])
+        tmp_graph.append(float(sum(data[item]['ceeq'].itervalues())))
+
+        tmp_table.append(item[len(component_name[0]) + 1:])
+        for status in ISSUE_STATUS_FIELDS:
+            tmp_table.append(float(data[item][status[0]]['open']))
+            tmp_table.append(float(data[item][status[0]]['resolved']))
+            tmp_table.append(float(data[item][status[0]]['closed']))
+
+            sub_total += sum(data[item][status[0]].itervalues())
+
+            priority_total[status[0]] += sum(data[item][status[0]].itervalues())
+
+        tmp_table.append(None)
+        tmp_table.append(sub_total)
+
+        sub_pie_graph.append(tmp_graph)
+        sub_pie_table.append(tmp_table)
+
+    tmp_table = []
+    tmp_table.append('Total')
+    tmp_table.append(None)
+    for status in ISSUE_STATUS_FIELDS:
+        tmp_table.append(priority_total[status[0]])
+        tmp_table.append(None)
+        tmp_table.append(None)
+    tmp_table.append(priority_total['total'])
+
+    sub_pie_data.append(sub_pie_graph)
+    sub_pie_data.append(sub_pie_table)
+    sub_pie_data.append(tmp_table)
+
+    return sub_pie_data
+
+
