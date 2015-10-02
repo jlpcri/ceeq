@@ -29,58 +29,83 @@ def get_instances():
 
 def parse_jira_data(project, component_names_standard):
     results = []
-    for issue in project.fetch_jira_data['issues']:
-        temp = {}
-        temp['key'] = issue['key']
-        for item in issue['fields']:
-            # check component not in framework continue
-            components = issue['fields']['components']
-            if len(components) == 1 \
-                    and not components[0]['name'].startswith(tuple(component_names_standard)):
-                continue
-            if len(components) > 1 \
-                    and not get_component_names_per_ticket(len(components), components, component_names_standard):
-                continue
-            if len(components) > 1 \
-                    and not get_component_names_per_ticket(len(components), components, component_names_standard).startswith(tuple(component_names_standard)):
-                continue
-
-            # Closed and Resolution Blacklist not counted
-            if issue['fields']['resolution'] \
-                    and issue['fields']['resolution']['name'] in project.resolution_blacklist\
-                    and issue['fields']['status']['name'] == 'Closed':
-                continue
-
-            # Only track issue_types
-            if issue['fields']['issuetype']['name'] not in project.issue_types:
-                continue
-
-            # TFCC Is Root Cause - customfield_10092 not counted
-            try:
-                if issue['fields']['resolution'] \
-                        and issue['fields']['resolution']['id'] in ['11']\
-                        and issue['fields']['customfield_10092']['id'] in ['13499']:
+    if project.component_field == 1:  # use components names
+        for issue in project.fetch_jira_data['issues']:
+            temp = {}
+            temp['key'] = issue['key']
+            for item in issue['fields']:
+                # check component not in framework continue
+                components = issue['fields']['components']
+                if len(components) == 1 \
+                        and not components[0]['name'].startswith(tuple(component_names_standard)):
                     continue
-            except (KeyError, TypeError):
+                if len(components) > 1 \
+                        and not get_component_names_per_ticket(len(components), components, component_names_standard):
+                    continue
+                if len(components) > 1 \
+                        and not get_component_names_per_ticket(len(components), components, component_names_standard).startswith(tuple(component_names_standard)):
+                    continue
+
+                # Closed and Resolution Blacklist not counted
+                if issue['fields']['resolution'] \
+                        and issue['fields']['resolution']['name'] in project.resolution_blacklist\
+                        and issue['fields']['status']['name'] == 'Closed':
+                    continue
+
+                # Only track issue_types
+                if issue['fields']['issuetype']['name'] not in project.issue_types:
+                    continue
+
+                # TFCC Is Root Cause - customfield_10092 not counted
+                try:
+                    if issue['fields']['resolution'] \
+                            and issue['fields']['resolution']['id'] in ['11']\
+                            and issue['fields']['customfield_10092']['id'] in ['13499']:
+                        continue
+                except (KeyError, TypeError):
+                    continue
+
+                # collect data
+                if issue['fields'][item]:
+                    if item == 'created':
+                        temp[item] = issue['fields'][item]
+                    elif item in ['customfield_13286', 'customfield_10092']:
+                        temp[item] = issue['fields'][item]['value']
+                    elif item in ['versions', 'components']:
+                        temp[item] = issue['fields'][item][0]['name']
+                    else:
+                        temp[item] = issue['fields'][item]['name']
+                else:
+                    temp[item] = ''
+
+            if len(temp) == 1 or temp['components'] == '':  # no contents Or value of components is empty
                 continue
 
-            # collect data
-            if issue['fields'][item]:
-                if item == 'created':
-                    temp[item] = issue['fields'][item]
-                elif item in ['customfield_13286', 'customfield_10092']:
-                    temp[item] = issue['fields'][item]['value']
-                elif item in ['versions', 'components']:
-                    temp[item] = issue['fields'][item][0]['name']
+            results.append(temp)
+    elif project.component_field == 2:  # use CEEQ Indicator
+        for issue in project.fetch_jira_data['issues']:
+            temp = {}
+            temp['key'] = issue['key']
+            for item in issue['fields']:
+                if not issue['fields']['customfield_10207']:  # no CEEQ indicator
+                    continue
+                # collect data
+                if issue['fields'][item]:
+                    if item == 'created':
+                        temp[item] = issue['fields'][item]
+                    elif item == 'versions':
+                        temp[item] = issue['fields'][item][0]['name']
+                    elif item == 'customfield_10207':
+                        temp['components'] = issue['fields'][item]['value'] + '/' + issue['fields'][item]['child']['value']
+                    elif item != 'components':
+                        temp[item] = issue['fields'][item]['name']
                 else:
-                    temp[item] = issue['fields'][item]['name']
-            else:
-                temp[item] = ''
+                    temp[item] = ''
 
-        if len(temp) == 1 or temp['components'] == '':  # no contents Or value of components is empty
-            continue
+            if len(temp) == 1:
+                continue
 
-        results.append(temp)
+            results.append(temp)
 
     return results
 

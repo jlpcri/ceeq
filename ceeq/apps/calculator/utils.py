@@ -189,12 +189,18 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
             pass
         elif uat_type == 'exclude_uat':
             # UAT workflow metatype not counted
-            if item['customfield_13286']:
-                continue
+            try:
+                if item['customfield_13286']:
+                    continue
+            except KeyError:
+                pass
         elif uat_type == 'only_uat':
             # Only workflow metatype counted
-            if not item['customfield_13286']:
-                continue
+            try:
+                if not item['customfield_13286']:
+                    continue
+            except KeyError:
+                pass
 
         component = item['components']
         if component_type == 'sub_components' and not component.startswith(component_names_without_slash[0]):
