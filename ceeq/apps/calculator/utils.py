@@ -543,7 +543,7 @@ def get_ceeq_trend_graph(project, uat_type):
     # max_dates = [item[1] for item in last_per_day]
     # results_per_day = ResultHistory.objects.filter(confirmed__in=max_dates).order_by('confirmed')
 
-    score_history = project.scorehistory_set.all()
+    score_history = project.scorehistory_set.all().order_by('created')
 
     data = {}
     categories = []
