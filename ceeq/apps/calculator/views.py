@@ -1,7 +1,7 @@
-from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from ceeq.apps.calculator.tasks import calculate_score
 from ceeq.apps.queries.models import Project
-from ceeq.apps.queries.views import projects as query_home
 
 
 def calculate_score_all(request):
@@ -9,6 +9,6 @@ def calculate_score_all(request):
     for project in projects:
         calculate_score(project.id)
 
-    return redirect(query_home)
+    return HttpResponseRedirect(reverse('q_projects'))
 
 
