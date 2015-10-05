@@ -192,14 +192,14 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
             try:
                 if item['customfield_13286']:
                     continue
-            except KeyError:
+            except KeyError:   #  for isr.west.com ignore
                 pass
         elif uat_type == 'only_uat':
             # Only workflow metatype counted
             try:
                 if not item['customfield_13286']:
                     continue
-            except KeyError:
+            except KeyError:   # for isr.west.com ignore
                 pass
 
         component = item['components']

@@ -16,6 +16,6 @@ else:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ceeq.settings.base")
 
 app = Celery('ceeq')
-app.config_from_object('django.conf:settings')
+app.config_from_object('ceeq.celery_config')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS, related_name='tasks')
 
