@@ -6,6 +6,7 @@ CELERY_ENABLE_UTC = False
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_RESULT_PERSISTENT = True
 CELERY_RESULT_SERIALIZER = 'pickle'
+CELERY_TASK_RESULT_EXPIRES = None   # no result is return back
 
 CELERYBEAT_SCHEDULE = {
     # Execute every 10 minutes every day
