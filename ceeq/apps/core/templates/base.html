@@ -106,9 +106,9 @@
                 <div class="collapse navbar-collapse" id="main-navbar">
                     <ul class="nav navbar-nav">
                         <li><a href="{% url 'users:home' %}"><i class="fa fa-home"></i> Home </a></li>
-                        <li><a href="{% url 'q_projects' %}"><i class="fa fa-bar-chart-o"></i>Queries</a></li>
+                        <li><a href="{% url 'queries:projects' %}"><i class="fa fa-bar-chart-o"></i>Queries</a></li>
                         {% if user.is_staff %}
-                            <li><a href="{% url 'usage' %}"><i class="fa fa-table fa-fw"></i>Usage</a> </li>
+                            <li><a href="{% url 'usage:usage' %}"><i class="fa fa-table fa-fw"></i>Usage</a> </li>
                         {% endif %}
 {#                        <li><a href="{% url 'projects' %}"><i class="fa fa-bar-chart-o"></i> Projects</a> </li>#}
                         <li><a href="{% url 'help:guide' %}"><i class="fa fa-thumbs-o-up"></i> Help</a> </li>

@@ -12,10 +12,10 @@
                 <div class="col-md-8">
                     <small>
                         {% if superuser %}
-                            <i class="fa fa-pencil fa=lg"></i> Create a <a href="{% url 'q_project_new' %}"> New Project </a> &nbsp; | &nbsp;
+                            <i class="fa fa-pencil fa=lg"></i> Create a <a href="{% url 'queries:project_new' %}"> New Project </a> &nbsp; | &nbsp;
                         {% endif %}
-                        <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
-                        <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
+                        <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'queries:query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
+                        <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculator:calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
                     </small>
                 </div>
                 <div class="col-md-2">
@@ -38,7 +38,7 @@
                     <tbody>
                         {% for project in projects_active %}
                             <tr>
-                                <td><a href='{% url 'q_project_detail' project.id%}'>{{ project.name}}</a></td>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name}}</a></td>
                                 <td>
                                     {% if project.jira_version == 'All Versions' %}
                                         <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
@@ -78,7 +78,7 @@
                 </table>
             </div>
         {% else %}
-        <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'q_project_new' %}"> New Project </a>
+        <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'queries:project_new' %}"> New Project </a>
         </small>
         <p>No projects available</p>
         {% endif %}
@@ -104,7 +104,7 @@
                     <tbody>
                         {% for project in projects_archive %}
                             <tr>
-                                <td><a href='{% url 'q_project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
                                 <td>
                                     {% if project.jira_version == 'All Versions' %}
                                         <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">

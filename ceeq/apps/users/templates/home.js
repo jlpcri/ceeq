@@ -120,7 +120,7 @@ $(document).ready(function() {
 
     Highcharts.setOptions(Highcharts.theme);
 
-    $.getJSON("{% url 'q_fetch_projects_score' %}").done(function(data){
+    $.getJSON("{% url 'queries:fetch_projects_score' %}").done(function(data){
         //console.log(data);
         var i, min_yaxis, min = data['score'][0];
         for (i = 1; i < data['score'].length; i++) {

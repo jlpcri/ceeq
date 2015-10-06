@@ -4,7 +4,8 @@ from decimal import Decimal
 import json
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from ceeq.apps.calculator.utils import get_score_data
@@ -48,7 +49,7 @@ def projects(request):
         'ceeq_components': sorted(ceeq_components.iteritems())
 
     })
-    return render(request, 'q_projects/projects_start.html', context)
+    return render(request, 'projects/projects_start.html', context)
 
 
 @login_required
@@ -60,7 +61,7 @@ def project_detail(request, project_id):
 
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \"{0}\" is archived.'.format(project.name))
-        return redirect(projects)
+        return HttpResponseRedirect(reverse('queries:projects'))
 
     form = ProjectForm(instance=project)
 
@@ -149,7 +150,7 @@ def project_detail(request, project_id):
         'ceeq_trend_graph_exclude_uat': internal_data['ceeq_trend_graph'],
 
     })
-    return render(request, 'q_project_detail/project_detail.html', context)
+    return render(request, 'project_detail/project_detail.html', context)
 
 
 @user_passes_test(user_is_superuser)
@@ -161,7 +162,8 @@ def project_edit(request, project_id):
         if form.is_valid():
             project = form.save()
             query_jira_data(project.id)
-            return redirect(project_detail, project.id)
+            return HttpResponseRedirect(reverse('queries:project_detail',
+                                                kwargs={'project_id': project.id}))
         else:
             messages.error(request, 'Correct erros in the form')
             context = RequestContext(request, {
@@ -170,9 +172,9 @@ def project_edit(request, project_id):
                 'superuser': request.user.is_superuser,
                 'version_names': ['All Versions']
             })
-            return render(request, 'q_project_detail/project_detail.html', context)
+            return render(request, 'project_detail/project_detail.html', context)
     else:
-        return redirect(projects)
+        return HttpResponseRedirect(reverse('queries:projects'))
 
 
 @user_passes_test(user_is_superuser)
@@ -182,7 +184,7 @@ def project_new(request):
         if form.is_valid():
             project = form.save()
             messages.success(request, "Project \"{0}\" has been created.".format(project.name))
-            return redirect(projects)
+            return HttpResponseRedirect(reverse('queries:projects'))
         else:
             messages.error(request, "Correct errors in the form.")
             context = RequestContext(request, {
@@ -190,7 +192,7 @@ def project_new(request):
                 'instances': get_instances(),
                 'impact_maps': get_impact_maps()
             })
-            return render(request, 'q_projects/project_new.html', context)
+            return render(request, 'projects/project_new.html', context)
     else:
         form = ProjectNewForm()
         context = RequestContext(request, {
@@ -198,7 +200,7 @@ def project_new(request):
             'instances': get_instances(),
             'impact_maps': get_impact_maps()
         })
-        return render(request, 'q_projects/project_new.html', context)
+        return render(request, 'projects/project_new.html', context)
 
 
 @user_passes_test(user_is_superuser)
@@ -207,7 +209,7 @@ def project_delete(request, project_id):
     project.delete()
     messages.success(request, "Project \"{0}\" has been deleted.".format(project.name))
 
-    return redirect(projects)
+    return HttpResponseRedirect(reverse('queries:projects'))
 
 
 def project_archive(request, project_id):
@@ -220,7 +222,7 @@ def project_archive(request, project_id):
 
         project.save()
 
-    return redirect(projects)
+    return HttpResponseRedirect(reverse('queries:projects'))
 
 
 def project_track(request, project_id):
@@ -233,7 +235,7 @@ def project_track(request, project_id):
 
         project.save()
 
-    return redirect(projects)
+    return HttpResponseRedirect(reverse('queries:projects'))
 
 
 def query_jira_data_all(request):
@@ -242,7 +244,7 @@ def query_jira_data_all(request):
         query_jira_data(project.id)
 
     # query_jira_data(8)
-    return redirect(projects)
+    return HttpResponseRedirect(reverse('queries:projects'))
 
 
 def fetch_projects_score(request):

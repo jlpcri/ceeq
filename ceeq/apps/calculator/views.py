@@ -10,6 +10,6 @@ def calculate_score_all(request):
         calculate_score(project.id)
 
     # calculate_score(8)
-    return HttpResponseRedirect(reverse('q_projects'))
+    return HttpResponseRedirect(reverse('queries:projects'))
 
 

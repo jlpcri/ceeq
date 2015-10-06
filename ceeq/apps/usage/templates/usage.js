@@ -1,6 +1,6 @@
 
 $(document).ready(function(){
-    $.getJSON("{% url 'get_project_access_trend' %}").done(function(data){
+    $.getJSON("{% url 'usage:get_project_access_trend' %}").done(function(data){
         var chart_export = new Highcharts.Chart({
             chart: {
                 renderTo: 'usage_project_access'

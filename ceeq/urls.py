@@ -22,12 +22,12 @@ urlpatterns = patterns('',
     url(r'^ceeq/', include('ceeq.apps.help.urls', namespace='help')),
     url(r'^ceeq/', include('ceeq.apps.users.urls', namespace='users')),
     url(r'^ceeq/', include('ceeq.apps.search.urls', namespace='search')),
-    url(r'^ceeq/', include('ceeq.apps.defects_density.urls')),
+    # url(r'^ceeq/', include('ceeq.apps.defects_density.urls')),
 
-    url(r'^ceeq/calcuate/', include('ceeq.apps.calculator.urls')),
-    # url(r'^ceeq/', include('ceeq.apps.formatter.urls')),
-    url(r'^ceeq/queries/', include('ceeq.apps.queries.urls')),
-    url(r'^ceeq/usage/', include('ceeq.apps.usage.urls')),
+    url(r'^ceeq/calculator/', include('ceeq.apps.calculator.urls', namespace='calculator')),
+    # url(r'^ceeq/', include('ceeq.apps.formatter.urls', namespace='formatter')),
+    url(r'^ceeq/queries/', include('ceeq.apps.queries.urls', namespace='queries')),
+    url(r'^ceeq/usage/', include('ceeq.apps.usage.urls', namespace='usage')),
 
 
     url(r'^ceeq/admin/', include(admin.site.urls)),

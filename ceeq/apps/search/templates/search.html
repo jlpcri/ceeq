@@ -19,7 +19,7 @@
                 <tbody>
                     {% for project in projects %}
                         <tr>
-                            <td><a href='{% url 'q_project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
+                            <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
                             <td><a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a></td>
                             <td>
                                 {% if project.score == 101 %}

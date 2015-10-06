@@ -22,7 +22,7 @@
 {% block body %}
     <div class="container">
 
-        <form action="{% url 'q_project_edit' project.id %}" method="post">
+        <form action="{% url 'queries:project_edit' project.id %}" method="post">
             <div class="row">
                 <legend>Project Information</legend>
             </div>
@@ -91,19 +91,19 @@
                     <div class="col-md-2">
                         {% if project.active %}
                             <label for="id_active"></label><input id="id_active" name="active" type="checkbox" checked hidden>
-                            <a href="{% url 'q_project_track' project.id %}" title="UnTrack JIRA Project"><b> UnTrack JIRA Project</b></a>
+                            <a href="{% url 'queries:project_track' project.id %}" title="UnTrack JIRA Project"><b> UnTrack JIRA Project</b></a>
                         {% else %}
                             <label for="id_active"></label><input id="id_active" name="active" type="checkbox" hidden>
-                            <a href="{% url 'q_project_track' project.id %}" title="Track JIRA Project"><b> Track JIRA Project</b></a>
+                            <a href="{% url 'queries:project_track' project.id %}" title="Track JIRA Project"><b> Track JIRA Project</b></a>
                         {% endif %}
                     </div>
                     <div class="col-md-2">
                         {% if project.complete %}
                             <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" checked hidden>
-                            <a href="{% url 'q_project_archive' project.id %}" title="Reactivate Project"><b> Reactivate JIRA Project</b></a>
+                            <a href="{% url 'queries:project_archive' project.id %}" title="Reactivate Project"><b> Reactivate JIRA Project</b></a>
                         {% else %}
                             <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" hidden>
-                            <a href="{% url 'q_project_archive' project.id %}" title="Archive Project"><b> Archive JIRA Project</b></a>
+                            <a href="{% url 'queries:project_archive' project.id %}" title="Archive Project"><b> Archive JIRA Project</b></a>
                         {% endif %}
                     </div>
                 </div>
@@ -159,19 +159,19 @@
             </div>
             <div class="tab-content">
                 <div class="tab-pane" id="include_uat">
-                    {% include 'q_project_detail/project_detail_include_uat.html' %}
+                    {% include 'project_detail/project_detail_include_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="exclude_uat">
-                    {% include 'q_project_detail/project_detail_exclude_uat.html' %}
+                    {% include 'project_detail/project_detail_exclude_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="only_uat">
-                    {% include 'q_project_detail/project_detail_only_uat.html' %}
+                    {% include 'project_detail/project_detail_only_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="custom">
-                    {% include 'q_project_detail/project_detail_custom.html' %}
+                    {% include 'project_detail/project_detail_custom.html' %}
                 </div>
             </div>
 
@@ -192,7 +192,7 @@
                         <form method="post" action="">
                         <button class="btn btn-default" data-dismiss="modal" id="project_undelete">Abort</button>
                         <input type="hidden" name="delete" value="True">
-                        <a href="{% url 'q_project_delete' project.id %}" data-toggle="modal" role="button" class="btn btn-danger" id="project_really_delete">Delete</a>
+                        <a href="{% url 'queries:project_delete' project.id %}" data-toggle="modal" role="button" class="btn btn-danger" id="project_really_delete">Delete</a>
                         </form>
                     </div>
                 </div>
@@ -220,7 +220,7 @@
 
         var last_tab = '{{ last_tab }}';
 
-        {% include 'q_project_detail/project_detail.js' %}
+        {% include 'project_detail/project_detail.js' %}
 
         setStartDate("{{ start }}");
         setEndDate("{{ end }}");
