@@ -26,7 +26,7 @@ def sign_in(request):
                 if request.GET.get('next'):
                     return redirect(request.GET['next'])
                 else:
-                    return redirect('home')
+                    return redirect('users:home')
             else:
                 messages.error(request, 'This account is inactive.')
                 return redirect('landing')
@@ -98,9 +98,9 @@ def user_update(request, user_id):
 
         user.save()
 
-        return redirect('user_management')
+        return redirect('users:management')
     else:
-        return redirect('user_management')
+        return redirect('users:management')
 
 
 @user_passes_test(user_is_superuser)
@@ -113,7 +113,7 @@ def user_delete(request, user_id):
         return redirect('landing')
     else:
         user.delete()
-        return redirect('user_management')
+        return redirect('users:management')
 
 
 @login_required()
@@ -162,7 +162,7 @@ def user_settings_update(request):
             messages.success(request, 'Your settings have been saved. Need update CEEQ score.')
         else:
             messages.error(request, 'Issue type Bug should be selected.')
-        return redirect('user_settings')
+        return redirect('users:user_settings')
     else:
         messages.error(request, 'Sorry, your settings cannot be saved.')
-        return redirect('user_settings')
+        return redirect('users:user_settings')

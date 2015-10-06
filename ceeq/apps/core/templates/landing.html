@@ -17,7 +17,7 @@
         <div class="well" id="landing-well" style="margin-top: 25px;">
 
             <div>
-                <form class="form" role="form" method=POST action="{% url 'sign_in' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
+                <form class="form" role="form" method=POST action="{% url 'users:sign_in' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
                     <div class="input-group" style="margin-bottom: 10px;">
                         <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
                         <input type="text" class="form-control" name="username" id="username" placeholder="Username" tabindex="1">

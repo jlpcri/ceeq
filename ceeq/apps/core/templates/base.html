@@ -99,25 +99,25 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{% url 'home' %}">CEEQ</a>
+                <a class="navbar-brand" href="{% url 'users:home' %}">CEEQ</a>
             </div>
 
             {% if user.is_authenticated %}
                 <div class="collapse navbar-collapse" id="main-navbar">
                     <ul class="nav navbar-nav">
-                        <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> Home </a></li>
+                        <li><a href="{% url 'users:home' %}"><i class="fa fa-home"></i> Home </a></li>
                         <li><a href="{% url 'q_projects' %}"><i class="fa fa-bar-chart-o"></i>Queries</a></li>
                         {% if user.is_staff %}
                             <li><a href="{% url 'usage' %}"><i class="fa fa-table fa-fw"></i>Usage</a> </li>
                         {% endif %}
 {#                        <li><a href="{% url 'projects' %}"><i class="fa fa-bar-chart-o"></i> Projects</a> </li>#}
-                        <li><a href="{% url 'help_guide' %}"><i class="fa fa-thumbs-o-up"></i> Help</a> </li>
+                        <li><a href="{% url 'help:guide' %}"><i class="fa fa-thumbs-o-up"></i> Help</a> </li>
 
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <form class="navbar-form navbar-right" role="search" method="get" action="{% url 'search' %}">
+                            <form class="navbar-form navbar-right" role="search" method="get" action="{% url 'search:search' %}">
                                 <div class="form-group">
                                     <input type="text" id="search-input" name="query"  class="form-control" placeholder="search">
                                     <input type="hidden" id="field" value="any">
@@ -138,14 +138,14 @@
                             <ul class="dropdown-menu navbar-dropdown-menu">
                                 <!-- open user setting to Steven D Pratt-->
                                 {% if user.is_superuser or user.username == 'sdpratt'%}
-                                    <li><a href="{% url 'user_settings' %}"><i class="fa fa-gear"></i> User Settings</a> </li>
+                                    <li><a href="{% url 'users:user_settings' %}"><i class="fa fa-gear"></i> User Settings</a> </li>
                                 {% endif %}
 
                                 {% if user.is_superuser %}
-                                    <li><a href="{% url 'user_management' %}"><i class="fa fa-wrench"></i> User Management</a> </li>
+                                    <li><a href="{% url 'users:management' %}"><i class="fa fa-wrench"></i> User Management</a> </li>
                                     <li><a href="{% url 'admin:index' %}" target="_blank"><i class="fa fa-cogs"></i> Django Admin</a> </li>
                                 {% endif %}
-                                <li><a href="{% url 'sign_out' %}"><i class="fa fa-user"></i> Sign Out</a></li>
+                                <li><a href="{% url 'users:sign_out' %}"><i class="fa fa-user"></i> Sign Out</a></li>
                             </ul>
 
 
@@ -195,7 +195,7 @@
                     <p>v 0.3 | Powered by Quality Engineering & Innovation |
                         <i class="fa fa-bell" style="color: lightseagreen;"></i><a href="http://jira.west.com/browse/ceeq"> Report</a> |
                         <i class="fa fa-envelope text-primary" style="color: lightseagreen;"></i><a href="mailto:QEIInnovation@west.com?subject=CEEQ Feedback"> Contact </a>|
-                        <a href="{% url 'help_faq' %}"><i class="fa fa-question"></i> FAQ</a></p>
+                        <a href="{% url 'help:faq' %}"><i class="fa fa-question"></i> FAQ</a></p>
                 </div>
             </div>
 

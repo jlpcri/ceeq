@@ -16,17 +16,12 @@ admin.autodiscover()
 # v1_api.register(FrameworkParameterResource())
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'ceeq.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
-    #url(r'^admin/', include(admin.site.urls)),
 
     url(r'^ceeq/$', 'ceeq.apps.core.views.landing', name='landing'),
     # url(r'^ceeq/', include('ceeq.apps.projects.urls')),
-    url(r'^ceeq/', include('ceeq.apps.help.urls')),
-    url(r'^ceeq/', include('ceeq.apps.users.urls')),
-    url(r'^ceeq/', include('ceeq.apps.search.urls')),
+    url(r'^ceeq/', include('ceeq.apps.help.urls', namespace='help')),
+    url(r'^ceeq/', include('ceeq.apps.users.urls', namespace='users')),
+    url(r'^ceeq/', include('ceeq.apps.search.urls', namespace='search')),
     url(r'^ceeq/', include('ceeq.apps.defects_density.urls')),
 
     url(r'^ceeq/calcuate/', include('ceeq.apps.calculator.urls')),

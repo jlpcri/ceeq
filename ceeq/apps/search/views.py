@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.template import RequestContext
 
-from ceeq.apps.projects.models import Project
+from ceeq.apps.queries.models import Project
 
 
 def search(request):
