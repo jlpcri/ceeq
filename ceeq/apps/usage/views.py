@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 
-from ceeq.apps.queries.models import Project
+from ceeq.apps.queries.models import Project, ScoreHistory
 from models import ProjectAccess
 
 
@@ -59,7 +59,17 @@ def get_project_access_trend(request):
 
         categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
-        count.append(item.total)
+        tmp_list = []
+        for sh in ScoreHistory.objects.filter(created__year=tmp_year,
+                                              created__month=tmp_month,
+                                              created__day=tmp_day):
+            if sh.access:
+                tmp_list.append(sh.project.name)
+
+        count.append({
+            'y': item.total,
+            'extra': sorted(tmp_list)
+        })
 
     data['categories'] = categories
     data['count'] = count

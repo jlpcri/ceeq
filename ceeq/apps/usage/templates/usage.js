@@ -40,7 +40,11 @@ $(document).ready(function(){
                 formatter: function () {
                     var s = '<b>' + this.x + '</b>';
                     $.each(this.points, function(){
-                        s += '<br>' + this.series.name + ': <b>' + this.y + '</b>';
+                        var names = '';
+                        $.each(this.point.extra, function(index, value){
+                            names += value + '<br>';
+                        });
+                        s += '<br>' + this.series.name + ': <b>' + this.y + '</b>' + '<br>' + names;
                     });
                     return s;
                 },
