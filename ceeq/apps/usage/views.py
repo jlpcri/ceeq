@@ -22,14 +22,14 @@ def update_project_access_history(request):
         for item in score_history:
             if item.access and item.created.date() == today:
                 total_access += 1
-    try:
-        project_access = ProjectAccess.objects.latest('created')
+
+    project_accesses = ProjectAccess.objects.all()
+    for project_access in project_accesses:
         if project_access.created.date() == today:
             project_access.total = total_access
             project_access.save()
-        else:
-            project_access = ProjectAccess.objects.create(total=total_access)
-    except ProjectAccess.DoesNotExist:
+            break
+    else:
         project_access = ProjectAccess.objects.create(total=total_access)
 
 
