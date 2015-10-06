@@ -241,6 +241,7 @@ def query_jira_data_all(request):
     for project in ps:
         query_jira_data(project.id)
 
+    # query_jira_data(8)
     return redirect(projects)
 
 

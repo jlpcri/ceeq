@@ -11,7 +11,7 @@ class Instance(models.Model):
     jira_user = models.TextField()
     password = models.TextField()
     jira_fields = ArrayField(models.CharField(max_length=50, default=''), null=True)
-    indicator_field = models.TextField()  # The custom field ID for the CEEQ indicator
+    indicator_field = models.TextField(null=True, blank=True)  # The custom field ID for the CEEQ indicator
 
     def __unicode__(self):
         return self.url

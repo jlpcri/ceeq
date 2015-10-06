@@ -9,6 +9,7 @@ def calculate_score_all(request):
     for project in projects:
         calculate_score(project.id)
 
+    # calculate_score(8)
     return HttpResponseRedirect(reverse('q_projects'))
 
 

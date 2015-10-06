@@ -71,8 +71,15 @@ def parse_jira_data(project, component_names_standard):
                         temp[item] = issue['fields'][item]
                     elif item in ['customfield_13286', 'customfield_10092']:
                         temp[item] = issue['fields'][item]['value']
-                    elif item in ['versions', 'components']:
+                    elif item == 'versions':
                         temp[item] = issue['fields'][item][0]['name']
+                    elif item == 'components':
+                        if len(issue['fields'][item]) == 1:
+                            temp[item] = issue['fields'][item][0]['name']
+                        elif len(issue['fields'][item]) > 1:
+                            temp[item] = get_component_names_per_ticket(len(issue['fields'][item]),
+                                                                        issue['fields'][item],
+                                                                        component_names_standard)
                     else:
                         temp[item] = issue['fields'][item]['name']
                 else:
