@@ -49,7 +49,7 @@ def projects(request):
         'ceeq_components': sorted(ceeq_components.iteritems())
 
     })
-    return render(request, 'projects/projects_start.html', context)
+    return render(request, 'queries/projects/projects_start.html', context)
 
 
 @login_required
@@ -150,7 +150,7 @@ def project_detail(request, project_id):
         'ceeq_trend_graph_exclude_uat': internal_data['ceeq_trend_graph'],
 
     })
-    return render(request, 'project_detail/project_detail.html', context)
+    return render(request, 'queries/project_detail/project_detail.html', context)
 
 
 @user_passes_test(user_is_superuser)
@@ -172,7 +172,7 @@ def project_edit(request, project_id):
                 'superuser': request.user.is_superuser,
                 'version_names': ['All Versions']
             })
-            return render(request, 'project_detail/project_detail.html', context)
+            return render(request, 'queries/project_detail/project_detail.html', context)
     else:
         return HttpResponseRedirect(reverse('queries:projects'))
 
@@ -192,7 +192,7 @@ def project_new(request):
                 'instances': get_instances(),
                 'impact_maps': get_impact_maps()
             })
-            return render(request, 'projects/project_new.html', context)
+            return render(request, 'queries/projects/project_new.html', context)
     else:
         form = ProjectNewForm()
         context = RequestContext(request, {
@@ -200,7 +200,7 @@ def project_new(request):
             'instances': get_instances(),
             'impact_maps': get_impact_maps()
         })
-        return render(request, 'projects/project_new.html', context)
+        return render(request, 'queries/projects/project_new.html', context)
 
 
 @user_passes_test(user_is_superuser)

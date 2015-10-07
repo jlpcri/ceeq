@@ -20,7 +20,7 @@ def project_sub_piechart(request, project_id):
         'uat_type_custom': request.GET.get('uat_type_custom', '')
     })
 
-    return render(request, 'sub_component/project_sub_component.html', context)
+    return render(request, 'queries/sub_component/project_sub_component.html', context)
 
 
 def fetch_subcomponents_pie_component(request, project_id):

@@ -13,4 +13,4 @@ def search(request):
             'projects': projects,
             'superuser': request.user.is_superuser
         })
-        return render(request, 'search.html', context)
+        return render(request, 'search/search.html', context)

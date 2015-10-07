@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "core/base.html" %}
 {% block title %} Projects {% endblock %}
 
 {% block subnav %}
@@ -20,7 +20,7 @@
     <div class="container">
         <div class="tab-content">
             <div class="tab-pane" id="projects">
-                {% include 'projects/projects.html' %}
+                {% include 'queries/projects/projects.html' %}
             </div>
 
             <div class="tab-pane" id="score_overall">
@@ -41,6 +41,6 @@
 
 {% block footer %}
     <script>
-        {% include 'projects/project.js' %}
+        {% include 'queries/projects/project.js' %}
     </script>
 {% endblock %}

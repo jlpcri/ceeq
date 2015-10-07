@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'core/base.html' %}
 
 {% block title %}Project Subcomponents{% endblock %}
 
@@ -40,6 +40,6 @@
             $('#apps_subcomponent_percentage_pie_chart').height(div_pie_height);
             draw_pie_chart_graph(data, '{{ uat_type }}');
         });
-        {% include 'sub_component/project_sub_components.js' %}
+        {% include 'queries/sub_component/project_sub_components.js' %}
     </script>
 {% endblock %}

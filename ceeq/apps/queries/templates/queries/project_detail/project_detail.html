@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'core/base.html' %}
 {% load staticfiles %}
 {% block title %}ProjectDetail{% endblock %}
 
@@ -159,19 +159,19 @@
             </div>
             <div class="tab-content">
                 <div class="tab-pane" id="include_uat">
-                    {% include 'project_detail/project_detail_include_uat.html' %}
+                    {% include 'queries/project_detail/project_detail_include_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="exclude_uat">
-                    {% include 'project_detail/project_detail_exclude_uat.html' %}
+                    {% include 'queries/project_detail/project_detail_exclude_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="only_uat">
-                    {% include 'project_detail/project_detail_only_uat.html' %}
+                    {% include 'queries/project_detail/project_detail_only_uat.html' %}
                 </div>
 
                 <div class="tab-pane" id="custom">
-                    {% include 'project_detail/project_detail_custom.html' %}
+                    {% include 'queries/project_detail/project_detail_custom.html' %}
                 </div>
             </div>
 
@@ -220,7 +220,7 @@
 
         var last_tab = '{{ last_tab }}';
 
-        {% include 'project_detail/project_detail.js' %}
+        {% include 'queries/project_detail/project_detail.js' %}
 
         setStartDate("{{ start }}");
         setEndDate("{{ end }}");

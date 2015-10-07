@@ -19,7 +19,7 @@ def dd_all(request):
         'dds': dds,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'projects/projects_start.html', context)
+    return render(request, 'queries/projects/projects_start.html', context)
 
 
 def dd_detail(request, dd_id):

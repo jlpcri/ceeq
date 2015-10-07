@@ -45,7 +45,7 @@ def sign_out(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'users/home.html')
 
 
 @user_passes_test(user_is_superuser)
@@ -80,7 +80,7 @@ def user_management(request):
             'current_user_id': current_user_id
         })
 
-        return render(request, 'user_management.html', context)
+        return render(request, 'users/user_management.html', context)
 
     return HttpResponseNotFound()
 
@@ -124,7 +124,7 @@ def user_settings(request):
     context = RequestContext(request, {
         'user_settings': user_settings
     })
-    return render(request, 'user_settings.html', context)
+    return render(request, 'users/user_settings.html', context)
 
 
 @login_required()

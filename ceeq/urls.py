@@ -18,7 +18,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     url(r'^ceeq/$', 'ceeq.apps.core.views.landing', name='landing'),
-    # url(r'^ceeq/', include('ceeq.apps.projects.urls')),
+    # url(r'^ceeq/', include('ceeq.apps.projects.urls', namespace='projects')),
     url(r'^ceeq/', include('ceeq.apps.help.urls', namespace='help')),
     url(r'^ceeq/', include('ceeq.apps.users.urls', namespace='users')),
     url(r'^ceeq/', include('ceeq.apps.search.urls', namespace='search')),

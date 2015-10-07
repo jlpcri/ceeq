@@ -36,7 +36,7 @@ def update_project_access_history(request):
 
 def usage(request):
     if request.method == 'GET':
-        return render(request, 'usage.html')
+        return render(request, 'usage/usage.html')
 
     return HttpResponseNotFound()
 
