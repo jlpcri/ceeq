@@ -19,7 +19,7 @@ def dd_all(request):
         'dds': dds,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'queries/projects/projects_start.html', context)
+    return render(request, 'proj/projects/projects_start.html', context)
 
 
 def dd_detail(request, dd_id):
@@ -30,7 +30,7 @@ def dd_detail(request, dd_id):
         'form': form,
         'dd': dd,
     })
-    return render(request, 'dd_detail.html', context)
+    return render(request, 'defects_density/dd_detail.html', context)
 
 
 def dd_edit(request, dd_id):
@@ -59,7 +59,7 @@ def dd_edit(request, dd_id):
                 'form': form,
                 'dd': dd,
             })
-            return render(request, 'dd_detail.html', context)
+            return render(request, 'defects_density/dd_detail.html', context)
     else:
         return redirect(dd_all)
 

@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container">
-        <form action="{% url 'dd_edit' dd.id %}" method="post">
+        <form action="{% url 'dds:dd_edit' dd.id %}" method="post">
             <div class="row">
                 <legend>Record Information</legend>
             </div>
@@ -78,7 +78,7 @@
                     <input class="btn btn-primary" type="submit" value="Save" style="width: 100%">
                 </div>
                 <div class="col-md-2">
-                    <a href="{% url 'projects' %}" class="btn btn-primary" style="width: 100%">Cancel</a>
+                    <a href="{% url 'projects:projects' %}" class="btn btn-primary" style="width: 100%">Cancel</a>
 
                 </div>
             </div>

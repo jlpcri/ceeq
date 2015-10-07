@@ -35,11 +35,11 @@
             title_custom = 'UAT';
         }
 
-        $.getJSON("{% url 'fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}&start={{ start }}&end={{ end }}&uat_type_custom={{ uat_type_custom }}").done(function(data){
+        $.getJSON("{% url 'projects:fetch_subcomponents_pie_component' project.id %}?component_type={{ component_type }}&uat_type={{ uat_type }}&start={{ start }}&end={{ end }}&uat_type_custom={{ uat_type_custom }}").done(function(data){
             var div_pie_height = data[1].length * 25 + 450;
             $('#apps_subcomponent_percentage_pie_chart').height(div_pie_height);
             draw_pie_chart_graph(data, '{{ uat_type }}');
         });
-        {% include 'queries/sub_component/project_sub_components.js' %}
+        {% include 'proj/sub_component/project_sub_components.js' %}
     </script>
 {% endblock %}

@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^ceeq/', include('ceeq.apps.help.urls', namespace='help')),
     url(r'^ceeq/', include('ceeq.apps.users.urls', namespace='users')),
     url(r'^ceeq/', include('ceeq.apps.search.urls', namespace='search')),
-    url(r'^ceeq/', include('ceeq.apps.defects_density.urls')),
+    url(r'^ceeq/', include('ceeq.apps.defects_density.urls', namespace='dds')),
 
     url(r'^ceeq/calculator/', include('ceeq.apps.calculator.urls', namespace='calculator')),
     # url(r'^ceeq/', include('ceeq.apps.formatter.urls', namespace='formatter')),

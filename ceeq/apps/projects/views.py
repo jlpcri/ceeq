@@ -371,7 +371,7 @@ def project_defects_density(request, project_id):
         'priority_total': priority_total,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'defects_density/projects_dd_start.html', context)
+    return render(request, 'proj/defects_density/projects_dd_start.html', context)
 
 
 def get_component_defects_density(request, jira_data, frame_components):

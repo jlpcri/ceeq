@@ -5,7 +5,7 @@ $(document).ready(function() {
                 colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
             });
     //var versions = [];
-    $.getJSON("{% url 'fetch_defects_density_score' project.id %}").done(function(data) {
+    $.getJSON("{% url 'projects:fetch_defects_density_score' project.id %}").done(function(data) {
         for (var key in data){
             //versions.push(key);
             $("#dd_trend_graph_"+key).highcharts({
@@ -148,7 +148,7 @@ $(document).ready(function() {
         }
     });
 
-    $.getJSON("{% url 'fetch_dds_json' project.id %}").done(function(data) {
+    $.getJSON("{% url 'dds:fetch_dds_json' project.id %}").done(function(data) {
         $('#dd_list_single').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="dd_list_single_table"></table>');
         $('#dd_list_single_table').dataTable({
             "data":data,
