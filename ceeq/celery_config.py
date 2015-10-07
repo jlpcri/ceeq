@@ -2,7 +2,7 @@ from celery.schedules import crontab
 
 # Celery config
 CELERY_ACCEPT_CONTENT = ['pickle', 'json', ]
-CELERY_ENABLE_UTC = False
+# CELERY_ENABLE_UTC = False
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_RESULT_PERSISTENT = True
 CELERY_RESULT_SERIALIZER = 'pickle'
