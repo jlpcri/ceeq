@@ -50,7 +50,10 @@ def fetch_jira_data_run():
     """
     projects = Project.objects.filter(complete=False)
     start = datetime.now()
-    job = group(query_jira_data.delay(project.id) for project in projects)()
+    # job = group(query_jira_data.delay(project.id) for project in projects)()
+
+    for project in projects:
+        query_jira_data.delay(project.id)
 
     current_delay = (datetime.now() - start).total_seconds()
     # print current_delay
