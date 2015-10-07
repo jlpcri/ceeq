@@ -51,7 +51,7 @@ def projects(request):
 
     })
 
-    return render(request, 'queries/projects/projects_start.html', context)
+    return render(request, 'proj/projects/projects_start.html', context)
 
 
 @login_required
@@ -94,7 +94,7 @@ def project_detail(request, project_id):
             'version_names': ['All Versions'],
             'project_types': get_project_types()
         })
-        return render(request, 'queries/project_detail/project_detail.html', context)
+        return render(request, 'proj/project_detail/project_detail.html', context)
 
 
 
@@ -109,7 +109,7 @@ def project_detail(request, project_id):
             'no_jira_data': jira_data,
             'version_names': ['All Versions']
         })
-        return render(request, 'queries/project_detail/project_detail.html', context)
+        return render(request, 'proj/project_detail/project_detail.html', context)
 
     version_data = jira_data['issues']
 
@@ -297,7 +297,7 @@ def project_detail(request, project_id):
         'ceeq_trend_graph': ceeq_trend_graph,
         'project_types': get_project_types()
     })
-    return render(request, 'queries/project_detail/project_detail.html', context)
+    return render(request, 'proj/project_detail/project_detail.html', context)
 
 
 @login_required
@@ -462,7 +462,7 @@ def project_edit(request, project_id):
                 'superuser': request.user.is_superuser,
                 'version_names': ['All Versions']
             })
-            return render(request, 'queries/project_detail/project_detail.html', context)
+            return render(request, 'proj/project_detail/project_detail.html', context)
     else:
         return redirect(projects)
 
@@ -480,14 +480,14 @@ def project_new(request):
             context = RequestContext(request, {
                 'form': form,
             })
-            return render(request, 'queries/projects/project_new.html', context)
+            return render(request, 'proj/projects/project_new.html', context)
     else:
         form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
             'project_types': get_project_types()
         })
-        return render(request, 'queries/projects/project_new.html', context)
+        return render(request, 'proj/projects/project_new.html', context)
 
 
 @user_passes_test(user_is_superuser)
@@ -525,7 +525,7 @@ def project_update_scores(request, project_id):
         'framework_parameters': framework_parameters,
         'superuser': request.user.is_superuser
     })
-    return render(request, 'queries/projects/projects_start.html', context)
+    return render(request, 'proj/projects/projects_start.html', context)
 
 
 def calculate_score(request, project):
@@ -909,7 +909,7 @@ def defects_density_log(request, project_id):
         'superuser': request.user.is_superuser
     })
 
-    return render(request, 'queries/projects/projects_start.html', context)
+    return render(request, 'proj/projects/projects_start.html', context)
 
 
 def defects_density_single_log(request, project):

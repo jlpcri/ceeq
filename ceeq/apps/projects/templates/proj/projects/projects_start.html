@@ -20,19 +20,19 @@
     <div class="container">
         <div class="tab-content">
             <div class="tab-pane" id="projects">
-                {% include 'queries/projects/projects.html' %}
+                {% include 'proj/projects/projects.html' %}
             </div>
 
             <div class="tab-pane" id="score_overall">
-                {% include 'score_overall.html' %}
+                {% include 'proj/score_overall.html' %}
             </div>
 
             <div class="tab-pane" id="framework_parameter">
-                {% include 'framework_parameter.html' %}
+                {% include 'proj/framework_parameter.html' %}
             </div>
 
             <div class="tab-pane" id="defects_density_admin">
-                {% include 'dd_list.html' %}
+                {% include 'defects_density/dd_list.html' %}
             </div>
         </div>
     </div>
@@ -41,6 +41,6 @@
 
 {% block footer %}
     <script>
-        {% include 'queries/projects/project.js' %}
+        {% include 'proj/projects/project.js' %}
     </script>
 {% endblock %}

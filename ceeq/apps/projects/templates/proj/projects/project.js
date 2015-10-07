@@ -56,7 +56,7 @@ function loadActiveDataTab() {
             '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'
         ]
         });
-        $.getJSON("{% url 'fetch_projects_score' %}").done(function(data){
+        $.getJSON("{% url 'projects:fetch_projects_score' %}").done(function(data){
             var i, min_yaxis, min = data['score'][0];
             for (i = 1; i < data['score'].length; i++) {
                 if (data['score'][i] < min) {
