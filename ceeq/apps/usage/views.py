@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
@@ -16,6 +16,7 @@ def update_project_access_history(request):
     projects = Project.objects.filter(complete=False)
     total_access = 0
     today = datetime.today().date()
+    # today = (datetime.today() - timedelta(days=1)).date()
 
     for project in projects:
         score_history = project.scorehistory_set.all()

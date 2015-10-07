@@ -118,7 +118,7 @@ class ScoreHistory(models.Model):
     Store Combined/Internal/UAT daily score
     """
     project = models.ForeignKey(Project)
-    created = models.DateTimeField(auto_now=True, db_index=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     access = models.BooleanField(default=False)
 
     # Save daily CEEQ Score

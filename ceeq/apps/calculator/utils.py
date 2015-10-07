@@ -599,6 +599,21 @@ def update_score_history(project_id, combined_score, internal_score, uat_score):
     """
     project = get_object_or_404(Project, pk=project_id)
     today = datetime.today().date()
+
+    # for access in project.scorehistory_set.all():
+    #     if access.created.date() == today:
+    #         access.combined_score = combined_score
+    #         access.internal_score = internal_score
+    #         access.uat_score = uat_score
+    #         access.save()
+    #         break
+    # else:
+    #     access = ScoreHistory.objects.create(project=project)
+    #     access.combined_score = combined_score
+    #     access.internal_score = internal_score
+    #     access.uat_score = uat_score
+    #     access.save()
+
     try:
         access = project.scorehistory_set.latest('created')
         if access.created.date() == today:
