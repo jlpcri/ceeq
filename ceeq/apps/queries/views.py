@@ -6,10 +6,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from ceeq.apps.calculator.utils import get_score_data
-from ceeq.apps.projects.models import FrameworkParameter
 
 from ceeq.apps.queries.models import Project, ImpactMap, ScoreHistory
 from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHistory
@@ -23,7 +22,6 @@ from ceeq.apps.users.views import user_is_superuser
 def projects(request):
     projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-    framework_parameters = FrameworkParameter.objects.all()
 
     try:
         ls = LiveSettings.objects.all()[0]
@@ -41,7 +39,6 @@ def projects(request):
     context = RequestContext(request, {
         'projects_active': projects_active,
         'projects_archive': projects_archive,
-        'framework_parameters': framework_parameters,
         'framework_parameters_items': ['jira_issue_weight_sum',
                                        'vaf_ratio',
                                        'vaf_exp'],
