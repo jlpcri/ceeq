@@ -238,7 +238,7 @@ def project_track(request, project_id):
 def query_jira_data_all(request):
     ps = Project.objects.filter(complete=False)
     for project in ps:
-        query_jira_data(project.id)
+        query_jira_data.delay(project.id)
 
     # query_jira_data(8)
     return HttpResponseRedirect(reverse('queries:projects'))

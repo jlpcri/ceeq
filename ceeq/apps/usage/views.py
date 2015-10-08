@@ -76,3 +76,9 @@ def get_project_access_trend(request):
     data['count'] = count
 
     return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+def update_project_access_history_manually(request):
+    update_project_access_history(request)
+
+    return render(request, 'usage/usage.html')

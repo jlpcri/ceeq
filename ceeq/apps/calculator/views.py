@@ -7,7 +7,7 @@ from ceeq.apps.queries.models import Project
 def calculate_score_all(request):
     projects = Project.objects.filter(complete=False)
     for project in projects:
-        calculate_score(project.id)
+        calculate_score.delay(project.id)
 
     # calculate_score(8)
     return HttpResponseRedirect(reverse('queries:projects'))

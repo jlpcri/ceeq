@@ -8,7 +8,12 @@
 
             <div id="usage_project_access" style="width: 100%; height: 600px;" ></div>
 
-            <p align="right">Projects visited today might not correct.</p>
+            <p align="right">
+                Projects visited today might not correct.
+                {% if user.is_superuser %}
+                    <a href="{% url 'usage:update_project_access_history_manually' %}"><i class="fa fa-refresh"></i></a>
+                {% endif %}
+            </p>
 
         </div>
 {% endblock %}
