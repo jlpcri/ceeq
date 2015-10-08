@@ -115,8 +115,13 @@
                 </div>
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Instance</div>
+                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.instance.url }}</div>
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
                     <div class="col-md-2" style="text-align: left;font-size:18px;">Impact Map</div>
-                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.project_type }}</div>
+                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.impact_map.name }}</div>
                 </div>
             {% endif %}
 

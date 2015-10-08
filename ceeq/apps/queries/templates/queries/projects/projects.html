@@ -13,9 +13,9 @@
                     <small>
                         {% if superuser %}
                             <i class="fa fa-pencil fa=lg"></i> Create a <a href="{% url 'queries:project_new' %}"> New Project </a> &nbsp; | &nbsp;
+                            <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'queries:query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
+                            <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculator:calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
                         {% endif %}
-                        <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'queries:query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
-                        <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculator:calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
                     </small>
                 </div>
                 <div class="col-md-2">
