@@ -14,11 +14,11 @@ CELERYBEAT_SCHEDULE = {
         'task': 'ceeq.apps.queries.tasks.fetch_jira_data_run',
         'schedule': crontab(minute='*/5')
     },
-    # Execute every 12 hours every day
-    # 'daily-score-log': {
-    #     'task': 'ceeq.apps.queries.tasks.daily_score_log',
-    #     'schedule': crontab(minute=0, hour='0,12')
-    # }
+    # Execute in specified hour every day
+    'daily-score-log': {
+        'task': 'ceeq.apps.queries.tasks.daily_score_log',
+        'schedule': crontab(minute=0, hour='0,8,10,12,14,16,18,20,23')
+    }
 }
 
 CELERY_TIMEZONE = 'America/Chicago'
