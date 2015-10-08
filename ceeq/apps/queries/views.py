@@ -209,6 +209,7 @@ def project_delete(request, project_id):
     return HttpResponseRedirect(reverse('queries:projects'))
 
 
+@user_passes_test(user_is_superuser)
 def project_archive(request, project_id):
     if request.method == 'GET':
         project = get_object_or_404(Project, pk=project_id)
@@ -222,6 +223,7 @@ def project_archive(request, project_id):
     return HttpResponseRedirect(reverse('queries:projects'))
 
 
+@user_passes_test(user_is_superuser)
 def project_track(request, project_id):
     if request.method == 'GET':
         project = get_object_or_404(Project, pk=project_id)
@@ -235,6 +237,7 @@ def project_track(request, project_id):
     return HttpResponseRedirect(reverse('queries:projects'))
 
 
+@user_passes_test(user_is_superuser)
 def query_jira_data_all(request):
     ps = Project.objects.filter(complete=False)
     for project in ps:
@@ -244,6 +247,7 @@ def query_jira_data_all(request):
     return HttpResponseRedirect(reverse('queries:projects'))
 
 
+@login_required
 def fetch_projects_score(request):
     """
     Use for ceeq score bar graph

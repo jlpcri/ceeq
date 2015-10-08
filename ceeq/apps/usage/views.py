@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
 import json
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 
 from ceeq.apps.queries.models import Project, ScoreHistory
+from ceeq.apps.users.views import user_is_superuser
 from models import ProjectAccess
 
 
@@ -33,7 +35,7 @@ def update_project_access_history(request):
     else:
         project_access = ProjectAccess.objects.create(total=total_access)
 
-
+@login_required
 def usage(request):
     if request.method == 'GET':
         return render(request, 'usage/usage.html')
@@ -78,6 +80,7 @@ def get_project_access_trend(request):
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 
+@user_passes_test(user_is_superuser)
 def update_project_access_history_manually(request):
     update_project_access_history(request)
 
