@@ -10,7 +10,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from ceeq.apps.calculator.utils import get_score_data
 
-from ceeq.apps.queries.models import Project, ImpactMap, ScoreHistory
+from ceeq.apps.queries.models import Project, ImpactMap, ScoreHistory, Instance
 from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHistory
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
 from ceeq.apps.queries.tasks import query_jira_data
@@ -36,14 +36,28 @@ def projects(request):
             temp_components[component.component_name] = Decimal(component.impact) / score_scalar
         ceeq_components[impact_map.name] = sorted(temp_components.iteritems())
 
+    form_initial = {}
+    try:
+        instance_jira = Instance.objects.get(url='http://jira.west.com')
+        form_initial['instance'] = instance_jira
+    except Instance.DoesNotExist:
+        pass
+
+    try:
+        impact_map_apps = ImpactMap.objects.get(name='Apps')
+        form_initial['impact_map'] = impact_map_apps
+    except ImpactMap.DoesNotExist:
+        pass
+
     context = RequestContext(request, {
         'projects_active': projects_active,
         'projects_archive': projects_archive,
-        'framework_parameters_items': ['jira_issue_weight_sum',
-                                       'vaf_ratio',
-                                       'vaf_exp'],
+        # 'framework_parameters_items': ['jira_issue_weight_sum',
+        #                                'vaf_ratio',
+        #                                'vaf_exp'],
         'superuser': request.user.is_superuser,
-        'ceeq_components': sorted(ceeq_components.iteritems())
+        'ceeq_components': sorted(ceeq_components.iteritems()),
+        'form': ProjectNewForm(initial=form_initial),
 
     })
     return render(request, 'queries/projects/projects_start.html', context)
@@ -183,21 +197,32 @@ def project_new(request):
             messages.success(request, "Project \"{0}\" has been created.".format(project.name))
             return HttpResponseRedirect(reverse('queries:projects'))
         else:
-            messages.error(request, "Correct errors in the form.")
+            messages.error(request, "Correct errors in the project new form.")
+            projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+            projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+            try:
+                ls = LiveSettings.objects.all()[0]
+                score_scalar = ls.score_scalar
+            except (LiveSettings.DoesNotExist, IndexError):
+                score_scalar = 20
+
+            ceeq_components = {}
+            for impact_map in ImpactMap.objects.all():
+                temp_components = {}
+                components = ComponentImpact.objects.filter(impact_map=impact_map)
+                for component in components:
+                    temp_components[component.component_name] = Decimal(component.impact) / score_scalar
+                ceeq_components[impact_map.name] = sorted(temp_components.iteritems())
+
             context = RequestContext(request, {
+                'projects_active': projects_active,
+                'projects_archive': projects_archive,
+                'superuser': request.user.is_superuser,
+                'ceeq_components': sorted(ceeq_components.iteritems()),
                 'form': form,
-                'instances': get_instances(),
-                'impact_maps': get_impact_maps()
+
             })
-            return render(request, 'queries/projects/project_new.html', context)
-    else:
-        form = ProjectNewForm()
-        context = RequestContext(request, {
-            'form': form,
-            'instances': get_instances(),
-            'impact_maps': get_impact_maps()
-        })
-        return render(request, 'queries/projects/project_new.html', context)
+            return render(request, 'queries/projects/projects_start.html', context)
 
 
 @user_passes_test(user_is_superuser)

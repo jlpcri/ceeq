@@ -21,11 +21,12 @@ class ProjectNewForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_key', 'instance', 'active', 'complete', 'impact_map']
-        #exclude = ('created', 'score')
+        fields = ['name', 'jira_key', 'instance', 'impact_map', 'active', 'complete' ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'jira_key': forms.TextInput(attrs={'class': 'form-control'}),
-            #'jira_version': forms.Select(attrs={'class': 'form-control'})
+            'instance': forms.Select(attrs={'class': 'form-control'}),
+            'impact_map': forms.Select(attrs={'class': 'form-control'})
+
         }
 
