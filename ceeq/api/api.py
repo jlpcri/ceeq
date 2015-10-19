@@ -5,13 +5,13 @@ from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 
 from ceeq.apps.queries.models import Project
-from ceeq.apps.calculator.models import ComponentComplexity
+from ceeq.apps.calculator.models import ComponentImpact
 
 
-class FrameworkParameterResource(ModelResource):
+class ComponentImpactResource(ModelResource):
     class Meta:
-        queryset = ComponentComplexity.objects.all()
-        resource_name = 'argument'
+        queryset = ComponentImpact.objects.all()
+        resource_name = 'componentImpact'
         authorization = Authorization()
         allowed_methods = ['get', 'post', 'put', 'delete']
 

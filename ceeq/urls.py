@@ -6,11 +6,11 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-from ceeq.api.api import SearchAutoCompleteResource, FrameworkParameterResource
+from ceeq.api.api import SearchAutoCompleteResource, ComponentImpactResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(SearchAutoCompleteResource())
-v1_api.register(FrameworkParameterResource())
+v1_api.register(ComponentImpactResource())
 
 urlpatterns = patterns('',
 
