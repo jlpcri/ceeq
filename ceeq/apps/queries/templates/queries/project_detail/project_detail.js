@@ -656,7 +656,7 @@ function displayQEIlogo(uat_type) {
 }
 
 function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
-    var pie_title, uat_title, color_title;
+    var pie_title, uat_title, color_title, y_min_value = 0;
     if (uat_type == 'include_uat') {
         uat_title = 'Overall';
     } else if (uat_type == 'exclude_uat') {
@@ -679,6 +679,7 @@ function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
 
     if ( parseFloat(title_score) < 0) {
         color_title = '#FF0000';
+        y_min_value = -10;
     }
     else {
         color_title = '#000000';
@@ -728,7 +729,7 @@ function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
                 color: '#808080'
             }],
             max: 10,
-            //min: 0
+            min: y_min_value
         },
         tooltip: {
             //formatter: function(){
