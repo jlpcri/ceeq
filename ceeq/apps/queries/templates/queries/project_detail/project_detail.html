@@ -26,106 +26,107 @@
             <div class="row">
                 <legend>Project Information</legend>
             </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2" style="text-align: left;font-size:18px;">Project Name</div>
-                <div class="col-md-8">{{ form.name }}</div>
-            </div>
-            <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Key</div>
-                <div class="col-md-8">{{ form.jira_key }}</div>
-            </div>
-            {% if superuser %}
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size: 18px;">JIRA Version</div>
-                    <div class="col-md-8">
-                        <select name="jira_version" class="form-control" id="id_jira_version">
-                            {% for item in version_names %}
-                                {% if item == project.jira_version %}
-                                    <option value="{{ item }}" selected>{{ item }}</option>
-                                {% else %}
-                                    <option value="{{ item }}">{{ item }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+{#            <div class="row" style="margin-bottom: 10px;">#}
+{#                <div class="col-md-1"></div>#}
+{#                <div class="col-md-2" style="text-align: left;font-size:18px;">Project Name</div>#}
+{#                <div class="col-md-8">{{ form.name }}</div>#}
+{#            </div>#}
+{#            <div class="row" style="margin-bottom: 10px;">#}
+{#                <div class="col-md-1"></div>#}
+{#                <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Key</div>#}
+{#                <div class="col-md-8">{{ form.jira_key }}</div>#}
+{#            </div>#}
+{#            {% if superuser %}#}
+{#                <div class="row" style="margin-bottom: 10px;">#}
+{#                    <div class="col-md-1"></div>#}
+{#                    <div class="col-md-2" style="text-align: left;font-size: 18px;">JIRA Version</div>#}
+{#                    <div class="col-md-8">#}
+{#                        <select name="jira_version" class="form-control" id="id_jira_version">#}
+{#                            {% for item in version_names %}#}
+{#                                {% if item == project.jira_version %}#}
+{#                                    <option value="{{ item }}" selected>{{ item }}</option>#}
+{#                                {% else %}#}
+{#                                    <option value="{{ item }}">{{ item }}</option>#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="row" style="margin-bottom: 10px;">#}
+{#                <div class="col-md-1"></div>#}
+{#                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Instance</div>#}
+{#                    <div class="col-md-8">#}
+{#                        <select name="instance" class="form-control" id="id_instance">#}
+{#                            {% for item in instances %}#}
+{#                                {% if item.url == project.instance.url %}#}
+{#                                    <option value="{{ item.value }}" selected>{{ item.url }}</option>#}
+{#                                {% else %}#}
+{#                                    <option value="{{ item.value }}">{{ item.url }}</option>#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="row" style="margin-bottom: 10px;">#}
+{#                    <div class="col-md-1"></div>#}
+{#                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Impact Map</div>#}
+{#                    <div class="col-md-8">#}
+{#                        <select name="impact_map" class="form-control" id="id_impact_map">#}
+{#                            {% for item in impact_maps %}#}
+{#                                {% if item.name == project.impact_map.name %}#}
+{#                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>#}
+{#                                {% else %}#}
+{#                                    <option value="{{ item.value }}">{{ item.name }}</option>#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="row" style="margin-bottom: 10px;">#}
+{#                    <div class="col-md-1"></div>#}
+{#                    <div class="col-md-2" style="text-align: left;font-size:18px;">Project Action</div>#}
+{#                    <div class="col-md-2">#}
+{#                        {% if project.active %}#}
+{#                            <label for="id_active"></label><input id="id_active" name="active" type="checkbox" checked hidden>#}
+{#                            <a href="{% url 'queries:project_track' project.id %}" title="UnTrack JIRA Project"><b> UnTrack JIRA Project</b></a>#}
+{#                        {% else %}#}
+{#                            <label for="id_active"></label><input id="id_active" name="active" type="checkbox" hidden>#}
+{#                            <a href="{% url 'queries:project_track' project.id %}" title="Track JIRA Project"><b> Track JIRA Project</b></a>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{#                    <div class="col-md-2">#}
+{#                        {% if project.complete %}#}
+{#                            <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" checked hidden>#}
+{#                            <a href="{% url 'queries:project_archive' project.id %}" title="Reactivate Project"><b> Reactivate JIRA Project</b></a>#}
+{#                        {% else %}#}
+{#                            <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" hidden>#}
+{#                            <a href="{% url 'queries:project_archive' project.id %}" title="Archive Project"><b> Archive JIRA Project</b></a>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#            {% else %}#}
+{#                <div class="row" style="margin-bottom: 10px;">#}
+{#                    <div class="col-md-1"></div>#}
+{#                    <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Version</div>#}
+{#                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.jira_version }}</div>#}
+{#                </div>#}
+{#                <div class="row" style="margin-bottom: 10px;">#}
+{#                    <div class="col-md-1"></div>#}
+{#                    <div class="col-md-2" style="text-align: left;font-size:18px;">Instance</div>#}
+{#                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.instance.url }}</div>#}
+{#                </div>#}
+{#                <div class="row" style="margin-bottom: 10px;">#}
+{#                    <div class="col-md-1"></div>#}
+{#                    <div class="col-md-2" style="text-align: left;font-size:18px;">Impact Map</div>#}
+{#                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.impact_map.name }}</div>#}
+{#                </div>#}
+{#            {% endif %}#}
 
-                <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Instance</div>
-                    <div class="col-md-8">
-                        <select name="instance" class="form-control" id="id_instance">
-                            {% for item in instances %}
-                                {% if item.url == project.instance.url %}
-                                    <option value="{{ item.value }}" selected>{{ item.url }}</option>
-                                {% else %}
-                                    <option value="{{ item.value }}">{{ item.url }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Impact Map</div>
-                    <div class="col-md-8">
-                        <select name="impact_map" class="form-control" id="id_impact_map">
-                            {% for item in impact_maps %}
-                                {% if item.name == project.impact_map.name %}
-                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
-                                {% else %}
-                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">Project Action</div>
-                    <div class="col-md-2">
-                        {% if project.active %}
-                            <label for="id_active"></label><input id="id_active" name="active" type="checkbox" checked hidden>
-                            <a href="{% url 'queries:project_track' project.id %}" title="UnTrack JIRA Project"><b> UnTrack JIRA Project</b></a>
-                        {% else %}
-                            <label for="id_active"></label><input id="id_active" name="active" type="checkbox" hidden>
-                            <a href="{% url 'queries:project_track' project.id %}" title="Track JIRA Project"><b> Track JIRA Project</b></a>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-2">
-                        {% if project.complete %}
-                            <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" checked hidden>
-                            <a href="{% url 'queries:project_archive' project.id %}" title="Reactivate Project"><b> Reactivate JIRA Project</b></a>
-                        {% else %}
-                            <label for="id_complete"></label><input id="id_complete" name="complete" type="checkbox" hidden>
-                            <a href="{% url 'queries:project_archive' project.id %}" title="Archive Project"><b> Archive JIRA Project</b></a>
-                        {% endif %}
-                    </div>
-                </div>
-
-            {% else %}
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Version</div>
-                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.jira_version }}</div>
-                </div>
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">Instance</div>
-                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.instance.url }}</div>
-                </div>
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">Impact Map</div>
-                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.impact_map.name }}</div>
-                </div>
-            {% endif %}
-
+            {{ form }}
 
             {% csrf_token %}
             <div class="row" style="margin-top: 30px; margin-bottom: 50px;">
