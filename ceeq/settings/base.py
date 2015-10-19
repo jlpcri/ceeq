@@ -72,7 +72,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'tastypie',
+    'tastypie',
     'ceeq.apps.core',
     # 'ceeq.apps.projects',
     # 'ceeq.apps.defects_density',
