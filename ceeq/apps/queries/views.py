@@ -121,7 +121,7 @@ def project_detail(request, project_id):
     context = RequestContext(request, {
         'form': form,
         'project': project,
-        'version_names': project.fetch_jira_versions,
+        # 'version_names': project.fetch_jira_versions,
         'impact_maps': get_impact_maps(),
         'instances': get_instances(),
         'superuser': request.user.is_superuser,
