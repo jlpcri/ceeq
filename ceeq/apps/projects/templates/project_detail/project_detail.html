@@ -52,6 +52,23 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size: 18px;">Project Type</div>
+                    <div class="col-md-8">
+                        <select name="project_type" class="form-control" id="project_type">
+                            {% for item in project_types %}
+                                {% if item.name == project.project_type.name %}
+                                    <option value="{{ item.value }}" selected>{{ item.name }}</option>
+                                {% else %}
+                                    <option value="{{ item.value }}">{{ item.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>
                     <div class="col-md-2" style="text-align: left;font-size:18px;">Project Action</div>
@@ -79,6 +96,11 @@
                     <div class="col-md-1"></div>
                     <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Version</div>
                     <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.jira_version }}</div>
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Project Type</div>
+                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.project_type }}</div>
                 </div>
             {% endif %}
 
@@ -219,10 +241,14 @@
 
     <script type="text/javascript">
         var score = parseFloat({{ project.score }});
+
         var data_include_uat = {{ dd_pie_data_include_uat | safe }};
         var data_exclude_uat = {{ dd_pie_data_exclude_uat | safe }};
         var data_only_uat = {{ dd_pie_data_only_uat | safe }};
         var data_custom = {{ dd_pie_data_custom | safe }};
+
+        var data_ceeq_trend_graph = {{ ceeq_trend_graph |safe }};
+
         var last_tab = '{{ last_tab }}';
 
         {% include 'project_detail/project_detail.js' %}

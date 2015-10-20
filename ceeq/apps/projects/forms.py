@@ -26,7 +26,7 @@ class ProjectForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_name', 'jira_version', 'active', 'complete']
+        fields = ['name', 'jira_name', 'jira_version', 'active', 'complete', 'project_type']
         #exclude = ('created', 'score')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -39,7 +39,7 @@ class ProjectNewForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_name', 'active', 'complete']
+        fields = ['name', 'jira_name', 'active', 'complete', 'project_type']
         #exclude = ('created', 'score')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
