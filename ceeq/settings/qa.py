@@ -11,13 +11,24 @@ ALLOWED_HOSTS = [
     'linux6438'
 ]
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ceeq',
+#         'USER': 'visilog',
+#         'PASSWORD': '6ewuON0>;wHTe(DttOwjg#5NY)U497xKVwOxmQt60A1%}r:@qC&`7OdSP8u[.l[',
+#         'HOST': 'linux6437.wic.west.com',
+#         'PORT': '5432'
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ceeq',
-        'USER': 'visilog',
-        'PASSWORD': '6ewuON0>;wHTe(DttOwjg#5NY)U497xKVwOxmQt60A1%}r:@qC&`7OdSP8u[.l[',
-        'HOST': 'linux6437.wic.west.com',
+        'USER': 'scorecard',
+        'PASSWORD': 'scorecard_development',
+        'HOST': 'qaci01.wic.west.com',
         'PORT': '5432'
     }
 }
