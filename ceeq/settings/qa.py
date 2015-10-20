@@ -2,6 +2,8 @@ from base import *
 
 DEBUG = False
 
+STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
+
 ALLOWED_HOSTS = [
     'apps.qaci01.wic.west.com',
     'apps.qaci01',
