@@ -6,7 +6,11 @@ SETTINGS_MODULE = 'ceeq.settings.dev'
 
 ALLOWED_HOSTS = [
     'apps.qaci01.wic.west.com',
-    'apps.qaci01'
+    'apps.qaci01',
+    'linux6436.wic.west.com',
+    'linux6436',
+    'linux6438.wic.west.com',
+    'linux6438'
 ]
 
 # DATABASES = {
