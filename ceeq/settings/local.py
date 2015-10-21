@@ -57,8 +57,8 @@ DATABASES = {
         'USER': 'scorecard',
         'PASSWORD': 'scorecard_development',
         'HOST': 'qaci01.wic.west.com',
-        'PORT': '5432',
-        # 'PORT': '5433'  # another postgres instance
+        # 'PORT': '5432',
+        'PORT': '5433'  # another postgres instance
     }
 }
 
