@@ -2,6 +2,8 @@ from base import *
 
 DEBUG = False
 
+LOGIN_URL = '/ceeq_new/'
+
 STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
 
 ALLOWED_HOSTS = [
