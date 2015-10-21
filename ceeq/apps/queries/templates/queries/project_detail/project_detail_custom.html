@@ -1,0 +1,186 @@
+<br>
+<div class="row">
+    <div id="report-range" class="query-field pull-left">
+        <i class="fa fa-caret-down"></i>
+        <i class="fa fa-calendar"></i>
+        <span></span>
+    </div>
+
+    <div id="custom-uat-type" class="query-field pull-right">
+        <select class="form-control" style="width: 150px; height: 30px; border: 0; padding: 0;" onchange="attachUatType()">
+            <option value="exclude_uat" {% if  uat_type_custom  == 'exclude_uat' %}selected{% endif %}>Internal Testing</option>
+            <option value="only_uat" {% if  uat_type_custom  == 'only_uat' %}selected{% endif %}>UAT</option>
+        </select>
+    </div>
+</div>
+
+<br><br>
+
+<div id="custom_pie_chart_loading" hidden style="width: 400px; height: 200px; margin: 0 auto;">
+    <div class="loading" style="text-align:center; margin-top: 100px;">
+        <i class="fa fa-cog fa-5x fa-spin"></i><br>
+        <h3>Loading data from JIRA Database...</h3>
+    </div>
+</div>
+
+<div id="custom_pie_chart_contents">
+    <div id="component_percentage_pie_chart_custom" style="width: 700px; height: 600px; margin: 0 auto;">
+        <div class="loading" style="text-align:center; margin-top: 100px;">
+            <i class="fa fa-spinner fa-2x fa-spin"></i>
+            Loading data from JIRA Database...
+        </div>
+    </div>
+
+    <div id="qei_log_custom" style="width: 500px; height: 300px; margin: 0 auto;" hidden></div>
+
+    {% if weight_factor_custom %}
+        <div class="row">
+            <p style="text-align: center" id="export_data_custom">
+                Export Graph to:
+                <button id="png_custom">PNG</button>
+                <button id="jpeg_custom">JPEG</button>
+                <button id="pdf_custom">PDF</button>
+            </p>
+        </div>
+    {% else %}
+        <div class="row">
+            <p style="text-align: center" id="export_qei_log_custom">
+                Export Graph to:
+                <button id="png_qei_log_custom">PNG</button>
+                <button id="jpeg_qei_log_custom">JPEG</button>
+                <button id="pdf_qei_log_custom">PDF</button>
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<br>
+<div class="row">
+    <legend>Components Weighted Factors (Scales: 0 -1)</legend>
+    <p>
+        Project CEEQ Custom Score:
+        {% if custom_score > 10 %}
+            Out of Range
+        {% else %}
+            <strong>{{ custom_score|floatformat:2 }}</strong>
+        {% endif %}
+    </p>
+    <p>Standard Component Names: <strong>{{ component_names_standard }}</strong></p>
+    <p>Exist Components Names: <strong>{{ component_names_custom }}</strong></p>
+</div>
+
+{% if weight_factor_custom %}
+   <table class="table table-hover table-striped" id="factor_table" >
+    <thead>
+        <tr>
+            <th colspan="3" style="text-align: center; color: brown">Weighted Factor</th>
+            <th colspan="16" style="text-align: center; color: brown">Number of Issues</th>
+        </tr>
+        <tr>
+            <th style="background-color: lightcyan">Component Name</th>
+            <th style="background-color: lightcyan">Weight</th>
+            <th style="background-color: lightcyan">Defect Impact</th>
+
+            <th colspan="3" style="background-color: lavender; text-align: center">Blocker</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Critical</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Major</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Minor</th>
+            <th colspan="3" style="background-color: lavender; text-align: center">Trivial</th>
+            <th style="background-color: lavender; text-align: center">SubTotal</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+
+
+            <th style="background-color: cadetblue">O</th>
+            <th style="background-color: cadetblue">R</th>
+            <th style="background-color: cadetblue">C</th>
+
+            <th style="background-color: antiquewhite">O</th>
+            <th style="background-color: antiquewhite">R</th>
+            <th style="background-color: antiquewhite">C</th>
+
+            <th style="background-color: cadetblue">O</th>
+            <th style="background-color: cadetblue">R</th>
+            <th style="background-color: cadetblue">C</th>
+
+            <th style="background-color: antiquewhite">O</th>
+            <th style="background-color: antiquewhite">R</th>
+            <th style="background-color: antiquewhite">C</th>
+
+            <th style="background-color: cadetblue">O</th>
+            <th style="background-color: cadetblue">R</th>
+            <th style="background-color: cadetblue">C</th>
+
+            <th style="background-color: antiquewhite"></th>
+
+  </tr>
+    </thead>
+    <tbody>
+        {% for component,weight,dd, total, b_c, b_o, b_r, c_c, c_o, c_r, m_c, m_o, m_r, mi_c, mi_o, mi_r, t_c, t_o, t_r in weight_factor_custom %}
+            <tr>
+                <td>{{ component }}</td>
+                <td>{{ weight|floatformat:3 }}</td>
+                <td>{{ dd|floatformat:3 }}</td>
+
+
+                <td>{{ b_o }}</td>
+                <td>{{ b_r }}</td>
+                <td>{{ b_c }}</td>
+
+                <td>{{ c_o }}</td>
+                <td>{{ c_r }}</td>
+                <td>{{ c_c }}</td>
+
+                <td>{{ m_o }}</td>
+                <td>{{ m_r }}</td>
+                <td>{{ m_c }}</td>
+
+                <td>{{ mi_o }}</td>
+                <td>{{ mi_r }}</td>
+                <td>{{ mi_c }}</td>
+
+                <td>{{ t_o }}</td>
+                <td>{{ t_r }}</td>
+                <td>{{ t_c }}</td>
+
+                <td style="text-align: center;">{{ total }}</td>
+            </tr>
+        {% endfor %}
+    <tr>
+        <td>&nbsp;</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><strong>Total</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_custom.blocker }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_custom.critical }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_custom.major }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_custom.minor }}</td>
+        <td></td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_custom.trivial }}</td>
+        <td></td>
+        <td style="text-align: center">{{ priority_total_custom.total }}</td>
+    </tr>
+    </tbody>
+    </table>
+{% endif %}

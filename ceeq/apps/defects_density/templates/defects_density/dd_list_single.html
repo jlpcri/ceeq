@@ -1,0 +1,66 @@
+
+{% block body %}
+    <div class="row">
+            <legend>Project Information</legend>
+            <p><strong>Project Name: </strong>{{ project.name }}, <strong>Version: </strong>{{ project.jira_version }}</p>
+            <p>
+                {% if project.score == 101 %}
+                    No created issues
+                {% elif project.score == 102 %}
+                    Out of Range
+                {% elif project.score == 103 %}
+                    No open issues
+                {% elif project.score == 104 %}
+                    No JIRA Data
+                {% elif project.score == 109 %}
+                    No evaluate
+                {% else %}
+                    <strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score|floatformat:2 }}
+                {% endif %}
+            </p>
+            <br>
+        </div>
+
+    {% if superuser %}
+        <div class="container">
+            <table class="table table-striped table-hover table-condensed table-bordered" style="">
+                <thead>
+                    <tr>
+{#                        <td style="text-align: center"><strong>Version</strong></td>#}
+                        <td style="text-align: center"><strong>Date</strong></td>
+                        <td style="text-align: center"><strong>CEEQ</strong></td>
+                        <td style="text-align: center"><strong>Projected</strong></td>
+                        <td style="text-align: center"><strong>CXP</strong></td>
+                        <td style="text-align: center"><strong>Platform</strong></td>
+                        <td style="text-align: center"><strong>Reports</strong></td>
+                        <td style="text-align: center"><strong>Application</strong></td>
+                        <td style="text-align: center"><strong>Prompts</strong></td>
+                        <td style="text-align: center"><strong>Del</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dd in project_dds %}
+                        <tr>
+{#                            <td class="col-sm-2" style="text-align: center">{{ dd.version }}</td>#}
+                            <td class="col-sm-2" style="text-align: center">{{ dd.created | date:"M d, Y"}}</td>
+                            <td class="col-sm-2" style="text-align: center">{{ dd.ceeq|floatformat:3 }}</td>
+                            <td class="col-sm-2" style="text-align: center">{{ dd.ceeq_closed|floatformat:3 }}</td>
+                            <td class="col-sm-1" style="text-align: center">{{ dd.cxp|floatformat:3 }}</td>
+                            <td class="col-sm-1" style="text-align: center">{{ dd.platform|floatformat:3 }}</td>
+                            <td class="col-sm-1" style="text-align: center">{{ dd.reports|floatformat:3 }}</td>
+                            <td class="col-sm-1" style="text-align: center">{{ dd.application|floatformat:3 }}</td>
+                            <td class="col-sm-1" style="text-align: center">{{ dd.voice_slots|floatformat:3 }}</td>
+                            <td class="col-sm-1" style="text-align: center">
+                                <a href="{% url 'dds:dd_delete' dd.id %}" style="color: red;"><i class="fa fa-trash-o fa-lg"></i></a> |
+                                <a href="{% url 'dds:dd_detail' dd.id %}"><i class="fa fa-edit fa-lg"></i> </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="container" id="dd_list_single"></div>
+    {% endif %}
+    <br>
+{% endblock %}

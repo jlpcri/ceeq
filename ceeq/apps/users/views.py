@@ -26,7 +26,7 @@ def sign_in(request):
                 if request.GET.get('next'):
                     return redirect(request.GET['next'])
                 else:
-                    return redirect('home')
+                    return redirect('users:home')
             else:
                 messages.error(request, 'This account is inactive.')
                 return redirect('landing')
@@ -45,7 +45,7 @@ def sign_out(request):
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'users/home.html')
 
 
 @user_passes_test(user_is_superuser)
@@ -80,7 +80,7 @@ def user_management(request):
             'current_user_id': current_user_id
         })
 
-        return render(request, 'user_management.html', context)
+        return render(request, 'users/user_management.html', context)
 
     return HttpResponseNotFound()
 
@@ -93,15 +93,14 @@ def user_update(request, user_id):
         user.is_active = request.POST.get('is_active', False) \
             or request.POST.get('is_staff', False) \
             or request.POST.get('is_superuser', False)
-        user.is_staff = request.POST.get('is_staff', False) \
-            or request.POST.get('is_superuser', False)
+        user.is_staff = request.POST.get('is_staff', False)
         user.is_superuser = request.POST.get('is_superuser', False)
 
         user.save()
 
-        return redirect('user_management')
+        return redirect('users:management')
     else:
-        return redirect('user_management')
+        return redirect('users:management')
 
 
 @user_passes_test(user_is_superuser)
@@ -114,7 +113,7 @@ def user_delete(request, user_id):
         return redirect('landing')
     else:
         user.delete()
-        return redirect('user_management')
+        return redirect('users:management')
 
 
 @login_required()
@@ -125,7 +124,7 @@ def user_settings(request):
     context = RequestContext(request, {
         'user_settings': user_settings
     })
-    return render(request, 'user_settings.html', context)
+    return render(request, 'users/user_settings.html', context)
 
 
 @login_required()
@@ -163,7 +162,7 @@ def user_settings_update(request):
             messages.success(request, 'Your settings have been saved. Need update CEEQ score.')
         else:
             messages.error(request, 'Issue type Bug should be selected.')
-        return redirect('user_settings')
+        return redirect('users:user_settings')
     else:
         messages.error(request, 'Sorry, your settings cannot be saved.')
-        return redirect('user_settings')
+        return redirect('users:user_settings')

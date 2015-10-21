@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Defect Impact Detail{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <form action="{% url 'dds:dd_edit' dd.id %}" method="post">
+            <div class="row">
+                <legend>Record Information</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Project Name</div>
+                <div class="col-md-8">{{ form.project }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Version</div>
+                <div class="col-md-8">{{ form.version }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Created Date</div>
+                <div class="col-md-8">{{ form.created }}</div>
+            </div>
+
+            <br>
+            <div class="row">
+                <legend>CEEQ Score</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">CEEQ</div>
+                <div class="col-md-1">{{ form.ceeq }}</div>
+
+                <div class="col-md-2"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Projected</div>
+                <div class="col-md-1">{{ form.ceeq_closed }}</div>
+            </div>
+            <br>
+
+            <div class="row">
+                <legend>Component Defect Impact</legend>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">CXP</div>
+                <div class="col-md-8">{{ form.cxp }}</div>
+            </div>
+
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Platform</div>
+                <div class="col-md-8">{{ form.platform }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Reports</div>
+                <div class="col-md-8">{{ form.reports }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Application</div>
+                <div class="col-md-8">{{ form.application }}</div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-1"></div>
+                <div class="col-md-2" style="text-align: left;font-size: 18px;">Prompts</div>
+                <div class="col-md-8">{{ form.voice_slots }}</div>
+            </div>
+
+            {% csrf_token %}
+            <div class="row" style="margin-top: 30px; margin-bottom: 50px;">
+                <div class="col-md-4">
+
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary" type="submit" value="Save" style="width: 100%">
+                </div>
+                <div class="col-md-2">
+                    <a href="{% url 'projects:projects' %}" class="btn btn-primary" style="width: 100%">Cancel</a>
+
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

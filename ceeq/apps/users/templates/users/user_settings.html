@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% block title %}User Settings{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <br>
+        <div class="row">
+            <legend>User Settings</legend>
+            <p>Please select following issue types to count in CEEQ Score. <strong>Bug</strong> issue type is manadatory.</p>
+        </div>
+        <form method="post" action="{% url 'users:user_settings_update' %}">
+            <table class="table table-striped table-hover table-condensed" style="width: 50%;">
+                <thead>
+                    <tr>
+                        <td class="col-xs-2"><strong>Issue Type</strong></td>
+                        <td class="col-xs-2"><strong>Selection</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bug</td>
+                        <td><input type="checkbox" name="bug" {% if user_settings.bug %}checked{% endif %}></td>
+                    </tr>
+                    <tr>
+                        <td>Environment</td>
+                        <td><input type="checkbox" name="environment" {% if user_settings.environment %}checked{% endif %}></td>
+                    </tr>
+                    <tr>
+                        <td>Improvement</td>
+                        <td><input type="checkbox" name="improvement" {% if user_settings.improvement %}checked{% endif %}></td>
+                    </tr>
+                    <tr>
+                        <td>New Feature</td>
+                        <td><input type="checkbox" name="new_feature" {% if user_settings.new_feature %}checked{% endif %}></td>
+                    </tr>
+                    <tr>
+                        <td>Task</td>
+                        <td><input type="checkbox" name="task" {% if user_settings.task %}checked{% endif %}></td>
+                    </tr>
+                    <tr>
+                        <td>Suggested Improvement</td>
+                        <td><input type="checkbox" name="suggested_improvement" {% if user_settings.suggested_improvement %}checked{% endif %}></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            {% csrf_token %}
+            <input class="btn btn-primary" type="submit" value="Save Changes">
+            <button class="btn btn-default" type="reset">Reset</button>
+
+        </form>
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

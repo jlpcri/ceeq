@@ -20,7 +20,7 @@ def project_sub_piechart(request, project_id):
     uat_type = request.GET.get('uat_type')
     component_type = request.GET.get('component_type')
 
-    sub_component_template = 'sub_component/project_sub_component_apps.html'
+    sub_component_template = 'proj/sub_component/project_sub_component_apps.html'
 
     project = get_object_or_404(Project, pk=project_id)
     context = RequestContext(request, {

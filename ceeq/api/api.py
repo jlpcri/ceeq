@@ -4,47 +4,14 @@ from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 
-from ceeq.apps.projects.models import Project, ProjectComponentsDefectsDensity, FrameworkParameter
+from ceeq.apps.queries.models import Project
+from ceeq.apps.calculator.models import ComponentImpact
 
 
-class ProjectResource(ModelResource):
-    ddensity = fields.ToManyField('ceeq.api.api.ComponentsDefectsDensityResource',
-                                 attribute=lambda bundle: ProjectComponentsDefectsDensity.objects.filter(project=bundle.obj),
-                                 full=False,
-                                 null=True
-    )
-
+class ComponentImpactResource(ModelResource):
     class Meta:
-        queryset = Project.objects.all()
-        resource_name = 'project'
-        authorization = Authorization()
-        fields = ['name', 'jira_name', 'score']
-        allowed_methods = ['get', 'post', 'put', 'delete']
-
-
-class ComponentsDefectsDensityResource(ModelResource):
-    project = fields.ToOneField('ceeq.api.api.ProjectResource',
-                                attribute='project',
-                                related_name='defectsdensity',
-                                full=False,
-                                null=False
-    )
-
-    class Meta:
-        queryset = ProjectComponentsDefectsDensity.objects.all()
-        resource_name = 'defectsdensity'
-        authorization = Authorization()
-        allowed_methods = ['get', 'post', 'put', 'delete']
-        filtering = {
-            'weight': ALL,
-            'project': ALL,
-        }
-
-
-class FrameworkParameterResource(ModelResource):
-    class Meta:
-        queryset = FrameworkParameter.objects.all()
-        resource_name = 'argument'
+        queryset = ComponentImpact.objects.all()
+        resource_name = 'componentImpact'
         authorization = Authorization()
         allowed_methods = ['get', 'post', 'put', 'delete']
 

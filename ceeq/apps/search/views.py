@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.template import RequestContext
 
-from ceeq.apps.projects.models import Project
+from ceeq.apps.queries.models import Project
 
 
 def search(request):
@@ -13,4 +13,4 @@ def search(request):
             'projects': projects,
             'superuser': request.user.is_superuser
         })
-        return render(request, 'search.html', context)
+        return render(request, 'search/search.html', context)

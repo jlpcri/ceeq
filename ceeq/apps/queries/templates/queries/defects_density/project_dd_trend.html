@@ -1,0 +1,47 @@
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <legend>Project Information</legend>
+            <p><strong>Project Name: </strong>{{ project.name }}</p>
+            <p>
+                {% if project.score == 101 %}
+                    No created issues
+                {% elif project.score == 102 %}
+                    Out of Range
+                {% elif project.score == 103 %}
+                    No open issues
+                {% elif project.score == 104 %}
+                    No JIRA Data
+                {% elif project.score == 109 %}
+                    No evaluate
+                {% else %}
+                    <strong>CEEQ Score: &nbsp;&nbsp;</strong>{{ project.score|floatformat:2 }}
+                {% endif %}
+            </p>
+            <br>
+        </div>
+
+
+
+        {% for version_name in version_names %}
+            <h3>Version: {{ version_name.original_name }}</h3>
+            <div id="dd_trend_graph_{{ version_name.js_name }}" style="width: 800px; height: 400px;"></div>
+            <div class="row" style="width: 80%;">
+                <p style="text-align: center">
+                    Export Graph to:
+                    <button id="png_di_{{ version_name.js_name }}" onclick="exportGraphDefectImpact('image/png', '{{ version_name.js_name }}')">PNG</button>
+                    <button id="jpeg_di_{{ version_name.js_name }}" onclick="exportGraphDefectImpact('image/jpeg', '{{ version_name.js_name }}')">JPEG</button>
+                    <button id="pdf_di_{{ version_name.js_name }}" onclick="exportGraphDefectImpact('application/pdf', '{{ version_name.js_name }}')">PDF</button>
+                </p>
+            </div>
+        {% endfor %}
+
+        <div id="version_key"></div>
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

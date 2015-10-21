@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+{% block title %} Projects {% endblock %}
+
+{% block subnav %}
+    <br><br>
+    <div class="container">
+        <ul id="subnav-tabs" class="nav nav-tabs">
+            <li><a href="#projects" data-toggle="tab">Project Lists</a> </li>
+            <li><a href="#score_overall" data-toggle="tab">CEEQ Score</a> </li>
+            <li><a href="#framework_parameter" data-toggle="tab">Framework Parameters</a> </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="tab-content">
+            <div class="tab-pane" id="projects">
+                {% include 'queries/projects/projects.html' %}
+            </div>
+
+            <div class="tab-pane" id="score_overall">
+                {% include 'queries/score_overall.html' %}
+            </div>
+
+            <div class="tab-pane" id="framework_parameter">
+                {% include 'queries/framework_parameter.html' %}
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    <script>
+        {% include 'queries/projects/project.js' %}
+    </script>
+{% endblock %}

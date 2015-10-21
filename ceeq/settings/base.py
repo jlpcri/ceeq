@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import socket
 import ldap
 from django_auth_ldap.config import LDAPSearch
+import pytz
 
 LOGIN_URL = '/ceeq/'
 
@@ -73,13 +74,17 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'tastypie',
     'ceeq.apps.core',
-    'ceeq.apps.projects',
-    'ceeq.apps.defects_density',
+    # 'ceeq.apps.projects',
+    # 'ceeq.apps.defects_density',
     'ceeq.apps.help',
     'ceeq.apps.users',
     'ceeq.apps.search',
     'ceeq.api',
-    'south',
+    'django.contrib.postgres',
+    'ceeq.apps.calculator',
+    'ceeq.apps.formatter',
+    'ceeq.apps.queries',
+    'ceeq.apps.usage'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -260,3 +265,12 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'ceeqwic@gmail.com'
 EMAIL_HOST_PASSWORD = '^S=+c3gyYu6F74D'
 EMAIL_PORT = 587
+
+
+# # Celery config
+# CELERY_ACCEPT_CONTENT = ['pickle', 'json', ]
+# CELERY_TIMEZONE = 'US/Central'
+# CELERY_ENABLE_UTC = False
+# CELERY_RESULT_BACKEND = 'rpc://'
+# CELERY_RESULT_PERSISTENT = True
+# CELERY_RESULT_SERIALIZER = 'pickle'
