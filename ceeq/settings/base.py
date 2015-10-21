@@ -16,7 +16,7 @@ import ldap
 from django_auth_ldap.config import LDAPSearch
 import pytz
 
-LOGIN_URL = '/ceeq/'
+LOGIN_URL = '/ceeq_new/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
