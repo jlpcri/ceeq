@@ -79,6 +79,8 @@ function loadUatActiveDataTab() {
         div_pie_height,
         chart_pie_exclude_uat,
         chart_pie_include_uat,
+        chart_pie_only_uat,
+        chart_pie_custom,
         chart_line_exclude_uat,
         chart_line_include_uat;
 
@@ -123,16 +125,20 @@ function loadUatActiveDataTab() {
         div_pie_height = data_only_uat[1].length * 25 + 450;
         $(pie_chart_id + donut_pie).height(div_pie_height);
 
-        displayPieChart(data_only_uat, donut_pie, pie_chart_id);
+        chart_pie_only_uat = displayPieChart(data_only_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
+
+        exportAllCharts([chart_pie_only_uat], donut_pie);
     } else if (active_tab == '#custom') {
         donut_pie = 'custom';
 
         div_pie_height = data_custom[1].length * 25 + 450;
         $(pie_chart_id + donut_pie).height(div_pie_height);
 
-        displayPieChart(data_custom, donut_pie, pie_chart_id);
+        chart_pie_custom = displayPieChart(data_custom, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
+
+        exportAllCharts([chart_pie_custom], donut_pie);
     }
 }
 
@@ -368,42 +374,42 @@ function displayPieChart(data, uat_type, pie_chart_id) {
         Highcharts.setOptions({
             //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
         });
-        //var pie_title, color_title, uat_title;
-        //if (uat_type == 'include_uat') {
-        //    uat_title = 'Overall';
-        //} else if (uat_type == 'exclude_uat') {
-        //    uat_title = 'Internal Testing';
-        //} else if (uat_type == 'only_uat') {
-        //    uat_title = 'UAT';
-        //} else if (uat_type == 'custom') {
-        //    if (uat_type_custom == 'exclude_uat') {
-        //        uat_title = 'Custom Internal Testing';
-        //    } else {
-        //        uat_title = 'Custom UAT';
-        //    }
-        //}
-        //if ( parseFloat(data[3]) > 10) {
-        //    if (parseFloat(data[3]) == 103 ){
-        //        pie_title = 'No Open Issues';
-        //    } else {
-        //        pie_title = 'CEEQ Score: ' + 'Out of Range';
-        //    }
-        //}
-        //else {
-        //    pie_title = '<b>{{ project.name }} - </b>'
-        //        //+ 'CEEQ Score - '
-        //        + uat_title
-        //        + ': '
-        //        + parseFloat(data[3]).toFixed(2)
-        //        + ' / 10';
-        //}
-        //
-        //if ( parseFloat(data[3]) < 0) {
-        //    color_title = '#FF0000';
-        //}
-        //else {
-        //    color_title = '#000000';
-        //}
+        var pie_title, color_title, uat_title;
+        if (uat_type == 'include_uat' || uat_type == 'exclude_uat') {
+            pie_title = 'CEEQ Component Distribution';
+        } else if (uat_type == 'only_uat') {
+            uat_title = 'UAT';
+        } else if (uat_type == 'custom') {
+            if (uat_type_custom == 'exclude_uat') {
+                uat_title = 'Custom Internal Testing';
+            } else {
+                uat_title = 'Custom UAT';
+            }
+        }
+        if (uat_type == 'only_uat' || uat_type == 'custom') {
+            if ( parseFloat(data[3]) > 10) {
+                if (parseFloat(data[3]) == 103 ){
+                    pie_title = 'No Open Issues';
+                } else {
+                    pie_title = 'CEEQ Score: ' + 'Out of Range';
+                }
+            }
+            else {
+                pie_title = '<b>{{ project.name }} - </b>'
+                    //+ 'CEEQ Score - '
+                    + uat_title
+                    + ': '
+                    + parseFloat(data[3]).toFixed(2)
+                    + ' / 10';
+            }
+        }
+
+        if ( parseFloat(data[3]) < 0) {
+            color_title = '#FF0000';
+        }
+        else {
+            color_title = '#000000';
+        }
 
         var
         //colors = ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600'],
@@ -462,10 +468,10 @@ function displayPieChart(data, uat_type, pie_chart_id) {
                 borderWidth: 0
             },
             title: {
-                text: 'CEEQ Component Distribution',
+                text: pie_title,
                 style: {
                     //fontSize: '18pt',
-                    //color: color_title,
+                    color: color_title,
                     font: '15pt "Lucida Grande", Helvetica, Arial, sans-serif'
                 },
                 align: 'left'
@@ -763,13 +769,13 @@ function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
             {
                 name: 'Projected',
                 data: data['ceeq_closed'],
-                // maroon: 993232, green: 27ae60, blue: 397fdb
-                color: '#993232'
+                // maroon: 993232, green: 27ae60, blue: 397fdb, brown: a52a2a
+                color: '#a52a2a'
             },
             {
                 name: 'Actual',
                 data: data['ceeq'],
-                color: '#27ae60'
+                color: '#397fdb'
             }
         ],
         credits: false
@@ -887,13 +893,25 @@ function exportAllCharts(charts, donut_pie){
         'type': 'application/pdf'
         };
 
-    $('#png_export_all_' + donut_pie).click(function(){
-        Highcharts.exportCharts(charts, options_png);
-    });
-    $('#jpeg_export_all_' + donut_pie).click(function(){
-        Highcharts.exportCharts(charts, options_jpeg);
-    });
-    $('#pdf_export_all_' + donut_pie).click(function(){
-        Highcharts.exportCharts(charts, options_pdf);
-    });
+    if (donut_pie == 'exclude_uat' || donut_pie == 'include_uat') {
+        $('#png_export_all_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_png);
+        });
+        $('#jpeg_export_all_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_jpeg);
+        });
+        $('#pdf_export_all_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_pdf);
+        });
+    } else {
+        $('#png_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_png);
+        });
+        $('#jpeg_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_jpeg);
+        });
+        $('#pdf_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_pdf);
+        });
+    }
 }

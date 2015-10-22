@@ -15,7 +15,7 @@ def update_project_access_history(request):
     :param request:
     :return:
     """
-    projects = Project.objects.filter(complete=False)
+    projects = Project.objects.all()
     total_access = 0
     today = datetime.today().date()
     # today = (datetime.today() - timedelta(days=1)).date()
