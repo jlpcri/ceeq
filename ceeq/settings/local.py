@@ -11,13 +11,7 @@ ALLOWED_HOSTS = ['*']
 #     'ceeq.apps.defects_density'
 # )
 
-# ISSUE_PRIORITY_WEIGHT = {
-#     'blocker': Decimal(15) / 32,
-#     'critical': Decimal(9) / 32,
-#     'major': Decimal(5) / 32,
-#     'minor': Decimal(2) / 32,
-#     'trivial': Decimal(1) / 32
-# }
+# LOGIN_URL = '/ceep/'
 
 if socket.gethostname() == 'sliu-OptiPlex-GX520':  # desktop
     STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
@@ -45,7 +39,6 @@ elif socket.gethostname() == 'QAIMint':  # Alex's desktop
 #         'USER': 'visilog',
 #         'PASSWORD': '6ewuON0>;wHTe(DttOwjg#5NY)U497xKVwOxmQt60A1%}r:@qC&`7OdSP8u[.l[',
 #         'HOST': 'linux6437.wic.west.com',
-
 #         'PORT': '5432'
 #     }
 # }
@@ -54,11 +47,22 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ceeq',
-        'USER': 'scorecard',
-        'PASSWORD': 'scorecard_development',
-        'HOST': 'qaci01.wic.west.com',
-        # 'PORT': '5432',
-        'PORT': '5433'  # another postgres instance
+        'USER': 'ceeq',
+        'PASSWORD': 'FkhfDhPx%A=-?h_snCMuQ$&%5crcx%tpxw24pVVp+U-UrXs4q6=uK=8^-evN-RxA',
+        'HOST': 'linux6437.wic.west.com',
+        'PORT': '5433'   # posgtres 9.4 instance
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ceeq',
+#         'USER': 'scorecard',
+#         'PASSWORD': 'scorecard_development',
+#         'HOST': 'qaci01.wic.west.com',
+#         # 'PORT': '5432',
+#         'PORT': '5433'  # another postgres instance
+#     }
+# }
 

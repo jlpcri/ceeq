@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import RequestContext
+from django.conf import settings
 
 from models import UserSettings
 
@@ -45,7 +46,10 @@ def sign_out(request):
 
 @login_required
 def home(request):
-    return render(request, 'users/home.html')
+    context = RequestContext(request, {
+        'root_path': settings.LOGIN_URL
+    })
+    return render(request, 'users/home.html', context)
 
 
 @user_passes_test(user_is_superuser)

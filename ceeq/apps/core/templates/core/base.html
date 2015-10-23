@@ -213,7 +213,7 @@
 
         <script>
             $("#search-input").autocomplete({
-                source: "/ceeq/api/v1/searchAutoComplete",
+                source: {{ root_path }} + "api/v1/searchAutoComplete",
                 autoFocus: true
             });
         </script>
