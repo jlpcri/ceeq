@@ -1,3 +1,4 @@
+from django.conf import settings
 from celery.schedules import crontab
 
 # Celery config
@@ -21,4 +22,5 @@ CELERYBEAT_SCHEDULE = {
     }
 }
 
-CELERY_TIMEZONE = 'America/Chicago'
+# CELERY_TIMEZONE = 'America/Chicago'
+CELERY_TIMEZONE = settings.TIME_ZONE

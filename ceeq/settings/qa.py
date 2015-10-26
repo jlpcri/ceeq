@@ -2,6 +2,8 @@ from base import *
 
 DEBUG = False
 
+TIME_ZONE = 'America/New_York'
+
 LOGIN_URL = '/ceeq_new/'
 
 STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
