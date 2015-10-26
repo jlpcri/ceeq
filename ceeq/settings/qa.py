@@ -2,7 +2,7 @@ from base import *
 
 DEBUG = False
 
-TIME_ZONE = 'America/New_York'
+# TIME_ZONE = 'America/New_York'
 
 LOGIN_URL = '/ceeq_new/'
 
