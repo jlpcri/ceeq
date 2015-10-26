@@ -99,8 +99,11 @@ class Project(models.Model):
 
     @property
     def internal_score(self):
-        score = self.scorehistory_set.latest('created').internal_score[0]
-        return score
+        try:
+            score = self.scorehistory_set.latest('created').internal_score[0]
+            return score
+        except TypeError:
+            return 0
 
     @property
     def uat_score(self):
