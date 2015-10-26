@@ -9,38 +9,8 @@ from ceeq.apps.usage.views import update_project_access_history
 from ceeq.celery_module import app
 from ceeq.apps.calculator.models import ResultHistory, LiveSettings, ComponentImpact
 from ceeq.apps.queries.utils import parse_jira_data
-from models import Project
+from ceeq.apps.queries.models import Project
 from ceeq.apps.calculator.tasks import calculate_score
-
-
-# class FetchJiraDataRun(PeriodicTask):
-#     """
-#     Fetch jira data from jira instance and update/create ResultHistory object
-#     """
-#
-#     run_every = crontab(minute='*/10')
-#
-#     def run(self):
-#         projects = Project.objects.filter(complete=False)
-#         start = datetime.now()
-#
-#         if projects:
-#             for project in projects:
-#                 query_jira_data.delay(project.id)
-#
-#             current_delay = (datetime.now() - start).total_seconds()
-#
-#             try:
-#                 ls = LiveSettings.objects.get(pk=1)
-#                 ls.current_delay = current_delay
-#                 ls.save()
-#             except LiveSettings.DoesNotExist:
-#                 LiveSettings.objects.create(score_scalar=20,
-#                                             current_delay=current_delay)
-#
-#             return True
-#         else:
-#             return False
 
 
 @app.task
