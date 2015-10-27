@@ -19,7 +19,7 @@ CELERYBEAT_SCHEDULE = {
     # Execute every 5 minutes every day
     'fetch-jira-data-run': {
         'task': 'ceeq.apps.queries.tasks.fetch_jira_data_run',
-        'schedule': crontab(minute='*/2'),
+        'schedule': crontab(minute='*/5'),
         'options': {'queue': 'ceeq_queue'}
     },
     # Execute in specified hour every day
