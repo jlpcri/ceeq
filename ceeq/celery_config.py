@@ -10,9 +10,7 @@ CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_TASK_RESULT_EXPIRES = None   # no result is return back
 
 CELERY_ROUTES = {
-    # 'ceeq.apps.queries.tasks.fetch_jira_data_run': {'queue': 'ceeq_queue'},
     'ceeq.apps.queries.tasks.query_jira_data': {'queue': 'ceeq_queue'},
-    # 'ceeq.apps.queries.tasks.daily_score_log': {'queue': 'ceeq_queue'},
     'ceeq.apps.calculator.tasks.calculate_score': {'queue': 'ceeq_queue'},
 
 }
@@ -21,7 +19,7 @@ CELERYBEAT_SCHEDULE = {
     # Execute every 5 minutes every day
     'fetch-jira-data-run': {
         'task': 'ceeq.apps.queries.tasks.fetch_jira_data_run',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/2'),
         'options': {'queue': 'ceeq_queue'}
     },
     # Execute in specified hour every day
