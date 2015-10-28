@@ -8,7 +8,7 @@ from ceeq.apps.users.views import user_management
 class UsersManagementTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.url = reverse('user_management')
+        self.url = reverse('users:management')
         self.user_account_superuser = {
             'username': 'superUserName',
             'password': 'superUserPassword'
@@ -28,7 +28,7 @@ class UsersManagementTests(TestCase):
         )
 
     def test_user_management_resolve_to_view(self):
-        found = resolve(reverse('user_management'))
+        found = resolve(reverse('users:management'))
         self.assertEqual(found.func, user_management)
 
     def test_user_management_successful_with_superuser(self):

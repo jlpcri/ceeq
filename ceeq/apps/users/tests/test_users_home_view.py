@@ -7,7 +7,7 @@ from ceeq.apps.users.views import home
 class HomeViewTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.url = reverse('home')
+        self.url = reverse('users:home')
 
     def test_home_url_resolve_to_view(self):
         found = resolve(self.url)

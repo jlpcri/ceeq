@@ -8,7 +8,7 @@ from ceeq.apps.users.views import user_settings
 class UsersSettingsTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.url = reverse('user_settings')
+        self.url = reverse('users:user_settings')
         self.user_account_correct = {
             'username': 'correctName',
             'password': 'correctPassword'
@@ -19,7 +19,7 @@ class UsersSettingsTests(TestCase):
         )
 
     def test_user_settings_resolve_to_view(self):
-        found = resolve(reverse('user_settings'))
+        found = resolve(reverse('users:user_settings'))
         self.assertEqual(found.func, user_settings)
 
     def test_user_settings_successful_with_signin(self):
