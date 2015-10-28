@@ -90,11 +90,16 @@ def parse_jira_data(project, component_names_standard):
 
             results.append(temp)
     elif project.component_field == 2:  # use CEEQ Indicator
+        if project.instance.url == 'http://jira.west.com':
+            ceeq_indicator_field = 'customfield_13890'
+        else:
+            ceeq_indicator_field = 'customfield_10207'
+
         for issue in project.fetch_jira_data['issues']:
             temp = {}
             temp['key'] = issue['key']
             for item in issue['fields']:
-                if not issue['fields']['customfield_10207']:  # no CEEQ indicator
+                if not issue['fields'][ceeq_indicator_field]:  # no CEEQ indicator
                     continue
                 # collect data
                 if issue['fields'][item]:
@@ -102,12 +107,15 @@ def parse_jira_data(project, component_names_standard):
                         temp[item] = issue['fields'][item]
                     elif item == 'versions':
                         temp[item] = issue['fields'][item][0]['name']
-                    elif item == 'customfield_10207':
+                    elif item in ['customfield_13286', 'customfield_10092']:
+                        temp[item] = issue['fields'][item]['value']
+                    elif item == ceeq_indicator_field:
                         temp['components'] = issue['fields'][item]['value'] + '/' + issue['fields'][item]['child']['value']
                     elif item != 'components':
                         temp[item] = issue['fields'][item]['name']
                 else:
-                    temp[item] = ''
+                    if item != 'components':  # field 'Components==[]'
+                        temp[item] = ''
 
             if len(temp) == 1:
                 continue

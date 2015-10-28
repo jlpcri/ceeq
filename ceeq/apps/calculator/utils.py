@@ -12,7 +12,7 @@ from ceeq.apps.calculator.models import SeverityMap, LiveSettings, ComponentImpa
 from ceeq.apps.queries.models import Project
 from ceeq.apps.queries.models import ScoreHistory
 
-ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research']
+ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research', 'Pending Estimate']
 ISSUE_STATUS_RESOLVED = ['Resolved', 'UAT Testing']
 ISSUE_STATUS_CLOSED = ['Closed']
 # issue status weight ratio
