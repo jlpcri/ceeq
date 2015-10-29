@@ -15,9 +15,9 @@ TEST_RUNNER = 'discover_jenkins.runner.DiscoverCIRunner'
 
 TEST_PROJECT_APPS = (
     'ceeq.apps.core',
-    'ceeq.apps.defects_density',
+    'ceeq.apps.calculator',
     'ceeq.apps.help',
-    'ceeq.apps.projects',
+    'ceeq.apps.queries',
     'ceeq.apps.search',
     'ceeq.apps.users'
 )
