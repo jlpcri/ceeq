@@ -1,33 +1,48 @@
 from django.test import Client, TestCase
 from django.core.urlresolvers import resolve, reverse
 
-from ceeq.apps.projects.models import Project
+from ceeq.apps.queries.models import Project, Instance
+from ceeq.apps.calculator.models import ImpactMap
 from ceeq.apps.search.views import search
 
 
 class SearchViewsTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.url = reverse('search')
+        self.instance = Instance.objects.create(
+            url='http://jira.west.com',
+        )
+        self.impact_map = ImpactMap.objects.create(
+            name='Apps'
+        )
+        self.url = reverse('search:search')
         self.project_search_first = {
             'name': 'first project',
-            'jira_name': 'first JIRA',
+            'jira_key': 'firstJIRA',
             'jira_version': 'All Versions',
-            'score': 5
+            'instance': self.instance,
+            'impact_map': self.impact_map
         }
         self.project_first = Project.objects.create(
             name=self.project_search_first['name'],
-            jira_name=self.project_search_first['jira_name'],
+            jira_key=self.project_search_first['jira_key'],
             jira_version=self.project_search_first['jira_version'],
-            score=self.project_search_first['score']
+            instance=self.project_search_first['instance'],
+            impact_map=self.project_search_first['impact_map']
         )
         self.project_search_second = {
             'name': 'second project',
-            'jira_name': 'second JIRA'
+            'jira_key': 'secondJIRA',
+            'jira_version': 'All Versions',
+            'instance': self.instance,
+            'impact_map': self.impact_map
         }
         self.project_second = Project.objects.create(
             name=self.project_search_second['name'],
-            jira_name=self.project_search_second['jira_name']
+            jira_key=self.project_search_second['jira_key'],
+            jira_version=self.project_search_second['jira_version'],
+            instance=self.project_search_second['instance'],
+            impact_map=self.project_search_second['impact_map']
         )
         self.response = self.client.get(
             self.url,
@@ -66,16 +81,8 @@ class SearchViewsTests(TestCase):
         self.assertNotContains(response, self.project_second.name)
 
     def test_search_results_contains_correct_url_to_project(self):
-        self.assertContains(self.response, reverse('project_detail',
-                                                   args=[str(self.project_first.id)]))
-
-    def test_search_results_contains_correct_url_to_defects_density(self):
-        self.assertContains(self.response, reverse('project_defects_density',
-                                                   args=[str(self.project_first.id)]))
-
-    def test_search_results_contains_correct_url_to_update_score(self):
-        self.assertContains(self.response, reverse('project_update_scores',
+        self.assertContains(self.response, reverse('queries:project_detail',
                                                    args=[str(self.project_first.id)]))
 
     def test_results_contains_correct_url_to_jira(self):
-        self.assertContains(self.response, 'http://jira.west.com/browse/' + self.project_first.jira_name)
+        self.assertContains(self.response, self.instance.url + '/issues/?jql=project=' + self.project_first.jira_key)
