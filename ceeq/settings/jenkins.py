@@ -21,11 +21,20 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS += ('discover_jenkins',)
-
+# INSTALLED_APPS += ('discov_jenkins',)
+INSTALLED_APPS += ('django_jenkins', )
 # TEST_RUNNER = 'discover_jenkins.runner.DiscoverCIRunner'
 
-TEST_PROJECT_APPS = (
+# TEST_PROJECT_APPS = (
+#     'ceeq.apps.core',
+#     'ceeq.apps.calculator',
+#     'ceeq.apps.help',
+#     'ceeq.apps.queries',
+#     'ceeq.apps.search',
+#     'ceeq.apps.users'
+# )
+
+PROJECT_APPS = (
     'ceeq.apps.core',
     'ceeq.apps.calculator',
     'ceeq.apps.help',
@@ -34,9 +43,13 @@ TEST_PROJECT_APPS = (
     'ceeq.apps.users'
 )
 
-TEST_TASKS = (
-    'discover_jenkins.tasks.with_coverage.CoverageTask',
-    'discover_jenkins.tasks.run_pylint.PyLintTask',
+# TEST_TASKS = (
+#     'discover_jenkins.tasks.with_coverage.CoverageTask',
+#     'discover_jenkins.tasks.run_pylint.PyLintTask',
+# )
+
+JENKINS_TASKS = (
+    'django_jenkins.tasks.run_pylint',
 )
 
 TEST_COVERAGE_EXCLUDES_FOLDERS = [
