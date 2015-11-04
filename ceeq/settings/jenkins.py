@@ -12,7 +12,7 @@ DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'test_database',
+        'NAME': 'ceeq',
         'USER': 'scorecard',
         'PASSWORD': 'scorecard_development',
         'HOST': 'qaci01.wic.west.com',
