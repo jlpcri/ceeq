@@ -102,18 +102,24 @@ class Project(models.Model):
         try:
             score = self.scorehistory_set.latest('created').internal_score[0]
             return score
-        except TypeError:
+        except (ScoreHistory.DoesNotExist, TypeError):
             return 0
 
     @property
     def uat_score(self):
-        score = self.scorehistory_set.latest('created').uat_score[0]
-        return score
+        try:
+            score = self.scorehistory_set.latest('created').uat_score[0]
+            return score
+        except (ScoreHistory.DoesNotExist, TypeError):
+            return 0
 
     @property
     def overall_score(self):
-        score = self.scorehistory_set.latest('created').combined_score[0]
-        return score
+        try:
+            score = self.scorehistory_set.latest('created').combined_score[0]
+            return score
+        except (ScoreHistory.DoesNotExist, TypeError):
+            return 0
 
 
 class ScoreHistory(models.Model):

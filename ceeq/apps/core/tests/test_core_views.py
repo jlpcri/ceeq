@@ -16,3 +16,7 @@ class CoreViewTests(TestCase):
     def test_landing_url_returns_status_200(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+
+    def test_landing_page_need_signin(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Please use your Active Directory credentials.')

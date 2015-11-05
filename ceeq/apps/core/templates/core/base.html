@@ -209,7 +209,11 @@
         <script src="{% static 'common/placeholders/3.0.0/placeholders.min.js' %}"></script>
         <script src="{% static 'common/highcharts/4.0.4/js/highcharts.js' %}"></script>
         <script src="{% static 'common/highcharts/4.0.4/js/modules/exporting.js' %}"></script>
-        <script src="{% static 'common/dataTables/1.10.0/js/jquery.dataTables.js' %}"></script>
+{#        <script src="{% static 'common/dataTables/1.10.0/js/jquery.dataTables.js' %}"></script>#}
+
+{#        <script src="https://code.highcharts.com/highcharts.js"></script>#}
+{#        <script src="https://code.highcharts.com/modules/exporting.js"></script>#}
+        <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
 
         <script>
             $("#search-input").autocomplete({

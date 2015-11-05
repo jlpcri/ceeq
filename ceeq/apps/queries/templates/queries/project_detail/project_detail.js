@@ -545,7 +545,12 @@ function displayPieChart(data, uat_type, pie_chart_id) {
                     enabled: false
                 }
             },
-            credits: false
+            exporting: {
+                fallbackToExportServer: false
+            },
+            credits: {
+                enabled: false
+            }
         });
 
         //button handler
@@ -688,6 +693,9 @@ function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
     trend_chart_id = trend_chart_id.substring(1, trend_chart_id.length);
 
     var chart_export = new Highcharts.Chart({
+        exporting: {
+            fallbackToExportServer: false
+        },
         chart: {
             renderTo: trend_chart_id + uat_type
         },
@@ -884,7 +892,7 @@ Highcharts.exportCharts = function(charts, options) {
 function exportAllCharts(charts, donut_pie){
     var options_png = {
         'filename': export_filename,
-        'type': 'image/png'
+        'type': 'image/png',
         },
         options_jpeg = {
         'filename': export_filename,
@@ -899,21 +907,21 @@ function exportAllCharts(charts, donut_pie){
         $('#png_export_all_' + donut_pie).click(function(){
             Highcharts.exportCharts(charts, options_png);
         });
-        $('#jpeg_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_jpeg);
-        });
-        $('#pdf_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_pdf);
-        });
+        //$('#jpeg_export_all_' + donut_pie).click(function(){
+        //    Highcharts.exportCharts(charts, options_jpeg);
+        //});
+        //$('#pdf_export_all_' + donut_pie).click(function(){
+        //    Highcharts.exportCharts(charts, options_pdf);
+        //});
     } else {
         $('#png_' + donut_pie).click(function(){
             Highcharts.exportCharts(charts, options_png);
         });
-        $('#jpeg_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_jpeg);
-        });
-        $('#pdf_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_pdf);
-        });
+        //$('#jpeg_' + donut_pie).click(function(){
+        //    Highcharts.exportCharts(charts, options_jpeg);
+        //});
+        //$('#pdf_' + donut_pie).click(function(){
+        //    Highcharts.exportCharts(charts, options_pdf);
+        //});
     }
 }
