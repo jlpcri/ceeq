@@ -545,9 +545,6 @@ function displayPieChart(data, uat_type, pie_chart_id) {
                     enabled: false
                 }
             },
-            exporting: {
-                fallbackToExportServer: false
-            },
             credits: {
                 enabled: false
             }
@@ -693,9 +690,6 @@ function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
     trend_chart_id = trend_chart_id.substring(1, trend_chart_id.length);
 
     var chart_export = new Highcharts.Chart({
-        exporting: {
-            fallbackToExportServer: false
-        },
         chart: {
             renderTo: trend_chart_id + uat_type
         },
@@ -907,21 +901,21 @@ function exportAllCharts(charts, donut_pie){
         $('#png_export_all_' + donut_pie).click(function(){
             Highcharts.exportCharts(charts, options_png);
         });
-        //$('#jpeg_export_all_' + donut_pie).click(function(){
-        //    Highcharts.exportCharts(charts, options_jpeg);
-        //});
-        //$('#pdf_export_all_' + donut_pie).click(function(){
-        //    Highcharts.exportCharts(charts, options_pdf);
-        //});
+        $('#jpeg_export_all_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_jpeg);
+        });
+        $('#pdf_export_all_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_pdf);
+        });
     } else {
         $('#png_' + donut_pie).click(function(){
             Highcharts.exportCharts(charts, options_png);
         });
-        //$('#jpeg_' + donut_pie).click(function(){
-        //    Highcharts.exportCharts(charts, options_jpeg);
-        //});
-        //$('#pdf_' + donut_pie).click(function(){
-        //    Highcharts.exportCharts(charts, options_pdf);
-        //});
+        $('#jpeg_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_jpeg);
+        });
+        $('#pdf_' + donut_pie).click(function(){
+            Highcharts.exportCharts(charts, options_pdf);
+        });
     }
 }
