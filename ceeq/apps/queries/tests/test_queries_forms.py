@@ -22,6 +22,13 @@ class ProjectFormTest(TestCase):
             instance=self.instance,
             impact_map=self.impact_map
         )
+        self.project_2 = Project.objects.create(
+            name='Another Project',
+            jira_key='TP',
+            jira_version='1.1',
+            instance=self.instance,
+            impact_map=self.impact_map
+        )
 
     def test_project_form_init_without_instance(self):
         with self.assertRaises(Instance.DoesNotExist):
