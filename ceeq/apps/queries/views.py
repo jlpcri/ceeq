@@ -176,7 +176,7 @@ def project_edit(request, project_id):
             return HttpResponseRedirect(reverse('queries:project_detail',
                                                 kwargs={'project_id': project.id}))
         else:
-            messages.error(request, 'Correct erros in the form')
+            messages.error(request, 'Correct errors in the form')
             context = RequestContext(request, {
                 'form': form,
                 'project': project,
