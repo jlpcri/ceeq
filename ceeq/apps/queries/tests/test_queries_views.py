@@ -450,18 +450,6 @@ class ProjectDeleteTest(TestCase):
             instance=self.instance,
             impact_map=self.impact_map
         )
-        self.user_account = {
-            'username': 'correctName',
-            'password': 'correctPassword'
-        }
-        self.user = User.objects.create_user(
-            username=self.user_account['username'],
-            password=self.user_account['password']
-        )
-        self.client.login(
-            username=self.user_account['username'],
-            password=self.user_account['password']
-        )
         self.superuser_account = {
             'username': 'SuperUser',
             'password': 'SuperPassword'
@@ -471,7 +459,27 @@ class ProjectDeleteTest(TestCase):
             password=self.superuser_account['password'],
             email=''
         )
+        self.client.login(
+            username=self.superuser_account['username'],
+            password=self.superuser_account['password']
+        )
 
     def test_project_delete_resolve_to_view(self):
         found = resolve(reverse('queries:project_delete', args=[self.project.id, ]))
         self.assertEqual(found.func, project_delete)
+
+    def test_project_delete_successful_with_valid_id(self):
+        response = self.client.post(reverse('queries:project_delete', args=[self.project_exist.id, ]), follow=True)
+        self.assertEqual(response.status_code, 200)
+        projects = Project.objects.filter(name='Exist Project')
+        self.assertEqual(projects.count(), 0)
+
+    def test_project_delete_unsuccessful_with_invalid_id(self):
+        response = self.client.post(reverse('queries:project_delete', args=[100, ]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_project_delete_redirect_to_projects_with_successful(self):
+        response = self.client.post(reverse('queries:project_delete', args=[self.project_exist.id, ]))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('queries:projects'))
+
