@@ -38,13 +38,13 @@ class ProjectTemplateTest(TestCase):
             username=self.user_account['username'],
             password=self.user_account['password']
         )
-        self.superuser_accout = {
+        self.superuser_account = {
             'username': 'SuperUser',
             'password': 'SuperPassword'
         }
         self.user_super = User.objects.create_superuser(
-            username=self.superuser_accout['username'],
-            password=self.superuser_accout['password'],
+            username=self.superuser_account['username'],
+            password=self.superuser_account['password'],
             email=''
         )
 
@@ -81,8 +81,8 @@ class ProjectTemplateTest(TestCase):
 
     def test_projects_view_contains_url_to_project_new_superuser(self):
         self.client.login(
-            username=self.superuser_accout['username'],
-            password=self.superuser_accout['password']
+            username=self.superuser_account['username'],
+            password=self.superuser_account['password']
         )
         response = self.client.get(reverse('queries:projects'), follow=True)
         self.assertContains(response, '#project-new-modal')
@@ -93,8 +93,8 @@ class ProjectTemplateTest(TestCase):
 
     def test_projects_view_contains_url_to_query_jira_data_superuser(self):
         self.client.login(
-            username=self.superuser_accout['username'],
-            password=self.superuser_accout['password']
+            username=self.superuser_account['username'],
+            password=self.superuser_account['password']
         )
         response = self.client.get(reverse('queries:projects'), follow=True)
         self.assertContains(response, '/ceeq/queries/query_jira_data_all')
@@ -105,8 +105,8 @@ class ProjectTemplateTest(TestCase):
 
     def test_projects_view_contains_url_to_calculate_all_superuser(self):
         self.client.login(
-            username=self.superuser_accout['username'],
-            password=self.superuser_accout['password']
+            username=self.superuser_account['username'],
+            password=self.superuser_account['password']
         )
         response = self.client.get(reverse('queries:projects'), follow=True)
         self.assertContains(response, '/ceeq/calculator')
