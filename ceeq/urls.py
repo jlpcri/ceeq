@@ -15,6 +15,8 @@ v1_api.register(ComponentsDefectsDensityResource())
 v1_api.register(SearchAutoCompleteResource())
 v1_api.register(FrameworkParameterResource())
 
+root_path = settings.LOGIN_URL[1:-1]
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'ceeq.views.home', name='home'),
@@ -22,15 +24,15 @@ urlpatterns = patterns('',
 
     #url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^ceeq/$', 'ceeq.apps.core.views.landing', name='landing'),
-    url(r'^ceeq/', include('ceeq.apps.projects.urls')),
-    url(r'^ceeq/', include('ceeq.apps.help.urls')),
-    url(r'^ceeq/', include('ceeq.apps.users.urls')),
-    url(r'^ceeq/', include('ceeq.apps.search.urls')),
-    url(r'^ceeq/', include('ceeq.apps.defects_density.urls')),
+    url(r'^{0}ceeq/$'.format(root_path), 'ceeq.apps.core.views.landing', name='landing'),
+    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.projects.urls')),
+    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.help.urls')),
+    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.users.urls')),
+    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.search.urls')),
+    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.defects_density.urls')),
 
-    url(r'^cee/admin/', include(admin.site.urls)),
-    url(r'^ceeq/api/', include(v1_api.urls)),
+    url(r'^{0}cee/admin/'.format(root_path), include(admin.site.urls)),
+    url(r'^{0}ceeq/api/'.format(root_path), include(v1_api.urls)),
 )
 
 if settings.DEBUG:

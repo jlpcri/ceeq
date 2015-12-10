@@ -7,6 +7,8 @@ JIRA_PROXY = {
 
 DEBUG = False
 
+LOGIN_URL = '/ceeq_old/'
+
 ALLOWED_HOSTS = [
     'apps.qaci01.wic.west.com',
     'apps.qaci01',
