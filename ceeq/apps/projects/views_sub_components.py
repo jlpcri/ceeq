@@ -82,7 +82,9 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type, start
         if component_len == 0:
             continue
         else:
-            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+            name = get_component_names_from_jira_data(component_len,
+                                                      item['fields']['components'],
+                                                      project.frame_components)
 
         if name and name.startswith(component_name[0]):
             sub_component_names.append(name)
@@ -96,13 +98,15 @@ def fetch_subcomponents_pie(request, project_id, component_name, uat_type, start
                                     sub_component_names,
                                     component_name, version_data,
                                     'sub_components',
-                                    uat_type_custom)
+                                    uat_type_custom,
+                                    project.frame_components)
     else:
         data = issue_counts_compute(request,
                                     sub_component_names,
                                     component_name, version_data,
                                     'sub_components',
-                                    uat_type)
+                                    uat_type,
+                                    project.frame_components)
 
     weight_factor = get_sub_component_weight_factor(data, component_name[0], 1)
     #for item in weight_factor:

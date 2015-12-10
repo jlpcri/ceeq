@@ -19,3 +19,14 @@ ALLOWED_HOSTS = [
 #         'PORT': '5432'
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ceeq',
+        'USER': 'scorecard',
+        'PASSWORD': 'scorecard_development',
+        'HOST': 'qaci01.wic.west.com',
+        'PORT': '5432'
+    }
+}

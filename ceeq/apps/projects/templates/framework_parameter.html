@@ -1,42 +1,72 @@
 
 {% block body %}
     <div class="container">
-
-        <div class="row">
-            <legend>Following Parameters will affect our framework to evaluate CEEQ in JIRA</legend>
-
-            <p>Framework Parameters include: <div id="parameters_include" style="font-style: italic; font-size: 25px;"></div></p>
+        <div class="row" >
+            <legend>CEEQ Components Weight</legend>
         </div>
-        <table class="table" id="argument_table">
-            <thead>
-                <tr>
-                    <th>Parameter Name</th>
-                    <th>Value</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for framework_parameter in framework_parameters %}
-                    <tr class="sum" id="{{ framework_parameter.id }}">
-                        <td class="col-sm-3"><input type="text" class="form-control parameter" value="{{ framework_parameter.parameter }}" onkeypress="clickSave(event);"> </td>
-                        <td class="col-sm-3"><input type="text" class="form-control value" value="{{ framework_parameter.value|floatformat:2 }}" onkeypress="clickSave(event);"> </td>
-                        <td class="col-sm-3"><span class="errors"></span> </td>
-                        <td class="col-sm-2"><button class="btn btn-block btn-primary argument-save">Update</button> </td>
-                        <td class="col-sm-1"><button class="btn btn-block btn-danger argument-delete"><i class="fa fa-trash-o"></i> </button> </td>
-                    </tr>
-                {% endfor %}
-                <tr class="new-argument">
-                    <td class="col-sm-3"><input type="text" class="form-control" id="new_parameter" placeholder="New parameter..."> </td>
-                    <td class="col-sm-3"><input type="text" class="form-control" id="new_value" placeholder="New value..."> </td>
-                    <td class="col-sm-3"><span id="new_argument_errors"></span> </td>
-                    <td class="col-sm-2"><button class="btn btn-block btn-primary" id="new_argument_submit">Create</button> </td>
-                    <td class="col-sm-1"></td>
-                </tr>
-            </tbody>
-        </table>
 
+        <div class="col-md-6" id="ceeq_components">
+            {% for k,v in ceeq_components %}
+                <h4> Project Type: {{ k }}</h4>
+                <table class="table table-condensed table-hover" >
+                    <thead>
+{#                        <tr>#}
+{#                            <th class="col-md-2">Project Type</th>#}
+{#                            <th class="col-md-4">{{ k }}</th>#}
+{#                        </tr>#}
+                        <tr>
+                            <th>Component</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k1, v1 in v %}
+                            <tr>
+                                <td>{{ k1 }}</td>
+                                <td>{{ v1|floatformat:2}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
+
+        {% if user.is_superuser %}
+            <div class="row">
+                <legend>Following Parameters will affect our framework to evaluate CEEQ in JIRA</legend>
+
+                <p>Framework Parameters include: <div id="parameters_include" style="font-style: italic; font-size: 25px;"></div></p>
+            </div>
+            <table class="table" id="argument_table">
+                <thead>
+                    <tr>
+                        <th>Parameter Name</th>
+                        <th>Value</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for framework_parameter in framework_parameters %}
+                        <tr class="sum" id="{{ framework_parameter.id }}">
+                            <td class="col-sm-3"><input type="text" class="form-control parameter" value="{{ framework_parameter.parameter }}" onkeypress="clickSave(event);"> </td>
+                            <td class="col-sm-3"><input type="text" class="form-control value" value="{{ framework_parameter.value|floatformat:2 }}" onkeypress="clickSave(event);"> </td>
+                            <td class="col-sm-3"><span class="errors"></span> </td>
+                            <td class="col-sm-2"><button class="btn btn-block btn-primary argument-save">Update</button> </td>
+                            <td class="col-sm-1"><button class="btn btn-block btn-danger argument-delete"><i class="fa fa-trash-o"></i> </button> </td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="new-argument">
+                        <td class="col-sm-3"><input type="text" class="form-control" id="new_parameter" placeholder="New parameter..."> </td>
+                        <td class="col-sm-3"><input type="text" class="form-control" id="new_value" placeholder="New value..."> </td>
+                        <td class="col-sm-3"><span id="new_argument_errors"></span> </td>
+                        <td class="col-sm-2"><button class="btn btn-block btn-primary" id="new_argument_submit">Create</button> </td>
+                        <td class="col-sm-1"></td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endif %}
 
 
     </div>

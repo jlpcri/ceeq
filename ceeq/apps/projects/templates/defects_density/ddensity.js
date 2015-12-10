@@ -80,7 +80,7 @@ $(document).ready(function() {
                     data: data[key]['reports']
                 },{
                     name: 'VoicePrompts',
-                    data: data[key]['voiceSlots']
+                    data: data[key]['voice_slots']
                 }],
                 credits: false
             });

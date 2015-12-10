@@ -15,10 +15,10 @@ from django.core.mail import send_mail
 
 from ceeq.apps.projects.utils import remove_period_space, truncate_after_slash, version_name_from_jira_data, \
     project_detail_calculate_score, get_weight_factor, get_subcomponent_defects_density, issue_counts_compute, \
-    get_priority_total, get_component_names, get_component_names_from_jira_data
+    get_priority_total, get_component_names, get_component_names_from_jira_data, fetch_ceeq_trend_graph, get_project_types
 from ceeq.apps.users.views import user_is_superuser
 
-from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity
+from models import Project, FrameworkParameter, ProjectComponentsDefectsDensity, ProjectType, ProjectComponent
 from forms import ProjectForm, ProjectNewForm
 
 from django.conf import settings
@@ -29,6 +29,15 @@ def projects(request):
     projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     project_dds = ProjectComponentsDefectsDensity.objects.all().order_by('project', 'version')
     framework_parameters = FrameworkParameter.objects.all()
+
+    ceeq_components = {}
+    for project_type in ProjectType.objects.all():
+        temp_components = {}
+        components = ProjectComponent.objects.filter(project_type=project_type)
+        for component in components:
+            temp_components[component.name] = Decimal(component.weight) / 20
+        ceeq_components[project_type.name] = sorted(temp_components.iteritems())
+
     context = RequestContext(request, {
         'projects_active': projects_active,
         'projects_archive': projects_archive,
@@ -37,9 +46,11 @@ def projects(request):
         'framework_parameters_items': ['jira_issue_weight_sum',
                                        'vaf_ratio',
                                        'vaf_exp'],
-        'superuser': request.user.is_superuser
+        'superuser': request.user.is_superuser,
+        'ceeq_components': sorted(ceeq_components.iteritems())
 
     })
+
     return render(request, 'projects/projects_start.html', context)
 
 
@@ -52,6 +63,7 @@ def project_detail(request, project_id):
     :return:
     """
     project = get_object_or_404(Project, pk=project_id)
+
     if project.complete and not request.user.is_superuser:
         messages.warning(request, 'The project \" {0} \" is archived.'.format(project.name))
         return redirect(projects)
@@ -72,12 +84,15 @@ def project_detail(request, project_id):
     #check whether fetch the data from jira or not
     if jira_data == 'No JIRA Data':
         messages.warning(request, 'The project \"{0}\" does not exist in JIRA'.format(project.jira_name))
+        project.score = 109
+        project.save()
         context = RequestContext(request, {
             'form': form,
             'project': project,
             'superuser': request.user.is_superuser,
             'no_jira_data': jira_data,
-            'version_names': ['All Versions']
+            'version_names': ['All Versions'],
+            'project_types': get_project_types()
         })
         return render(request, 'project_detail/project_detail.html', context)
 
@@ -120,22 +135,24 @@ def project_detail(request, project_id):
 
     # Try get pie chart data
     dd_pie_data_include_uat = fetch_defects_density_score_pie(request,
-                                                              project.jira_name,
+                                                              project.frame_components,
                                                               version_data,
                                                               'include_uat')
     dd_pie_data_exclude_uat = fetch_defects_density_score_pie(request,
-                                                              project.jira_name,
+                                                              project.frame_components,
                                                               version_data,
                                                               'exclude_uat')
     dd_pie_data_only_uat = fetch_defects_density_score_pie(request,
-                                                           project.jira_name,
+                                                           project.frame_components,
                                                            version_data,
                                                            'only_uat')
     dd_pie_data_custom = fetch_defects_density_score_pie(request,
-                                                         project.jira_name,
+                                                         project.frame_components,
                                                          version_data_custom,
                                                          uat_type_custom)
-    #print dd_pie_data_custom
+
+    # Try get ceeq trend graph data
+    ceeq_trend_graph = fetch_ceeq_trend_graph(request, project.id)
 
     # get component_names and component_names_without_slash for version_data
     for item in version_data:
@@ -144,7 +161,9 @@ def project_detail(request, project_id):
         if component_len == 0:
             continue
         else:
-            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+            name = get_component_names_from_jira_data(component_len,
+                                                      item['fields']['components'],
+                                                      project.frame_components)
 
         if name:
             component_names.append(name)
@@ -160,7 +179,9 @@ def project_detail(request, project_id):
         if component_len == 0:
             continue
         else:
-            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+            name = get_component_names_from_jira_data(component_len,
+                                                      item['fields']['components'],
+                                                      project.frame_components)
 
         if name:
             component_names_custom.append(name)
@@ -176,36 +197,44 @@ def project_detail(request, project_id):
                                             component_names_without_slash,
                                             version_data,
                                             'components',
-                                            'include_uat')
+                                            'include_uat',
+                                            project.frame_components)
     data_exclude_uat = issue_counts_compute(request,
                                             component_names,
                                             component_names_without_slash,
                                             version_data,
                                             'components',
-                                            'exclude_uat')
+                                            'exclude_uat',
+                                            project.frame_components)
     data_only_uat = issue_counts_compute(request,
                                          component_names,
                                          component_names_without_slash,
                                          version_data,
                                          'components',
-                                         'only_uat')
+                                         'only_uat',
+                                         project.frame_components)
     data_custom = issue_counts_compute(request,
                                        component_names_custom,
                                        component_names_without_slash_custom,
                                        version_data_custom,
                                        'components',
-                                       uat_type_custom)
+                                       uat_type_custom,
+                                       project.frame_components)
 
     #print data_custom
 
     weight_factor_include_uat = get_weight_factor(data_include_uat,
-                                                  component_names_without_slash)
+                                                  component_names_without_slash,
+                                                  project.frame_components)
     weight_factor_exclude_uat = get_weight_factor(data_exclude_uat,
-                                                  component_names_without_slash)
+                                                  component_names_without_slash,
+                                                  project.frame_components)
     weight_factor_only_uat = get_weight_factor(data_only_uat,
-                                               component_names_without_slash)
+                                               component_names_without_slash,
+                                               project.frame_components)
     weight_factor_custom = get_weight_factor(data_custom,
-                                             component_names_without_slash_custom)
+                                             component_names_without_slash_custom,
+                                             project.frame_components)
 
     for item in weight_factor_include_uat:
         # total number of JIRAs of Voice Prompts should not beyond 6
@@ -247,7 +276,7 @@ def project_detail(request, project_id):
         'priority_total_only_uat': priority_total_only_uat,
         'priority_total_custom': priority_total_custom,
 
-        'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
+        'component_names_standard': sorted(project.frame_components.keys()),
         'component_names_include_uat': component_names_exist_include_uat,
         'component_names_exclude_uat': component_names_exist_exclude_uat,
         'component_names_only_uat': component_names_exist_only_uat,
@@ -263,7 +292,10 @@ def project_detail(request, project_id):
         'dd_pie_data_include_uat': json.dumps(dd_pie_data_include_uat),
         'dd_pie_data_exclude_uat': json.dumps(dd_pie_data_exclude_uat),
         'dd_pie_data_only_uat': json.dumps(dd_pie_data_only_uat),
-        'dd_pie_data_custom': json.dumps(dd_pie_data_custom)
+        'dd_pie_data_custom': json.dumps(dd_pie_data_custom),
+
+        'ceeq_trend_graph': ceeq_trend_graph,
+        'project_types': get_project_types()
     })
     return render(request, 'project_detail/project_detail.html', context)
 
@@ -310,7 +342,7 @@ def project_defects_density(request, project_id):
         })
         return render(request, 'defects_density/projects_dd_start.html', context)
     else:
-        weight_factor_versions = get_component_defects_density(request, jira_data)
+        weight_factor_versions = get_component_defects_density(request, jira_data, project.frame_components)
 
     #check whether fetch the data from jira or not
     if not jira_data['issues']:
@@ -335,14 +367,14 @@ def project_defects_density(request, project_id):
         'project_dds': project_dds,
         'version_names': version_names_removed,
         'weight_factor_versions': weight_factor_versions,
-        'component_names_standard': sorted(settings.COMPONENT_NAMES_STANDARD.keys()),
+        'component_names_standard': sorted(project.frame_components.keys()),
         'priority_total': priority_total,
         'superuser': request.user.is_superuser
     })
     return render(request, 'defects_density/projects_dd_start.html', context)
 
 
-def get_component_defects_density(request, jira_data):
+def get_component_defects_density(request, jira_data, frame_components):
     """
     Get component defects density based on versions
     :param request:
@@ -385,7 +417,9 @@ def get_component_defects_density(request, jira_data):
             if component_len == 0:
                 continue
             else:
-                name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+                name = get_component_names_from_jira_data(component_len,
+                                                          item['fields']['components'],
+                                                          frame_components)
 
             if name:
                 component_names.append(name)
@@ -399,10 +433,13 @@ def get_component_defects_density(request, jira_data):
                                     component_names_without_slash,
                                     version_data[key],
                                     'components',
-                                    'include_uat')
+                                    'include_uat',
+                                    frame_components)
 
         #calculate issues number of components and sub-components
-        weight_factor_versions[key] = get_weight_factor(data, component_names_without_slash)
+        weight_factor_versions[key] = get_weight_factor(data,
+                                                        component_names_without_slash,
+                                                        frame_components)
 
     return weight_factor_versions
 
@@ -448,6 +485,7 @@ def project_new(request):
         form = ProjectNewForm()
         context = RequestContext(request, {
             'form': form,
+            'project_types': get_project_types()
         })
         return render(request, 'projects/project_new.html', context)
 
@@ -538,7 +576,9 @@ def calculate_score(request, project):
         if component_len == 0:
             continue
         else:
-            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+            name = get_component_names_from_jira_data(component_len,
+                                                      item['fields']['components'],
+                                                      project.frame_components)
 
         if name:
             component_names.append(name)
@@ -553,9 +593,12 @@ def calculate_score(request, project):
                                 component_names_without_slash,
                                 version_data,
                                 'components',
-                                'include_uat')
+                                'include_uat',
+                                project.frame_components)
 
-    weight_factor = get_weight_factor(data, component_names_without_slash)
+    weight_factor = get_weight_factor(data,
+                                      component_names_without_slash,
+                                      project.frame_components)
 
     # Calculate Raw Score of project
     raw_score = 0
@@ -595,10 +638,10 @@ def fetch_projects_score(request):
             id: project id for hyperlink of project detail
     """
     #projects = Project.objects.filter(complete=False).order_by('name')
-    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(jira_name)'}).order_by('lower_name')
     data = {}
 
-    data['categories'] = [project.name for project in projects]
+    data['categories'] = [project.jira_name.upper() + '-' + project.jira_version for project in projects]
     # score = 102 represents it is below zero
     #data['score'] = [str(project.score) if project.score < 10 else str(0) for project in projects]
     data['score'] = []
@@ -636,7 +679,7 @@ def fetch_defects_density_score(request, project_id):
 
         tmp_categories = []
 
-        tmp_data_voiceSlots = []
+        tmp_data_voice_slots = []
         tmp_data_cxp = []
         tmp_data_platform = []
         tmp_data_reports = []
@@ -660,7 +703,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_year = str(item.created.year)
                 tmp_categories.append(tmp_year + '-' + tmp_month + '-' + tmp_day)
 
-                tmp_data_voiceSlots.append(float(item.voiceSlots))
+                tmp_data_voice_slots.append(float(item.voice_slots))
                 tmp_data_cxp.append(float(item.cxp))
                 tmp_data_platform.append(float(item.platform))
                 tmp_data_reports.append(float(item.reports))
@@ -672,7 +715,7 @@ def fetch_defects_density_score(request, project_id):
                 tmp_data_ceeq_sum += item.ceeq
 
         data['categories'] = tmp_categories
-        data['voiceSlots'] = tmp_data_voiceSlots
+        data['voice_slots'] = tmp_data_voice_slots
         data['cxp'] = tmp_data_cxp
         data['platform'] = tmp_data_platform
         data['reports'] = tmp_data_reports
@@ -688,11 +731,11 @@ def fetch_defects_density_score(request, project_id):
     return HttpResponse(json.dumps(dd_trend_data), content_type="application/json")
 
 
-def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
+def fetch_defects_density_score_pie(request, frame_components, version_data, uat_type):
     """
     Used for pie chart along with drawing data table
     :param request:
-    :param jira_name:
+    :param frame_components:
     :version_data:
     :return:
     """
@@ -705,7 +748,9 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
         if component_len == 0:
             continue
         else:
-            name = get_component_names_from_jira_data(component_len, item['fields']['components'])
+            name = get_component_names_from_jira_data(component_len,
+                                                      item['fields']['components'],
+                                                      frame_components)
 
         if name:
             component_names.append(name)
@@ -719,9 +764,12 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
                                 component_names_without_slash,
                                 version_data,
                                 'components',
-                                uat_type)
+                                uat_type,
+                                frame_components)
 
-    weight_factor = get_weight_factor(data, component_names_without_slash)
+    weight_factor = get_weight_factor(data,
+                                      component_names_without_slash,
+                                      frame_components)
     #print weight_factor
 
     project_score_uat = project_detail_calculate_score(weight_factor)
@@ -744,9 +792,13 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
         temp_graph.append(item[0])
         temp_graph.append(float(item[1]) * float(item[2]))
         # for color index
-        temp_graph.append(sorted(settings.COMPONENT_NAMES_STANDARD.keys()).index(item[0]))
+        temp_graph.append(sorted(frame_components.keys()).index(item[0]))
 
-        temp_graph_subcomponent = get_subcomponent_defects_density(request, item[0], version_data, uat_type)
+        temp_graph_subcomponent = get_subcomponent_defects_density(request,
+                                                                   item[0],
+                                                                   version_data,
+                                                                   uat_type,
+                                                                   frame_components)
 
         priority_total['total'] += item[3]  # Total of all issues of pie chart table
         temp_table.append(item[0])  # Component name
@@ -766,7 +818,7 @@ def fetch_defects_density_score_pie(request, jira_name, version_data, uat_type):
 
     dd_pie_table_subcomponent = []   # calculate issues count per sub-component
 
-    for item in sorted(settings.COMPONENT_NAMES_STANDARD.keys()):
+    for item in sorted(frame_components.keys()):
         temp_table = []
 
         try:
@@ -884,14 +936,16 @@ def defects_density_single_log(request, project):
         })
         return render(request, 'defects_density/projects_dd_start.html', context)
     else:
-        weight_factor_versions = get_component_defects_density(request, jira_data)
+        weight_factor_versions = get_component_defects_density(request, jira_data, project.frame_components)
 
     today = date.today()
     for item in weight_factor_versions:
         ceeq_raw = 0  # calculate ceeq score per version
+        ceeq_closed_raw = 0   # calculate score if all closed
         for com in weight_factor_versions[item]:
             ceeq_raw += round(com[1] * float(com[2]), 3)
-        #print ceeq_version
+            ceeq_closed_raw += round(com[1] * float(com[-1]), 3)
+
         try:
             component_defects_density = ProjectComponentsDefectsDensity.objects.get(project=project, version=item, created=today)
         except ProjectComponentsDefectsDensity.DoesNotExist:
@@ -899,6 +953,7 @@ def defects_density_single_log(request, project):
 
         # use ceeq field to store ceeq score
         component_defects_density.ceeq = (1 - ceeq_raw) * 10
+        component_defects_density.ceeq_closed = (1 - ceeq_closed_raw) * 10
 
         for component in weight_factor_versions[item]:
             #print item, component[0], component[2]
@@ -911,7 +966,7 @@ def defects_density_single_log(request, project):
             elif component[0] == 'Application':
                 component_defects_density.application = component[2]
             elif component[0] == 'Voice Prompts':
-                component_defects_density.voiceSlots = component[2]
+                component_defects_density.voice_slots = component[2]
         component_defects_density.save()
 
     return

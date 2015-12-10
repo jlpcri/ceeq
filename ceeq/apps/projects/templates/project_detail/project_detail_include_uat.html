@@ -1,3 +1,27 @@
+<br>
+{% if weight_factor_exclude_uat %}
+    <div class="row">
+        <div id="export_all_exclude_uat" class="pull-right">
+            Export All to:
+            <button id="png_export_all_include_uat">PNG</button>
+            <button id="jpeg_export_all_include_uat">JPEG</button>
+            <button id="pdf_export_all_include_uat">PDF</button>
+        </div>
+    </div>
+{% endif %}
+
+<div id="ceeq_trend_chart_include_uat" style="width: 700px; height:400px; margin: 0 auto;">
+</div>
+
+{#<div class="row">#}
+{#    <p style="text-align: center" id="ceeq_trend_chart_include_uat_export">#}
+{#        Export Graph to:#}
+{#        <button id="png_ceeq_trend_include_uat">PNG</button>#}
+{#        <button id="jpeg_ceeq_trend_include_uat">JPEG</button>#}
+{#        <button id="pdf_ceeq_trend_include_uat">PDF</button>#}
+{#    </p>#}
+{#</div>#}
+
 <div id="component_percentage_pie_chart_include_uat" style="width: 700px; height: 600px; margin: 0 auto;">
     <div class="loading" style="text-align:center; margin-top: 100px;">
         <i class="fa fa-spinner fa-2x fa-spin"></i>
@@ -8,14 +32,14 @@
 <div id="qei_log_include_uat" style="width: 350px; height: 300px; margin: 0 auto;" hidden></div>
 
 {% if weight_factor_include_uat %}
-    <div class="row">
-        <p style="text-align: center" id="export_data_include_uat">
-            Export Graph to:
-            <button id="png_include_uat">PNG</button>
-            <button id="jpeg_include_uat">JPEG</button>
-            <button id="pdf_include_uat">PDF</button>
-        </p>
-    </div>
+{#    <div class="row">#}
+{#        <p style="text-align: center" id="export_data_include_uat">#}
+{#            Export Graph to:#}
+{#            <button id="png_include_uat">PNG</button>#}
+{#            <button id="jpeg_include_uat">JPEG</button>#}
+{#            <button id="pdf_include_uat">PDF</button>#}
+{#        </p>#}
+{#    </div>#}
 {% else %}
     <div class="row">
         <p style="text-align: center" id="export_qei_log_include_uat">
@@ -27,8 +51,10 @@
     </div>
 {% endif %}
 
-
 <br>
+
+
+
 <div class="row">
     <legend>Components Weighted Factors (Scales: 0 -1)</legend>
     <p>
