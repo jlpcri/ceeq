@@ -24,15 +24,15 @@ urlpatterns = patterns('',
 
     #url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^{0}ceeq/$'.format(root_path), 'ceeq.apps.core.views.landing', name='landing'),
-    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.projects.urls')),
-    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.help.urls')),
-    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.users.urls')),
-    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.search.urls')),
-    url(r'^{0}ceeq/'.format(root_path), include('ceeq.apps.defects_density.urls')),
+    url(r'^{0}/$'.format(root_path), 'ceeq.apps.core.views.landing', name='landing'),
+    url(r'^{0}/'.format(root_path), include('ceeq.apps.projects.urls')),
+    url(r'^{0}/'.format(root_path), include('ceeq.apps.help.urls')),
+    url(r'^{0}/'.format(root_path), include('ceeq.apps.users.urls')),
+    url(r'^{0}/'.format(root_path), include('ceeq.apps.search.urls')),
+    url(r'^{0}/'.format(root_path), include('ceeq.apps.defects_density.urls')),
 
-    url(r'^{0}cee/admin/'.format(root_path), include(admin.site.urls)),
-    url(r'^{0}ceeq/api/'.format(root_path), include(v1_api.urls)),
+    url(r'^{0}/admin/'.format(root_path), include(admin.site.urls)),
+    url(r'^{0}/api/'.format(root_path), include(v1_api.urls)),
 )
 
 if settings.DEBUG:

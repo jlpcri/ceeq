@@ -4,6 +4,8 @@ DEBUG = False
 
 LOGIN_URL = '/ceeq_old/'
 
+SESSION_COOKIE_NAME = 'ceeqOldSessionId'
+
 ALLOWED_HOSTS = [
     'apps.qaci01.wic.west.com',
     'apps.qaci01',
