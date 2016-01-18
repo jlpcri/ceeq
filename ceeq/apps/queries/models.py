@@ -18,6 +18,14 @@ class Instance(models.Model):
 
 
 class Project(models.Model):
+    # Component Field Options
+    COMPONENT = '1'
+    INDICATOR = '2'
+    PARSE_JIRA_CHOICES = (
+        (COMPONENT, 'CEEQ Components'),
+        (INDICATOR, 'CEEQ Indicator')
+    )
+
     name = models.TextField(unique=True)  # Human-friendly name
     jira_key = models.CharField(max_length=16)
     jira_version = models.TextField(default='All Versions')
@@ -25,7 +33,7 @@ class Project(models.Model):
     issue_types = ArrayField(models.CharField(max_length=50, blank=True), default=['Bug'])
     resolution_blacklist = ArrayField(models.CharField(max_length=50, blank=True),
                                       default=['Duplicate', 'Works as Designed'])
-    component_field = models.IntegerField(default=1)  # Choice between compoent and Indicator
+    component_field = models.TextField(choices=PARSE_JIRA_CHOICES, default=COMPONENT)  # Choice between compoent and Indicator
     impact_map = models.ForeignKey(ImpactMap)
     active = models.BooleanField(default=True)  # tracking JIRA projects or not
     complete = models.BooleanField(default=False)  # CEEQ projects complete or not
