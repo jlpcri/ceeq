@@ -29,7 +29,7 @@ def get_instances():
 
 def parse_jira_data(project, component_names_standard):
     results = []
-    if project.component_field == '1':  # use components names
+    if project.component_field == 1:  # use components names
         for issue in project.fetch_jira_data['issues']:
             temp = {}
             temp['key'] = issue['key']
@@ -89,7 +89,7 @@ def parse_jira_data(project, component_names_standard):
                 continue
 
             results.append(temp)
-    elif project.component_field == '2':  # use CEEQ Indicator
+    elif project.component_field == 2:  # use CEEQ Indicator
 
         indicator_field = project.instance.indicator_field
 
