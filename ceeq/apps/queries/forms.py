@@ -14,10 +14,12 @@ class ProjectForm(ModelForm):
                                                             widget=forms.Select(attrs={'class': 'form-control'}))
             self.fields['active'] = forms.BooleanField(label='Track Project', required=False)
             self.fields['complete'] = forms.BooleanField(label='Archive Project', required=False)
+            self.fields['component_field'] = forms.ChoiceField(choices=self.instance.PARSE_JIRA_CHOICES,
+                                                               widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_key', 'jira_version', 'instance', 'impact_map', 'active', 'complete', ]
+        fields = ['name', 'jira_key', 'jira_version', 'instance', 'impact_map', 'component_field', 'active', 'complete' ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'jira_key': forms.TextInput(attrs={'class': 'form-control'}),
