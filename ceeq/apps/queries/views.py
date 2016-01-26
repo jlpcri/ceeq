@@ -102,8 +102,6 @@ def project_detail(request, project_id):
         query_jira_data(project.id)
         result_latest = project.resulthistory_set.latest('confirmed')
 
-
-
     # Calculate weight factor, exist components etc.
     query_results = result_latest.query_results
 
