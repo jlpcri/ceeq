@@ -81,7 +81,10 @@ def parse_jira_data(project, component_names_standard):
                                                                         issue['fields'][item],
                                                                         component_names_standard)
                     else:
-                        temp[item] = issue['fields'][item]['name']
+                        try:
+                            temp[item] = issue['fields'][item]['name']
+                        except KeyError:
+                            temp[item] = ''
                 else:
                     temp[item] = ''
 
