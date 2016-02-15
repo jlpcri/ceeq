@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load staticfiles %}
 
 {% block title %}User Guide {% endblock %}
 
@@ -17,6 +18,7 @@
                             <li><a href="#jira_issue_scope">CEEQ Framework Scope</a> </li>
                             <li><a href="#voice_slots_percentage_range">Voice Slots Range</a> </li>
                             <li><a href="#testing_character">Testing Characteristics</a> </li>
+                            <li><a href="{% static 'ceeq/CEEQdoc.docx' %}">Download CEEQ DOC</a></li>
                         </ul>
                     </div>
                 </div>
