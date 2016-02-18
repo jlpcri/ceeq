@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load staticfiles %}
 
 {% block title %}User Guide {% endblock %}
 
@@ -13,6 +14,7 @@
                             <li><a href="#whatis">What is CEEQ?</a> </li>
                             <li><a href="#howto">How can I use CEEQ?</a> </li>
                             <li><a href="#scores">How are scores calculated?</a> </li>
+                            <li><a href="{% static 'ceeq/CEEQdoc.docx' %}">Download CEEQ DOC</a></li>
                         </ul>
                     </div>
                 </div>
