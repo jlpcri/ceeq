@@ -160,6 +160,7 @@ class ProjectNewTest(TestCase):
             'jira_key': 'Key',
             'instance': self.instance.id,
             'impact_map': self.impact_map.id,
+            'component_field': Project.COMPONENT
         }
         response = self.client.post(self.url, data)
         project = Project.objects.get(name=data['name'])
@@ -365,6 +366,7 @@ class ProjectEditTest(TestCase):
             'jira_version': '1.0',
             'instance': self.instance.id,
             'impact_map': self.impact_map.id,
+            'component_field': Project.COMPONENT,
             'active': True,
             'complete': False
         }
@@ -397,6 +399,7 @@ class ProjectEditTest(TestCase):
             'jira_version': '1.0',
             'instance': self.instance.id,
             'impact_map': self.impact_map.id,
+            'component_field': Project.COMPONENT,
             'active': True,
             'complete': False
         }
