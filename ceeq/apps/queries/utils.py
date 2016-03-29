@@ -111,7 +111,10 @@ def parse_jira_data(project, component_names_standard):
                     elif item in ['customfield_13286', 'customfield_10092']:
                         temp[item] = issue['fields'][item]['value']
                     elif item == indicator_field:
-                        temp['components'] = issue['fields'][item]['value'] + '/' + issue['fields'][item]['child']['value']
+                        try:
+                            temp['components'] = issue['fields'][item]['value'] + '/' + issue['fields'][item]['child']['value']
+                        except KeyError:
+                            temp['components'] = ''
                     elif item != 'components':
                         temp[item] = issue['fields'][item]['name']
                 else:
