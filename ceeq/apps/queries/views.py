@@ -52,10 +52,6 @@ def projects(request):
     context = RequestContext(request, {
         'projects_active': projects_active,
         'projects_archive': projects_archive,
-        # 'framework_parameters_items': ['jira_issue_weight_sum',
-        #                                'vaf_ratio',
-        #                                'vaf_exp'],
-        'superuser': request.user.is_superuser,
         'ceeq_components': sorted(ceeq_components.iteritems()),
         'form': ProjectNewForm(initial=form_initial),
 

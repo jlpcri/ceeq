@@ -11,10 +11,12 @@
             <div class="row" style="margin-bottom: 20px;">
                 <div class="col-md-8">
                     <small>
-                        {% if superuser %}
+                        {% if request.user.is_superuser %}
                             <i class="fa fa-pencil fa=lg"></i> Create a <a href="#" data-toggle="modal" data-target="#project-new-modal"> New Project </a> &nbsp; | &nbsp;
                             <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'queries:query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
                             <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculator:calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
+                        {% elif request.user.is_staff %}
+                            <i class="fa fa-pencil fa=lg"></i> Create a <a href="#" data-toggle="modal" data-target="#project-new-modal"> New Project </a>
                         {% endif %}
                     </small>
                 </div>
