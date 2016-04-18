@@ -15,7 +15,7 @@ from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHis
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
 from ceeq.apps.queries.tasks import query_jira_data
 from ceeq.apps.queries.utils import get_impact_maps, get_instances
-from ceeq.apps.users.views import user_is_superuser
+from ceeq.apps.users.views import user_is_superuser, user_is_staff
 
 
 @login_required
@@ -158,7 +158,7 @@ def project_detail(request, project_id):
     return render(request, 'queries/project_detail/project_detail.html', context)
 
 
-@user_passes_test(user_is_superuser)
+@user_passes_test(user_is_staff)
 def project_edit(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
@@ -182,7 +182,7 @@ def project_edit(request, project_id):
         return HttpResponseRedirect(reverse('queries:projects'))
 
 
-@user_passes_test(user_is_superuser)
+@user_passes_test(user_is_staff)
 def project_new(request):
     if request.method == 'POST':
         form = ProjectNewForm(request.POST)
