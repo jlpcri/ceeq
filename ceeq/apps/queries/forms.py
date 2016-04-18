@@ -33,12 +33,14 @@ class ProjectNewForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'jira_key', 'instance', 'impact_map', 'component_field', 'active', 'complete' ]
+        fields = ['name', 'jira_key', 'instance', 'impact_map', 'component_field', 'query_field', 'query_jql', 'active', 'complete' ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'jira_key': forms.TextInput(attrs={'class': 'form-control'}),
             'instance': forms.Select(attrs={'class': 'form-control'}),
             'impact_map': forms.Select(attrs={'class': 'form-control'}),
             'component_field': forms.Select(attrs={'class': 'form-control'}),
+            'query_field': forms.Select(attrs={'class': 'form-control'}),
+            'query_jql': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
