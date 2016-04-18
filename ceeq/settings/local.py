@@ -2,7 +2,7 @@ from base import *
 
 DEBUG = True
 
-TEMPLATE_DEBUG = DEBUG
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
@@ -54,15 +54,15 @@ elif socket.gethostname() == 'QAIMint':  # Alex's desktop
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ceeq',
-        'USER': 'scorecard',
-        'PASSWORD': 'scorecard_development',
-        'HOST': 'qaci01.wic.west.com',
-        'PORT': '5432',
-        # 'PORT': '5433'  # another postgres instance
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ceeq',
+#         'USER': 'scorecard',
+#         'PASSWORD': 'scorecard_development',
+#         'HOST': 'qaci01.wic.west.com',
+#         'PORT': '5432',
+#         # 'PORT': '5433'  # another postgres instance
+#     }
+# }
 
