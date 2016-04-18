@@ -40,14 +40,24 @@
                             <tr>
                                 <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name}}</a></td>
                                 <td>
-                                    {% if project.jira_version == 'All Versions' %}
-                                        <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
+                                    {% if project.query_field == 'Project Version' %}
+                                        {% if project.jira_version == 'All Versions' %}
+                                            <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
+                                        {% else %}
+                                            <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        {% endif %}
+                                        {{ project.jira_version }}</a>
                                     {% else %}
-                                        <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        No Version
                                     {% endif %}
-                                    {{ project.jira_version }}</a>
                                 </td>
-                                <td><a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a></td>
+                                <td>
+                                    {% if project.query_field == 'Project Version' %}
+                                        <a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a>
+                                    {% else %}
+                                        <a href='{{ project.instance.url }}/issues/?jql={{ project.query_jql }}' target="_blank">JQL Filter</a>
+                                    {% endif %}
+                                </td>
                                 <td><a href="#framework_parameter" data-toggle="tab" id="project_type_{{ project.pk }}"> {{ project.impact_map.name }}</a></td>
                                 <td>
                                 {% with score=project.internal_score %}
