@@ -183,6 +183,15 @@
             $('#export_data_custom').hide();
             $('#qei_log_custom').show();
         }
+
+        if ('{{ project.query_field }}' == 'Project Version') {
+            $('label[for="id_query_jql"]').hide();
+            $('#id_query_jql').hide();
+        } else {
+            $('label[for="id_jira_key"]').hide();
+            $('#id_jira_key').hide();
+        }
+
     </script>
 
 {% endblock %}

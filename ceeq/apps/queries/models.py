@@ -34,6 +34,9 @@ class Project(models.Model):
         (QUERY_VERSION, 'Project Version')
     )
 
+    # No jira data var
+    NO_JIRA_DATA = 'No JIRA Data'
+
     name = models.TextField(unique=True)  # Human-friendly name
     jira_key = models.CharField(max_length=16)
     jira_version = models.TextField(default='All Versions')
@@ -66,7 +69,7 @@ class Project(models.Model):
                 else:
                     data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),)
             except JIRAError:
-                return 'No JIRA Data'
+                return self.NO_JIRA_DATA
 
             total = data.total
             # jira.west.com limited to fetch 1000 tickets per time
@@ -101,12 +104,15 @@ class Project(models.Model):
                                               fields=self.instance.jira_fields,
                                               json_result=True)
         else:
-            tmp = jira.search_issues(self.query_jql)
-            data = jira.search_issues(self.query_jql,
-                                      maxResults=tmp.total,
-                                      fields=self.instance.jira_fields,
-                                      json_result=True)
-            # print data
+            try:
+                tmp = jira.search_issues(self.query_jql)
+                data = jira.search_issues(self.query_jql,
+                                          maxResults=tmp.total,
+                                          fields=self.instance.jira_fields,
+                                          json_result=True)
+                # print data
+            except JIRAError:
+                return self.NO_JIRA_DATA
 
         return data
 
@@ -114,10 +120,11 @@ class Project(models.Model):
     def fetch_jira_versions(self):
         versions = []
 
-        jira = self.open_jira_connection()
-        v = jira.project_versions(self.jira_key.upper())
-        for item in v:
-            versions.append(item.name)
+        if self.query_field == self.QUERY_VERSION:
+            jira = self.open_jira_connection()
+            v = jira.project_versions(self.jira_key.upper())
+            for item in v:
+                versions.append(item.name)
 
         versions.append('All Versions')
 
