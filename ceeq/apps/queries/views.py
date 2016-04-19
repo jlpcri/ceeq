@@ -228,34 +228,6 @@ def project_delete(request, project_id):
     return HttpResponseRedirect(reverse('queries:projects'))
 
 
-# @user_passes_test(user_is_superuser)
-# def project_archive(request, project_id):
-#     if request.method == 'GET':
-#         project = get_object_or_404(Project, pk=project_id)
-#         if project.complete:
-#             project.complete = False
-#         elif not project.complete:
-#             project.complete = True
-#
-#         project.save()
-#
-#     return HttpResponseRedirect(reverse('queries:projects'))
-#
-#
-# @user_passes_test(user_is_superuser)
-# def project_track(request, project_id):
-#     if request.method == 'GET':
-#         project = get_object_or_404(Project, pk=project_id)
-#         if project.active:
-#             project.active = False
-#         elif not project.active:
-#             project.active = True
-#
-#         project.save()
-#
-#     return HttpResponseRedirect(reverse('queries:projects'))
-
-
 @user_passes_test(user_is_superuser)
 def query_jira_data_all(request):
     ps = Project.objects.filter(complete=False)
@@ -279,7 +251,13 @@ def fetch_projects_score(request):
     projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(jira_key)'}).order_by('lower_name')
     data = {}
 
-    data['categories'] = [project.jira_key.upper() + '-' + project.jira_version for project in projects]
+    # data['categories'] = [project.jira_key.upper() + '-' + project.jira_version for project in projects]
+    data['categories'] = []
+    for project in projects:
+        if project.query_field == project.QUERY_VERSION:
+            data['categories'].append(project.jira_key.upper() + '-' + project.jira_version)
+        else:
+            data['categories'].append(project.name.upper())
     data['score'] = []
     for project in projects:
         score = project.internal_score
