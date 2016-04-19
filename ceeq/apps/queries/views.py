@@ -251,7 +251,7 @@ def fetch_projects_score(request):
             score: X axis value
             id: project id for hyperlink of project detail
     """
-    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(jira_key)'}).order_by('lower_name')
+    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     data = {}
 
     # data['categories'] = [project.jira_key.upper() + '-' + project.jira_version for project in projects]

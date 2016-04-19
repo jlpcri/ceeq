@@ -1,9 +1,11 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+
+from ceeq.apps.usage import views
 
 
-urlpatterns = patterns('ceeq.apps.usage.views',
-    url(r'^$', 'usage', name='usage'),
-    url(r'^project_access/$', 'get_project_access_trend', name='get_project_access_trend'),
-    url(r'^project_access_update/$', 'update_project_access_history_manually', name='update_project_access_history_manually'),
+urlpatterns = [
+    url(r'^$', views.usage, name='usage'),
+    url(r'^project_access/$', views.get_project_access_trend, name='get_project_access_trend'),
+    url(r'^project_access_update/$', views.update_project_access_history_manually, name='update_project_access_history_manually'),
 
-)
+]
