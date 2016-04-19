@@ -2,11 +2,12 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from tastypie.api import Api
 from django.conf import settings
-
 from django.contrib import admin
-admin.autodiscover()
 
 from ceeq.api.api import SearchAutoCompleteResource, ComponentImpactResource
+
+
+admin.autodiscover()
 
 v1_api = Api(api_name='v1')
 v1_api.register(SearchAutoCompleteResource())
@@ -14,7 +15,7 @@ v1_api.register(ComponentImpactResource())
 
 root_path = settings.LOGIN_URL[1:-1]
 
-urlpatterns = patterns('',
+urlpatterns = [
 
     url(r'^{0}/$'.format(root_path), 'ceeq.apps.core.views.landing', name='landing'),
     # url(r'^{0}/'.format(root_path), include('ceeq.apps.projects.urls', namespace='projects')),
@@ -31,7 +32,7 @@ urlpatterns = patterns('',
 
     url(r'^{0}/admin/'.format(root_path), include(admin.site.urls)),
     url(r'^{0}/api/'.format(root_path), include(v1_api.urls)),
-)
+]
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
