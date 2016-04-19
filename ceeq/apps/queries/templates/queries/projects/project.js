@@ -352,3 +352,22 @@ function loadActiveDataTab() {
     }
 }
 
+$('.newProject form').on('submit', function(event){
+    var name = $('#id_name').val(),
+        key = $('#id_jira_key').val(),
+        query_field = $('#id_query_field').val(),
+        query_jql = $('#id_query_jql').val();
+
+    if (name == '') {
+        showErrMsg('#newProjectErrMessage', 'Name is Empty');
+        return false;
+    }
+    if ((query_field == 'Project Version') && (key == '')){
+        showErrMsg('#newProjectErrMessage', 'Jira Key is Empty');
+        return false;
+    }
+    if ((query_field == 'JQL Query') && (query_jql == '')){
+        showErrMsg('#newProjectErrMessage', 'Query JQL is Empty');
+        return false;
+    }
+});

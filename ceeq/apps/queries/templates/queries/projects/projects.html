@@ -159,7 +159,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="project-new-modal">
+<div class="modal fade newProject" id="project-new-modal">
     <div class="modal-dialog">
         <form action="{% url 'queries:project_new' %}" method="post">
             <div class="modal-content">
@@ -169,6 +169,12 @@
                 </div>
                 <div class="modal-body">
                     {{ form }}
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="newProjectErrMessage">&nbsp;</div>
+                        </div>
+                    </div>
                     {% csrf_token %}
                 </div>
                 <div class="modal-footer">

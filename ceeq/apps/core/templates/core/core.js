@@ -4,6 +4,7 @@
 
 // for projects project_detail to show/hide jira_key and query_field
 $('#id_query_field').on('change', function(){
+    var key = '{{project.jira_key}}';
     if (this.value == 'JQL Query'){
         $('label[for="id_jira_key"]').hide();
         $('#id_jira_key').val('JQL');
@@ -14,6 +15,7 @@ $('#id_query_field').on('change', function(){
         $('#id_query_jql').show();
     } else {
         $('label[for="id_jira_key"]').show();
+        $('#id_jira_key').val(key);
         $('#id_jira_key').show();
         $('label[for="id_jira_version"]').show();
         $('#id_jira_version').show();
@@ -21,3 +23,11 @@ $('#id_query_field').on('change', function(){
         $('#id_query_jql').hide();
     }
 });
+
+function showErrMsg(location, msg) {
+    $(location).css({
+        'font-size': 15,
+        'color': 'blue'
+    });
+    $(location).html('Error: ' + msg);
+}
