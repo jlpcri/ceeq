@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from ceeq.apps.calculator.utils import get_score_data
 
@@ -95,6 +95,9 @@ def project_detail(request, project_id):
     try:
         result_latest = project.resulthistory_set.latest('confirmed')
     except ResultHistory.DoesNotExist:
+        if project.fetch_jira_data == Project.NO_JIRA_DATA:
+            messages.warning(request, 'No JIRA data fetched.')
+            return redirect('queries:projects')
         query_jira_data(project.id)
         result_latest = project.resulthistory_set.latest('confirmed')
 
