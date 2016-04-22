@@ -26,6 +26,17 @@ class Project(models.Model):
         (INDICATOR, 'CEEQ Indicator')
     )
 
+    # Query JIRA data Options
+    QUERY_JQL = 'JQL Query'
+    QUERY_VERSION = 'Project Version'
+    QUERY_JIRA_CHOICES = (
+        (QUERY_JQL, 'JQL Query'),
+        (QUERY_VERSION, 'Project Version')
+    )
+
+    # No jira data var
+    NO_JIRA_DATA = 'No JIRA Data'
+
     name = models.TextField(unique=True)  # Human-friendly name
     jira_key = models.CharField(max_length=16)
     jira_version = models.TextField(default='All Versions')
@@ -39,6 +50,11 @@ class Project(models.Model):
     active = models.BooleanField(default=True)  # tracking JIRA projects or not
     complete = models.BooleanField(default=False)  # CEEQ projects complete or not
 
+    # add use jql to access isr
+    query_field = models.CharField(max_length=20, choices=QUERY_JIRA_CHOICES,
+                                   default=QUERY_VERSION)
+    query_jql = models.TextField(blank=True, null=True)
+
     def __unicode__(self):
         return '{0}: {1}: {2}'.format(self.name, self.jira_key, self.jira_version)
     
@@ -46,46 +62,57 @@ class Project(models.Model):
     def fetch_jira_data(self):
         jira = self.open_jira_connection()
 
-        try:
-            if self.jira_version == 'All Versions':
-                data = jira.search_issues('project={0}'.format(self.jira_key))
-            else:
-                data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),)
-        except JIRAError:
-            return 'No JIRA Data'
-
-        total = data.total
-        # jira.west.com limited to fetch 1000 tickets per time
-        if total > 1000:
-            data = {'issues': []}
-            for i in range(total / 1000 + 1):
+        if self.query_field == self.QUERY_VERSION:
+            try:
                 if self.jira_version == 'All Versions':
-                    temp = jira.search_issues('project={0}'.format(self.jira_key),
-                                              startAt=1000 * i,
-                                              maxResults=1000,
-                                              fields=self.instance.jira_fields,
-                                              json_result=True)
-                    for item in temp['issues']:
-                        data['issues'].append(item)
+                    data = jira.search_issues('project={0}'.format(self.jira_key))
                 else:
-                    temp = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),
-                                              startAt=1000 * i,
-                                              maxResults=1000,
+                    data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),)
+            except JIRAError:
+                return self.NO_JIRA_DATA
+
+            total = data.total
+            # jira.west.com limited to fetch 1000 tickets per time
+            if total > 1000:
+                data = {'issues': []}
+                for i in range(total / 1000 + 1):
+                    if self.jira_version == 'All Versions':
+                        temp = jira.search_issues('project={0}'.format(self.jira_key),
+                                                  startAt=1000 * i,
+                                                  maxResults=1000,
+                                                  fields=self.instance.jira_fields,
+                                                  json_result=True)
+                        for item in temp['issues']:
+                            data['issues'].append(item)
+                    else:
+                        temp = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),
+                                                  startAt=1000 * i,
+                                                  maxResults=1000,
+                                                  fields=self.instance.jira_fields,
+                                                  json_result=True)
+                        for item in temp['issues']:
+                            data['issues'].append(item)
+            else:
+                if self.jira_version == 'All Versions':
+                    data = jira.search_issues('project={0}'.format(self.jira_key),
+                                              maxResults=total,
                                               fields=self.instance.jira_fields,
                                               json_result=True)
-                    for item in temp['issues']:
-                        data['issues'].append(item)
+                else:
+                    data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),
+                                              maxResults=total,
+                                              fields=self.instance.jira_fields,
+                                              json_result=True)
         else:
-            if self.jira_version == 'All Versions':
-                data = jira.search_issues('project={0}'.format(self.jira_key),
-                                          maxResults=total,
+            try:
+                tmp = jira.search_issues(self.query_jql)
+                data = jira.search_issues(self.query_jql,
+                                          maxResults=tmp.total,
                                           fields=self.instance.jira_fields,
                                           json_result=True)
-            else:
-                data = jira.search_issues('project={0}&affectedversion=\'{1}\''.format(self.jira_key, self.jira_version),
-                                          maxResults=total,
-                                          fields=self.instance.jira_fields,
-                                          json_result=True)
+                # print data
+            except JIRAError:
+                return self.NO_JIRA_DATA
 
         return data
 
@@ -93,10 +120,11 @@ class Project(models.Model):
     def fetch_jira_versions(self):
         versions = []
 
-        jira = self.open_jira_connection()
-        v = jira.project_versions(self.jira_key.upper())
-        for item in v:
-            versions.append(item.name)
+        if self.query_field == self.QUERY_VERSION:
+            jira = self.open_jira_connection()
+            v = jira.project_versions(self.jira_key.upper())
+            for item in v:
+                versions.append(item.name)
 
         versions.append('All Versions')
 

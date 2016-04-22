@@ -1,4 +1,7 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-urlpatterns = patterns('ceeq.apps.calculator.views',
-                       url(r'^$', 'calculate_score_all', name='calculate_score_all'),)
+from ceeq.apps.calculator import views
+
+urlpatterns = [
+    url(r'^$', views.calculate_score_all, name='calculate_score_all'),
+]

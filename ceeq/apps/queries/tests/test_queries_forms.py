@@ -42,6 +42,7 @@ class ProjectFormTest(TestCase):
             'instance': self.instance.id,
             'impact_map': self.impact_map.id,
             'component_field': Project.COMPONENT,
+            'query_field': Project.QUERY_VERSION,
             'active': True,
             'complete': False
         }
@@ -63,7 +64,8 @@ class ProjectFormTest(TestCase):
             'jira_version': ['This field is required.'],
             'instance': ['This field is required.'],
             'impact_map': ['This field is required.'],
-            'component_field': ['This field is required.']
+            'component_field': ['This field is required.'],
+            'query_field': ['This field is required.']
         })
 
     def test_project_form_invalid_with_duplicate_name(self):
@@ -106,7 +108,8 @@ class ProjectNewFormTest(TestCase):
             'jira_key': 'Jira Key',
             'instance': self.instance.id,
             'impact_map': self.impact_map.id,
-            'component_field': Project.COMPONENT
+            'component_field': Project.COMPONENT,
+            'query_field': Project.QUERY_VERSION
         }
         form = ProjectNewForm(data=data)
         self.assertTrue(form.is_valid())
@@ -119,7 +122,8 @@ class ProjectNewFormTest(TestCase):
             'jira_key': ['This field is required.'],
             'instance': ['This field is required.'],
             'impact_map': ['This field is required.'],
-            'component_field': ['This field is required.']
+            'component_field': ['This field is required.'],
+            'query_field': ['This field is required.']
         })
 
     def test_project_new_form_invalid_with_duplicate_name(self):
@@ -128,7 +132,8 @@ class ProjectNewFormTest(TestCase):
             'jira_key': 'TP',
             'instance': self.instance.id,
             'impact_map': self.impact_map.id,
-            'component_field': Project.COMPONENT
+            'component_field': Project.COMPONENT,
+            'query_field': Project.QUERY_VERSION
         }
         form = ProjectNewForm(data=data)
         self.assertFalse(form.is_valid())
