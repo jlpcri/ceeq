@@ -13,13 +13,9 @@ ALLOWED_HOSTS = ['*']
 
 # LOGIN_URL = '/ceep/'
 
-if socket.gethostname() == 'sliu-OptiPlex-GX520':  # desktop
+if socket.gethostname() in['sliu-OptiPlex-GX520', 'OM1960L1']:  # Sliu's desktop & laptop
     STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
     # STATICFILES_DIRS = ('/opt/static/',)
-elif socket.gethostname() == 'OM1960L1':
-    STATIC_ROOT = '/static/'
-    STATICFILES_DIRS = ('c:/static/',)
-    JIRA_API_URL_TOTAL_JIRAS = 'http://jira.west.com/rest/api/2/search?fields=%s&maxResults=100&jql=project=' % (JIRA_API_FIELDS)
 elif socket.gethostname() == 'QAIMint':  # Alex's desktop
     STATIC_URL = 'http://apps.qaci01.wic.west.com/static/'
     DEBUG_TOOLBAR_PATCH_SETTINGS = False
