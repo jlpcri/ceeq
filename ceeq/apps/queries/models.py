@@ -158,6 +158,10 @@ class Project(models.Model):
         except (ScoreHistory.DoesNotExist, TypeError):
             return 0
 
+    @property
+    def jira_data_latest_update(self):
+        return self.resulthistory_set.latest('confirmed').confirmed
+
 
 class ScoreHistory(models.Model):
     """
