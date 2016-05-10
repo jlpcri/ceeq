@@ -38,7 +38,7 @@
                     <tbody>
                         {% for project in projects_active %}
                             <tr>
-                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name}}</a></td>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:30}}</a></td>
                                 <td>
                                     {% if project.query_field == 'Project Version' %}
                                         {% if project.jira_version == 'All Versions' %}
@@ -114,7 +114,7 @@
                     <tbody>
                         {% for project in projects_archive %}
                             <tr>
-                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:30 }}</a></td>
                                 <td>
                                     {% if project.query_field == 'Project Version' %}
                                         {% if project.jira_version == 'All Versions' %}

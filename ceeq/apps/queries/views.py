@@ -251,26 +251,30 @@ def fetch_projects_score(request):
             score: X axis value
             id: project id for hyperlink of project detail
     """
-    projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-    data = {}
+    # projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    projects = sorted(Project.objects.filter(complete=False), key=lambda p: p.jira_data_latest_update, reverse=True)
 
-    # data['categories'] = [project.jira_key.upper() + '-' + project.jira_version for project in projects]
+    data = {}
     data['categories'] = []
-    for project in projects:
-        if project.query_field == project.QUERY_VERSION:
-            data['categories'].append(project.jira_key.upper() + '-' + project.jira_version)
-        else:
-            data['categories'].append(project.name.upper())
     data['score'] = []
+    data['id'] = []
+
     for project in projects:
         score = project.internal_score
         if score < 10:
             data['score'].append(str(score))
         elif score == 103:
-            data['score'].append(str(10.00))
+            continue
+            # data['score'].append(str(10.00))
         else:
             data['score'].append(str(0))
-    data['id'] = [str(project.id) for project in projects]
+
+        if project.query_field == project.QUERY_VERSION:
+            data['categories'].append(project.jira_key.upper() + '-' + project.jira_version)
+        else:
+            data['categories'].append(project.name.upper())
+
+        data['id'].append(str(project.id))
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
