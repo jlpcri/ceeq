@@ -105,7 +105,7 @@ class LiveSettings(models.Model):
     issue_status_resolved = ArrayField(models.CharField(max_length=30, blank=True),
                                        default=['Resolved', 'UAT Testing', 'Done'])
     issue_status_closed = ArrayField(models.CharField(max_length=30, blank=True),
-                                     default=['Closed', 'COMPLETE'])
+                                     default=['Closed', 'Complete'])
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.score_scalar, self.current_delay)
