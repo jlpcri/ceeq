@@ -21,7 +21,7 @@ try:
 except LiveSettings.DoesNotExist:
     ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research', 'Pending Estimate']
     ISSUE_STATUS_RESOLVED = ['Resolved', 'UAT Testing', 'Done']
-    ISSUE_STATUS_CLOSED = ['Closed', 'COMPLETE']
+    ISSUE_STATUS_CLOSED = ['Closed', 'Complete']
 
 # issue status weight ratio
 ISSUE_STATUS_WEIGHT = {
