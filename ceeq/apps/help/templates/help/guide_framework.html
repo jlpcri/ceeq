@@ -215,6 +215,7 @@
                                     <li>Types included</li>
                                         <ul>
                                             <li>Bug</li>
+                                            <li>Bug Task (For CVS)</li>
                                         </ul>
                                     <li>Types not included</li>
                                         <ul>
@@ -229,23 +230,21 @@
                                 <ul>
                                     <li>Open</li>
                                         <ul>
-                                            <li>Open</li>
-                                            <li>In Progress</li>
-                                            <li>Reopen</li>
-                                            <li>Discovery</li>
-                                            <li>Review</li>
-                                            <li>Pending</li>
-                                            <li>Research</li>
+                                            {% for item in ls.issue_status_open %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
                                         </ul>
                                     <li>Resolved</li>
                                         <ul>
-                                            <li>Resolved</li>
-                                            <li>UAT Testing</li>
-                                            <li>Done</li>
+                                            {% for item in ls.issue_status_resolved %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
                                         </ul>
                                     <li>Closed</li>
                                         <ul>
-                                            <li>Closed</li>
+                                            {% for item in ls.issue_status_closed %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
                                         </ul>
                                 </ul>
                             <li>Issue Resolution: </li>

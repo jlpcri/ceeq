@@ -15,7 +15,7 @@
                             <li><a href="#howto">How can I use CEEQ?</a> </li>
                             <li><a href="#scores">How are scores calculated?</a> </li>
                             <li><a href="{% static 'ceeq/CEEQdoc.docx' %}">Download CEEQ DOC</a></li>
-                            {% if user.is_superuser %}
+                            {% if superuser %}
                                 <li><a href="{% url 'help:guide_framework' %}">Framework Guide</a> </li>
                             {% endif %}
                         </ul>
