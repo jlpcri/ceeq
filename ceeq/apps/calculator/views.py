@@ -9,7 +9,7 @@ def calculate_score_all(request):
     for project in projects:
         calculate_score.delay(project.id)
 
-    # calculate_score(8)
+    # calculate_score(85)
     return HttpResponseRedirect(reverse('queries:projects'))
 
 

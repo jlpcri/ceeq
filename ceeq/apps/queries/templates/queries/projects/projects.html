@@ -29,7 +29,7 @@
                         <tr>
                             <td class="col-md-3"><strong>Name</strong></td>
                             <td class="col-md-3"><strong>JIRA Version</strong></td>
-                            <td class="col-md-2"><strong>JIRA URL</strong></td>
+                            <td class="col-md-2"><strong>Component Field</strong></td>
                             <td class="col-md-2"><strong>Impact Map</strong></td>
                             <td class="col-md-2"><strong>Evaluation</strong></td>
                             <td class="col-md-2"><strong>Instance</strong></td>
@@ -52,10 +52,10 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if project.query_field == 'Project Version' %}
-                                        <a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a>
+                                    {% if project.component_field == 1 %}
+                                        Comp/SubComp
                                     {% else %}
-                                        JQL String
+                                        Indicator
                                     {% endif %}
                                 </td>
                                 <td><a href="#framework_parameter" data-toggle="tab" id="project_type_{{ project.pk }}"> {{ project.impact_map.name }}</a></td>
