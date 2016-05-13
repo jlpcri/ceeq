@@ -41,7 +41,7 @@ class Project(models.Model):
     jira_key = models.CharField(max_length=16)
     jira_version = models.TextField(default='All Versions')
     instance = models.ForeignKey(Instance)
-    issue_types = ArrayField(models.CharField(max_length=50, blank=True), default=['Bug'])
+    issue_types = ArrayField(models.CharField(max_length=50, blank=True), default=['Bug', 'Bug task'])
     resolution_blacklist = ArrayField(models.CharField(max_length=50, blank=True),
                                       default=['Duplicate', 'Works as Designed'])
     # component_field = models.IntegerField(default=1)  # Choice between compoent and Indicator
