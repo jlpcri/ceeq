@@ -1,5 +1,5 @@
 <br>
-{% if weight_factor_exclude_uat %}
+{% if not project.internal_score == 103 %}
     <div class="row">
         <div id="export_all_exclude_uat" class="pull-right">
             Export All to:
@@ -32,16 +32,7 @@
 
 <div id="qei_log_exclude_uat" style="width: 500px; height: 300px; margin: 0 auto;" hidden></div>
 
-{% if weight_factor_exclude_uat %}
-{#    <div class="row">#}
-{#        <p style="text-align: center" id="export_data_exclude_uat">#}
-{#            Export Graph to:#}
-{#            <button id="png_exclude_uat">PNG</button>#}
-{#            <button id="jpeg_exclude_uat">JPEG</button>#}
-{#            <button id="pdf_exclude_uat">PDF</button>#}
-{#        </p>#}
-{#    </div>#}
-{% else %}
+{% if project.internal_score == 103 %}
     <div class="row">
         <p style="text-align: center" id="export_qei_log_exclude_uat">
             Export Graph to:

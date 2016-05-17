@@ -1,7 +1,7 @@
 <br>
-{% if weight_factor_exclude_uat %}
+{% if not project.overall_score == 103 %}
     <div class="row">
-        <div id="export_all_exclude_uat" class="pull-right">
+        <div id="export_all_include_uat" class="pull-right">
             Export All to:
             <button id="png_export_all_include_uat">PNG</button>
             <button id="jpeg_export_all_include_uat">JPEG</button>
@@ -31,16 +31,7 @@
 
 <div id="qei_log_include_uat" style="width: 350px; height: 300px; margin: 0 auto;" hidden></div>
 
-{% if weight_factor_include_uat %}
-{#    <div class="row">#}
-{#        <p style="text-align: center" id="export_data_include_uat">#}
-{#            Export Graph to:#}
-{#            <button id="png_include_uat">PNG</button>#}
-{#            <button id="jpeg_include_uat">JPEG</button>#}
-{#            <button id="pdf_include_uat">PDF</button>#}
-{#        </p>#}
-{#    </div>#}
-{% else %}
+{% if project.overall_score == 103 %}
     <div class="row">
         <p style="text-align: center" id="export_qei_log_include_uat">
             Export Graph to:
