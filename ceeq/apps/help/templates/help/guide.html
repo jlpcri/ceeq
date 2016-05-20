@@ -15,6 +15,9 @@
                             <li><a href="#howto">How can I use CEEQ?</a> </li>
                             <li><a href="#scores">How are scores calculated?</a> </li>
                             <li><a href="{% static 'ceeq/CEEQdoc.docx' %}">Download CEEQ DOC</a></li>
+                            {% if superuser %}
+                                <li><a href="{% url 'help:guide_framework' %}">Framework Guide</a> </li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -68,7 +71,7 @@
                     </div>
                     <div id="scores">
                         <h4 style="padding-top: 75px; margin-top: -75px;">How are scores calculated?&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
-                        <img src="{% static 'ceeq/CEEQForumla.png' %}">
+                        <img src="{% static 'ceeq/CEEQFormula.png' %}">
                         <p>
                             Each bug created adds a number of points to the component defect score equal to the point
                             value currently assigned to the ticket’s severity level and a modifier for its resolution

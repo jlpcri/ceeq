@@ -1,5 +1,7 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-urlpatterns = patterns('ceeq.apps.search.views',
-   url(r'^search/$', 'search', name='search'),
-)
+from ceeq.apps.search import views
+
+urlpatterns = [
+   url(r'^search/$', views.search, name='search'),
+]

@@ -1,6 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-urlpatterns = patterns('ceeq.apps.help.views',
-                       url(r'^help/guide/$', 'guide', name='guide'),
-                       url(r'^help/faq/$', 'faq', name='faq'),
-                       )
+from ceeq.apps.help import views
+
+urlpatterns = [
+    url(r'^help/guide/$', views.guide, name='guide'),
+    url(r'^help/guide_framework/$', views.guide_framework, name='guide_framework'),
+    url(r'^help/faq/$', views.faq, name='faq'),
+]

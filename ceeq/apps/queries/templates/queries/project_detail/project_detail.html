@@ -43,28 +43,42 @@
             {% else %}
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">Project Name</div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Project Name:</div>
                     <div class="col-md-8">{{ form.name }}</div>
                 </div>
+                {% if project.query_field == 'Project Version' %}
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Key:</div>
+                        <div class="col-md-8">{{ form.jira_key }}</div>
+                    </div>
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Version:</div>
+                        <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.jira_version }}</div>
+                    </div>
+                {% else %}
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2" style="text-align: left;font-size:18px;">JQL Filter:</div>
+                        <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.query_jql }}</div>
+                    </div>
+                {% endif %}
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Key</div>
-                    <div class="col-md-8">{{ form.jira_key }}</div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Instance:</div>
+                    <div class="col-md-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.instance.url }}</div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Impact Map:</div>
+                    <div class="col-md-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.impact_map.name }}</div>
                 </div>
-                <div class="row" style="margin-bottom: 10px;">
+                <div class="row" style="margin-bottom: 50px;">
                     <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">JIRA Version</div>
-                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.jira_version }}</div>
-                </div>
-                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Component Field:</div>
+                    <div class="col-md-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{% if project.component_field == 1 %}CEEQ Components{% else %}CEEQ Indicator{% endif %}</div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">Instance</div>
-                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.instance.url }}</div>
-                </div>
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2" style="text-align: left;font-size:18px;">Impact Map</div>
-                    <div class="col-md-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.impact_map.name }}</div>
+                    <div class="col-md-2" style="text-align: left;font-size:18px;">Query Field:</div>
+                    <div class="col-md-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.query_field }}</div>
                 </div>
             {% endif %}
         </form>
@@ -183,6 +197,19 @@
             $('#export_data_custom').hide();
             $('#qei_log_custom').show();
         }
+
+        // Show or Hide jira_key and query_jql field
+        if ('{{ project.query_field }}' == 'Project Version') {
+            $('label[for="id_query_jql"]').hide();
+            $('#id_query_jql').hide();
+
+        } else {
+            $('label[for="id_jira_key"]').hide();
+            $('#id_jira_key').hide();
+            $('label[for="id_jira_version"]').hide();
+            $('#id_jira_version').hide();
+        }
+
     </script>
 
 {% endblock %}

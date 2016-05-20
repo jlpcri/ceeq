@@ -11,7 +11,7 @@
             <div class="row" style="margin-bottom: 20px;">
                 <div class="col-md-8">
                     <small>
-                        {% if superuser %}
+                        {% if request.user.is_superuser %}
                             <i class="fa fa-pencil fa=lg"></i> Create a <a href="#" data-toggle="modal" data-target="#project-new-modal"> New Project </a> &nbsp; | &nbsp;
                             <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'queries:query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
                             <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculator:calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
@@ -29,7 +29,7 @@
                         <tr>
                             <td class="col-md-3"><strong>Name</strong></td>
                             <td class="col-md-3"><strong>JIRA Version</strong></td>
-                            <td class="col-md-2"><strong>JIRA URL</strong></td>
+                            <td class="col-md-2"><strong>Component Field</strong></td>
                             <td class="col-md-2"><strong>Impact Map</strong></td>
                             <td class="col-md-2"><strong>Evaluation</strong></td>
                             <td class="col-md-2"><strong>Instance</strong></td>
@@ -38,16 +38,26 @@
                     <tbody>
                         {% for project in projects_active %}
                             <tr>
-                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name}}</a></td>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:30}}</a></td>
                                 <td>
-                                    {% if project.jira_version == 'All Versions' %}
-                                        <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
+                                    {% if project.query_field == 'Project Version' %}
+                                        {% if project.jira_version == 'All Versions' %}
+                                            <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
+                                        {% else %}
+                                            <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        {% endif %}
+                                        {{ project.jira_version }}</a>
                                     {% else %}
-                                        <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        <a href='{{ project.instance.url }}/issues/?jql={{ project.query_jql }}' target="_blank">JQL Filter</a>
                                     {% endif %}
-                                    {{ project.jira_version }}</a>
                                 </td>
-                                <td><a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a></td>
+                                <td>
+                                    {% if project.component_field == 1 %}
+                                        Comp/SubComp
+                                    {% else %}
+                                        Indicator
+                                    {% endif %}
+                                </td>
                                 <td><a href="#framework_parameter" data-toggle="tab" id="project_type_{{ project.pk }}"> {{ project.impact_map.name }}</a></td>
                                 <td>
                                 {% with score=project.internal_score %}
@@ -104,16 +114,26 @@
                     <tbody>
                         {% for project in projects_archive %}
                             <tr>
-                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:20 }}</a></td>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:30 }}</a></td>
                                 <td>
-                                    {% if project.jira_version == 'All Versions' %}
-                                        <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
+                                    {% if project.query_field == 'Project Version' %}
+                                        {% if project.jira_version == 'All Versions' %}
+                                            <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
+                                        {% else %}
+                                            <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        {% endif %}
+                                        {{ project.jira_version }}</a>
                                     {% else %}
-                                        <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        <a href='{{ project.instance.url }}/issues/?jql={{ project.query_jql }}' target="_blank">JQL Filter</a>
                                     {% endif %}
-                                    {{ project.jira_version }}</a>
                                 </td>
-                                <td><a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a></td>
+                                <td>
+                                    {% if project.query_field == 'Project Version' %}
+                                        <a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a>
+                                    {% else %}
+                                        JQL String
+                                    {% endif %}
+                                </td>
                                 <td>{{ project.impact_map.name}}</td>
                                 <td>
                                     {% with score=project.internal_score %}
@@ -149,7 +169,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="project-new-modal">
+<div class="modal fade newProject" id="project-new-modal">
     <div class="modal-dialog">
         <form action="{% url 'queries:project_new' %}" method="post">
             <div class="modal-content">
@@ -159,6 +179,12 @@
                 </div>
                 <div class="modal-body">
                     {{ form }}
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="newProjectErrMessage">&nbsp;</div>
+                        </div>
+                    </div>
                     {% csrf_token %}
                 </div>
                 <div class="modal-footer">

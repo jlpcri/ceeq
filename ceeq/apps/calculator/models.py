@@ -98,6 +98,15 @@ class LiveSettings(models.Model):
     score_scalar = models.IntegerField(default=0)
     current_delay = models.IntegerField(default=0)  # minutes of dealy between CEEQ and live data
 
+    home_chart_size = models.IntegerField(default=0)  # number of projects shown on home bar chart
+
+    issue_status_open = ArrayField(models.CharField(max_length=30, blank=True),
+                                   default=['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research', 'Pending Estimate'])
+    issue_status_resolved = ArrayField(models.CharField(max_length=30, blank=True),
+                                       default=['Resolved', 'UAT Testing', 'Done'])
+    issue_status_closed = ArrayField(models.CharField(max_length=30, blank=True),
+                                     default=['Closed', 'Complete'])
+
     def __unicode__(self):
         return '{0}: {1}'.format(self.score_scalar, self.current_delay)
 

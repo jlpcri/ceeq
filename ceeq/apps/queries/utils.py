@@ -1,5 +1,5 @@
 from ceeq.apps.calculator.models import ImpactMap
-from ceeq.apps.queries.models import Instance
+from ceeq.apps.queries.models import Instance, Project
 
 
 #  define global variable of project impact maps
@@ -29,7 +29,7 @@ def get_instances():
 
 def parse_jira_data(project, component_names_standard):
     results = []
-    if project.component_field == 1:  # use components names
+    if project.component_field == Project.COMPONENT:  # use components names
         for issue in project.fetch_jira_data['issues']:
             temp = {}
             temp['key'] = issue['key']
@@ -92,7 +92,7 @@ def parse_jira_data(project, component_names_standard):
                 continue
 
             results.append(temp)
-    elif project.component_field == 2:  # use CEEQ Indicator
+    elif project.component_field == Project.INDICATOR:  # use CEEQ Indicator
 
         indicator_field = project.instance.indicator_field
 
@@ -111,7 +111,10 @@ def parse_jira_data(project, component_names_standard):
                     elif item in ['customfield_13286', 'customfield_10092']:
                         temp[item] = issue['fields'][item]['value']
                     elif item == indicator_field:
-                        temp['components'] = issue['fields'][item]['value'] + '/' + issue['fields'][item]['child']['value']
+                        try:
+                            temp['components'] = issue['fields'][item]['value'] + '/' + issue['fields'][item]['child']['value']
+                        except KeyError:
+                            temp['components'] = ''
                     elif item != 'components':
                         temp[item] = issue['fields'][item]['name']
                 else:

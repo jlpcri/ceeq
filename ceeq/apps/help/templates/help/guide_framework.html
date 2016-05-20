@@ -1,0 +1,415 @@
+{% extends 'core/base.html' %}
+
+{% block title %}User Guide {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <body data-spy="scroll" data-target="#index">
+
+            <div class="row container" style="text-align: justify;">
+                <div class="col-xs-3">
+                    <div id="index">
+                        <ul class="nav nav-pills nav-stacked affix" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                            <li><a href="#contact">Contact Information</a> </li>
+                            <li><a href="#introduction">Introduction</a> </li>
+                            <li><a href="#components_weight">Components Weights</a> </li>
+                            <li><a href="#jira_issue_weight">JIRA Issues Weights</a> </li>
+                            <li><a href="#jira_issue_scope">CEEQ Framework Scope</a> </li>
+                            <li><a href="#voice_slots_percentage_range">Voice Slots Range</a> </li>
+                            <li><a href="#testing_character">Testing Characteristics</a> </li>
+                            <li><a href="#admin_control">Admin Control</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-xs-9">
+                    <div id="contact">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Contact Information&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i> </a></h4>
+                        <ul>
+                            <li>Name: Gautham Pallapa</li>
+                            <li>Email: <a href="mailto:gpallapa@west.com">gpallapa@west.com</a></li>
+                            <li>Phone: 402-716-1393</li>
+                            <li>Department: Interactive Services</li>
+                            <li>Location: West 100 4th Floor East</li>
+                        </ul>
+                    </div>
+
+                    <div id="introduction">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Introduction&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <ul>
+                            <div id="introduction_about">
+                                <li><strong>About this user guide</strong></li></p>
+                                <p>This document is an introduction to the CEEQ - Comprehensive End-to-End Quality evaluation tool.
+                                There are some previous web application experience are presumed, such as: web search, web explore etc.</p>
+                                <p>This user guide does not cover 100% of the features, however, it will explain all the main concepts
+                                 and help you get started. At the meantime, it provides other learning resources for your further reading.
+                                This material will help you be ready to begin exploiting our tools.</p>
+                            </div>
+
+                            <div id="introduction_what">
+                                <li><strong>What is CEEQ?</strong></li></p>
+                                <p>Comprehensive End-to-End Quality is the novel framework to describe the measurement of
+                                West developed solutions based on tracked issues in JIRA system.</p>
+                                <p>CEEQ ranges from <strong>0 -10</strong> to illustrate the quality of West developed solutions.
+                                    CEEQ helps our testing procedure on assembled
+                                West developed solutions become more quick, easy and accurate through software lifecycle.</p>
+                                <p>As somebody says: "You cannot control what you cannot measure."
+                                    Measurement is the process by which numbers or symbols are assigned
+                                    to attributes of entities in the real world in such a way as to describe them
+                                    according to clearly defined unambiguous rules</p>
+                                <p>The Risk management of our testing procedure indicates that
+                                    West developed solutions failure has caused more than inconvenience.
+                                    The causes have ranged from poorly designed user interface to
+                                    direct programming errors.</p>
+                                <p>Also, an West developed solutions with good structural quality costs
+                                    less to maintain and is easier to understand and change in
+                                    response to pressing business needs.</p>
+                                <p>The CEEQ is expected to be useful in evaluating our internal West developed solutions
+                                from begin to end.</p>
+                            </div>
+
+                            <div id="introduction_ack">
+                                <li><strong>Acknowledgements</strong></li></p>
+                                <p>Many people have contributed to Visilog. We would like to thank in particular (in
+                                alphabetical order): <br>Christian A Heyden, Gautham Pallapa, Songqing Liu,
+                                Richard Smith, Whitcomb Eric, and many more</p>
+
+                            </div>
+
+                            <div id="introduction_resource">
+                                <li><strong>Resources and Setup</strong></li></p>
+                                <p>CEEQ West developed solutions monitoring system can be accessed online at
+                                    <a href="{% url 'landing' %}">{{ base_url }}{% url 'landing' %}</a> </p>
+                                <p>CEEQ Documentation can be accessed online at
+                                <a href="{% url 'help:guide' %}">{{ base_url }}{% url 'help:guide' %} </a> </p>
+                            </div>
+
+                            <div id="introduction_involved">
+                                <li><strong>Getting Involved</strong></li></p>
+                                <p>CEEQ is an novel solution of monitoring our West developed solutions.</p>
+                                <p>If you do not know where you are now you certainly won’t
+                                    know where you will be in the future. So hurry up and start CEEQ now.</p>
+                                <p>Measurement is the process by which numbers or symbols are assigned to attributes of
+                                    entities in the real world in such a way as to describe them according to
+                                    clearly defined unambiguous rules. So try it now from today.</p>
+                            </div>
+                        </ul>
+                    </div>
+
+                    <div id="components_weight">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Components Weight Factor: Apps&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>During the procedure of West developed solutions testing, the ration of following components
+                        are considered as <strong>(8 : 0 : 2 : 3 : 3 : 4)</strong> - (alphabet order)</p>
+                        <ul>
+                            <li>Application - 0.40</li>
+                                <ul>
+                                    <li>Code</li>
+                                    <ul>
+                                        <li>Code</li>
+                                        <li>KVPs</li>
+                                    </ul>
+                                    <li>Design</li>
+                                    <ul>
+                                        <li>Feature</li>
+                                        <li>VUI</li>
+                                    </ul>
+                                    <li>Grammars</li>
+                                    <li>Logging</li>
+                                    <li>Requirements</li>
+                                    <li>Web Service</li>
+                                </ul>
+                            <li>Client - 0.00</li>
+                                <ul>
+                                    <li>Enviornment</li>
+                                    <li>Test Data</li>
+                                </ul>
+                            <li>CXP - 0.10</li>
+                                <ul>
+                                    <li>HCCP - Host Customer Contact Portal</li>
+                                    <li>ODP - On Demand Portal</li>
+                                    <li>Realfeed</li>
+                                    <li>Requirements</li>
+                                    <li>User Portal</li>
+                                </ul>
+                            <li>Platform - 0.15</li>
+                                <ul>
+                                    <li>Database</li>
+                                    <li>Host</li>
+                                        <ul>
+                                            <li>WSSI</li>
+                                            <li>WSO2</li>
+                                        </ul>
+                                    <li>Networking</li>
+                                    <li>Requirements</li>
+                                    <li>Voice Browser</li>
+                                </ul>
+
+                            <li>Reports - 0.15</li>
+                                <ul>
+                                    <li>Data Feeds</li>
+                                    <li>Reports</li>
+                                    <li>Requirements</li>
+                                </ul>
+                            <li>Voice - 0.20</li>
+                                <ul>
+                                    <li>English</li>
+                                    <li>Spanish</li>
+                                    <li>Other</li>
+                                </ul>
+                        </ul>
+
+                    </div>
+
+                    <div id="components_weight_inbound">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Components Weight Factor: Inbound Products&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>For Inbound Products in West, the ration of following components are considererd as <strong> (7 : 0 : 5 : 5 : 3 : 0) </strong></p>
+                        <ul>
+                            <li>Application - 0.35</li>
+                            <li>Client - 0.00</li>
+                            <li>Client Access - 0.25</li>
+                            <li>Platform - 0.25</li>
+                            <li>Reporting - 0.15</li>
+                            <li>Voice - 0.00</li>
+                        </ul>
+                    </div>
+
+                    <div id="components_weight_outbound">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Components Weight Factor: Outbound Products&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>For Outbound Products in West, the ration of following components are considererd as <strong> (6 : 0 : 4 : 6 : 2 : 2) </strong></p>
+                        <ul>
+                            <li>Application - 0.30</li>
+                            <li>Client - 0.00</li>
+                            <li>Client Access - 0.20</li>
+                            <li>Platform - 0.30</li>
+                            <li>Reporting - 0.10</li>
+                            <li>Voice - 0.10</li>
+                        </ul>
+                    </div>
+
+                    <div id="jira_issue_weight">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">JIRA Issues Weight Factor&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>Our framework takes the data from JIRA to evaluate the CEEQ score of West developed solutions.
+                        There five priorities are included in CEEQ, the ratio of these priorities is <strong>5:4:3:2:1</strong>.
+                        The following different priority of the issue are taken account into our framework:</p>
+                        <ul>
+                            <li>Blocker: </li></p>
+                                <p>Highest priority. Indicates that this issue takes precedence over all others.</p>
+                            <li>Critical: </li></p>
+                                <p>Indicates that this issue is causing a problem and requires urgent attention.</p>
+                            <li>Major: </li></p>
+                                <p>Indicates that this issue has a significant impact.</p>
+                            <li>Minor: </li></p>
+                                <p>Indicates that this issue has a relatively minor impact.</p>
+                            <li>Trivial: </li></p>
+                                <p>Lowest priority.</p>
+                        </ul>
+
+                    </div>
+
+                    <div id="jira_issue_scope">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">CEEQ Framework Scope&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>It won't be nesseary to track all issues in JIRA into our framework.</p>
+                        <ul>
+                            <li>Issue Types: </li>
+                                <ul>
+                                    <li>Types included</li>
+                                        <ul>
+                                            <li>Bug</li>
+                                            <li>Bug Task (For CVS)</li>
+                                        </ul>
+                                    <li>Types not included</li>
+                                        <ul>
+                                            <li>New Feature</li>
+                                            <li>Task</li>
+                                            <li>Improvement</li>
+                                            <li>Suggested Improvement</li>
+                                            <li>Environment</li>
+                                        </ul>
+                                </ul>
+                            <li>Issue Status: </li>
+                                <ul>
+                                    <li>Open</li>
+                                        <ul>
+                                            {% for item in ls.issue_status_open %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    <li>Resolved</li>
+                                        <ul>
+                                            {% for item in ls.issue_status_resolved %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    <li>Closed</li>
+                                        <ul>
+                                            {% for item in ls.issue_status_closed %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                </ul>
+                            <li>Issue Resolution: </li>
+                                <ul>
+                                    <li>Resolution not included if it is closed</li>
+                                        <ul>
+                                            <li>Duplicate</li>
+                                            <li>Works as Design</li>
+                                        </ul>
+                                </ul>
+                            <li>Custom Field Excluded: </li>
+                                <ul>
+                                    <li>Resolution: External Limitation</li>
+                                    <li>TFCC IS Root Cause: Test Data</li>
+                                    <li>Issue is closed</li>
+                                </ul>
+                            <li>Workflow Metatype</li>
+                                We also provide different scope of JIRAs based on Workflow Metatype property as follow:
+                                <ul>
+                                    <li>Include UAT: JIRAs with Workflow Metatype as UAT are counted</li>
+                                    <li>Exclude UAT: JIRAs with Workflow Metatype as UAT are not counted</li>
+                                    <li>Only UAT: JIRAs with Workflow Metatype as UAT are only counted</li>
+                                </ul>
+                            <li>Multiple Components</li>
+                                If a ticket has more than one components, we take first component which is under our framework:
+                                <ul>
+                                    <li>If the first component is under our framework, then take the first component</li>
+                                    <li>If the first component is not under our framework, then check next one</li>
+                                        <ul>
+                                            <li>If the second component is under our framework, then take the second component</li>
+                                            <li>If the second component is not under our framework, then check next one</li>
+                                            <li>Until check the last component</li>
+                                        </ul>
+                                    <li>If none component is under our framework, then no component is selected for this ticket</li>
+                                </ul>
+                            <li>Custom Date Range</li>
+                                We provide specific user the ability to select their own date range to track JIRA tickets.
+                                <ul>
+                                    <li>The default date range is last 30 days up to today.</li>
+                                    <li>System gives user several shortcuts of date range:</li>
+                                        <ul>
+                                            <li>Today</li>
+                                            <li>Yesterday</li>
+                                            <li>Last 7 Days</li>
+                                            <li>Last 30 Days</li>
+                                            <li>This Month</li>
+                                            <li>Last Month</li>
+                                        </ul>
+                                    <li>User could select any date range from Custom Range</li>
+                                    <li>For custom date range, we track Internal Testing and UAT tickets only.</li>
+                                </ul>
+                        </ul>
+                    </div>
+
+                    <div id="voice_slots_percentage_range">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Voice Slots Percentage Range - New approach&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>Voice Slots has three sub components: <b>English, Spanish, Other</b>, each sub component only has 1 ‘Missing’ and 1 ‘Defective’ issues.
+                            Issue is Open when percentage of ‘Missing’ or ‘Defective’ reaches following range.
+                            Issue will be changed from ‘Open’ to ‘Resolved’  as ‘Trivial’ until all verbiages are cleared. </p>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Trivial</th>
+                                    <th>Minor</th>
+                                    <th>Major</th>
+                                    <th>Critical</th>
+                                    <th>Blocker</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Missing</td>
+                                    <td>0.00 - 3.00</td>
+                                    <td>3.10 - 6.00</td>
+                                    <td>6.10 - 12.00</td>
+                                    <td>12.10 - 24.00</td>
+                                    <td>24.10 - 100.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Defective</td>
+                                    <td>0.00 - 3.00</td>
+                                    <td>3.10 - 6.00</td>
+                                    <td>6.10 - 12.00</td>
+                                    <td>12.10 - 24.00</td>
+                                    <td>24.10 - 100.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    Weight factor of ‘Voice Slots’ changed from 0.15 to 0.20 while ‘Platform’ changed from
+                        0.20 to 0.15.</p>
+                    </div>
+
+                    <div id="testing_character">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Software Testing Characteristics&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>Software Testing Characteristics considers the application of those techniques
+                            in evaluating the principal attributes used to describe the quality of
+                            software applications or systems.</p>
+                        <div id="testing_character_domain">
+                            <li><strong>Quality attributes for domain testing</strong></li></p>
+                            <p>Functional testing is focused on "what" the product does</p>
+                            <p>The following quality attributes are considered:</p>
+                            <ul>
+                                <li>Accuracy</li></p>
+                                    <p>considers the application of those techniques in evaluating the principal attributes used to describe the quality of software applications or systems.</p>
+                                <li>Suitability</li></p>
+                                    <p>Suitability testing involves evaluating and validating the appropriateness of a set of functions for its intended specified tasks. </p>
+                                <li>Interoperability</li></p>
+                                    <p>Interoperability testing tests whether a given application can function correctly in all intended target environments (hardware, software, middleware, operating system, etc.). </p>
+                                <li>Functional cecurity</li></p>
+                                    <p>Functional security testing (penetration testing) focuses on the ability of the software to prevent unauthorized access, whether accidental or deliberate, to functions and data. </p>
+                                <li>Usability</li></p>
+                                    <p>Usability testing measures the suitability of the software for its users, and is directed at measuring the following factors with which specified users can achieve specified goals in particular environments or contexts.</p>
+                                <li>Accessibility</li></p>
+                                    <p>It is important to consider the accessibility of software to those with particular requirements or restrictions in its use. This includes those with disabilities. </p>
+                            </ul>
+                        </div>
+
+                        <div id="testing_character_technical">
+                            <li><strong>Quality attributes for technical testing</strong></li></p>
+                            <p>Quality attributes for Technical Test Analysts focus on "how" the product works, rather than the functional aspects of "what" it does. These tests can take place at any test level, but have particular relevance for Component test</p>
+                            <p>The following quality attributes are considered:</p>
+                            <ul>
+                                <li>Technical Security</li></p>
+                                    <p>The principal concern regarding security is to prevent information from unintended use by unauthorized persons. Security testing attempts to compromise a system’s security policy by assessing a system’s vulnerability to threats.</p>
+                                <li>Reliability</li></p>
+                                    <p>An objective of reliability testing is to monitor a statistical measure of software maturity over time and compare this to a desired reliability goal. </p>
+                                <li>Efficiency</li></p>
+                                    <p>The efficiency quality attribute is evaluated by conducting tests focused on time and resource behavior. Efficiency testing relating to time behavior is covered below under the aspects of performance, load, stress and scalability testing.</p>
+                                <li>Maintainability</li></p>
+                                    <p>Maintainability tests in general relate to the ease with which software can be analyzed, changed and tested. Appropriate techniques for maintainability testing include static analysis and checklists.</p>
+                                <li>Portability</li></p>
+                                    <p>Portability tests in general relate to the ease with which software can be transferred into its intended environment, either initially or from an existing environment. Portability tests include tests for installability, co-existence/compatibility, adaptability and replaceability.</p>
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    <div id="admin_control">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">Admin Control&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i> </a></h4>
+                        <ul>
+                            <li>The number of projects shown on home tempalte bar chart is controled by LiveSettings.home_chart_size</li>
+                            <li>Project component field has two options:</li>
+                                <ul>
+                                    <li>CEEQ Indicator</li>
+                                    <li>CEEQ Components, reserved for old CEEQ projects</li>
+                                </ul>
+                            <li>Project query fields has two options:</li>
+                                <ul>
+                                    <li>JQL Query, query jira data based on JQL query string</li>
+                                    <li>Projects Version, query jira data based on Project/version</li>
+                                </ul>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </body>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

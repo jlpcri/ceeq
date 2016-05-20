@@ -8,13 +8,21 @@ from django.shortcuts import get_object_or_404
 
 from ceeq.apps.calculator.models import SeverityMap, LiveSettings, ComponentImpact, ResultHistory
 
-# define globe variables
 from ceeq.apps.queries.models import Project
 from ceeq.apps.queries.models import ScoreHistory
 
-ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research', 'Pending Estimate']
-ISSUE_STATUS_RESOLVED = ['Resolved', 'UAT Testing']
-ISSUE_STATUS_CLOSED = ['Closed']
+
+# define globe variables
+try:
+    ls = LiveSettings.objects.get(pk=1)
+    ISSUE_STATUS_OPEN = ls.issue_status_open
+    ISSUE_STATUS_RESOLVED = ls.issue_status_resolved
+    ISSUE_STATUS_CLOSED = ls.issue_status_closed
+except LiveSettings.DoesNotExist:
+    ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research', 'Pending Estimate']
+    ISSUE_STATUS_RESOLVED = ['Resolved', 'UAT Testing', 'Done']
+    ISSUE_STATUS_CLOSED = ['Closed', 'Complete']
+
 # issue status weight ratio
 ISSUE_STATUS_WEIGHT = {
     'open': Decimal(7) / 10,
