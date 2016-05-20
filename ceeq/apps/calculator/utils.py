@@ -19,7 +19,8 @@ try:
     ISSUE_STATUS_RESOLVED = ls.issue_status_resolved
     ISSUE_STATUS_CLOSED = ls.issue_status_closed
 except LiveSettings.DoesNotExist:
-    ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research', 'Pending Estimate']
+    ISSUE_STATUS_OPEN = ['Open', 'In Progress', 'Reopened', 'Discovery', 'Review', 'Pending', 'Research',
+                         'Pending Estimate', 'To Do']
     ISSUE_STATUS_RESOLVED = ['Resolved', 'UAT Testing', 'Done']
     ISSUE_STATUS_CLOSED = ['Closed', 'Complete']
 
