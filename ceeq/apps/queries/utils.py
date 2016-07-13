@@ -101,7 +101,7 @@ def parse_jira_data(project, component_names_standard):
             temp['key'] = issue['key']
             for item in issue['fields']:
                 # if not issue['fields'][indicator_field]:  # no CEEQ indicator
-                if indicator_field not in issue['fields']:  # no CEEQ indicator
+                if indicator_field not in issue['fields'] or not issue['fields'][indicator_field]:  # no CEEQ indicator or CEEQ indicator is None
                     continue
                 # collect data
                 if issue['fields'][item]:
