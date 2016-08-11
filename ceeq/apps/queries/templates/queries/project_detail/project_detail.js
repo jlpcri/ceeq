@@ -601,7 +601,11 @@ function displayQEIlogo(uat_type) {
             uat_title = 'Custom UAT';
         }
     }
-    pie_title = '<b>{{project.name}} - </b>' + uat_title + ': 10 / 10';
+    pie_title = '<b>'
+        +'{{project.name}}'.replace(/&amp;/g, '&')
+        +' - </b>'
+        + uat_title
+        + ': 10 / 10';
 
     $('#qei_log_' + uat_type).highcharts({
         chart: {
@@ -672,12 +676,13 @@ function displayCeeqTrend(data, uat_type, trend_chart_id, title_score) {
             uat_title = 'Custom UAT';
         }
     }
-    pie_title = '<b>{{ project.name }} - </b>'
-                //+ 'CEEQ Score - '
-                + uat_title
-                + ': '
-                + parseFloat(title_score).toFixed(2)
-                + ' / 10';
+    pie_title = '<b>'
+        +'{{ project.name }}'.replace(/&amp;/g, '&')
+        + ' - </b>'
+        + uat_title
+        + ': '
+        + parseFloat(title_score).toFixed(2)
+        + ' / 10';
 
     if ( parseFloat(title_score) < 0) {
         color_title = '#FF0000';
