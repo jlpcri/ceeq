@@ -377,7 +377,7 @@ function displayPieChart(data, uat_type, pie_chart_id) {
         });
         var pie_title, color_title, uat_title;
         if (uat_type == 'include_uat' || uat_type == 'exclude_uat') {
-            pie_title = 'CEEQ Component Distribution';
+            pie_title = 'Component Distribution';
         } else if (uat_type == 'only_uat') {
             uat_title = 'UAT';
         } else if (uat_type == 'custom') {
