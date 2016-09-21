@@ -35,6 +35,7 @@ def update_project_access_history(request):
     else:
         project_access = ProjectAccess.objects.create(total=total_access)
 
+
 @login_required
 def usage(request):
     if request.method == 'GET':
@@ -65,9 +66,9 @@ def get_project_access_trend(request):
         tmp_list = []
         for sh in ScoreHistory.objects.filter(created__year=tmp_year,
                                               created__month=tmp_month,
-                                              created__day=tmp_day):
-            if sh.access:
-                tmp_list.append(sh.project.name)
+                                              created__day=tmp_day,
+                                              access=True):
+            tmp_list.append(sh.project.name)
 
         count.append({
             'y': item.total,
