@@ -197,14 +197,28 @@ def issue_counts_compute(component_names, component_names_without_slash, jira_da
         if uat_type == 'include_uat':
             pass
         elif uat_type == 'exclude_uat':
-            # UAT workflow metatype not counted
+            # isr.west.com, 'Bug (UAT)'
+            try:
+                if item['issuetype'] == 'Bug (UAT)':
+                    continue
+            except KeyError:
+                pass
+
+            # jira.west.com, UAT workflow metatype not counted
             try:
                 if item['customfield_13286']:
                     continue
             except KeyError:   #  for isr.west.com ignore
                 pass
         elif uat_type == 'only_uat':
-            # Only workflow metatype counted
+            # isr.west.com, 'Bug (UAT)'
+            try:
+                if not item['issuetype'] == 'Bug (UAT)':
+                    continue
+            except KeyError:
+                pass
+
+            # jira.west.com, Only workflow metatype counted
             try:
                 if not item['customfield_13286']:
                     continue
