@@ -102,6 +102,13 @@ def parse_jira_data(project, component_names_standard):
             for item in issue['fields']:
                 if indicator_field not in issue['fields'] or not issue['fields'][indicator_field]:  # no ceeq_indicator field or ceeq_indicator == None
                     continue
+
+                # Closed and Resolution Blacklist not counted
+                if issue['fields']['resolution'] \
+                        and issue['fields']['resolution']['name'] in project.resolution_blacklist\
+                        and issue['fields']['status']['name'] == 'Closed':
+                    continue
+
                 # collect data
                 if issue['fields'][item]:
                     if item == 'created':
