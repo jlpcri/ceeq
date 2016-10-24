@@ -21,11 +21,25 @@
 
 {% block body %}
     <div class="container">
-
-        <form action="{% url 'queries:project_edit' project.id %}" method="post">
-            <div class="row">
-                <legend>Project Information</legend>
+        <div class="row">
+            <div class="col-md-9">
+                <h3>Project Information</h3>
             </div>
+            <div class="col-md-3">
+                {% if user.username not in project.member_usernames %}
+                    <a href="{% url 'queries:join_project' project.id %}" class="btn btn-info btn-sm" style="margin-top: 20px;">
+                        <i class="fa fa-link fa-fw"></i>&nbsp;Join Project
+                    </a>
+                {% else %}
+                    <a href="{% url 'queries:leave_project' project.id %}" class="btn btn-info btn-sm" style="margin-top: 20px;">
+                        <i class="fa fa-unlink fa-fw"></i>&nbsp;Leave Project
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <form action="{% url 'queries:project_edit' project.id %}" method="post">
+
 
             {% if superuser %}
                 {{ form }}
@@ -80,6 +94,17 @@
                     <div class="col-md-2" style="text-align: left;font-size:18px;">Query Field:</div>
                     <div class="col-md-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ project.query_field }}</div>
                 </div>
+                {% if project.members.all %}
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2" style="text-align: left;font-size:18px;">Members:</div>
+                        <div class="col-md-9">
+                            {% for member in project.members.all %}
+                                <li>{{ member.user.first_name }} {{ member.user.last_name }}</li>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             {% endif %}
         </form>
 

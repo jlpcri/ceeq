@@ -28,10 +28,12 @@ function showThrobber() {
 function loadActiveDataTab() {
 
     if (active_tab == '#projects'){
-        if (projects_last_active_pill == '#projects-archive') {
+        if (projects_last_active_pill == '#projects-active'){
+            $('#projects-pills').find('a[href="#projects-active"]').tab('show');
+        } else if (projects_last_active_pill == '#projects-archive') {
             $('#projects-pills').find('a[href="#projects-archive"]').tab('show');
         } else {
-            $('#projects-pills').find('a[href="#projects-active"]').tab('show');
+            $('#projects-pills').find('a[href="#projects-mine"]').tab('show');
         }
 
         $('#update_all').click(function () {

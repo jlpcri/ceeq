@@ -1,13 +1,101 @@
 <ul class="nav nav-pills" id="projects-pills">
+    <li><a href="#projects-mine" data-toggle="pill">MyProjects</a> </li>
     <li><a href="#projects-active" data-toggle="pill">Projects</a> </li>
     <li><a href="#projects-archive" data-toggle="pill">Archives</a> </li>
 </ul>
 
 
 <div class="tab-content" id="projects-content">
+    <div class="tab-pane" id="projects-mine">
+        <br>
+        {% if projects_mine %}
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-md-8">
+                    <small>
+                        {% if request.user.is_superuser %}
+                            <i class="fa fa-pencil fa=lg"></i> Create a <a href="#" data-toggle="modal" data-target="#project-new-modal"> New Project </a> &nbsp; | &nbsp;
+                            <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'queries:query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
+                            <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculator:calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
+                        {% endif %}
+                    </small>
+                </div>
+                <div class="col-md-2">
+                    <p id="throbber" hidden><i class="fa fa-spinner fa-2x fa-spin"></i> </p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-condensed table-bordered" style="text-transform: capitalize;">
+                    <thead>
+                        <tr>
+                            <td class="col-md-3"><strong>Name</strong></td>
+                            <td class="col-md-3"><strong>JIRA Version</strong></td>
+                            <td class="col-md-2"><strong>Component Field</strong></td>
+                            <td class="col-md-2"><strong>Impact Map</strong></td>
+                            <td class="col-md-2"><strong>Evaluation</strong></td>
+                            <td class="col-md-2"><strong>Instance</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in projects_mine %}
+                            <tr>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:30}}</a></td>
+                                <td>
+                                    {% if project.query_field == 'Project Version' %}
+                                        {% if project.jira_version == 'All Versions' %}
+                                            <a href="{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }}" target="_blank">
+                                        {% else %}
+                                            <a href='{{ project.instance.url }}/issues/?jql=project={{ project.jira_key }} AND affectedVersion = "{{ project.jira_version }}" ' target="_blank">
+                                        {% endif %}
+                                        {{ project.jira_version }}</a>
+                                    {% else %}
+                                        <a href='{{ project.instance.url }}/issues/?jql={{ project.query_jql }}' target="_blank">JQL Filter</a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if project.component_field == 1 %}
+                                        Comp/SubComp
+                                    {% else %}
+                                        Indicator
+                                    {% endif %}
+                                </td>
+                                <td><a href="#framework_parameter" data-toggle="tab" id="project_type_{{ project.pk }}"> {{ project.impact_map.name }}</a></td>
+                                <td>
+                                {% with score=project.internal_score %}
+                                    {% if score == 101 %}
+                                        No created issues
+                                    {% elif score == 102 %}
+                                        Out of Range
+                                    {% elif score == 103 %}
+                                        {# No open issues#}
+                                         10.0
+                                    {% elif score == 104 %}
+                                        No JIRA Data
+                                    {% elif score == 109 %}
+                                        No evaluation
+                                    {% else %}
+                                        {% if score < 0 %}
+                                            <font color="red">{{ score }}</font>
+                                        {% else %}
+                                            {{ score | floatformat:2 }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endwith %}
+                                </td>
+                                <td>{{ project.instance.url }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No projects you have joined.</p>
+        {% endif %}
+    </div>
+
     <div class="tab-pane" id="projects-active">
         <br>
-            {% if projects_active %}
+        {% if projects_active %}
             <div class="row" style="margin-bottom: 20px;">
                 <div class="col-md-8">
                     <small>
@@ -88,17 +176,15 @@
                 </table>
             </div>
         {% else %}
-        <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'queries:project_new' %}"> New Project </a>
-        </small>
-        <p>No projects available</p>
+            <small><i class="fa fa-pencil"></i> Create a <a href="{% url 'queries:project_new' %}"> New Project </a>
+            </small>
+            <p>No projects available</p>
         {% endif %}
     </div>
 
     <div class="tab-pane" id="projects-archive">
         <br>
-            {% if projects_archive %}
-
-
+        {% if projects_archive %}
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-condensed table-bordered" style="text-transform: capitalize;">
                     <thead>
