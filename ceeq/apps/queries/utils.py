@@ -151,3 +151,26 @@ def get_component_names_per_ticket(component_len, components, component_names_st
             continue
 
     return None
+
+
+def get_projects_score_from_set(projects, data, charts_max, projects_count):
+    for project in projects:
+        score = project.internal_score
+        if score == 103:
+            continue
+        else:
+            projects_count += 1
+            if projects_count == charts_max:
+                break
+            if score < 10:
+                data['score'].append(str(score))
+            else:
+                data['score'].append(str(0))
+
+        if project.query_field == project.QUERY_VERSION:
+            data['categories'].append(project.jira_key.upper() + '-' + project.jira_version)
+        else:
+            data['categories'].append(project.name.upper())
+
+        data['id'].append(str(project.id))
+
