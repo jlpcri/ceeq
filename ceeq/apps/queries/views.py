@@ -25,6 +25,7 @@ def projects(request):
     user_setting = get_object_or_404(UserSettings, user=request.user)
     projects_mine = user_setting.project_set.filter(complete=False)
     projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    # projects_active = Project.objects.filter(~Q(members__user__id=user_setting.user.id)).filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
 
     try:

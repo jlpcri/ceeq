@@ -1,6 +1,6 @@
 <ul class="nav nav-pills" id="projects-pills">
     <li><a href="#projects-mine" data-toggle="pill">MyProjects</a> </li>
-    <li><a href="#projects-active" data-toggle="pill">Projects</a> </li>
+    <li><a href="#projects-active" data-toggle="pill">AllProjects</a> </li>
     <li><a href="#projects-archive" data-toggle="pill">Archives</a> </li>
 </ul>
 
@@ -185,22 +185,37 @@
     <div class="tab-pane" id="projects-archive">
         <br>
         {% if projects_archive %}
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-md-8">
+                    <small>
+                        {% if request.user.is_superuser %}
+                            <i class="fa fa-pencil fa=lg"></i> Create a <a href="#" data-toggle="modal" data-target="#project-new-modal"> New Project </a> &nbsp; | &nbsp;
+                            <i class="fa fa-cloud-upload fa-lg"></i><a href="{% url 'queries:query_jira_data_all' %}" id="query_jira_data"> Query JIRA Data</a> &nbsp; | &nbsp;
+                            <i class="fa fa-refresh fa-lg"></i><a href="{% url 'calculator:calculate_score_all'  %}" id="calculate_score"> Calculate Score</a>
+                        {% endif %}
+                    </small>
+                </div>
+                <div class="col-md-2">
+                    <p id="throbber" hidden><i class="fa fa-spinner fa-2x fa-spin"></i> </p>
+                </div>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-condensed table-bordered" style="text-transform: capitalize;">
                     <thead>
                         <tr>
                             <td class="col-md-3"><strong>Name</strong></td>
                             <td class="col-md-3"><strong>JIRA Version</strong></td>
-                            <td class="col-md-2"><strong>JIRA Key</strong></td>
+                            <td class="col-md-2"><strong>Component Field</strong></td>
                             <td class="col-md-2"><strong>Impact Map</strong></td>
-                            <td class="col-md-4"><strong>Evaluation</strong></td>
+                            <td class="col-md-2"><strong>Evaluation</strong></td>
                             <td class="col-md-2"><strong>Instance</strong></td>
                         </tr>
                     </thead>
                     <tbody>
                         {% for project in projects_archive %}
                             <tr>
-                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:30 }}</a></td>
+                                <td><a href='{% url 'queries:project_detail' project.id%}'>{{ project.name|truncatechars:30}}</a></td>
                                 <td>
                                     {% if project.query_field == 'Project Version' %}
                                         {% if project.jira_version == 'All Versions' %}
@@ -214,36 +229,36 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if project.query_field == 'Project Version' %}
-                                        <a href='{{ project.instance.url }}/browse/{{ project.jira_key }}' target="_blank">{{ project.jira_key }}</a>
+                                    {% if project.component_field == 1 %}
+                                        Comp/SubComp
                                     {% else %}
-                                        JQL String
+                                        Indicator
                                     {% endif %}
                                 </td>
-                                <td>{{ project.impact_map.name}}</td>
+                                <td><a href="#framework_parameter" data-toggle="tab" id="project_type_{{ project.pk }}"> {{ project.impact_map.name }}</a></td>
                                 <td>
-                                    {% with score=project.internal_score %}
-                                        {% if score == 101 %}
-                                            No created issues
-                                        {% elif score == 102 %}
-                                            Out of Range
-                                        {% elif score == 103 %}
-                                            No open issues
-
-                                        {% elif score == 104 %}
-                                            No JIRA Data
-                                        {% elif score == 109 %}
-                                            No evaluation
+                                {% with score=project.internal_score %}
+                                    {% if score == 101 %}
+                                        No created issues
+                                    {% elif score == 102 %}
+                                        Out of Range
+                                    {% elif score == 103 %}
+                                        {# No open issues#}
+                                         10.0
+                                    {% elif score == 104 %}
+                                        No JIRA Data
+                                    {% elif score == 109 %}
+                                        No evaluation
+                                    {% else %}
+                                        {% if score < 0 %}
+                                            <font color="red">{{ score }}</font>
                                         {% else %}
-                                            {% if score < 0 %}
-                                                <font color="red">{{ score |floatformat:2 }}</font>
-                                            {% else %}
-                                                {{ score |floatformat}}
-                                            {% endif %}
+                                            {{ score | floatformat:2 }}
                                         {% endif %}
-                                    {% endwith %}
+                                    {% endif %}
+                                {% endwith %}
                                 </td>
-                                <td> {{ project.instance.url }} </td>
+                                <td>{{ project.instance.url }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -252,6 +267,7 @@
         {% else %}
             <p>No archived projects available</p>
         {% endif %}
+
     </div>
 </div>
 
