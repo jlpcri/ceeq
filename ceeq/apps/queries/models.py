@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from jira import JIRA, JIRAError
 
 from ceeq.apps.calculator.models import ImpactMap
+from ceeq.apps.users.models import UserSettings
 
 
 class Instance(models.Model):
@@ -38,6 +39,9 @@ class Project(models.Model):
     NO_JIRA_DATA = 'No JIRA Data'
 
     name = models.TextField(unique=True)  # Human-friendly name
+    # Add relation of Project and User
+    members = models.ManyToManyField(UserSettings, blank=True)
+
     jira_key = models.CharField(max_length=16)
     jira_version = models.TextField(default='All Versions')
     instance = models.ForeignKey(Instance)
@@ -161,6 +165,10 @@ class Project(models.Model):
     @property
     def jira_data_latest_update(self):
         return self.resulthistory_set.latest('confirmed').confirmed
+
+    @property
+    def member_usernames(self):
+        return [u.user.username for u in self.members.all()]
 
 
 class ScoreHistory(models.Model):

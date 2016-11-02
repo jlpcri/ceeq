@@ -8,19 +8,24 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
-from ceeq.apps.calculator.utils import get_score_data
+from django.db.models import Q
 
+from ceeq.apps.calculator.utils import get_score_data
 from ceeq.apps.queries.models import Project, ImpactMap, ScoreHistory, Instance
 from ceeq.apps.calculator.models import ComponentImpact, LiveSettings, ResultHistory
 from ceeq.apps.queries.forms import ProjectForm, ProjectNewForm
 from ceeq.apps.queries.tasks import query_jira_data
-from ceeq.apps.queries.utils import get_impact_maps, get_instances
+from ceeq.apps.queries.utils import get_impact_maps, get_instances, get_projects_score_from_set
 from ceeq.apps.users.views import user_is_superuser
+from ceeq.apps.users.models import UserSettings
 
 
 @login_required
 def projects(request):
+    user_setting = get_object_or_404(UserSettings, user=request.user)
+    projects_mine = user_setting.project_set.filter(complete=False)
     projects_active = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+    # projects_active = Project.objects.filter(~Q(members__user__id=user_setting.user.id)).filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     projects_archive = Project.objects.filter(complete=True).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
 
     try:
@@ -50,6 +55,7 @@ def projects(request):
         pass
 
     context = RequestContext(request, {
+        'projects_mine': projects_mine,
         'projects_active': projects_active,
         'projects_archive': projects_archive,
         'ceeq_components': sorted(ceeq_components.iteritems()),
@@ -251,40 +257,25 @@ def fetch_projects_score(request):
             score: X axis value
             id: project id for hyperlink of project detail
     """
-    # projects = Project.objects.filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-    projects = sorted(Project.objects.filter(complete=False), key=lambda p: p.jira_data_latest_update, reverse=True)
+    user_setting = get_object_or_404(UserSettings, user=request.user)
+    projects_mine = user_setting.project_set.filter(complete=False)
+
+    projects_rest = sorted(Project.objects.filter(~Q(members__user__id=user_setting.user.id)).filter(complete=False), key=lambda p: p.jira_data_latest_update, reverse=True)
 
     try:
         ls = LiveSettings.objects.get(pk=1)
-        projects_max = ls.home_chart_size
+        charts_max = ls.home_chart_size
     except LiveSettings.DoesNotExist:
-        projects_max = 30
+        charts_max = 30
 
     data = {}
     data['categories'] = []
     data['score'] = []
     data['id'] = []
-    projects_number = 0
+    projects_count = 0
 
-    for project in projects:
-        score = project.internal_score
-        if score == 103:
-            continue
-        else:
-            projects_number += 1
-            if projects_number == projects_max:
-                break
-            if score < 10:
-                data['score'].append(str(score))
-            else:
-                data['score'].append(str(0))
-
-        if project.query_field == project.QUERY_VERSION:
-            data['categories'].append(project.jira_key.upper() + '-' + project.jira_version)
-        else:
-            data['categories'].append(project.name.upper())
-
-        data['id'].append(str(project.id))
+    get_projects_score_from_set(projects_mine, data, charts_max, projects_count)
+    get_projects_score_from_set(projects_rest, data, charts_max, projects_count)
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -311,3 +302,25 @@ def update_access_history(project_id):
         access = ScoreHistory.objects.create(project=project)
         access.access = True
         access.save()
+
+
+@login_required
+def join_project(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        user_setting = get_object_or_404(UserSettings, user=request.user)
+        project.members.add(user_setting)
+        project.save()
+
+        return redirect('queries:projects')
+
+
+@login_required
+def leave_project(request, project_id):
+    if request.method == 'GET':
+        project = get_object_or_404(Project, pk=project_id)
+        user_setting = get_object_or_404(UserSettings, user=request.user)
+        project.members.remove(user_setting)
+        project.save()
+
+        return redirect('queries:projects')

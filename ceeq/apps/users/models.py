@@ -13,4 +13,7 @@ class UserSettings(models.Model):
     environment = models.BooleanField(default=False)  # 17
 
     def __unicode__(self):
-        return "{0}, {1}".format(self.user.first_name, self.user.last_name)
+        if self.user.first_name:
+            return "{0}, {1}".format(self.user.first_name, self.user.last_name)
+        else:
+            return self.user.username
