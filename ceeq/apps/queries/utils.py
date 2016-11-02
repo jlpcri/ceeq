@@ -170,7 +170,7 @@ def get_projects_score_from_set(projects, data, charts_max, projects_count):
         if project.query_field == project.QUERY_VERSION:
             data['categories'].append(project.jira_key.upper() + '-' + project.jira_version)
         else:
-            data['categories'].append(project.name.upper())
+            data['categories'].append(project.name.upper()[:50])
 
         data['id'].append(str(project.id))
 
