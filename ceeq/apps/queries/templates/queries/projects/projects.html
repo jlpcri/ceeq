@@ -116,11 +116,17 @@
                     <thead>
                         <tr>
                             <td class="col-md-3"><strong>Name</strong></td>
-                            <td class="col-md-3"><strong>JIRA Version</strong></td>
+                            <td class="col-md-2"><strong>JIRA Version</strong></td>
                             <td class="col-md-2"><strong>Component Field</strong></td>
                             <td class="col-md-2"><strong>Impact Map</strong></td>
-                            <td class="col-md-2"><strong>Evaluation</strong></td>
-                            <td class="col-md-2"><strong>Instance</strong></td>
+                            <td class="col-md-1"><strong>Evaluation</strong></td>
+                            <td class="col-md-2"><strong>
+                                {% if request.user.is_superuser %}
+                                    Members
+                                {% else %}
+                                    Instance
+                                {% endif %}
+                            </strong></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,7 +175,13 @@
                                     {% endif %}
                                 {% endwith %}
                                 </td>
-                                <td>{{ project.instance.url }}</td>
+                                <td>
+                                    {% if request.user.is_superuser %}
+                                        {{ project.member_usernames }}
+                                    {% else %}
+                                        {{ project.instance }}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

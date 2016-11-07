@@ -168,7 +168,7 @@ class Project(models.Model):
 
     @property
     def member_usernames(self):
-        return [u.user.username for u in self.members.all()]
+        return [str(u.user.username) for u in self.members.all()]
 
 
 class ScoreHistory(models.Model):
