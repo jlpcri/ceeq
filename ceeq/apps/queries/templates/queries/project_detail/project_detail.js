@@ -1,7 +1,7 @@
 var active_tab = String(""),
     donut_pie,
     today = new Date(),
-    export_filename = '{{ project.name}}' + '-' + today.toLocaleDateString();
+    export_filename = '{{ project.name}}' + '-' + today.toISOString().slice(0, 10);
     //export_trend_filename = '{{ project.name}}' + '-trend-' + today.toLocaleDateString();
 
 moment.tz.add('America/Chicago|CST CDT|60 50|01010101010101010101010|1BQT0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Rd0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0 Op0 1zb0');
@@ -76,6 +76,8 @@ $(document).ready(function(){
 function loadUatActiveDataTab() {
     var pie_chart_id = '#component_percentage_pie_chart_',
         trend_chart_id = '#ceeq_trend_chart_',
+        pie_chart_height = 350,// change from 450 to 350
+        data_table_height = 0,// stop drawing data table, change from 25 to 0
         div_pie_height,
         chart_pie_exclude_uat,
         chart_pie_include_uat,
@@ -94,7 +96,7 @@ function loadUatActiveDataTab() {
             $(trend_chart_id + donut_pie + '_export').hide();
         }
 
-        div_pie_height = data_include_uat[1].length * 25 + 450;
+        div_pie_height = data_include_uat[1].length * data_table_height + pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
 
         chart_pie_include_uat = displayPieChart(data_include_uat, donut_pie, pie_chart_id);
@@ -112,7 +114,7 @@ function loadUatActiveDataTab() {
             $(trend_chart_id + donut_pie + '_export').hide();
         }
 
-        div_pie_height = data_exclude_uat[1].length * 25 + 450;
+        div_pie_height = data_exclude_uat[1].length * data_table_height + pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
         chart_pie_exclude_uat = displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
         displayQEIlogo(donut_pie);
@@ -122,7 +124,7 @@ function loadUatActiveDataTab() {
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
 
-        div_pie_height = data_only_uat[1].length * 25 + 450;
+        div_pie_height = data_only_uat[1].length * data_table_height + pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
 
         chart_pie_only_uat = displayPieChart(data_only_uat, donut_pie, pie_chart_id);
@@ -132,7 +134,7 @@ function loadUatActiveDataTab() {
     } else if (active_tab == '#custom') {
         donut_pie = 'custom';
 
-        div_pie_height = data_custom[1].length * 25 + 450;
+        div_pie_height = data_custom[1].length * data_table_height + pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
 
         chart_pie_custom = displayPieChart(data_custom, donut_pie, pie_chart_id);
@@ -461,7 +463,7 @@ function displayPieChart(data, uat_type, pie_chart_id) {
                 renderTo: pie_chart_id + uat_type,
                 type: 'pie',
                 events: {
-                    load: Highcharts.drawTable
+                    //load: Highcharts.drawTable
                 },
                 style: {
                     fontFamily: 'serif'

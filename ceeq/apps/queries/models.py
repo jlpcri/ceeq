@@ -59,6 +59,9 @@ class Project(models.Model):
                                    default=QUERY_VERSION)
     query_jql = models.TextField(blank=True, null=True)
 
+    class Meta:
+        ordering = ['name']
+
     def __unicode__(self):
         return '{0}: {1}: {2}'.format(self.name, self.jira_key, self.jira_version)
     
