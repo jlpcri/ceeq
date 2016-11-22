@@ -87,7 +87,11 @@ function loadUatActiveDataTab() {
         chart_pie_only_uat,
         chart_pie_custom,
         chart_line_exclude_uat,
-        chart_line_include_uat;
+        chart_line_include_uat,
+        chart_data_table_exclude_uat,
+        chart_data_table_include_uat,
+        chart_data_table_only_uat,
+        chart_data_table_custom;
 
     if (active_tab == '#include_uat') {
         donut_pie = 'include_uat';
@@ -99,10 +103,13 @@ function loadUatActiveDataTab() {
             $(trend_chart_id + donut_pie + '_export').hide();
         }
 
-        div_pie_height = data_include_uat[1].length * jira_data_table_cell_height + pie_chart_height;
+        div_pie_height = pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
         chart_pie_include_uat = displayPieChart(data_include_uat, donut_pie, pie_chart_id);
 
+        div_data_table_height = data_include_uat[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
+        $(jira_data_table_id + donut_pie).height(div_data_table_height);
+        chart_data_table_include_uat = displayJiraDataTable(data_include_uat, donut_pie, jira_data_table_id);
 
         displayQEIlogo(donut_pie);
 
@@ -124,7 +131,7 @@ function loadUatActiveDataTab() {
 
         div_data_table_height = data_exclude_uat[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
         $(jira_data_table_id + donut_pie).height(div_data_table_height);
-        displayJiraDataTable(data_exclude_uat, donut_pie, jira_data_table_id);
+        chart_data_table_exclude_uat = displayJiraDataTable(data_exclude_uat, donut_pie, jira_data_table_id);
 
         displayQEIlogo(donut_pie);
 
@@ -133,20 +140,37 @@ function loadUatActiveDataTab() {
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
 
-        div_pie_height = data_only_uat[1].length * jira_data_table_cell_height + pie_chart_height;
+        //div_pie_height = data_only_uat[1].length * jira_data_table_cell_height + pie_chart_height;
+        //$(pie_chart_id + donut_pie).height(div_pie_height);
+        //
+        //chart_pie_only_uat = displayPieChart(data_only_uat, donut_pie, pie_chart_id);
+        div_pie_height = pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
-
         chart_pie_only_uat = displayPieChart(data_only_uat, donut_pie, pie_chart_id);
+
+        div_data_table_height = data_only_uat[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
+        $(jira_data_table_id + donut_pie).height(div_data_table_height);
+        chart_data_table_only_uat = displayJiraDataTable(data_only_uat, donut_pie, jira_data_table_id);
+
         displayQEIlogo(donut_pie);
 
         exportAllCharts([chart_pie_only_uat], donut_pie);
     } else if (active_tab == '#custom') {
         donut_pie = 'custom';
 
-        div_pie_height = data_custom[1].length * jira_data_table_cell_height + pie_chart_height;
-        $(pie_chart_id + donut_pie).height(div_pie_height);
+        //div_pie_height = data_custom[1].length * jira_data_table_cell_height + pie_chart_height;
+        //$(pie_chart_id + donut_pie).height(div_pie_height);
+        //
+        //chart_pie_custom = displayPieChart(data_custom, donut_pie, pie_chart_id);
 
+        div_pie_height = pie_chart_height;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
         chart_pie_custom = displayPieChart(data_custom, donut_pie, pie_chart_id);
+
+        div_data_table_height = data_custom[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
+        $(jira_data_table_id + donut_pie).height(div_data_table_height);
+        chart_data_table_custom = displayJiraDataTable(data_custom, donut_pie, jira_data_table_id);
+
         displayQEIlogo(donut_pie);
 
         exportAllCharts([chart_pie_custom], donut_pie);
@@ -938,10 +962,6 @@ function exportAllCharts(charts, donut_pie){
 
 
 function displayJiraDataTable(data, uat_type, jira_data_table_id) {
-    console.log(uat_type);
-    console.log(jira_data_table_id);
-    console.log(data);
-
     jira_data_table_id = jira_data_table_id.substring(1, jira_data_table_id.length);
     var score = data[3];
 
