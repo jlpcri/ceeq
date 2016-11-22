@@ -1160,37 +1160,8 @@ function displayJiraDataTable(data, uat_type, jira_data_table_id) {
         Highcharts.setOptions({
             //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
         });
-        var pie_title, color_title, uat_title;
-        if (uat_type == 'include_uat' || uat_type == 'exclude_uat') {
-            pie_title = 'JIRA Count Table';
-        } else if (uat_type == 'only_uat') {
-            uat_title = 'UAT';
-        } else if (uat_type == 'custom') {
-            if (uat_type_custom == 'exclude_uat') {
-                uat_title = 'Custom Internal Testing';
-            } else {
-                uat_title = 'Custom UAT';
-            }
-        }
-        if (uat_type == 'only_uat' || uat_type == 'custom') {
-            if ( parseFloat(data[3]) > 10) {
-                if (parseFloat(data[3]) == 103 ){
-                    pie_title = 'No Open Issues';
-                } else {
-                    pie_title = 'CEEQ Score: ' + 'Out of Range';
-                }
-            }
-            else {
-                pie_title = '<b>{{ project.name }} - </b>'
-                    //+ 'CEEQ Score - '
-                    + uat_title
-                    + ': '
-                    + parseFloat(data[3]).toFixed(2)
-                    + ' / 10';
-            }
-        }
+        var pie_title = 'JIRA Tickets Per SubComponent';
 
-        //var pie_size = 210;
         var chart_export = new Highcharts.Chart({
             chart: {
                 //plotBackgroundColor: null,
