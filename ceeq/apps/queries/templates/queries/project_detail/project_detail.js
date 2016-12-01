@@ -76,15 +76,22 @@ $(document).ready(function(){
 function loadUatActiveDataTab() {
     var pie_chart_id = '#component_percentage_pie_chart_',
         trend_chart_id = '#ceeq_trend_chart_',
-        pie_chart_height = 350,// change from 450 to 350
-        data_table_height = 0,// stop drawing data table, change from 25 to 0
+        jira_data_table_id = '#subcomponent_jira_data_table_',
+        pie_chart_height = 350,
+        jira_data_table_cell_height = 25,
+        jira_data_table_extra_height = 150,
         div_pie_height,
+        div_data_table_height,
         chart_pie_exclude_uat,
         chart_pie_include_uat,
         chart_pie_only_uat,
         chart_pie_custom,
         chart_line_exclude_uat,
-        chart_line_include_uat;
+        chart_line_include_uat,
+        chart_data_table_exclude_uat,
+        chart_data_table_include_uat,
+        chart_data_table_only_uat,
+        chart_data_table_custom;
 
     if (active_tab == '#include_uat') {
         donut_pie = 'include_uat';
@@ -96,13 +103,17 @@ function loadUatActiveDataTab() {
             $(trend_chart_id + donut_pie + '_export').hide();
         }
 
-        div_pie_height = data_include_uat[1].length * data_table_height + pie_chart_height;
+        div_pie_height = pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
-
         chart_pie_include_uat = displayPieChart(data_include_uat, donut_pie, pie_chart_id);
+
+        div_data_table_height = data_include_uat[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
+        $(jira_data_table_id + donut_pie).height(div_data_table_height);
+        chart_data_table_include_uat = displayJiraDataTable(data_include_uat, donut_pie, jira_data_table_id);
+
         displayQEIlogo(donut_pie);
 
-        exportAllCharts([chart_line_include_uat, chart_pie_include_uat], donut_pie);
+        exportAllCharts([chart_line_include_uat, chart_pie_include_uat, chart_data_table_include_uat], donut_pie);
 
     } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
@@ -114,30 +125,52 @@ function loadUatActiveDataTab() {
             $(trend_chart_id + donut_pie + '_export').hide();
         }
 
-        div_pie_height = data_exclude_uat[1].length * data_table_height + pie_chart_height;
+        div_pie_height = pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
         chart_pie_exclude_uat = displayPieChart(data_exclude_uat, donut_pie, pie_chart_id);
+
+        div_data_table_height = data_exclude_uat[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
+        $(jira_data_table_id + donut_pie).height(div_data_table_height);
+        chart_data_table_exclude_uat = displayJiraDataTable(data_exclude_uat, donut_pie, jira_data_table_id);
+
         displayQEIlogo(donut_pie);
 
-        exportAllCharts([chart_line_exclude_uat, chart_pie_exclude_uat], donut_pie);
+        exportAllCharts([chart_line_exclude_uat, chart_pie_exclude_uat, chart_data_table_exclude_uat], donut_pie);
 
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
 
-        div_pie_height = data_only_uat[1].length * data_table_height + pie_chart_height;
+        //div_pie_height = data_only_uat[1].length * jira_data_table_cell_height + pie_chart_height;
+        //$(pie_chart_id + donut_pie).height(div_pie_height);
+        //
+        //chart_pie_only_uat = displayPieChart(data_only_uat, donut_pie, pie_chart_id);
+        div_pie_height = pie_chart_height;
         $(pie_chart_id + donut_pie).height(div_pie_height);
-
         chart_pie_only_uat = displayPieChart(data_only_uat, donut_pie, pie_chart_id);
+
+        div_data_table_height = data_only_uat[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
+        $(jira_data_table_id + donut_pie).height(div_data_table_height);
+        chart_data_table_only_uat = displayJiraDataTable(data_only_uat, donut_pie, jira_data_table_id);
+
         displayQEIlogo(donut_pie);
 
         exportAllCharts([chart_pie_only_uat], donut_pie);
     } else if (active_tab == '#custom') {
         donut_pie = 'custom';
 
-        div_pie_height = data_custom[1].length * data_table_height + pie_chart_height;
-        $(pie_chart_id + donut_pie).height(div_pie_height);
+        //div_pie_height = data_custom[1].length * jira_data_table_cell_height + pie_chart_height;
+        //$(pie_chart_id + donut_pie).height(div_pie_height);
+        //
+        //chart_pie_custom = displayPieChart(data_custom, donut_pie, pie_chart_id);
 
+        div_pie_height = pie_chart_height;
+        $(pie_chart_id + donut_pie).height(div_pie_height);
         chart_pie_custom = displayPieChart(data_custom, donut_pie, pie_chart_id);
+
+        div_data_table_height = data_custom[1].length * jira_data_table_cell_height + jira_data_table_extra_height;
+        $(jira_data_table_id + donut_pie).height(div_data_table_height);
+        chart_data_table_custom = displayJiraDataTable(data_custom, donut_pie, jira_data_table_id);
+
         displayQEIlogo(donut_pie);
 
         exportAllCharts([chart_pie_custom], donut_pie);
@@ -902,17 +935,33 @@ function exportAllCharts(charts, donut_pie){
         options_pdf = {
         'filename': export_filename,
         'type': 'application/pdf'
-        };
+        },
+        _charts;
 
     if (donut_pie == 'exclude_uat' || donut_pie == 'include_uat') {
         $('#png_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_png);
+            if (! $('#graph_select_' + donut_pie).prop('checked')){
+                _charts = charts.slice(0, -1);
+            } else {
+                _charts = charts
+            }
+            Highcharts.exportCharts(_charts, options_png);
         });
         $('#jpeg_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_jpeg);
+            if (! $('#graph_select_' + donut_pie).prop('checked')){
+                _charts = charts.slice(0, -1);
+            } else {
+                _charts = charts
+            }
+            Highcharts.exportCharts(_charts, options_jpeg);
         });
         $('#pdf_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_pdf);
+            if (! $('#graph_select_' + donut_pie).prop('checked')){
+                _charts = charts.slice(0, -1);
+            } else {
+                _charts = charts
+            }
+            Highcharts.exportCharts(_charts, options_pdf);
         });
     } else {
         $('#png_' + donut_pie).click(function(){
@@ -925,4 +974,257 @@ function exportAllCharts(charts, donut_pie){
             Highcharts.exportCharts(charts, options_pdf);
         });
     }
+}
+
+
+function displayJiraDataTable(data, uat_type, jira_data_table_id) {
+    jira_data_table_id = jira_data_table_id.substring(1, jira_data_table_id.length);
+    var score = data[3];
+
+    if (score < 10) {
+        //Create the data table
+        Highcharts.drawTable = function () {
+
+            // user options
+            var row_label = ['Blocker', 'Critical', 'Major', 'Minor', 'Trivial', 'Subtotal'];
+            var row_orc_label = ['O', 'R', 'C',
+                'O', 'R', 'C',
+                'O', 'R', 'C',
+                'O', 'R', 'C',
+                'O', 'R', 'C'
+            ];
+            var tableTop = 50,
+                colWidth = 30,
+                tableLeft = 25,
+                rowHeight = 25,
+                cellPadding = 2.5,
+                valueDecimals = 3;
+
+            // internal variables
+            var chart = this,
+                renderer = chart.renderer,
+                cellLeft = tableLeft;
+
+            // draw components lables
+            $.each(data[1], function (i, item) {
+                renderer.text(
+                    item[0],
+                        cellLeft + cellPadding,
+                        tableTop + (i + 3) * rowHeight - cellPadding
+                )
+                    .css({
+                        //fontWeight: 'bold',
+                        //fontSize: '10pt',
+                        font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+
+                    })
+                    .add();
+            });
+
+            // draw jira priority lables
+            cellLeft += colWidth;
+            $.each(row_label, function (i, item) {
+                cellLeft += colWidth * 3;
+
+                renderer.text(
+                    item,
+                        cellLeft - cellPadding + colWidth,
+                        tableTop + rowHeight - cellPadding
+                )
+                    .attr({
+                        align: 'center'
+                    })
+                    .css({
+                        //fontWeight: 'bold',
+                        //fontSize: '10pt',
+                        font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                    })
+                    .add();
+                //draw vertical line
+                Highcharts.tableLine(
+                    renderer,
+                        cellLeft - cellPadding * 6,
+                        tableTop + rowHeight + cellPadding,
+                        cellLeft - cellPadding * 6,
+                        tableTop + (data[1].length + 3) * rowHeight + cellPadding
+                );
+            });
+
+            // draw jira priority Open Resolved Closed lables
+            cellLeft = tableLeft + colWidth * 2;
+            $.each(row_orc_label, function (i, item) {
+                cellLeft += colWidth;
+
+                renderer.text(
+                    item,
+                        cellLeft - cellPadding + colWidth,
+                        tableTop + rowHeight * 2 - cellPadding
+                )
+                    .attr({
+                        align: 'center'
+                    })
+                    .css({
+                        //fontStyle: 'italic',
+                        //fontSize: '10pt',
+                        color: 'blue',
+                        font: 'bold italic 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                    })
+                    .add();
+            });
+
+            $.each(data[1], function (row, item) {
+                cellLeft = tableLeft + colWidth * 2;
+
+                // apply number of jiras
+                $.each(item, function (i, priority) {
+                    cellLeft += colWidth;
+                    if (i > 0) {
+                        renderer.text(
+                            priority,
+                                cellLeft - cellPadding,
+                                tableTop + (row + 3) * rowHeight - cellPadding
+                        )
+                            .attr({
+                                align: 'center'
+                            })
+                            .css({
+                                //fontSize: '10pt'
+                                font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                            })
+                            .add();
+                    }
+                });
+
+                if (row == 0) {
+                    Highcharts.tableLine( // top
+                        renderer,
+                        tableLeft,
+                            tableTop + cellPadding,
+                            cellLeft + colWidth * 1.5,
+                            tableTop + cellPadding
+                    );
+
+                    // last three rows
+                    for (var i = 1; i < 4; i++) {
+                        Highcharts.tableLine( // bottom - 1
+                            renderer,
+                            tableLeft,
+                                tableTop + (data[1].length + i) * rowHeight + cellPadding,
+                                cellLeft + colWidth * 1.5,
+                                tableTop + (data[1].length + i) * rowHeight + cellPadding
+                        );
+                    }
+
+                }
+                // horizontal line
+                Highcharts.tableLine(
+                    renderer,
+                    tableLeft,
+                        tableTop + row * rowHeight + rowHeight + cellPadding,
+                        cellLeft + colWidth * 1.5,
+                        tableTop + row * rowHeight + rowHeight + cellPadding
+                );
+            });
+
+            cellLeft = tableLeft + colWidth * 2;
+            $.each(data[2], function (i, priority_total) {
+                cellLeft += colWidth;
+                if (i > 0) {
+                    renderer.text(
+                        priority_total,
+                            cellLeft - cellPadding,
+                            tableTop + (data[1].length + 3) * rowHeight - cellPadding
+                    )
+                        .attr({
+                            align: 'center'
+                        })
+                        .css({
+                            //fontWeight: 'bold',
+                            //fontSize: '10pt',
+                            font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                        })
+                        .add();
+                }
+                else {
+                    renderer.text(
+                        priority_total,
+                            tableLeft + cellPadding,
+                            tableTop + (data[1].length + 3) * rowHeight - cellPadding
+                    )
+                        .css({
+                            //fontWeight: 'bold',
+                            //fontSize: '10pt',
+                            font: 'bold 10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                        })
+                        .add();
+                }
+
+            });
+
+        };
+
+        //Draw a single line in the table
+        Highcharts.tableLine = function (renderer, x1, y1, x2, y2) {
+            renderer.path(['M', x1, y1, 'L', x2, y2])
+                .attr({
+                    'stroke': 'black',
+                    'stroke-width': 1
+                })
+                .add();
+        };
+
+        Highcharts.setOptions({
+            //colors: ['#CC6600', '#00CCCC', '#CCCC00', '#000066', '#990099', '#006600']
+        });
+        var pie_title = 'JIRA Tickets Per SubComponent';
+
+        var chart_export = new Highcharts.Chart({
+            chart: {
+                //plotBackgroundColor: null,
+                //plotBorderWidth: null,
+                //plotShadow: false,
+                renderTo: jira_data_table_id + uat_type,
+                type: 'pie',
+                events: {
+                    load: Highcharts.drawTable
+                },
+                style: {
+                    fontFamily: 'serif'
+                },
+                borderWidth: 0
+            },
+            title: {
+                text: pie_title,
+                style: {
+                    //fontSize: '18pt',
+                    //color: color_title,
+                    font: '15pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                },
+                align: 'left'
+            },
+            tooltip: {
+                style: {
+                    font: '10pt "Lucida Grande", Helvetica, Arial, sans-serif'
+                }
+            },
+            plotOptions: {
+
+            },
+            series: [
+
+            ],
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            credits: {
+                enabled: false
+            }
+        });
+
+        return chart_export;
+
+    }
+
 }
