@@ -113,7 +113,7 @@ function loadUatActiveDataTab() {
 
         displayQEIlogo(donut_pie);
 
-        exportAllCharts([chart_line_include_uat, chart_pie_include_uat], donut_pie);
+        exportAllCharts([chart_line_include_uat, chart_pie_include_uat, chart_data_table_include_uat], donut_pie);
 
     } else if (active_tab == '#exclude_uat') {
         donut_pie = 'exclude_uat';
@@ -135,7 +135,7 @@ function loadUatActiveDataTab() {
 
         displayQEIlogo(donut_pie);
 
-        exportAllCharts([chart_line_exclude_uat, chart_pie_exclude_uat], donut_pie);
+        exportAllCharts([chart_line_exclude_uat, chart_pie_exclude_uat, chart_data_table_exclude_uat], donut_pie);
 
     } else if (active_tab == '#only_uat') {
         donut_pie = 'only_uat';
@@ -935,17 +935,33 @@ function exportAllCharts(charts, donut_pie){
         options_pdf = {
         'filename': export_filename,
         'type': 'application/pdf'
-        };
+        },
+        _charts;
 
     if (donut_pie == 'exclude_uat' || donut_pie == 'include_uat') {
         $('#png_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_png);
+            if (! $('#graph_select_' + donut_pie).prop('checked')){
+                _charts = charts.slice(0, -1);
+            } else {
+                _charts = charts
+            }
+            Highcharts.exportCharts(_charts, options_png);
         });
         $('#jpeg_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_jpeg);
+            if (! $('#graph_select_' + donut_pie).prop('checked')){
+                _charts = charts.slice(0, -1);
+            } else {
+                _charts = charts
+            }
+            Highcharts.exportCharts(_charts, options_jpeg);
         });
         $('#pdf_export_all_' + donut_pie).click(function(){
-            Highcharts.exportCharts(charts, options_pdf);
+            if (! $('#graph_select_' + donut_pie).prop('checked')){
+                _charts = charts.slice(0, -1);
+            } else {
+                _charts = charts
+            }
+            Highcharts.exportCharts(_charts, options_pdf);
         });
     } else {
         $('#png_' + donut_pie).click(function(){

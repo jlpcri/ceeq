@@ -1,5 +1,14 @@
 <br>
 {% if not project.internal_score == 103 %}
+    <div class="row" style="margin-bottom: 10px;">
+        <div id="sth" class="pull-right">
+            <label for="graph_select_exclude_uat">Included Graphs:</label>
+            <input name="" id="graph_select_exclude_uat" type="checkbox"
+                   data-toggle="toggle" data-width="100"
+                   data-on="ALLGraphs" data-onstyle="info"
+                   data-off="Trend&Pie" data-offstyle="default" />
+        </div>
+    </div>
     <div class="row">
         <div id="export_all_exclude_uat" class="pull-right">
             Export All to:
