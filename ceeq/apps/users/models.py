@@ -14,6 +14,9 @@ class UserSettings(models.Model):
 
     def __unicode__(self):
         if self.user.first_name:
-            return "{0}, {1}".format(self.user.first_name, self.user.last_name)
+            return "{0} {1}".format(self.user.first_name, self.user.last_name)
         else:
             return self.user.username
+
+    class Meta:
+        ordering = ['user__first_name']

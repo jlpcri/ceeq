@@ -54,6 +54,7 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 #         'NAME': 'ceeq',
+#         'NAME': 'ceeq_run_test',
 #         'USER': 'scorecard',
 #         'PASSWORD': 'scorecard_development',
 #         'HOST': 'qaci01.wic.west.com',
