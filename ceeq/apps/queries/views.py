@@ -22,8 +22,11 @@ from ceeq.apps.users.models import UserSettings
 
 @login_required
 def projects(request):
-    user_setting = get_object_or_404(UserSettings, user=request.user)
-    projects_mine = user_setting.project_set.select_related('instance', 'impact_map').filter(complete=False)
+    try:
+        user_setting = UserSettings.objects.get(user=request.user)
+        projects_mine = user_setting.project_set.select_related('instance', 'impact_map').filter(complete=False)
+    except UserSettings.DoesNotExist:
+        projects_mine = []
     projects_active = Project.objects.select_related('instance', 'impact_map').prefetch_related('members').filter(complete=False)
     # projects_active = Project.objects.filter(~Q(members__user__id=user_setting.user.id)).filter(complete=False).extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
     projects_archive = Project.objects.select_related('instance', 'impact_map').filter(complete=True)

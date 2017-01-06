@@ -14,6 +14,7 @@
                             <li><a href="#whatis">What is CEEQ?</a> </li>
                             <li><a href="#howto">How can I use CEEQ?</a> </li>
                             <li><a href="#scores">How are scores calculated?</a> </li>
+                            <li><a href="#newProject">How to add new project?</a></li>
                             <li><a href="{% static 'ceeq/CEEQdoc.docx' %}">Download CEEQ DOC</a></li>
                             {% if superuser %}
                                 <li><a href="{% url 'help:guide_framework' %}">Framework Guide</a> </li>
@@ -90,6 +91,28 @@
                             impact scores. These component impact weights vary between project types and are tailored to
                             the risk assessments of each.
                         </p>
+                    </div>
+                    <div id="newProject">
+                        <h4 style="padding-top: 75px; margin-top: -75px;">How to add new project?&nbsp;&nbsp;<a href="#index"><i class="fa fa-arrow-circle-up"></i></a></h4>
+                        <p>
+                            When you need to have a new project added to CEEQ, follow this procedure. <a href="https://wiki.west.com/display/QA/CEEQ+Directions" target="_blank">More Details</a>
+                        </p>
+                        <ol>
+                            <li>Add a new event to the <a href="https://wiki.west.com/display/QA/QA+Calendar?src=contextnavpagetreemode">QA Calendar</a>.</li>
+                            <li>Event Type: CEEQ Start</li>
+                            <li>What: Project name</li>
+                            <li>Who: <a href="https://wiki.west.com/display/~sdeckhar">Eckhart, Stephen D.</a>, <a href="https://wiki.west.com/display/~sliu"> Liu, Songqing</a>, <a href="https://wiki.west.com/display/~caheyden"> Heyden, Christian A. </a></li>
+                            <li>When: Date you want the CEEQ project created.</li>
+                                This will be the start of the reporting in the CEEQ score. Usually this should be the day you start creating Test Cases.
+                            <li>Description should include:</li>
+                                <ul>
+                                    <li>Parent ticket under which Bugs will be created</li>
+                                    <li>Which JIRA system</li>
+                                    <li>Apps/inbound/outbound (Usually Apps)</li>
+                                    <li>CEEQ Indicator</li>
+                                    <li>Adding CEEQ to the</li>
+                                </ul>
+                        </ol>
                     </div>
                 </div>
             </div>
