@@ -49,17 +49,15 @@ DATABASES = {
         'PORT': '5433'   # posgtres 9.4 instance
     }
 }
-
+#
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 #         'NAME': 'ceeq',
-#         'NAME': 'ceeq_run_test',
-#         'USER': 'scorecard',
-#         'PASSWORD': 'scorecard_development',
-#         'HOST': 'qaci01.wic.west.com',
-#         'PORT': '5432',
-#         # 'PORT': '5433'  # another postgres instance
+#         'USER': 'ceeq',
+#         'PASSWORD': 'ceeq_development',
+#         'HOST': 'pginstance.ce8tamiymyr9.us-west-2.rds.amazonaws.com',
+#         'PORT': '5432'
 #     }
 # }
-
