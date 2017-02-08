@@ -24,13 +24,24 @@ ALLOWED_HOSTS = [
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ceeq',
+#         'USER': 'scorecard',
+#         'PASSWORD': 'scorecard_development',
+#         'HOST': 'qaci01.wic.west.com',
+#         'PORT': '5432'
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ceeq',
-        'USER': 'scorecard',
-        'PASSWORD': 'scorecard_development',
-        'HOST': 'qaci01.wic.west.com',
-        'PORT': '5432'
+        'USER': 'ceeq',
+        'PASSWORD': 'FkhfDhPx%A=-?h_snCMuQ$&%5crcx%tpxw24pVVp+U-UrXs4q6=uK=8^-evN-RxA',
+        'HOST': 'linux6437.wic.west.com',
+        'PORT': '5433'   # posgtres 9.4 instance
     }
 }
