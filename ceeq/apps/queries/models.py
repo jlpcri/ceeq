@@ -147,11 +147,11 @@ class Project(models.Model):
         except ConnectionError:
             conn = JIRA(
                 options={'server': self.instance.url, 'verify': False},
-                basic_auth=(self.instance.jira_user, self.instance.password),
-                proxies={
-                    'http': 'http://apps.qaci01.wic.west.com:3128',
-                    'https': 'http://apps.qaci01.wic.west.com:3128'
-                })
+                basic_auth=(self.instance.jira_user, self.instance.password))
+            conn._session.proxies = {
+                'http': 'qaci01.wic.west.com:3128',
+                'https': 'qaci01.wic.west.com:3128'
+            }
         return conn
 
     @property
