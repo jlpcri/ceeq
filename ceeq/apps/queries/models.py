@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 from jira import JIRA, JIRAError
+from requests import ConnectionError
 
 from ceeq.apps.calculator.models import ImpactMap
 from ceeq.apps.users.models import UserSettings
@@ -138,8 +139,20 @@ class Project(models.Model):
         return versions
     
     def open_jira_connection(self):
-        return JIRA(options={'server': self.instance.url, 'verify': False},
-                    basic_auth=(self.instance.jira_user, self.instance.password))
+        try:
+            conn = JIRA(
+                options={'server': self.instance.url, 'verify': False},
+                basic_auth=(self.instance.jira_user, self.instance.password)
+                )
+        except ConnectionError:
+            conn = JIRA(
+                options={'server': self.instance.url, 'verify': False},
+                basic_auth=(self.instance.jira_user, self.instance.password),
+                proxies={
+                    'http': 'http://apps.qaci01.wic.west.com:3128',
+                    'https': 'http://apps.qaci01.wic.west.com:3128'
+                })
+        return conn
 
     @property
     def internal_score(self):
