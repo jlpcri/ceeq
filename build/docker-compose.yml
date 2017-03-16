@@ -5,7 +5,7 @@ services:
   web:
     build: .
     image: jlpcri/ceeq
-    command: python manage.py runserver 0.0.0.0:9203 --settings=ceeq.settings.docker
+    command: python manage.py runserver 0.0.0.0:9203 --settings=ceeq.settings.local
     volumes:
       - .:/code
     ports:
