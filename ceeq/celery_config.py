@@ -1,5 +1,5 @@
 from celery.schedules import crontab
-from kombu import Queue
+# from kombu import Queue
 
 # Celery config
 CELERY_ACCEPT_CONTENT = ['pickle', 'json', ]
@@ -19,7 +19,7 @@ CELERYBEAT_SCHEDULE = {
     # Execute every 5 minutes every day
     'fetch-jira-data-run': {
         'task': 'ceeq.apps.queries.tasks.fetch_jira_data_run',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/30'),
         'options': {'queue': 'ceeq_queue'}
     },
     # Execute in specified hour every day
