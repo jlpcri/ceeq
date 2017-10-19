@@ -62,7 +62,7 @@ def projects(request):
         'projects_active': projects_active,
         'projects_archive': projects_archive,
         'ceeq_components': sorted(ceeq_components.iteritems()),
-        'form': ProjectNewForm(initial=form_initial),
+        'form_new': ProjectNewForm(initial=form_initial),
 
     })
     return render(request, 'queries/projects/projects_start.html', context)
@@ -80,6 +80,7 @@ def project_detail(request, project_id):
         return HttpResponseRedirect(reverse('queries:projects'))
 
     form = ProjectForm(instance=project)
+    form_new = ProjectNewForm(instance=project)
 
     # Filter query results for input created date range
     try:
@@ -126,6 +127,7 @@ def project_detail(request, project_id):
 
     context = RequestContext(request, {
         'form': form,
+        'form_new': form_new,
         'project': project,
         # 'version_names': project.fetch_jira_versions,
         'impact_maps': get_impact_maps(),
