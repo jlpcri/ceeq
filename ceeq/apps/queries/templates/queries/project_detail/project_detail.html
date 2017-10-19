@@ -41,7 +41,7 @@
             </div>
         </div>
         <hr>
-        <form action="{% url 'queries:project_edit' project.id %}" method="post">
+        <form class="editProject" action="{% url 'queries:project_edit' project.id %}" method="post">
 
 
             {% if superuser %}
@@ -205,6 +205,7 @@
         var last_tab = '{{ last_tab }}';
 
         {% include 'queries/project_detail/project_detail.js' %}
+        {% include 'queries/projects/project_new.js' %}
 
         setStartDate("{{ start }}");
         setEndDate("{{ end }}");

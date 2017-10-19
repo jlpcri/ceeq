@@ -29,7 +29,7 @@ class ProjectForm(ModelForm):
             'instance': forms.Select(attrs={'class': 'form-control'}),
             'impact_map': forms.Select(attrs={'class': 'form-control'}),
             'component_field': forms.Select(attrs={'class': 'form-control'}),
-            'query_field': forms.Select(attrs={'class': 'form-control'}),
+            'query_field': forms.Select(attrs={'class': 'form-control projectQueryField projectEditQF'}),
             'query_jql': forms.TextInput(attrs={'class': 'form-control'}),
             'members': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
@@ -46,7 +46,7 @@ class ProjectNewForm(ModelForm):
             'instance': forms.Select(attrs={'class': 'form-control'}),
             'impact_map': forms.Select(attrs={'class': 'form-control'}),
             'component_field': forms.Select(attrs={'class': 'form-control'}),
-            'query_field': forms.Select(attrs={'class': 'form-control'}),
+            'query_field': forms.Select(attrs={'class': 'form-control projectQueryField projectNewQF'}),
             'query_jql': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
