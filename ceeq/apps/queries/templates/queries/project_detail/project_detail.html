@@ -56,6 +56,9 @@
                     <div class="col-md-2">
                         <a href="#deleteModal"  data-toggle="modal" role="button" class="btn btn-default" id="project_delete" style="width: 100%;">Delete</a>
                     </div>
+                    <div class="col-md-2">
+                        <a href="#project-new-modal"  data-toggle="modal" role="button" class="btn btn-primary" id="project_new" style="width: 100%;">New Similar Project</a>
+                    </div>
                 </div>
             {% else %}
                 <div class="row" style="margin-bottom: 10px;">
@@ -151,6 +154,8 @@
             </div>
 
         {% endif %}
+
+        {% include 'queries/project_detail/projects_detail_modal.html' %}
 
         <!--Delete Project confirmatoin modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
