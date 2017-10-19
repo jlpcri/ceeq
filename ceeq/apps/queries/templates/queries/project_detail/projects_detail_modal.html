@@ -1,0 +1,27 @@
+<!--Project New modal-->
+<div class="modal fade newProject" id="project-new-modal">
+    <div class="modal-dialog">
+        <form action="{% url 'queries:project_new' %}" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Project New Information</h4>
+                </div>
+                <div class="modal-body">
+                    {{ form_new }}
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="newProjectErrMessage">&nbsp;</div>
+                        </div>
+                    </div>
+                    {% csrf_token %}
+                </div>
+                <div class="modal-footer">
+                    <input id="project_new" class="btn btn-primary" type="submit" value="New Project">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </form>
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

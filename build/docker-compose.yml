@@ -1,0 +1,14 @@
+version: '2'
+services:
+  db:
+    image: postgres
+  web:
+    build: .
+    image: jlpcri/ceeq
+    command: python manage.py runserver 0.0.0.0:9203 --settings=ceeq.settings.local
+    volumes:
+      - .:/code
+    ports:
+      - "9203:9203"
+    depends_on:
+      - db

@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 from jira import JIRA, JIRAError
-from requests import ConnectionError
 
 from ceeq.apps.calculator.models import ImpactMap
 from ceeq.apps.users.models import UserSettings

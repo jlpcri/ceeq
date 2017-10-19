@@ -28,18 +28,18 @@ elif socket.gethostname() == 'QAIMint':  # Alex's desktop
 # INTERNAL_IPS = ('127.0.0.1', '10.6.20.127')
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'ceeq',
-#         'USER': 'visilog',
-#         'PASSWORD': '6ewuON0>;wHTe(DttOwjg#5NY)U497xKVwOxmQt60A1%}r:@qC&`7OdSP8u[.l[',
-#         'HOST': 'linux6437.wic.west.com',
-#         'PORT': '5432'
-#     }
-# }
+DB_6437_5432 = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ceeq',
+        'USER': 'visilog',
+        'PASSWORD': '6ewuON0>;wHTe(DttOwjg#5NY)U497xKVwOxmQt60A1%}r:@qC&`7OdSP8u[.l[',
+        'HOST': 'linux6437.wic.west.com',
+        'PORT': '5432'
+    }
+}
 
-DATABASES = {
+DB_6437_5433 = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ceeq',
@@ -49,15 +49,15 @@ DATABASES = {
         'PORT': '5433'   # posgtres 9.4 instance
     }
 }
-#
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'ceeq',
-#         'USER': 'ceeq',
-#         'PASSWORD': 'ceeq_development',
-#         'HOST': 'pginstance.ce8tamiymyr9.us-west-2.rds.amazonaws.com',
-#         'PORT': '5432'
-#     }
-# }
+
+DB_DOCKER = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': '5432'
+    }
+}
+
+DATABASES = DB_6437_5433
